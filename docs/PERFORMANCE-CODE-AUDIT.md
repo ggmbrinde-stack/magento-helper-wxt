@@ -573,7 +573,7 @@ while timings depend on machine load (report medians of ≥ 10 runs).
 ## 9. Prioritised backlog
 
 - [x] Remove broken diagnostic debris, restore `tsc` (phase 0)
-- [ ] Delete `adminNavToggle-diag.ts.bak` + empty `adminNavToggle-diagnostic.ts`
+- [x] Delete `adminNavToggle-diag.ts.bak` + empty `adminNavToggle-diagnostic.ts` (F10)
 - [ ] Row/column memoisation in `scanGrid` + `gridTables` sort fix (F3, F4)
 - [ ] `core/style.ts`: one sheet, `currentColor` primitives (F8, F13)
 - [ ] `core/{dom,text,menu,icons}` helpers and delete the duplicates (F9)
@@ -582,7 +582,7 @@ while timings depend on machine load (report medians of ≥ 10 runs).
 - [ ] Split `content.ts` into `features/*` (F11)
 - [ ] Edit-page + resolver signatures (F6); pager scoping (F7)
 - [ ] Background handler map + dynamic imports (F12)
-- [ ] Debounce category-tree prefs (F15); drop the CSS/JS double offset (F14)
+- [x] Debounce category-tree prefs (F15); drop the CSS/JS double offset (F14)
 - [ ] `npm run bench` + CI budgets (F16)
 
 ---
@@ -603,25 +603,24 @@ while timings depend on machine load (report medians of ≥ 10 runs).
 
 ## Appendix A — defect register (2026-10-21)
 
-Verified by reading the code paths named below. None of these were fixed in this
-pass except where noted; severities are about user-visible consequence.
+Verified by reading the code paths named below. Severities are about user-visible consequence.
 
-| ID | Severity | Defect | Evidence | Fix |
-|---|---|---|---|---|
-| D1 | High (latent) | Error **priority is exact-case only**: `priority: z.string().default('Low')` accepts anything, while the icon/colour/rank maps key on `High`/`Medium`/`Low`. A Notion value like `high`, `HIGH` or `P1` silently renders as *low* and can never be upgraded by a later high indicator (`PRIORITY_RANK[...] ?? 0`). | `schemas.ts:35`, `content.ts:88–98`, `content.ts:858–870` | Normalise once (`z.string().transform(p => canonical(p))`) or `z.enum(['High','Medium','Low'])`; rank from the canonical value only. |
-| D2 | Medium | Error indicators are **never cleared and pollute Magento's markup**: `addIndicator` sets `label.style.display = 'inline-flex'` permanently, and nothing removes `.mhx-error-indicator` / `mhx-error-label--*` when the error set changes. | `content.ts:866–907` (only creation + replace-by-priority) | Clear the previous set at the start of `applyErrorMarkup`; use a class (`mhx-error-label` host class) instead of inline styles on Magento's label. |
-| D3 | Medium | Receiving error markup **expands every collapsed section on the page** (`expandCollapsedSections()` clicks all `.admin__collapsible-block-wrapper._hide`), not just the ones with errors — a large layout jump and scroll position loss on big product pages. | `content.ts:846–855`, called from `applyErrorMarkup` | Expand only ancestors of the matched fields (`field.closest('._hide')` chain), or offer an explicit "show all" control. |
-| D4 | Medium | `resolverMap` **grows forever and is rewritten whole** on every product page. Three independent read-modify-write paths can lose each other's entries (last writer wins). | `content.ts:728–751`, `background.ts:255–262`, `lookup.ts:289` | One writer (background) + a small `RESOLVE_CACHE_PUT` message; write only when the entry changed; prune by `timestamp`/max entries. |
-| D5 | Medium | Bulk-actions strip can be inserted **after the grid table** on themes where the header row's parent also hosts the table/wrap; `stripHost` appends when there is no next sibling. | `massactionButtons.ts` `stripHost()` | After choosing the position, check the next sibling chain for `table.data-grid` / `.admin__data-grid-wrap` and insert before it instead. |
-| D6 | Medium | Copy-SKU toolbar buttons can land in **another grid's toolbar**: when the owning grid has no search wrap, the fallback is `document.querySelector('.data-grid-search-control-wrap…')`, which may be a different grid's. | `content.ts:431–437` | Scope strictly to the grid's own `outer` (header/`data-role="grid"`); if absent, skip rather than borrow another grid's toolbar. |
-| D7 | Medium | With the sidebar collapsed, if Magento replaces `.page-wrapper` in-page, the **new wrapper keeps its rail margin** while the rail stays hidden — the grey band returns (the retry logic only re-hides the rail). | `adminNavToggle.ts` `setHidden()` (restores only the saved nodes) | Keep the collapsed offsets derived: on each scan, re-measure and zero any element that is still indented while `mhx-nav-hidden` is set. |
-| D8 | Medium | The custom picker **hides the native `<select>` with `display:none`**, so Magento validation that focuses/scrolls the invalid field now targets a hidden element (no focus ring, no scroll-into-view). | `enhanceSelect.ts` style block (`.mhx-nh-native`) | Use `position:absolute;opacity:0;pointer-events:none` (keeps the control focusable) and forward focus to the trigger. |
-| D9 | Low | Massaction buttons **never appear** on a store whose ACL hides `Delete` *and* `Update attributes`: the scope check requires one of those two top-level labels. | `massactionButtons.ts` signature test | Accept any menu labelled "Actions" with ≥2 leaf actions; use the two labels only as a tie-breaker. |
-| D10 | Low | Category-tree view prefs are written to `localStorage` **on every keystroke** in the filter (JSON stringify + sync write). | `categoryTree.ts:846` (+3 other `writePrefs` calls) | Debounce ~250 ms or write on blur. |
-| D11 | Low | `scan()` paints page chrome **before** the stored theme resolves (`scan()` then `watchMagentoPageTheme()`), so a dark-admin user can see light-palette chrome for a frame. | `content.ts` `main()` | Read the theme first (await), then scan. |
-| D12 | Low | `ERROR_MARKUP` always answers `{success:true}`, even when no field matched any error — failures are invisible to the sender. | `content.ts` message branch → `applyErrorMarkup` | Return `matched`/`unmatched` counts and log unmatched error types once. |
+| ID | Status | Severity | Defect | Evidence | Fix |
+|---|---|---|---|---|---|
+| D1 | **Fixed** | High (latent) | Error **priority is exact-case only**: `priority: z.string().default('Low')` accepts anything, while the icon/colour/rank maps key on `High`/`Medium`/`Low`. A Notion value like `high`, `HIGH` or `P1` silently renders as *low* and can never be upgraded by a later high indicator (`PRIORITY_RANK[...] ?? 0`). | `schemas.ts:35`, `content.ts:88–98`, `content.ts:858–870` | Normalise once (`z.string().transform(p => canonical(p))`) or `z.enum(['High','Medium','Low'])`; rank from the canonical value only. *(Fixed 2026-10-21)* |
+| D2 | **Fixed** | Medium | Error indicators are **never cleared and pollute Magento's markup**: `addIndicator` sets `label.style.display = 'inline-flex'` permanently, and nothing removes `.mhx-error-indicator` / `mhx-error-label--*` when the error set changes. | `content.ts:866–907` (only creation + replace-by-priority) | Clear the previous set at the start of `applyErrorMarkup`; use a class (`mhx-error-label` host class) instead of inline styles on Magento's label. *(Fixed 2026-10-21)* |
+| D3 | **Fixed** | Medium | Receiving error markup **expands every collapsed section on the page** (`expandCollapsedSections()` clicks all `.admin__collapsible-block-wrapper._hide`), not just the ones with errors — a large layout jump and scroll position loss on big product pages. | `content.ts:846–855`, called from `applyErrorMarkup` | Expand only ancestors of the matched fields (`field.closest('._hide')` chain), or offer an explicit "show all" control. *(Fixed 2026-10-21)* |
+| D4 | **Fixed** | Medium | `resolverMap` **grows forever and is rewritten whole** on every product page. Three independent read-modify-write paths can lose each other's entries (last writer wins). | `content.ts:728–751`, `background.ts:255–262`, `lookup.ts:289` | One writer (background) + a small `RESOLVE_CACHE_PUT` message; write only when the entry changed; prune by `timestamp`/max entries. *(Fixed 2026-10-21)* |
+| D5 | **Fixed** | Medium | Bulk-actions strip can be inserted **after the grid table** on themes where the header row's parent also hosts the table/wrap; `stripHost` appends when there is no next sibling. | `massactionButtons.ts` `stripHost()` | After choosing the position, check the next sibling chain for `table.data-grid` / `.admin__data-grid-wrap` and insert before it instead. *(Fixed 2026-10-21)* |
+| D6 | **Fixed** | Medium | Copy-SKU toolbar buttons can land in **another grid's toolbar**: when the owning grid has no search wrap, the fallback is `document.querySelector('.data-grid-search-control-wrap…')`, which may be a different grid's. | `content.ts:431–437` | Scope strictly to the grid's own `outer` (header/`data-role="grid"`); if absent, skip rather than borrow another grid's toolbar. *(Fixed 2026-10-21)* |
+| D7 | Open | Medium | With the sidebar collapsed, if Magento replaces `.page-wrapper` in-page, the **new wrapper keeps its rail margin** while the rail stays hidden — the grey band returns (the retry logic only re-hides the rail). | `adminNavToggle.ts` `setHidden()` (restores only the saved nodes) | Keep the collapsed offsets derived: on each scan, re-measure and zero any element that is still indented while `mhx-nav-hidden` is set. |
+| D8 | **Fixed** | Medium | The custom picker **hides the native `<select>` with `display:none`**, so Magento validation that focuses/scrolls the invalid field now targets a hidden element (no focus ring, no scroll-into-view). | `enhanceSelect.ts` style block (`.mhx-nh-native`) | Use `position:absolute;opacity:0;pointer-events:none` (keeps the control focusable) and forward focus to the trigger. *(Fixed 2026-10-21)* |
+| D9 | Open | Low | Massaction buttons **never appear** on a store whose ACL hides `Delete` *and* `Update attributes`: the scope check requires one of those two top-level labels. | `massactionButtons.ts` signature test | Accept any menu labelled "Actions" with ≥2 leaf actions; use the two labels only as a tie-breaker. |
+| D10 | **Fixed** | Low | Category-tree view prefs are written to `localStorage` **on every keystroke** in the filter (JSON stringify + sync write). | `categoryTree.ts:846` (+3 other `writePrefs` calls) | Debounce ~250 ms or write on blur. *(Fixed 2026-10-21 via F15)* |
+| D11 | Open | Low | `scan()` paints page chrome **before** the stored theme resolves (`scan()` then `watchMagentoPageTheme()`), so a dark-admin user can see light-palette chrome for a frame. | `content.ts` `main()` | Read the theme first (await), then scan. |
+| D12 | **Fixed** | Low | `ERROR_MARKUP` always answers `{success:true}`, even when no field matched any error — failures are invisible to the sender. | `content.ts` message branch → `applyErrorMarkup` | Return `matched`/`unmatched` counts and log unmatched error types once. *(Fixed 2026-10-21)* |
 
-**Totals:** 1 High (latent) · 7 Medium · 4 Low.
+**Totals:** 1 High (fixed) · 6 of 7 Medium fixed (1 open: D7) · 2 of 4 Low fixed (2 open: D9, D11).
 
 ### Checked and found clean (negative results)
 

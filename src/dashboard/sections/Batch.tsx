@@ -540,6 +540,116 @@ export function Batch() {
     });
   }
 
+  async function runAutoPipeline() {
+    if (!window.confirm('Run the full pipeline automatically (save images, tidy, verify, coverage, status) and prompt before the Notion push?')) {
+      return;
+    }
+    setGateBusy(true);
+    setError('');
+    setGateTitle('Auto pipeline');
+    setGateLines([]);
+    setGateProgress('');
+    const lines: string[] = [];
+    const push = (l: string) => lines.push(l);
+    try {
+      // 1. Save images
+      setGateProgress('Saving images…');
+      const saveResult = await saveBatchEvidence({
+        onProgress: (p) => setGateProgress(`Saving ${p.sku} (${p.filesDone}/${p.filesTotal})`),
+      });
+      push(`Save images: ${saveResult.skus} SKU(s), ${saveResult.files} file(s), ${saveResult.failed} failed, ${saveResult.aliases} alias(es).`);
+      if (saveResult.errors.length > 0) push(`  errors: ${saveResult.errors.slice(0, 5).join(' | ')}`);
+
+      // 2. Reorder
+      setGateProgress('Reordering…');
+      const reorderResult = await reorderMirror({
+        apply: true,
+        skus: tidySkus(),
+        onProgress: (p) => setGateProgress(`Reorder ${p.sku} (${p.skuIndex}/${p.skuTotal})`),
+      });
+      push(`Reorder: ${reorderResult.skus} SKU(s), re-sequenced ${reorderResult.reordered}, already ordered ${reorderResult.alreadyOrdered}, skipped ${reorderResult.skipped}, errors ${reorderResult.errors.length}.`);
+
+      // 3. Model move (includes dedupe)
+      setGateProgress('Scoring + moving model shots…');
+      const modelResult = await moveModelShots({
+        apply: true,
+        skus: tidySkus(),
+        onProgress: (p) => setGateProgress(`Model ${p.sku} (${p.skuIndex}/${p.skuTotal}) - ${p.detail}`),
+      });
+      push(`Model move: ${modelResult.skus} SKU(s), moved ${modelResult.moves}, scored ${modelResult.scored ?? 0}, model hits ${modelResult.modelHits ?? 0}, errors ${modelResult.errors.length}.`);
+      if (typeof modelResult.scored === 'number') {
+        push(`  model labelled ${modelResult.modelHits ?? 0}/${modelResult.scored} image(s) as human.`);
+      }
+
+      // 4. Manifest verify
+      setGateProgress('Verifying manifest…');
+      const state = await requestWritePermission();
+      if (state === 'granted') {
+        const root = await evidenceRoot();
+        if (root) {
+          const drift = await verifyManifests({
+            root,
+            skus: tidySkus(),
+            onProgress: (sku, i, t) => setGateProgress(`Verify ${sku} (${i}/${t})`),
+          });
+          const bad = drift.filter((r) => r.verdict !== 'ok');
+          push(`Manifest: ${drift.length} SKU(s), ${bad.length} with drift.`);
+          for (const r of bad) push(`  ${r.sku} (${r.verdict}): missing ${r.missing.length}, extra ${r.extra.length}, mismatch ${r.mismatch.length}`);
+        }
+      }
+
+      // 5. Coverage
+      setGateProgress('Coverage check…');
+      const cov = await checkCoverage(tidySkus());
+      push(`Coverage: ${cov.results.length} SKU(s), ${cov.withGaps} with gaps.`);
+      for (const r of cov.results) {
+        if (r.gaps.length === 0) continue;
+        push(`  ${r.sku}: ${r.gaps.map((g) => g.check).join(', ')}`);
+      }
+
+      // 6. Status report
+      setGateProgress('Status report…');
+      const statuses = await buildStatuses(tidySkus());
+      const complete = statuses.filter((s) => s.complete).length;
+      push(`Status: ${statuses.length} SKU(s), ${complete} complete.`);
+
+      // 7. Notion push (gated)
+      const okItems = (job?.items ?? []).filter((item) => item.status === 'ok');
+      if (okItems.length === 0) {
+        push('Notion push skipped: no completed batch items.');
+        setGateLines([...lines]);
+        return;
+      }
+      const goPush = window.confirm(`Push ${okItems.length} SKU(s) to Notion (Listing Errors + SKU Library)?`);
+      if (!goPush) {
+        push('Notion push cancelled by user.');
+        setGateLines([...lines]);
+        return;
+      }
+      setGateProgress('Pushing to Notion…');
+      const response = await browser.runtime.sendMessage({
+        type: 'BATCH_PUSH',
+        confirm: true,
+        listingErrors: true,
+        library: true,
+      } as unknown);
+      const res = response as BatchPushResponse | undefined;
+      if (res && res.ok) {
+        push(`Notion push: ${res.payloadCount ?? 0} payload(s) written.`);
+        if (res.warnings && res.warnings.length > 0) push(`  warnings: ${res.warnings.slice(0, 5).join(' | ')}`);
+      } else {
+        push(`Notion push failed: ${res?.error ?? 'unknown error'}`);
+      }
+    } catch (err) {
+      setError((err as Error).message ?? 'Auto pipeline failed');
+      push(`FAILED: ${(err as Error).message}`);
+    } finally {
+      setGateBusy(false);
+      setGateProgress('');
+      setGateLines([...lines]);
+    }
+  }
+
   async function saveEvidence() {
     setSavingEvidence(true);
     setError('');
@@ -1246,6 +1356,14 @@ export function Batch() {
               onClick={() => runAvailability()}
             >
               Check availability
+            </button>
+            <button
+              type="button"
+              class="db-btn db-btn--primary"
+              disabled={gateBusy}
+              onClick={() => void runAutoPipeline()}
+            >
+              {gateBusy ? 'Running…' : 'Auto pipeline'}
             </button>
           </div>
           {gateProgress ? <p class="db-note">{gateProgress}</p> : null}

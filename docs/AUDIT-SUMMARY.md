@@ -35,19 +35,22 @@ memoisation, one combined trigger query, and a dirty-subtree scheduler.
 ## 2. Defect register — headline items
 
 12 verified entries in [Appendix A](PERFORMANCE-CODE-AUDIT.md#appendix-a--defect-register-2026-10-21).
-Totals: **1 High (latent) · 7 Medium · 4 Low**.
+Status (2026-10-21): **9 fixed** (D1–D6, D8, D10, D12), **3 remaining** (D7, D9, D11).
 
-| # | Sev | In one line |
-|---|---|---|
-| D1 | High (latent) | Error `priority` is normalised when writing, but read raw from Notion — `HIGH`/`P1` renders as *low* and can never upgrade. |
-| D2 | Medium | Error indicators are never cleared, and `addIndicator` permanently rewrites Magento's label inline styles. |
-| D3 | Medium | Receiving error markup expands **every** collapsed section on the product page. |
-| D4 | Medium | `resolverMap` grows forever and has three racing read-modify-write paths. |
-| D5 | Medium | Bulk-actions strip can be inserted after the grid table on some header shapes. |
-| D6 | Medium | Copy-SKU buttons can land in another grid's toolbar (document-wide search-wrap fallback). |
-| D7 | Medium | Collapsed sidebar: an in-page replacement of `.page-wrapper` restores the rail margin while the rail stays hidden. |
-| D8 | Medium | The picker hides the native `<select>` with `display:none`, so validation focus targets a hidden node. |
-| D9–D12 | Low | ACL-dependent massaction no-op · prefs written per keystroke · light-palette flash before theme resolves · `ERROR_MARKUP` always reports success. |
+| # | Status | Sev | In one line |
+|---|---|---|---|
+| D1 | **Fixed** | High (latent) | Error `priority` is normalised when writing, but read raw from Notion — `HIGH`/`P1` renders as *low* and can never upgrade. |
+| D2 | **Fixed** | Medium | Error indicators are never cleared, and `addIndicator` permanently rewrites Magento's label inline styles. |
+| D3 | **Fixed** | Medium | Receiving error markup expands **every** collapsed section on the product page. |
+| D4 | **Fixed** | Medium | `resolverMap` grows forever and has three racing read-modify-write paths. |
+| D5 | **Fixed** | Medium | Bulk-actions strip can be inserted after the grid table on some header shapes. |
+| D6 | **Fixed** | Medium | Copy-SKU buttons can land in another grid's toolbar (document-wide search-wrap fallback). |
+| D7 | Open | Medium | Collapsed sidebar: an in-page replacement of `.page-wrapper` restores the rail margin while the rail stays hidden. |
+| D8 | **Fixed** | Medium | The picker hides the native `<select>` with `display:none`, so validation focus targets a hidden node. |
+| D9 | Open | Low | ACL-dependent massaction no-op. |
+| D10 | **Fixed** | Low | Prefs written per keystroke (debounced via F15). |
+| D11 | Open | Low | Light-palette flash before theme resolves. |
+| D12 | **Fixed** | Low | `ERROR_MARKUP` always reports success (now reports matched/unmatched counts). |
 
 ### Checked and disproved
 
@@ -100,9 +103,12 @@ a growing `!important` count.
 - No toolkit code exists yet — the migration estimates are targets derived from
   the inventory, not measurements of a build.
 
-## 6. Suggested next step
+## 6. Progress & next steps
 
-Fix D1–D4 first (priority normalisation, indicator cleanup, targeted section
-expansion, single-writer resolver cache): they are small, local, and each one
-removes user-visible wrongness. The toolkit work follows best after that, since
-three of those fixes touch the same injected-UI surface the primitives replace.
+- **Completed fixes (2026-10-21):**
+  - **D1–D4**: Priority normalisation, indicator cleanup, targeted ancestor section expansion, and single-writer resolver cache.
+  - **D5, D6, D8, D12**: Strip positioning before grid table, strict outer grid toolbar scoping for copy buttons, focusable native `<select>` for validation with trigger focus forwarding, real matched/unmatched count response for `ERROR_MARKUP`.
+  - **F10, F14, F15 / D10**: Dead diagnostic code removal, removal of redundant CSS blanket margin/padding zeroing on nav toggle, debounced search prefs writing in category tree.
+- **Next steps**:
+  - Address remaining defect items (D7 sidebar margin on dynamic replace, D9 ACL massaction fallback, D11 initial theme resolution flash).
+  - Performance audit phases: F3/F4 grid row/column memoisation and table sorting optimisation.

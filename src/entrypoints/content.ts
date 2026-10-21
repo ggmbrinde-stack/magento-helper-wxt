@@ -59,6 +59,11 @@ import type {
   SearchMagentoResponse,
 } from '../lib/messages';
 
+// Colour tokens the operator can override from Settings; applied on every Admin
+// page by `watchToolkitColors()` below. The content script is the only writer on
+// admin pages; docs/UI-TOOLKIT.md §2 documents the token contract.
+import { applyToolkitColors } from '../ui/tokens';
+
 const BTN_ATTR = 'data-mhx-sku-copy';
 const OPEN_ATTR = 'data-mhx-open';
 // Both of our injected controls: stripped from any text read out of a cell, so
