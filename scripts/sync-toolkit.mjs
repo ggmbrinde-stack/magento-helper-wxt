@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(root, 'src', 'ui', 'toolkit.css');
 const PUBLIC = join(root, 'public', 'ui', 'toolkit.css');
+const SRC_PUBLIC = join(root, 'src', 'public', 'ui', 'toolkit.css');
 const TS = join(root, 'src', 'ui', 'toolkitCss.ts');
 
 const check = process.argv.includes('--check');
@@ -40,6 +41,7 @@ export const TOOLKIT_CSS = \`${literal}\`;
 
 const targets = [
   [PUBLIC, css],
+  [SRC_PUBLIC, css],
   [TS, ts],
 ];
 

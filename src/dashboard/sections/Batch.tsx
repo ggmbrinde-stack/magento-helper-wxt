@@ -1,4 +1,4 @@
-﻿import { h, Fragment } from 'preact';
+import { h, Fragment } from 'preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
 import { parseSkuInput, type BatchJob } from '../../lib/batch';
@@ -116,6 +116,7 @@ export function Batch() {
   const [tidyResult, setTidyResult] = useState<TidyResult | null>(null);
   const [gateBusy, setGateBusy] = useState(false);
   const [gateProgress, setGateProgress] = useState('');
+  const [gatePct, setGatePct] = useState(0);
   const [gateTitle, setGateTitle] = useState('');
   const [gateLines, setGateLines] = useState<string[]>([]);
 
@@ -541,19 +542,78 @@ export function Batch() {
   }
 
   async function runAutoPipeline() {
-    if (!window.confirm('Run the full pipeline automatically (save images, tidy, verify, coverage, status) and prompt before the Notion push?')) {
-      return;
-    }
     setGateBusy(true);
     setError('');
     setGateTitle('Auto pipeline');
     setGateLines([]);
-    setGateProgress('');
+    setGateProgress('Starting…');
+    setGatePct(0);
     const lines: string[] = [];
     const push = (l: string) => lines.push(l);
+
+    let currentJob = job;
+    let okItems = (currentJob?.items ?? []).filter((item) => item.status === 'ok');
+
+    // If no completed batch yet, run the batch first.
+    if (okItems.length === 0) {
+      setGateProgress('Starting batch…');
+      if (modelScoring) {
+        const status = (await browser.runtime.sendMessage({ type: 'MODEL_BRIDGE_STATUS' })) as ModelBridgeStatusResponse;
+        if (!status?.health?.ok) {
+          setError(status?.health?.error ?? 'Model bridge is offline.');
+          setGateBusy(false);
+          setGateProgress('');
+          return;
+        }
+      }
+      const res = (await browser.runtime.sendMessage({
+        type: 'BATCH_START',
+        input,
+        options: {
+          langs,
+          hashImages,
+          background,
+          timeoutMs: Math.max(30, timeoutSec) * 1000,
+          maxImages: Math.max(100, maxImages),
+          modelScoring,
+          ...(modelScoring && bridge.modelID ? { model: { providerID: bridge.providerID, modelID: bridge.modelID } } : {}),
+        },
+      })) as BatchStartResponse;
+      if (!res?.ok || !res.job) {
+        setError(res?.error ?? 'Batch failed to start.');
+        setGateBusy(false);
+        setGateProgress('');
+        return;
+      }
+      setJob(res.job);
+      currentJob = res.job;
+      while (currentJob && currentJob.status !== 'done' && currentJob.status !== 'cancelled') {
+        await new Promise((r) => setTimeout(r, 2000));
+        const st = (await browser.runtime.sendMessage({ type: 'BATCH_STATE' })) as BatchStateResponse;
+        if (st?.job) { currentJob = st.job; setJob(st.job); }
+        setGateProgress(`Batch ${currentJob?.status ?? 'running'}: ${currentJob?.totals?.ok ?? 0}/${currentJob?.items?.length ?? 0}`);
+        setGatePct(10);
+      }
+      okItems = (currentJob?.items ?? []).filter((item) => item.status === 'ok');
+      if (okItems.length === 0) {
+        setError('Batch produced no completed SKUs.');
+        setGateBusy(false);
+        setGateProgress('');
+        return;
+      }
+      push(`Batch done: ${okItems.length} SKU(s) completed.`);
+    }
+
+    const autoSkus = okItems.map((item) => item.sku);
+    if (!window.confirm(`Run the post-batch pipeline on ${okItems.length} completed SKU(s)? (Notion push will ask separately.)`)) {
+      setGateBusy(false);
+      setGateProgress('');
+      return;
+    }
     try {
       // 1. Save images
       setGateProgress('Saving images…');
+      setGatePct(5);
       const saveResult = await saveBatchEvidence({
         onProgress: (p) => setGateProgress(`Saving ${p.sku} (${p.filesDone}/${p.filesTotal})`),
       });
@@ -562,34 +622,38 @@ export function Batch() {
 
       // 2. Reorder
       setGateProgress('Reordering…');
+      setGatePct(20);
       const reorderResult = await reorderMirror({
         apply: true,
-        skus: tidySkus(),
+        skus: autoSkus,
         onProgress: (p) => setGateProgress(`Reorder ${p.sku} (${p.skuIndex}/${p.skuTotal})`),
       });
       push(`Reorder: ${reorderResult.skus} SKU(s), re-sequenced ${reorderResult.reordered}, already ordered ${reorderResult.alreadyOrdered}, skipped ${reorderResult.skipped}, errors ${reorderResult.errors.length}.`);
 
       // 3. Model move (includes dedupe)
       setGateProgress('Scoring + moving model shots…');
+      setGatePct(35);
       const modelResult = await moveModelShots({
         apply: true,
-        skus: tidySkus(),
+        skus: autoSkus,
         onProgress: (p) => setGateProgress(`Model ${p.sku} (${p.skuIndex}/${p.skuTotal}) - ${p.detail}`),
       });
       push(`Model move: ${modelResult.skus} SKU(s), moved ${modelResult.moves}, scored ${modelResult.scored ?? 0}, model hits ${modelResult.modelHits ?? 0}, errors ${modelResult.errors.length}.`);
       if (typeof modelResult.scored === 'number') {
         push(`  model labelled ${modelResult.modelHits ?? 0}/${modelResult.scored} image(s) as human.`);
       }
+      for (const e of modelResult.errors.slice(0, 8)) push(`  ! ${e}`);
 
       // 4. Manifest verify
       setGateProgress('Verifying manifest…');
+      setGatePct(55);
       const state = await requestWritePermission();
       if (state === 'granted') {
         const root = await evidenceRoot();
         if (root) {
           const drift = await verifyManifests({
             root,
-            skus: tidySkus(),
+            skus: autoSkus,
             onProgress: (sku, i, t) => setGateProgress(`Verify ${sku} (${i}/${t})`),
           });
           const bad = drift.filter((r) => r.verdict !== 'ok');
@@ -600,7 +664,8 @@ export function Batch() {
 
       // 5. Coverage
       setGateProgress('Coverage check…');
-      const cov = await checkCoverage(tidySkus());
+      setGatePct(70);
+      const cov = await checkCoverage(autoSkus);
       push(`Coverage: ${cov.results.length} SKU(s), ${cov.withGaps} with gaps.`);
       for (const r of cov.results) {
         if (r.gaps.length === 0) continue;
@@ -609,7 +674,8 @@ export function Batch() {
 
       // 6. Status report
       setGateProgress('Status report…');
-      const statuses = await buildStatuses(tidySkus());
+      setGatePct(80);
+      const statuses = await buildStatuses(autoSkus);
       const complete = statuses.filter((s) => s.complete).length;
       push(`Status: ${statuses.length} SKU(s), ${complete} complete.`);
 
@@ -636,7 +702,18 @@ export function Batch() {
       const res = response as BatchPushResponse | undefined;
       if (res && res.ok) {
         push(`Notion push: ${res.payloadCount ?? 0} payload(s) written.`);
+        const lr = res.libraryReport;
+        if (lr) {
+          push(`  Library: created ${lr.created.length}, updated ${lr.updated.length}, unchanged ${lr.unchanged.length}, failed ${lr.failed.length}.`);
+          if (lr.failed.length > 0) for (const f of lr.failed.slice(0, 5)) push(`    ! ${f}`);
+        } else {
+          push('  Library: no report (no library cells stored for these SKUs).');
+        }
         if (res.warnings && res.warnings.length > 0) push(`  warnings: ${res.warnings.slice(0, 5).join(' | ')}`);
+        // refresh status after push
+        const after = await buildStatuses(autoSkus);
+        const done = after.filter((s) => s.complete).length;
+        push(`Status after push: ${after.length} SKU(s), ${done} complete.`);
       } else {
         push(`Notion push failed: ${res?.error ?? 'unknown error'}`);
       }
@@ -646,6 +723,7 @@ export function Batch() {
     } finally {
       setGateBusy(false);
       setGateProgress('');
+      setGatePct(100);
       setGateLines([...lines]);
     }
   }
@@ -925,6 +1003,15 @@ export function Batch() {
             onClick={() => void start()}
           >
             Start batch
+          </button>
+          <button
+            type="button"
+            class="db-btn db-btn--primary"
+            disabled={busy || gateBusy || running}
+            onClick={() => void runAutoPipeline()}
+            title="Run the full post-batch pipeline (save images, tidy, verify, coverage, status) and prompt before the Notion push"
+          >
+            {gateBusy ? 'Running…' : 'Auto pipeline'}
           </button>
           <button
             type="button"
@@ -1366,6 +1453,14 @@ export function Batch() {
               {gateBusy ? 'Running…' : 'Auto pipeline'}
             </button>
           </div>
+          {gateBusy ? (
+            <div class="db-progress" style="margin:8px 0">
+              <div
+                class="db-progress__bar"
+                style={`width:${gatePct}%;height:6px;background:#d81b60;border-radius:3px;transition:width .2s`}
+              />
+            </div>
+          ) : null}
           {gateProgress ? <p class="db-note">{gateProgress}</p> : null}
           {gateTitle && gateLines.length > 0 ? (
             <div class="db-note">
