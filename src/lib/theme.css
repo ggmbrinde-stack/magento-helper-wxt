@@ -1,0 +1,135 @@
+/* The theme control, shared by the side panel and the dashboard.
+   Colours come from the palette in lib/theme.ts, so this file needs no
+   theme-specific rules of its own. */
+
+.mhx-theme {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+}
+
+.mhx-theme-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mhx-ink-2);
+}
+
+.mhx-theme-opts {
+  display: flex;
+  width: fit-content;
+  border: 1px solid var(--mhx-border-2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mhx-theme-btn {
+  border: 0;
+  border-right: 1px solid var(--mhx-border-2);
+  border-radius: 0;
+  background: var(--mhx-surface);
+  color: var(--mhx-ink);
+  padding: 5px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mhx-theme-btn:last-child {
+  border-right: 0;
+}
+
+.mhx-theme-btn:hover {
+  background: var(--mhx-surface-2);
+}
+
+.mhx-theme-btn--active {
+  background: var(--mhx-accent);
+  color: var(--mhx-on-accent);
+  font-weight: 600;
+}
+
+.mhx-theme-btn--active:hover {
+  background: var(--mhx-accent-2);
+}
+
+.mhx-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.mhx-swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--mhx-border-2);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.mhx-swatch--active {
+  outline: 2px solid var(--mhx-ink);
+  outline-offset: 1px;
+}
+
+.mhx-swatch-custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--mhx-muted);
+  cursor: pointer;
+}
+
+/* The panel's generic `input` rule stretches controls to 100%; these must not. */
+.mhx-swatch-custom input[type='color'] {
+  width: 26px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--mhx-border-2);
+  border-radius: 5px;
+  background: none;
+  cursor: pointer;
+}
+
+/* Toolkit colours rows (lib/ToolkitColors.tsx): one row per customisable
+   token — name, live sample, colour picker, Auto reset. */
+.mhx-tk-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--mhx-ink-2);
+}
+
+.mhx-tk-name {
+  flex: 0 0 58px;
+  font-weight: 600;
+}
+
+.mhx-tk-preview {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--mhx-border-2);
+  border-radius: 5px;
+}
+
+.mhx-tk-row .mhx-theme-btn {
+  padding: 4px 10px;
+}
+
+.mhx-theme-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--mhx-ink-2);
+  cursor: pointer;
+}
+
+.mhx-theme-check input {
+  width: auto;
+  margin: 0;
+}

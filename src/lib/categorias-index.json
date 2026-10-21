@@ -1,0 +1,3101 @@
+{
+  "version": "2.0.0",
+  "source": {
+    "page": "📚 Categorias - Índice",
+    "url": "https://app.notion.com/p/3f8b6705-ae1f-81df-a86d-f175c1637642",
+    "from": "scripts/categorias-source.md",
+    "exported": "2026-10-20"
+  },
+  "nodes": [
+    {
+      "id": "1",
+      "name": "TÊXTIL PROMOCIONAL",
+      "parent": null
+    },
+    {
+      "id": "1.1",
+      "name": "T-SHIRTS",
+      "parent": "1"
+    },
+    {
+      "id": "1.1.1",
+      "name": "T-SHIRTS MANGA CURTA",
+      "parent": "1.1"
+    },
+    {
+      "id": "1.1.2",
+      "name": "T-SHIRTS MANGA COMPRIDA",
+      "parent": "1.1"
+    },
+    {
+      "id": "1.1.3",
+      "name": "TOPS E SINGLETES",
+      "parent": "1.1"
+    },
+    {
+      "id": "1.1.4",
+      "name": "LINHA NATURA",
+      "parent": "1.1"
+    },
+    {
+      "id": "1.2",
+      "name": "POLOS",
+      "parent": "1"
+    },
+    {
+      "id": "1.2.1",
+      "name": "POLOS MANGA CURTA",
+      "parent": "1.2"
+    },
+    {
+      "id": "1.2.2",
+      "name": "POLOS MANGA COMPRIDA",
+      "parent": "1.2"
+    },
+    {
+      "id": "1.2.3",
+      "name": "LINHA NATURA",
+      "parent": "1.2"
+    },
+    {
+      "id": "1.3",
+      "name": "SWEATSHIRTS",
+      "parent": "1"
+    },
+    {
+      "id": "1.3.1",
+      "name": "SWEATSHIRTS SIMPLES",
+      "parent": "1.3"
+    },
+    {
+      "id": "1.3.2",
+      "name": "SWEATSHIRTS CAPUZ",
+      "parent": "1.3"
+    },
+    {
+      "id": "1.3.3",
+      "name": "SWEATSHIRTS COM FECHO",
+      "parent": "1.3"
+    },
+    {
+      "id": "1.3.4",
+      "name": "SWEATSHIRTS POLARES",
+      "parent": "1.3"
+    },
+    {
+      "id": "1.3.5",
+      "name": "LINHA NATURA",
+      "parent": "1.3"
+    },
+    {
+      "id": "1.4",
+      "name": "CASACOS",
+      "parent": "1"
+    },
+    {
+      "id": "1.4.1",
+      "name": "CASACOS POLARES",
+      "parent": "1.4"
+    },
+    {
+      "id": "1.4.2",
+      "name": "CASACOS SOFTSHELL",
+      "parent": "1.4"
+    },
+    {
+      "id": "1.4.3",
+      "name": "PARKAS LEVES",
+      "parent": "1.4"
+    },
+    {
+      "id": "1.4.4",
+      "name": "PARKAS ACOLCHOADAS",
+      "parent": "1.4"
+    },
+    {
+      "id": "1.4.5",
+      "name": "CASACOS LEVE",
+      "parent": "1.4"
+    },
+    {
+      "id": "1.4.6",
+      "name": "CASACOS ACOLCHOADAS",
+      "parent": "1.4"
+    },
+    {
+      "id": "1.4.7",
+      "name": "LINHA NATURA",
+      "parent": "1.4"
+    },
+    {
+      "id": "1.5",
+      "name": "COLETES",
+      "parent": "1"
+    },
+    {
+      "id": "1.5.1",
+      "name": "COLETES POLARES",
+      "parent": "1.5"
+    },
+    {
+      "id": "1.5.2",
+      "name": "COLETES SOFTSHELL",
+      "parent": "1.5"
+    },
+    {
+      "id": "1.5.3",
+      "name": "COLETES LEVES",
+      "parent": "1.5"
+    },
+    {
+      "id": "1.5.4",
+      "name": "COLETES ACOLCHOADAS",
+      "parent": "1.5"
+    },
+    {
+      "id": "1.5.5",
+      "name": "LINHA NATURA",
+      "parent": "1.5"
+    },
+    {
+      "id": "1.6",
+      "name": "BONÉS E CHAPÉUS",
+      "parent": "1"
+    },
+    {
+      "id": "1.6.1",
+      "name": "BONÉS",
+      "parent": "1.6"
+    },
+    {
+      "id": "1.6.2",
+      "name": "CHAPÉUS",
+      "parent": "1.6"
+    },
+    {
+      "id": "1.6.3",
+      "name": "PANAMÁS",
+      "parent": "1.6"
+    },
+    {
+      "id": "1.6.4",
+      "name": "VISEIRAS / PALAS",
+      "parent": "1.6"
+    },
+    {
+      "id": "1.6.5",
+      "name": "LINHA NATURA",
+      "parent": "1.6"
+    },
+    {
+      "id": "1.7",
+      "name": "INTERIORES",
+      "parent": "1"
+    },
+    {
+      "id": "1.7.1",
+      "name": "INTERIORES",
+      "parent": "1.7"
+    },
+    {
+      "id": "1.7.2",
+      "name": "TÉRMICOS",
+      "parent": "1.7"
+    },
+    {
+      "id": "1.7.3",
+      "name": "PIJAMAS",
+      "parent": "1.7"
+    },
+    {
+      "id": "1.7.4",
+      "name": "LINHA NATURA",
+      "parent": "1.7"
+    },
+    {
+      "id": "2",
+      "name": "TÊXTIL DESPORTO",
+      "parent": null
+    },
+    {
+      "id": "2.1",
+      "name": "TÊXTIL 100% MADE 4 YOU",
+      "parent": "2"
+    },
+    {
+      "id": "2.1.1",
+      "name": "EQUIPAMENTOS",
+      "parent": "2.1"
+    },
+    {
+      "id": "2.1.2",
+      "name": "FATOS DE TREINO",
+      "parent": "2.1"
+    },
+    {
+      "id": "2.1.3",
+      "name": "T-SHIRTS E SINGLETES",
+      "parent": "2.1"
+    },
+    {
+      "id": "2.1.4",
+      "name": "POLOS",
+      "parent": "2.1"
+    },
+    {
+      "id": "2.1.5",
+      "name": "SWEATSHIRTS",
+      "parent": "2.1"
+    },
+    {
+      "id": "2.1.6",
+      "name": "CALÇAS E CALÇÕES",
+      "parent": "2.1"
+    },
+    {
+      "id": "2.1.7",
+      "name": "CACHECÓIS E GOLAS",
+      "parent": "2.1"
+    },
+    {
+      "id": "2.2",
+      "name": "T-SHIRTS",
+      "parent": "2"
+    },
+    {
+      "id": "2.2.1",
+      "name": "T-SHIRTS MANGA CURTA",
+      "parent": "2.2"
+    },
+    {
+      "id": "2.2.2",
+      "name": "T-SHIRTS MANGA COMPRIDA",
+      "parent": "2.2"
+    },
+    {
+      "id": "2.2.3",
+      "name": "TOPS E SINGLETES",
+      "parent": "2.2"
+    },
+    {
+      "id": "2.3",
+      "name": "POLOS",
+      "parent": "2"
+    },
+    {
+      "id": "2.3.1",
+      "name": "POLOS MANGA CURTA",
+      "parent": "2.3"
+    },
+    {
+      "id": "2.3.2",
+      "name": "POLOS MANGA COMPRIDA",
+      "parent": "2.3"
+    },
+    {
+      "id": "2.4",
+      "name": "SWEATSHIRTS",
+      "parent": "2"
+    },
+    {
+      "id": "2.4.1",
+      "name": "SWEATSHIRTS SIMPLES",
+      "parent": "2.4"
+    },
+    {
+      "id": "2.4.2",
+      "name": "SWEATSHIRTS CAPUZ",
+      "parent": "2.4"
+    },
+    {
+      "id": "2.4.3",
+      "name": "SWEATSHIRTS COM FECHO",
+      "parent": "2.4"
+    },
+    {
+      "id": "2.5",
+      "name": "CASACOS",
+      "parent": "2"
+    },
+    {
+      "id": "2.5.1",
+      "name": "CASACOS SOFTSHELL",
+      "parent": "2.5"
+    },
+    {
+      "id": "2.5.2",
+      "name": "PARKAS LEVES",
+      "parent": "2.5"
+    },
+    {
+      "id": "2.5.3",
+      "name": "PARKAS ACOLCHOADAS",
+      "parent": "2.5"
+    },
+    {
+      "id": "2.5.4",
+      "name": "CASACOS LEVE",
+      "parent": "2.5"
+    },
+    {
+      "id": "2.5.5",
+      "name": "CASACOS ACOLCHOADAS",
+      "parent": "2.5"
+    },
+    {
+      "id": "2.6",
+      "name": "COLETES",
+      "parent": "2"
+    },
+    {
+      "id": "2.6.1",
+      "name": "COLETES SOFTSHELL",
+      "parent": "2.6"
+    },
+    {
+      "id": "2.6.2",
+      "name": "COLETES LEVES",
+      "parent": "2.6"
+    },
+    {
+      "id": "2.6.3",
+      "name": "COLETES ACOLCHOADAS",
+      "parent": "2.6"
+    },
+    {
+      "id": "2.7",
+      "name": "CALÇAS E CALÇÕES",
+      "parent": "2"
+    },
+    {
+      "id": "2.7.1",
+      "name": "CALÇAS",
+      "parent": "2.7"
+    },
+    {
+      "id": "2.7.2",
+      "name": "CALÇÕES",
+      "parent": "2.7"
+    },
+    {
+      "id": "2.7.3",
+      "name": "CALÇÕES DE BANHO",
+      "parent": "2.7"
+    },
+    {
+      "id": "2.7.4",
+      "name": "LEGGINS",
+      "parent": "2.7"
+    },
+    {
+      "id": "2.8",
+      "name": "FATOS DE TREINO",
+      "parent": "2"
+    },
+    {
+      "id": "2.8.1",
+      "name": "CALÇAS",
+      "parent": "2.8"
+    },
+    {
+      "id": "2.8.2",
+      "name": "CAMISOLAS E CASACOS",
+      "parent": "2.8"
+    },
+    {
+      "id": "2.8.3",
+      "name": "CONJUNTOS",
+      "parent": "2.8"
+    },
+    {
+      "id": "2.9",
+      "name": "BONÉS E GORROS",
+      "parent": "2"
+    },
+    {
+      "id": "2.9.1",
+      "name": "BONÉS",
+      "parent": "2.9"
+    },
+    {
+      "id": "2.9.2",
+      "name": "GORROS",
+      "parent": "2.9"
+    },
+    {
+      "id": "2.10",
+      "name": "ACESSÓRIOS DE DESPORTO",
+      "parent": "2"
+    },
+    {
+      "id": "2.10.1",
+      "name": "ACESSÓRIOS",
+      "parent": "2.10"
+    },
+    {
+      "id": "2.10.2",
+      "name": "TÉRMICOS",
+      "parent": "2.10"
+    },
+    {
+      "id": "2.10.3",
+      "name": "LUVAS E MEIAS",
+      "parent": "2.10"
+    },
+    {
+      "id": "2.10.4",
+      "name": "SAPATILHAS E CHINELOS",
+      "parent": "2.10"
+    },
+    {
+      "id": "2.10.5",
+      "name": "TOUCAS E GOLAS",
+      "parent": "2.10"
+    },
+    {
+      "id": "2.10.6",
+      "name": "TOALHAS DESPORTO",
+      "parent": "2.10"
+    },
+    {
+      "id": "3",
+      "name": "TÊXTIL LABORAL",
+      "parent": null
+    },
+    {
+      "id": "3.1",
+      "name": "ALTA VISIBILIDADE",
+      "parent": "3"
+    },
+    {
+      "id": "3.1.1",
+      "name": "T-SHIRTS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.2",
+      "name": "POLOS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.3",
+      "name": "SWEATSHIRTS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.4",
+      "name": "CASACOS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.5",
+      "name": "CAMISAS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.6",
+      "name": "BATAS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.7",
+      "name": "PARKAS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.8",
+      "name": "COLETES",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.9",
+      "name": "CALÇAS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.10",
+      "name": "CALÇÕES",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.11",
+      "name": "FATOS DE MACACO",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.12",
+      "name": "CONJUNTOS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.13",
+      "name": "ACESSÓRIOS",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.1.14",
+      "name": "LINHA NATURA",
+      "parent": "3.1"
+    },
+    {
+      "id": "3.2",
+      "name": "INDÚSTRIA",
+      "parent": "3"
+    },
+    {
+      "id": "3.2.1",
+      "name": "T-SHIRTS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.2",
+      "name": "POLOS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.3",
+      "name": "SWEATSHIRTS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.4",
+      "name": "CASACOS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.5",
+      "name": "CAMISAS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.6",
+      "name": "BATAS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.7",
+      "name": "PARKAS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.8",
+      "name": "COLETES",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.9",
+      "name": "CALÇAS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.10",
+      "name": "CALÇÕES",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.11",
+      "name": "FATOS DE MACACO",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.12",
+      "name": "CONJUNTOS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.13",
+      "name": "CALÇADO E MEIAS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.14",
+      "name": "ACESSÓRIOS",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.2.15",
+      "name": "LINHA NATURA",
+      "parent": "3.2"
+    },
+    {
+      "id": "3.3",
+      "name": "SAÚDE E ESTÉTICA",
+      "parent": "3"
+    },
+    {
+      "id": "3.3.1",
+      "name": "T-SHIRTS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.2",
+      "name": "POLOS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.3",
+      "name": "SWEATSHIRTS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.4",
+      "name": "CASACOS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.5",
+      "name": "TÚNICAS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.6",
+      "name": "BATAS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.7",
+      "name": "COLETES",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.8",
+      "name": "CALÇAS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.9",
+      "name": "CONJUNTOS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.10",
+      "name": "CALÇADO E MEIAS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.11",
+      "name": "ACESSÓRIOS",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.3.12",
+      "name": "LINHA NATURA",
+      "parent": "3.3"
+    },
+    {
+      "id": "3.4",
+      "name": "HORECA",
+      "parent": "3"
+    },
+    {
+      "id": "3.4.1",
+      "name": "T-SHIRTS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.2",
+      "name": "POLOS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.3",
+      "name": "SWEATSHIRTS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.4",
+      "name": "CASACOS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.5",
+      "name": "CAMISAS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.6",
+      "name": "JALECAS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.7",
+      "name": "AVENTAIS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.8",
+      "name": "COLETES",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.9",
+      "name": "CALÇAS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.10",
+      "name": "CALÇÕES",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.11",
+      "name": "ROUPÕES",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.12",
+      "name": "VESTIDOS E SAIAS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.13",
+      "name": "CONJUNTOS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.14",
+      "name": "CALÇADO E MEIAS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.15",
+      "name": "ACESSÓRIOS",
+      "parent": "3.4"
+    },
+    {
+      "id": "3.4.16",
+      "name": "LINHA NATURA",
+      "parent": "3.4"
+    },
+    {
+      "id": "4",
+      "name": "TECNOLOGIA",
+      "parent": null
+    },
+    {
+      "id": "4.1",
+      "name": "USB",
+      "parent": "4"
+    },
+    {
+      "id": "4.1.1",
+      "name": "USB PENDRIVE",
+      "parent": "4.1"
+    },
+    {
+      "id": "4.1.2",
+      "name": "USB CARTÃO",
+      "parent": "4.1"
+    },
+    {
+      "id": "4.1.3",
+      "name": "USB CANETA",
+      "parent": "4.1"
+    },
+    {
+      "id": "4.1.4",
+      "name": "USB MULTIFUNÇÕES",
+      "parent": "4.1"
+    },
+    {
+      "id": "4.1.5",
+      "name": "LINHA NATURA",
+      "parent": "4.1"
+    },
+    {
+      "id": "4.2",
+      "name": "POWERBANKS E CARREGADORES",
+      "parent": "4"
+    },
+    {
+      "id": "4.2.1",
+      "name": "POWERBANKS",
+      "parent": "4.2"
+    },
+    {
+      "id": "4.2.2",
+      "name": "POWERBANKS MULTIFUNÇÕES",
+      "parent": "4.2"
+    },
+    {
+      "id": "4.2.3",
+      "name": "CARREGADORES",
+      "parent": "4.2"
+    },
+    {
+      "id": "4.2.4",
+      "name": "CARREGADORES MULTIFUNÇÕES",
+      "parent": "4.2"
+    },
+    {
+      "id": "4.2.5",
+      "name": "CARREGADORES AUTOMÓVEL",
+      "parent": "4.2"
+    },
+    {
+      "id": "4.2.6",
+      "name": "CABOS E ADAPTADORES",
+      "parent": "4.2"
+    },
+    {
+      "id": "4.2.7",
+      "name": "LINHA NATURA",
+      "parent": "4.2"
+    },
+    {
+      "id": "4.3",
+      "name": "ACESSÓRIOS COMPUTADOR",
+      "parent": "4"
+    },
+    {
+      "id": "4.3.1",
+      "name": "ACESSÓRIOS",
+      "parent": "4.3"
+    },
+    {
+      "id": "4.3.2",
+      "name": "RATOS E TECLADOS",
+      "parent": "4.3"
+    },
+    {
+      "id": "4.3.3",
+      "name": "TAPETES DE RATO",
+      "parent": "4.3"
+    },
+    {
+      "id": "4.3.4",
+      "name": "LEITOR DE CARTÕES",
+      "parent": "4.3"
+    },
+    {
+      "id": "4.3.5",
+      "name": "BLOQUEADORES WEBCAM",
+      "parent": "4.3"
+    },
+    {
+      "id": "4.3.6",
+      "name": "CABOS E ADAPTADORES",
+      "parent": "4.3"
+    },
+    {
+      "id": "4.3.7",
+      "name": "LINHA NATURA",
+      "parent": "4.3"
+    },
+    {
+      "id": "4.4",
+      "name": "ACESSÓRIOS TELEMÓVEIS E TABLETS",
+      "parent": "4"
+    },
+    {
+      "id": "4.4.1",
+      "name": "SUPORTES TELEMÓVEL E TABLET",
+      "parent": "4.4"
+    },
+    {
+      "id": "4.4.2",
+      "name": "SUPORTES AUTOMÓVEL E BICICLETA",
+      "parent": "4.4"
+    },
+    {
+      "id": "4.4.3",
+      "name": "PORTA-CARTÕES E BOLSAS TELEMÓVEL",
+      "parent": "4.4"
+    },
+    {
+      "id": "4.4.4",
+      "name": "PRODUTOS LIMPEZA ECRÃ",
+      "parent": "4.4"
+    },
+    {
+      "id": "4.4.5",
+      "name": "PONTEIROS E LOCALIZADORES",
+      "parent": "4.4"
+    },
+    {
+      "id": "4.4.6",
+      "name": "LINHA NATURA",
+      "parent": "4.4"
+    },
+    {
+      "id": "4.5",
+      "name": "ACESSÓRIOS MÚSICA",
+      "parent": "4"
+    },
+    {
+      "id": "4.5.1",
+      "name": "AUSCULTADORES",
+      "parent": "4.5"
+    },
+    {
+      "id": "4.5.2",
+      "name": "AUSCULTADORES SEM FIOS",
+      "parent": "4.5"
+    },
+    {
+      "id": "4.5.3",
+      "name": "AURICULARES",
+      "parent": "4.5"
+    },
+    {
+      "id": "4.5.4",
+      "name": "AURICULARES SEM FIOS",
+      "parent": "4.5"
+    },
+    {
+      "id": "4.5.5",
+      "name": "COLUNAS DE SOM",
+      "parent": "4.5"
+    },
+    {
+      "id": "4.5.6",
+      "name": "COLUNAS MULTIFUNÇÕES",
+      "parent": "4.5"
+    },
+    {
+      "id": "4.5.7",
+      "name": "LINHA NATURA",
+      "parent": "4.5"
+    },
+    {
+      "id": "4.6",
+      "name": "ACESSÓRIOS FOTOGRAFIA E VÍDEO",
+      "parent": "4"
+    },
+    {
+      "id": "4.6.1",
+      "name": "CÂMARAS E DRONES",
+      "parent": "4.6"
+    },
+    {
+      "id": "4.6.2",
+      "name": "LENTES",
+      "parent": "4.6"
+    },
+    {
+      "id": "4.6.3",
+      "name": "SELFIE STICKS",
+      "parent": "4.6"
+    },
+    {
+      "id": "4.6.4",
+      "name": "TRIPÉS E PROJETORES DE LUZ",
+      "parent": "4.6"
+    },
+    {
+      "id": "4.6.5",
+      "name": "PROJETORES DE IMAGEM",
+      "parent": "4.6"
+    },
+    {
+      "id": "4.6.6",
+      "name": "ÓCULOS 3D E RV",
+      "parent": "4.6"
+    },
+    {
+      "id": "4.7",
+      "name": "ACESSÓRIOS ILUMINAÇÃO",
+      "parent": "4"
+    },
+    {
+      "id": "4.7.1",
+      "name": "PONTEIROS LASER",
+      "parent": "4.7"
+    },
+    {
+      "id": "4.7.2",
+      "name": "LUZ DECORAÇÃO",
+      "parent": "4.7"
+    },
+    {
+      "id": "4.7.3",
+      "name": "LUZ SECRETÁRIA",
+      "parent": "4.7"
+    },
+    {
+      "id": "4.7.4",
+      "name": "LUZ MULTIFUNÇÕES",
+      "parent": "4.7"
+    },
+    {
+      "id": "4.7.5",
+      "name": "LUZ ESTERILIZADORA",
+      "parent": "4.7"
+    },
+    {
+      "id": "4.7.6",
+      "name": "LINHA NATURA",
+      "parent": "4.7"
+    },
+    {
+      "id": "4.8",
+      "name": "RELÓGIOS E ESTAÇÕES DIGITAIS",
+      "parent": "4"
+    },
+    {
+      "id": "4.8.1",
+      "name": "RELÓGIOS DE MESA",
+      "parent": "4.8"
+    },
+    {
+      "id": "4.8.2",
+      "name": "RELÓGIOS DE PAREDE",
+      "parent": "4.8"
+    },
+    {
+      "id": "4.8.3",
+      "name": "RELÓGIOS DE PULSO",
+      "parent": "4.8"
+    },
+    {
+      "id": "4.8.4",
+      "name": "RELÓGIOS INTELIGENTES",
+      "parent": "4.8"
+    },
+    {
+      "id": "4.8.5",
+      "name": "RELÓGIOS MULTIFUNÇÕES",
+      "parent": "4.8"
+    },
+    {
+      "id": "4.8.6",
+      "name": "ESTAÇÕES METEOROLÓGICAS",
+      "parent": "4.8"
+    },
+    {
+      "id": "4.8.7",
+      "name": "LINHA NATURA",
+      "parent": "4.8"
+    },
+    {
+      "id": "5",
+      "name": "SACOS E MOCHILAS",
+      "parent": null
+    },
+    {
+      "id": "5.1",
+      "name": "SACOS",
+      "parent": "5"
+    },
+    {
+      "id": "5.1.1",
+      "name": "SACOS",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.1.2",
+      "name": "SACOS DOBRÁVEIS",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.1.3",
+      "name": "SACOS LAMINADOS",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.1.4",
+      "name": "SACOS PAPEL",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.1.5",
+      "name": "SACOS DE PRAIA",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.1.6",
+      "name": "SACOS DE VIAGEM",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.1.7",
+      "name": "SACOS DE DESPORTO",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.1.8",
+      "name": "LINHA NATURA",
+      "parent": "5.1"
+    },
+    {
+      "id": "5.2",
+      "name": "MOCHILAS",
+      "parent": "5"
+    },
+    {
+      "id": "5.2.1",
+      "name": "MOCHILAS",
+      "parent": "5.2"
+    },
+    {
+      "id": "5.2.2",
+      "name": "MOCHILAS TIPO SACO",
+      "parent": "5.2"
+    },
+    {
+      "id": "5.2.3",
+      "name": "MOCHILAS DOBRÁVEIS",
+      "parent": "5.2"
+    },
+    {
+      "id": "5.2.4",
+      "name": "MOCHILAS COMPUTADOR",
+      "parent": "5.2"
+    },
+    {
+      "id": "5.2.5",
+      "name": "MOCHILAS REFLETORAS",
+      "parent": "5.2"
+    },
+    {
+      "id": "5.2.6",
+      "name": "MOCHILAS CRIANÇA",
+      "parent": "5.2"
+    },
+    {
+      "id": "5.2.7",
+      "name": "LINHA NATURA",
+      "parent": "5.2"
+    },
+    {
+      "id": "5.3",
+      "name": "PASTAS",
+      "parent": "5"
+    },
+    {
+      "id": "5.3.1",
+      "name": "PASTAS CONGRESSO",
+      "parent": "5.3"
+    },
+    {
+      "id": "5.3.2",
+      "name": "PASTAS COMPUTADOR",
+      "parent": "5.3"
+    },
+    {
+      "id": "5.3.3",
+      "name": "LINHA NATURA",
+      "parent": "5.3"
+    },
+    {
+      "id": "5.4",
+      "name": "BOLSAS",
+      "parent": "5"
+    },
+    {
+      "id": "5.4.1",
+      "name": "BOLSAS COSMÉTICA",
+      "parent": "5.4"
+    },
+    {
+      "id": "5.4.2",
+      "name": "BOLSAS PVC",
+      "parent": "5.4"
+    },
+    {
+      "id": "5.4.3",
+      "name": "BOLSAS CINTURA",
+      "parent": "5.4"
+    },
+    {
+      "id": "5.4.4",
+      "name": "BOLSAS TIRACOLO",
+      "parent": "5.4"
+    },
+    {
+      "id": "5.4.5",
+      "name": "BOLSAS CALÇADO",
+      "parent": "5.4"
+    },
+    {
+      "id": "5.4.6",
+      "name": "BOLSAS MULTIUSOS",
+      "parent": "5.4"
+    },
+    {
+      "id": "5.4.7",
+      "name": "LINHA NATURA",
+      "parent": "5.4"
+    },
+    {
+      "id": "5.5",
+      "name": "TÉRMICOS",
+      "parent": "5"
+    },
+    {
+      "id": "5.5.1",
+      "name": "SACOS TÉRMICOS",
+      "parent": "5.5"
+    },
+    {
+      "id": "5.5.2",
+      "name": "MOCHILAS TÉRMICAS",
+      "parent": "5.5"
+    },
+    {
+      "id": "5.5.3",
+      "name": "BOLSAS TÉRMICAS",
+      "parent": "5.5"
+    },
+    {
+      "id": "5.5.4",
+      "name": "LINHA NATURA",
+      "parent": "5.5"
+    },
+    {
+      "id": "5.6",
+      "name": "TROLLEYS",
+      "parent": "5"
+    },
+    {
+      "id": "5.6.1",
+      "name": "TROLLEYS DE VIAGEM",
+      "parent": "5.6"
+    },
+    {
+      "id": "5.6.2",
+      "name": "TROLLEYS MOCHILAS",
+      "parent": "5.6"
+    },
+    {
+      "id": "5.6.3",
+      "name": "TROLLEYS SACO",
+      "parent": "5.6"
+    },
+    {
+      "id": "5.6.4",
+      "name": "CARRINHOS DE COMPRAS",
+      "parent": "5.6"
+    },
+    {
+      "id": "5.6.5",
+      "name": "LINHA NATURA",
+      "parent": "5.6"
+    },
+    {
+      "id": "6",
+      "name": "ESCRITA E ESCRITÓRIO",
+      "parent": null
+    },
+    {
+      "id": "6.1",
+      "name": "ACESSÓRIOS SECRETÁRIA",
+      "parent": "6"
+    },
+    {
+      "id": "6.1.1",
+      "name": "ESTOJOS",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.2",
+      "name": "LUZ SECRETÁRIA",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.3",
+      "name": "CALENDÁRIOS E PLANNINGS",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.4",
+      "name": "ORGANIZADORES SECRETÁRIA",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.5",
+      "name": "CALCULADORAS",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.6",
+      "name": "MARCADORES DE PÁGINA",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.7",
+      "name": "X-ATOS",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.8",
+      "name": "RÉGUAS",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.9",
+      "name": "MATERIAL DE ESCRITÓRIO",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.10",
+      "name": "UTILIDADES",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.11",
+      "name": "CONJUNTOS",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.1.12",
+      "name": "LINHA NATURA",
+      "parent": "6.1"
+    },
+    {
+      "id": "6.2",
+      "name": "CANETAS",
+      "parent": "6"
+    },
+    {
+      "id": "6.2.1",
+      "name": "CANETAS",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.2",
+      "name": "CANETAS COM PONTEIRO",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.3",
+      "name": "CANETAS MINI",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.4",
+      "name": "CANETAS COM SUPORTE",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.5",
+      "name": "CANETAS MULTICOLOR",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.6",
+      "name": "CANETAS MULTIFUNÇÕES",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.7",
+      "name": "CANETAS COM TAMPA",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.8",
+      "name": "CANETAS SEM TINTA",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.9",
+      "name": "MARCADORES",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.10",
+      "name": "MARCAS",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.11",
+      "name": "CONJUNTOS E ESTOJOS",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.2.12",
+      "name": "LINHA NATURA",
+      "parent": "6.2"
+    },
+    {
+      "id": "6.3",
+      "name": "LÁPIS E LAPISEIRAS",
+      "parent": "6"
+    },
+    {
+      "id": "6.3.1",
+      "name": "LÁPIS",
+      "parent": "6.3"
+    },
+    {
+      "id": "6.3.2",
+      "name": "LÁPIS MINI",
+      "parent": "6.3"
+    },
+    {
+      "id": "6.3.3",
+      "name": "LÁPIS CARPINTEIRO",
+      "parent": "6.3"
+    },
+    {
+      "id": "6.3.4",
+      "name": "LÁPIS INFINITO",
+      "parent": "6.3"
+    },
+    {
+      "id": "6.3.5",
+      "name": "LAPISEIRAS",
+      "parent": "6.3"
+    },
+    {
+      "id": "6.3.6",
+      "name": "CONJUNTOS",
+      "parent": "6.3"
+    },
+    {
+      "id": "6.3.7",
+      "name": "LINHA NATURA",
+      "parent": "6.3"
+    },
+    {
+      "id": "6.4",
+      "name": "BLOCOS E CADERNOS",
+      "parent": "6"
+    },
+    {
+      "id": "6.4.1",
+      "name": "BLOCOS",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.4.2",
+      "name": "BLOCOS FLEXÍVEIS",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.4.3",
+      "name": "BLOCOS ARGOLAS",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.4.4",
+      "name": "CONJUNTOS",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.4.5",
+      "name": "BLOCOS MULTIFUNÇÕES",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.4.6",
+      "name": "PORTA NOTAS E POST-ITS",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.4.7",
+      "name": "AGENDAS",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.4.8",
+      "name": "LINHA NATURA",
+      "parent": "6.4"
+    },
+    {
+      "id": "6.5",
+      "name": "PORTA-DOCUMENTOS",
+      "parent": "6"
+    },
+    {
+      "id": "6.5.1",
+      "name": "PASTAS",
+      "parent": "6.5"
+    },
+    {
+      "id": "6.5.2",
+      "name": "PASTAS MULTIFUNÇÕES",
+      "parent": "6.5"
+    },
+    {
+      "id": "6.5.3",
+      "name": "PORTA-CARTÕES DE VISITA",
+      "parent": "6.5"
+    },
+    {
+      "id": "6.5.4",
+      "name": "PRANCHETAS",
+      "parent": "6.5"
+    },
+    {
+      "id": "6.5.5",
+      "name": "LINHA NATURA",
+      "parent": "6.5"
+    },
+    {
+      "id": "7",
+      "name": "AR LIVRE E EVENTOS",
+      "parent": null
+    },
+    {
+      "id": "7.1",
+      "name": "INVERNO",
+      "parent": "7"
+    },
+    {
+      "id": "7.1.1",
+      "name": "GORROS E LUVAS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.2",
+      "name": "CACHECÓIS E GOLAS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.3",
+      "name": "MANTAS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.4",
+      "name": "IMPERMEÁVEIS E PONCHOS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.5",
+      "name": "GUARDA-CHUVAS AUTOMÁTICOS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.6",
+      "name": "GUARDA-CHUVAS MANUAIS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.7",
+      "name": "GUARDA-CHUVAS DOBRÁVEIS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.8",
+      "name": "ACESSÓRIOS TÉRMICOS",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.1.9",
+      "name": "LINHA NATURA",
+      "parent": "7.1"
+    },
+    {
+      "id": "7.2",
+      "name": "VERÃO E PRAIA",
+      "parent": "7"
+    },
+    {
+      "id": "7.2.1",
+      "name": "ÓCULOS",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.2",
+      "name": "CHINELOS",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.3",
+      "name": "ESTEIRAS E CADEIRAS",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.4",
+      "name": "TOALHAS E PÁREOS",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.5",
+      "name": "GUARDA-SÓIS E PARA-VENTOS",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.6",
+      "name": "SACOS DE PRAIA",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.7",
+      "name": "PROTETORES E MEDIDORES UV",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.8",
+      "name": "VENTILADORES E VAPORIZADORES",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.9",
+      "name": "INSUFLÁVEIS",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.10",
+      "name": "LEQUES",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.11",
+      "name": "JOGOS DE PRAIA",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.2.12",
+      "name": "LINHA NATURA",
+      "parent": "7.2"
+    },
+    {
+      "id": "7.3",
+      "name": "ACESSÓRIOS AR LIVRE",
+      "parent": "7"
+    },
+    {
+      "id": "7.3.1",
+      "name": "ACESSÓRIOS CAMPISMO",
+      "parent": "7.3"
+    },
+    {
+      "id": "7.3.2",
+      "name": "ACESSÓRIOS PICNIC",
+      "parent": "7.3"
+    },
+    {
+      "id": "7.3.3",
+      "name": "ACESSÓRIOS BARBECUE",
+      "parent": "7.3"
+    },
+    {
+      "id": "7.3.4",
+      "name": "ACESSÓRIOS JARDINAGEM",
+      "parent": "7.3"
+    },
+    {
+      "id": "7.3.5",
+      "name": "LINHA NATURA",
+      "parent": "7.3"
+    },
+    {
+      "id": "7.4",
+      "name": "ACESSÓRIOS VIAGEM",
+      "parent": "7"
+    },
+    {
+      "id": "7.4.1",
+      "name": "ACESSÓRIOS MALA",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.2",
+      "name": "ALMOFADAS E TAMPÕES",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.3",
+      "name": "MÁSCARAS",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.4",
+      "name": "BOLSAS COSMÉTICA",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.5",
+      "name": "BOLSAS PVC",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.6",
+      "name": "PORTA-FATOS E PORTA GRAVATAS",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.7",
+      "name": "BOLSAS PASSAPORTE",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.8",
+      "name": "UTILITÁRIOS VIAGEM",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.4.9",
+      "name": "LINHA NATURA",
+      "parent": "7.4"
+    },
+    {
+      "id": "7.5",
+      "name": "ACESSÓRIOS DESPORTO",
+      "parent": "7"
+    },
+    {
+      "id": "7.5.1",
+      "name": "ACESSÓRIOS DE DESPORTO",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.2",
+      "name": "FITNESS",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.3",
+      "name": "IOGA E PILATES",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.4",
+      "name": "CYCLING",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.5",
+      "name": "FUTEBOL, RUGBY E VÓLEI",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.6",
+      "name": "CORRIDA E CAMINHADA",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.7",
+      "name": "LUZES E REFLETORES",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.8",
+      "name": "TOALHAS DESPORTO",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.5.9",
+      "name": "LINHA NATURA",
+      "parent": "7.5"
+    },
+    {
+      "id": "7.6",
+      "name": "EVENTOS E FESTA",
+      "parent": "7"
+    },
+    {
+      "id": "7.6.1",
+      "name": "LANYARDS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.2",
+      "name": "CRACHÁS E PINS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.3",
+      "name": "PULSEIRAS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.4",
+      "name": "DECORAÇÃO E ADEREÇOS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.5",
+      "name": "BATE-PALMAS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.6",
+      "name": "BANDEIRAS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.7",
+      "name": "MEDALHAS E TROFÉUS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.8",
+      "name": "DOCES",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.9",
+      "name": "COPOS REUTILIZÁVEIS",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.10",
+      "name": "CAIXAS E SACOS PRESENTE",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.6.11",
+      "name": "LINHA NATURA",
+      "parent": "7.6"
+    },
+    {
+      "id": "7.7",
+      "name": "ESPECIAL NATAL",
+      "parent": "7"
+    },
+    {
+      "id": "7.7.1",
+      "name": "CASA",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.2",
+      "name": "COZINHA",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.3",
+      "name": "ENFEITES",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.4",
+      "name": "ESCRITA",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.5",
+      "name": "TÊXTIL NATAL",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.6",
+      "name": "CABAZES E CONJUNTOS",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.7",
+      "name": "INFANTIL",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.8",
+      "name": "SACOS E BOLSAS",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.9",
+      "name": "PESSOAIS",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.7.10",
+      "name": "LINHA NATURA",
+      "parent": "7.7"
+    },
+    {
+      "id": "7.8",
+      "name": "JOGOS",
+      "parent": "7"
+    },
+    {
+      "id": "7.8.1",
+      "name": "JOGOS",
+      "parent": "7.8"
+    },
+    {
+      "id": "7.8.2",
+      "name": "CARTAS",
+      "parent": "7.8"
+    },
+    {
+      "id": "7.8.3",
+      "name": "DOMINÓS",
+      "parent": "7.8"
+    },
+    {
+      "id": "7.8.4",
+      "name": "JOGOS DE TABULEIRO",
+      "parent": "7.8"
+    },
+    {
+      "id": "7.8.5",
+      "name": "JOGOS TRADICIONAIS",
+      "parent": "7.8"
+    },
+    {
+      "id": "7.8.6",
+      "name": "JOGOS QUEBRA-CABEÇAS",
+      "parent": "7.8"
+    },
+    {
+      "id": "7.8.7",
+      "name": "BOLAS E ACESSÓRIOS",
+      "parent": "7.8"
+    },
+    {
+      "id": "7.8.8",
+      "name": "LINHA NATURA",
+      "parent": "7.8"
+    },
+    {
+      "id": "8",
+      "name": "INFANTIL E PETS",
+      "parent": null
+    },
+    {
+      "id": "8.1",
+      "name": "ACESSÓRIOS ESCOLA",
+      "parent": "8"
+    },
+    {
+      "id": "8.1.1",
+      "name": "CANETAS",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.2",
+      "name": "LÁPIS",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.3",
+      "name": "COLORIR",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.4",
+      "name": "ESTOJOS",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.5",
+      "name": "MOCHILAS CRIANÇA",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.6",
+      "name": "RÉGUAS",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.7",
+      "name": "MATERIAL ESCOLAR",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.8",
+      "name": "CONJUNTOS",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.1.9",
+      "name": "LINHA NATURA",
+      "parent": "8.1"
+    },
+    {
+      "id": "8.2",
+      "name": "TÊXTIL 100% MADE 4 YOU",
+      "parent": "8"
+    },
+    {
+      "id": "8.2.1",
+      "name": "EQUIPAMENTOS",
+      "parent": "8.2"
+    },
+    {
+      "id": "8.2.2",
+      "name": "FATOS DE TREINO",
+      "parent": "8.2"
+    },
+    {
+      "id": "8.2.3",
+      "name": "T-SHIRTS E SINGLETES",
+      "parent": "8.2"
+    },
+    {
+      "id": "8.2.4",
+      "name": "POLOS",
+      "parent": "8.2"
+    },
+    {
+      "id": "8.2.5",
+      "name": "SWEATSHIRTS",
+      "parent": "8.2"
+    },
+    {
+      "id": "8.2.6",
+      "name": "CALÇAS E CALÇÕES",
+      "parent": "8.2"
+    },
+    {
+      "id": "8.2.7",
+      "name": "CACHECÓIS E GOLAS",
+      "parent": "8.2"
+    },
+    {
+      "id": "8.3",
+      "name": "TÊXTIL CRIANÇA",
+      "parent": "8"
+    },
+    {
+      "id": "8.3.1",
+      "name": "T-SHIRTS E TOPS",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.2",
+      "name": "POLOS",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.3",
+      "name": "SWEATSHIRTS",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.4",
+      "name": "CASACOS E COLETES",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.5",
+      "name": "CALÇAS E CALÇÕES",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.6",
+      "name": "BONÉS E CHAPÉUS",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.7",
+      "name": "BODIES E BABY-GROWS",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.8",
+      "name": "BABETES E INTERIORES",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.9",
+      "name": "AVENTAIS",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.10",
+      "name": "CAMISAS",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.11",
+      "name": "TÊXTEIS DE INVERNO",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.3.12",
+      "name": "LINHA NATURA",
+      "parent": "8.3"
+    },
+    {
+      "id": "8.4",
+      "name": "TÊXTIL DESPORTO CRIANÇA",
+      "parent": "8"
+    },
+    {
+      "id": "8.4.1",
+      "name": "T-SHIRTS E TOPS",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.4.2",
+      "name": "POLOS",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.4.3",
+      "name": "SWEATSHIRTS",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.4.4",
+      "name": "CASACOS E COLETES",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.4.5",
+      "name": "CALÇAS E CALÇÕES",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.4.6",
+      "name": "EQUIPAMENTOS E FATOS DE TREINO",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.4.7",
+      "name": "BONÉS",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.4.8",
+      "name": "ACESSÓRIOS",
+      "parent": "8.4"
+    },
+    {
+      "id": "8.5",
+      "name": "BRINQUEDOS",
+      "parent": "8"
+    },
+    {
+      "id": "8.5.1",
+      "name": "JOGOS",
+      "parent": "8.5"
+    },
+    {
+      "id": "8.5.2",
+      "name": "JOGOS TRADICIONAIS CRIANÇA",
+      "parent": "8.5"
+    },
+    {
+      "id": "8.5.3",
+      "name": "JOGOS QUEBRA-CABEÇAS",
+      "parent": "8.5"
+    },
+    {
+      "id": "8.5.4",
+      "name": "JOGOS SCIENCE4YOU",
+      "parent": "8.5"
+    },
+    {
+      "id": "8.5.5",
+      "name": "PUZZLES",
+      "parent": "8.5"
+    },
+    {
+      "id": "8.5.6",
+      "name": "BONECOS",
+      "parent": "8.5"
+    },
+    {
+      "id": "8.5.7",
+      "name": "LINHA NATURA",
+      "parent": "8.5"
+    },
+    {
+      "id": "8.6",
+      "name": "UTILIDADES CRIANÇA",
+      "parent": "8"
+    },
+    {
+      "id": "8.6.1",
+      "name": "COPOS E GARRAFAS",
+      "parent": "8.6"
+    },
+    {
+      "id": "8.6.2",
+      "name": "MEALHEIROS",
+      "parent": "8.6"
+    },
+    {
+      "id": "8.6.3",
+      "name": "HIGIENE CRIANÇA",
+      "parent": "8.6"
+    },
+    {
+      "id": "8.6.4",
+      "name": "SEGURANÇA DA CRIANÇA",
+      "parent": "8.6"
+    },
+    {
+      "id": "8.6.5",
+      "name": "UTILIDADES",
+      "parent": "8.6"
+    },
+    {
+      "id": "8.6.6",
+      "name": "LINHA NATURA",
+      "parent": "8.6"
+    },
+    {
+      "id": "8.7",
+      "name": "ACESSÓRIOS ANIMAIS",
+      "parent": "8"
+    },
+    {
+      "id": "8.7.1",
+      "name": "ACESSÓRIOS",
+      "parent": "8.7"
+    },
+    {
+      "id": "8.7.2",
+      "name": "ALIMENTAÇÃO",
+      "parent": "8.7"
+    },
+    {
+      "id": "8.7.3",
+      "name": "BRINQUEDOS",
+      "parent": "8.7"
+    },
+    {
+      "id": "8.7.4",
+      "name": "HIGIENE E PASSEIO",
+      "parent": "8.7"
+    },
+    {
+      "id": "8.7.5",
+      "name": "LINHA NATURA",
+      "parent": "8.7"
+    },
+    {
+      "id": "9",
+      "name": "CASA E VINHO",
+      "parent": null
+    },
+    {
+      "id": "9.1",
+      "name": "CANECAS E COPOS",
+      "parent": "9"
+    },
+    {
+      "id": "9.1.1",
+      "name": "CANECAS",
+      "parent": "9.1"
+    },
+    {
+      "id": "9.1.2",
+      "name": "CANECAS VINTAGE",
+      "parent": "9.1"
+    },
+    {
+      "id": "9.1.3",
+      "name": "COPOS",
+      "parent": "9.1"
+    },
+    {
+      "id": "9.1.4",
+      "name": "COPOS REUTILIZÁVEIS",
+      "parent": "9.1"
+    },
+    {
+      "id": "9.1.5",
+      "name": "COPOS TÉRMICOS",
+      "parent": "9.1"
+    },
+    {
+      "id": "9.1.6",
+      "name": "COPOS PORTÁTEIS",
+      "parent": "9.1"
+    },
+    {
+      "id": "9.1.7",
+      "name": "LINHA NATURA",
+      "parent": "9.1"
+    },
+    {
+      "id": "9.2",
+      "name": "GARRAFAS",
+      "parent": "9"
+    },
+    {
+      "id": "9.2.1",
+      "name": "GARRAFAS",
+      "parent": "9.2"
+    },
+    {
+      "id": "9.2.2",
+      "name": "GARRAFAS TÉRMICAS",
+      "parent": "9.2"
+    },
+    {
+      "id": "9.2.3",
+      "name": "GARRAFAS DOBRÁVEIS",
+      "parent": "9.2"
+    },
+    {
+      "id": "9.2.4",
+      "name": "GARRAFAS DESPORTO",
+      "parent": "9.2"
+    },
+    {
+      "id": "9.2.5",
+      "name": "GARRAFAS MULTIUSOS",
+      "parent": "9.2"
+    },
+    {
+      "id": "9.2.6",
+      "name": "LINHA NATURA",
+      "parent": "9.2"
+    },
+    {
+      "id": "9.3",
+      "name": "ACESSÓRIOS COZINHA",
+      "parent": "9"
+    },
+    {
+      "id": "9.3.1",
+      "name": "AVENTAIS",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.2",
+      "name": "TÊXTEIS COZINHA",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.3",
+      "name": "LANCHEIRAS E RECIPIENTES",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.4",
+      "name": "TÁBUAS DE COZINHA",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.5",
+      "name": "INDIVIDUAIS DE MESA E COPOS",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.6",
+      "name": "ACESSÓRIOS DE MESA",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.7",
+      "name": "LOUÇAS E TALHERES",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.8",
+      "name": "TACHOS E PANELAS",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.9",
+      "name": "ISQUEIROS DE COZINHA",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.10",
+      "name": "FERRAMENTAS COZINHA",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.11",
+      "name": "UTILITÁRIOS",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.12",
+      "name": "CONJUNTOS",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.3.13",
+      "name": "LINHA NATURA",
+      "parent": "9.3"
+    },
+    {
+      "id": "9.4",
+      "name": "ACESSÓRIOS CHÁ E CAFÉ",
+      "parent": "9"
+    },
+    {
+      "id": "9.4.1",
+      "name": "CHÁVENAS DE CHÁ E CAFÉ",
+      "parent": "9.4"
+    },
+    {
+      "id": "9.4.2",
+      "name": "CHALEIRAS E CAFETEIRAS",
+      "parent": "9.4"
+    },
+    {
+      "id": "9.4.3",
+      "name": "BULES E CAIXAS DE CHÁ",
+      "parent": "9.4"
+    },
+    {
+      "id": "9.4.4",
+      "name": "CONJUNTOS",
+      "parent": "9.4"
+    },
+    {
+      "id": "9.4.5",
+      "name": "LINHA NATURA",
+      "parent": "9.4"
+    },
+    {
+      "id": "9.5",
+      "name": "ACESSÓRIOS VINHO",
+      "parent": "9"
+    },
+    {
+      "id": "9.5.1",
+      "name": "SACA-ROLHAS",
+      "parent": "9.5"
+    },
+    {
+      "id": "9.5.2",
+      "name": "ACESSÓRIOS VINHO",
+      "parent": "9.5"
+    },
+    {
+      "id": "9.5.3",
+      "name": "JARROS E COPOS DE VINHO",
+      "parent": "9.5"
+    },
+    {
+      "id": "9.5.4",
+      "name": "CAIXAS, SACOS E PORTA-GARRAFAS",
+      "parent": "9.5"
+    },
+    {
+      "id": "9.5.5",
+      "name": "BALDES GELO E REFRIGERADORES",
+      "parent": "9.5"
+    },
+    {
+      "id": "9.5.6",
+      "name": "CONJUNTOS",
+      "parent": "9.5"
+    },
+    {
+      "id": "9.5.7",
+      "name": "LINHA NATURA",
+      "parent": "9.5"
+    },
+    {
+      "id": "9.6",
+      "name": "ACESSÓRIOS BAR",
+      "parent": "9"
+    },
+    {
+      "id": "9.6.1",
+      "name": "DESCAPSULADORES",
+      "parent": "9.6"
+    },
+    {
+      "id": "9.6.2",
+      "name": "ACESSÓRIOS BAR",
+      "parent": "9.6"
+    },
+    {
+      "id": "9.6.3",
+      "name": "GARRAFAS E COPOS DE BAR",
+      "parent": "9.6"
+    },
+    {
+      "id": "9.6.4",
+      "name": "ACESSÓRIOS COCKTAIL",
+      "parent": "9.6"
+    },
+    {
+      "id": "9.6.5",
+      "name": "CONJUNTOS",
+      "parent": "9.6"
+    },
+    {
+      "id": "9.6.6",
+      "name": "LINHA NATURA",
+      "parent": "9.6"
+    },
+    {
+      "id": "9.7",
+      "name": "ACESSÓRIOS DECORAÇÃO",
+      "parent": "9"
+    },
+    {
+      "id": "9.7.1",
+      "name": "LUZ DECORAÇÃO",
+      "parent": "9.7"
+    },
+    {
+      "id": "9.7.2",
+      "name": "VELAS E AMBIENTADORES",
+      "parent": "9.7"
+    },
+    {
+      "id": "9.7.3",
+      "name": "HUMIDIFICADORES",
+      "parent": "9.7"
+    },
+    {
+      "id": "9.7.4",
+      "name": "VASOS E PLANTAS",
+      "parent": "9.7"
+    },
+    {
+      "id": "9.7.5",
+      "name": "RELÓGIOS DE PAREDE",
+      "parent": "9.7"
+    },
+    {
+      "id": "9.7.6",
+      "name": "PORTA-RETRATOS",
+      "parent": "9.7"
+    },
+    {
+      "id": "9.7.7",
+      "name": "DECORATIVOS",
+      "parent": "9.7"
+    },
+    {
+      "id": "9.7.8",
+      "name": "LINHA NATURA",
+      "parent": "9.7"
+    },
+    {
+      "id": "10",
+      "name": "PESSOAIS",
+      "parent": null
+    },
+    {
+      "id": "10.1",
+      "name": "LANYARDS",
+      "parent": "10"
+    },
+    {
+      "id": "10.1.1",
+      "name": "LANYARDS SIMPLES",
+      "parent": "10.1"
+    },
+    {
+      "id": "10.1.2",
+      "name": "LANYARDS COM FECHO",
+      "parent": "10.1"
+    },
+    {
+      "id": "10.1.3",
+      "name": "LANYARDS CORDÃO",
+      "parent": "10.1"
+    },
+    {
+      "id": "10.1.4",
+      "name": "LANYARDS COM SUPORTE",
+      "parent": "10.1"
+    },
+    {
+      "id": "10.1.5",
+      "name": "IDENTIFICADORES",
+      "parent": "10.1"
+    },
+    {
+      "id": "10.1.6",
+      "name": "LINHA NATURA",
+      "parent": "10.1"
+    },
+    {
+      "id": "10.2",
+      "name": "PORTA-CHAVES",
+      "parent": "10"
+    },
+    {
+      "id": "10.2.1",
+      "name": "PORTA-CHAVES",
+      "parent": "10.2"
+    },
+    {
+      "id": "10.2.2",
+      "name": "PORTA-CHAVES DESCAPSULADORES",
+      "parent": "10.2"
+    },
+    {
+      "id": "10.2.3",
+      "name": "PORTA-CHAVES MOEDA",
+      "parent": "10.2"
+    },
+    {
+      "id": "10.2.4",
+      "name": "PORTA-CHAVES MOLDURA",
+      "parent": "10.2"
+    },
+    {
+      "id": "10.2.5",
+      "name": "PORTA-CHAVES FIGURAS",
+      "parent": "10.2"
+    },
+    {
+      "id": "10.2.6",
+      "name": "PORTA-CHAVES MULTIFUNÇÕES",
+      "parent": "10.2"
+    },
+    {
+      "id": "10.2.7",
+      "name": "LINHA NATURA",
+      "parent": "10.2"
+    },
+    {
+      "id": "10.3",
+      "name": "PORTA-MOEDAS E PORTA-CARTÕES",
+      "parent": "10"
+    },
+    {
+      "id": "10.3.1",
+      "name": "PORTA-MOEDAS",
+      "parent": "10.3"
+    },
+    {
+      "id": "10.3.2",
+      "name": "CARTEIRAS",
+      "parent": "10.3"
+    },
+    {
+      "id": "10.3.3",
+      "name": "PORTA-CARTÕES",
+      "parent": "10.3"
+    },
+    {
+      "id": "10.3.4",
+      "name": "PORTA-CARTÕES RFID",
+      "parent": "10.3"
+    },
+    {
+      "id": "10.3.5",
+      "name": "LINHA NATURA",
+      "parent": "10.3"
+    },
+    {
+      "id": "10.4",
+      "name": "ACESSÓRIOS HIGIENE",
+      "parent": "10"
+    },
+    {
+      "id": "10.4.1",
+      "name": "ESCOVAS DE DENTES",
+      "parent": "10.4"
+    },
+    {
+      "id": "10.4.2",
+      "name": "SABONETES E CHAMPÔS",
+      "parent": "10.4"
+    },
+    {
+      "id": "10.4.3",
+      "name": "TOALHAS DE BANHO",
+      "parent": "10.4"
+    },
+    {
+      "id": "10.4.4",
+      "name": "HIGIENIZANTES",
+      "parent": "10.4"
+    },
+    {
+      "id": "10.4.5",
+      "name": "UTILITÁRIOS DE BANHO",
+      "parent": "10.4"
+    },
+    {
+      "id": "10.4.6",
+      "name": "CONJUNTOS",
+      "parent": "10.4"
+    },
+    {
+      "id": "10.4.7",
+      "name": "LINHA NATURA",
+      "parent": "10.4"
+    },
+    {
+      "id": "10.5",
+      "name": "ACESSÓRIOS BELEZA",
+      "parent": "10"
+    },
+    {
+      "id": "10.5.1",
+      "name": "ESPELHOS",
+      "parent": "10.5"
+    },
+    {
+      "id": "10.5.2",
+      "name": "BÁLSAMOS E BATONS",
+      "parent": "10.5"
+    },
+    {
+      "id": "10.5.3",
+      "name": "MANICURE",
+      "parent": "10.5"
+    },
+    {
+      "id": "10.5.4",
+      "name": "PERFUMES E SPA",
+      "parent": "10.5"
+    },
+    {
+      "id": "10.5.5",
+      "name": "ACESSÓRIOS CABELO",
+      "parent": "10.5"
+    },
+    {
+      "id": "10.5.6",
+      "name": "CONJUNTOS",
+      "parent": "10.5"
+    },
+    {
+      "id": "10.5.7",
+      "name": "LINHA NATURA",
+      "parent": "10.5"
+    },
+    {
+      "id": "10.6",
+      "name": "ACESSÓRIOS SAÚDE",
+      "parent": "10"
+    },
+    {
+      "id": "10.6.1",
+      "name": "ANTISSTRESS",
+      "parent": "10.6"
+    },
+    {
+      "id": "10.6.2",
+      "name": "HIGIENIZANTES",
+      "parent": "10.6"
+    },
+    {
+      "id": "10.6.3",
+      "name": "CAIXAS COMPRIMIDOS",
+      "parent": "10.6"
+    },
+    {
+      "id": "10.6.4",
+      "name": "PRIMEIROS SOCORROS",
+      "parent": "10.6"
+    },
+    {
+      "id": "10.6.5",
+      "name": "BALANÇAS E MEDIDORES",
+      "parent": "10.6"
+    },
+    {
+      "id": "10.6.6",
+      "name": "ACESSÓRIOS TÉRMICOS",
+      "parent": "10.6"
+    },
+    {
+      "id": "10.6.7",
+      "name": "LINHA NATURA",
+      "parent": "10.6"
+    },
+    {
+      "id": "10.7",
+      "name": "ACESSÓRIOS MODA E CALÇADO",
+      "parent": "10"
+    },
+    {
+      "id": "10.7.1",
+      "name": "ACESSÓRIOS MODA",
+      "parent": "10.7"
+    },
+    {
+      "id": "10.7.2",
+      "name": "ACESSÓRIOS PARA ROUPA",
+      "parent": "10.7"
+    },
+    {
+      "id": "10.7.3",
+      "name": "ACESSÓRIOS PARA CALÇADO",
+      "parent": "10.7"
+    },
+    {
+      "id": "10.7.4",
+      "name": "LINHA NATURA",
+      "parent": "10.7"
+    },
+    {
+      "id": "11",
+      "name": "BRICO E AUTO",
+      "parent": null
+    },
+    {
+      "id": "11.1",
+      "name": "FERRAMENTAS",
+      "parent": "11"
+    },
+    {
+      "id": "11.1.1",
+      "name": "FERRAMENTAS",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.1.2",
+      "name": "X-ATOS",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.1.3",
+      "name": "NAVALHAS E CANIVETES",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.1.4",
+      "name": "FERRAMENTAS DE MEDIÇÃO",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.1.5",
+      "name": "FERRAMENTAS MULTIFUNÇÕES",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.1.6",
+      "name": "KITS DE FERRAMENTAS",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.1.7",
+      "name": "PILHAS",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.1.8",
+      "name": "LINHA NATURA",
+      "parent": "11.1"
+    },
+    {
+      "id": "11.2",
+      "name": "ACESSÓRIOS AUTOMÓVEL",
+      "parent": "11"
+    },
+    {
+      "id": "11.2.1",
+      "name": "TAPA-SÓIS",
+      "parent": "11.2"
+    },
+    {
+      "id": "11.2.2",
+      "name": "SUPORTES E CARREGADORES",
+      "parent": "11.2"
+    },
+    {
+      "id": "11.2.3",
+      "name": "EMERGÊNCIA AUTOMÓVEL",
+      "parent": "11.2"
+    },
+    {
+      "id": "11.2.4",
+      "name": "ORGANIZAÇÃO E LIMPEZA",
+      "parent": "11.2"
+    },
+    {
+      "id": "11.2.5",
+      "name": "UTILITÁRIOS AUTO",
+      "parent": "11.2"
+    },
+    {
+      "id": "11.2.6",
+      "name": "LINHA NATURA",
+      "parent": "11.2"
+    },
+    {
+      "id": "11.3",
+      "name": "LANTERNAS",
+      "parent": "11"
+    },
+    {
+      "id": "11.3.1",
+      "name": "LANTERNAS",
+      "parent": "11.3"
+    },
+    {
+      "id": "11.3.2",
+      "name": "LANTERNAS FRONTAIS",
+      "parent": "11.3"
+    },
+    {
+      "id": "11.3.3",
+      "name": "LANTERNAS PORTA-CHAVES",
+      "parent": "11.3"
+    },
+    {
+      "id": "11.3.4",
+      "name": "LANTERNAS MULTIFUNÇÕES",
+      "parent": "11.3"
+    },
+    {
+      "id": "11.3.5",
+      "name": "LINHA NATURA",
+      "parent": "11.3"
+    },
+    {
+      "id": "11.4",
+      "name": "ISQUEIROS E CINZEIROS",
+      "parent": "11"
+    },
+    {
+      "id": "11.4.1",
+      "name": "ISQUEIROS DE BOLSO",
+      "parent": "11.4"
+    },
+    {
+      "id": "11.4.2",
+      "name": "ISQUEIROS DE COZINHA",
+      "parent": "11.4"
+    },
+    {
+      "id": "11.4.3",
+      "name": "FÓSFOROS",
+      "parent": "11.4"
+    },
+    {
+      "id": "11.4.4",
+      "name": "CINZEIROS",
+      "parent": "11.4"
+    },
+    {
+      "id": "11.4.5",
+      "name": "UTILITÁRIOS FUMADORES",
+      "parent": "11.4"
+    },
+    {
+      "id": "12",
+      "name": "100% MADE 4 YOU",
+      "parent": null
+    },
+    {
+      "id": "12.1",
+      "name": "TÊXTIL 100% MADE4YOU",
+      "parent": "12"
+    },
+    {
+      "id": "12.1.1",
+      "name": "EQUIPAMENTOS",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.1.2",
+      "name": "FATOS DE TREINO",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.1.3",
+      "name": "T-SHIRTS E SINGLETES",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.1.4",
+      "name": "POLOS",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.1.5",
+      "name": "SWEATSHIRTS",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.1.6",
+      "name": "CALÇAS E CALÇÕES",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.1.7",
+      "name": "CACHECÓIS E GOLAS",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.1.8",
+      "name": "TÊXTIL 100% PERSONALIZÁVEL",
+      "parent": "12.1"
+    },
+    {
+      "id": "12.2",
+      "name": "ARTIGOS EXCLUSIVOS",
+      "parent": "12"
+    },
+    {
+      "id": "12.2.1",
+      "name": "CANECAS, COPOS E GARRAFAS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.2",
+      "name": "TAPETES DE RATO",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.3",
+      "name": "CRACHÁS E PINS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.4",
+      "name": "LANYARDS E PULSEIRAS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.5",
+      "name": "PORTA-CHAVES E MAGNÉTICOS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.6",
+      "name": "GALHARDETES E EMBLEMAS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.7",
+      "name": "MEDALHAS E TROFÉUS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.8",
+      "name": "SACOS E MOCHILAS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.2.9",
+      "name": "ACESSÓRIOS",
+      "parent": "12.2"
+    },
+    {
+      "id": "12.3",
+      "name": "PAPELARIA",
+      "parent": "12"
+    },
+    {
+      "id": "12.3.1",
+      "name": "CARTÕES E FLYERS",
+      "parent": "12.3"
+    },
+    {
+      "id": "12.3.2",
+      "name": "CALENDÁRIOS E PLANNINGS",
+      "parent": "12.3"
+    },
+    {
+      "id": "12.3.3",
+      "name": "PORTA NOTAS E POST-ITS",
+      "parent": "12.3"
+    },
+    {
+      "id": "12.3.4",
+      "name": "BLOCOS",
+      "parent": "12.3"
+    },
+    {
+      "id": "12.4",
+      "name": "BANDEIRAS E DISPLAYS",
+      "parent": "12"
+    },
+    {
+      "id": "12.4.1",
+      "name": "BANDEIRAS PORTÁTEIS",
+      "parent": "12.4"
+    },
+    {
+      "id": "12.4.2",
+      "name": "BANDEIRAS GOTA",
+      "parent": "12.4"
+    },
+    {
+      "id": "12.4.3",
+      "name": "BANDEIRAS PLUMA",
+      "parent": "12.4"
+    },
+    {
+      "id": "12.4.4",
+      "name": "BANDEIRAS RETANGULARES",
+      "parent": "12.4"
+    },
+    {
+      "id": "12.4.5",
+      "name": "DISPLAYS",
+      "parent": "12.4"
+    }
+  ]
+}

@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BOG Helper — dropdown feasibility harness</title>
+    <!-- Generated file — do not edit by hand.
+         Source: src/entrypoints/demo/main.ts (+ src/lib/enhanceSelect.ts)
+         Regenerate:
+           ./node_modules/.bin/esbuild src/entrypoints/demo/main.ts \
+             --bundle --format=iife --target=es2020 \
+             --outfile=.output/demo-bundle.js
+           node .output/assemble-harness.mjs -->
+    <style>
+/* src/entrypoints/demo/demo.css */
+body {
+  margin: 0;
+  background: #f5f5f5;
+  color: #303030;
+  font:
+    14px/1.5 system-ui,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+.admin__header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 20px;
+  height: 56px;
+  background: #373330;
+  color: #fff;
+}
+.admin__header strong {
+  font-size: 15px;
+  letter-spacing: 0.4px;
+}
+.store-switcher-label {
+  color: #d3d3d3;
+  font-size: 12px;
+  margin-right: 6px;
+}
+.store-switcher {
+  min-width: 200px;
+}
+main {
+  padding: 20px;
+  max-width: 1100px;
+}
+h1 {
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+h2 {
+  font-size: 15px;
+  margin: 0 0 12px;
+}
+p.lede {
+  margin: 0 0 20px;
+  color: #555;
+}
+.panel {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border: 1px solid #d6d6d6;
+  border-radius: 4px;
+  background: #fff;
+}
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.admin__field {
+  margin-bottom: 14px;
+}
+.admin__field-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #303030;
+}
+.admin__field-control {
+  min-width: 220px;
+}
+select.admin__control-select.raw {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #adadad;
+  border-radius: 3px;
+  background: #fff;
+  font: inherit;
+}
+.tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.tag--before {
+  background: #fbe9e7;
+  color: #bf360c;
+}
+.tag--after {
+  background: #e3f2e8;
+  color: #0b6b3a;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.controls button {
+  padding: 7px 12px;
+  border: 1px solid #d81b60;
+  border-radius: 3px;
+  background: #d81b60;
+  color: #fff;
+  font:
+    600 12px/1 system-ui,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+  cursor: pointer;
+}
+.controls button.secondary {
+  background: #fff;
+  color: #d81b60;
+}
+.controls button:hover {
+  filter: brightness(0.94);
+}
+.status-line {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 3px;
+  background: #f0f4f7;
+  font-family:
+    ui-monospace,
+    Consolas,
+    monospace;
+  font-size: 12px;
+}
+.status-line b {
+  color: #0b6b3a;
+}
+.log {
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 3px;
+  background: #1f2933;
+  color: #d7dde5;
+  font-family:
+    ui-monospace,
+    Consolas,
+    monospace;
+  font-size: 12px;
+  list-style: none;
+}
+.log li {
+  padding: 2px 0;
+}
+.log li.is-event {
+  color: #7fdb9b;
+}
+.log li.is-warn {
+  color: #f7c76b;
+}
+.hint {
+  margin: 10px 0 0;
+  color: #666;
+  font-size: 12px;
+}
+    </style>
+  </head>
+  <body>
+    <div id="app">Loading…</div>
+    <script>
+"use strict";
+(() => {
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+
+  // src/lib/enhanceSelect.ts
+  var WRAP_CLASS = "mhx-nh";
+  var NATIVE_CLASS = "mhx-nh-native";
+  var STYLE_ID = "mhx-enhance-select-styles";
+  var mounted = /* @__PURE__ */ new WeakMap();
+  function injectEnhancerStyles() {
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = ENHANCER_STYLES;
+    (document.head ?? document.documentElement).appendChild(style);
+  }
+  function readOptions(select) {
+    const out = [];
+    const push = (option) => {
+      const label = (option.textContent ?? "").trim();
+      if (option.value === "" && label === "") return;
+      out.push({
+        value: option.value,
+        label: label || option.value,
+        disabled: option.disabled
+      });
+    };
+    for (const child of Array.from(select.children)) {
+      if (child instanceof HTMLOptGroupElement) {
+        for (const option of Array.from(child.children)) {
+          if (option instanceof HTMLOptionElement) push(option);
+        }
+      } else if (child instanceof HTMLOptionElement) {
+        push(child);
+      }
+    }
+    return out;
+  }
+  function writeNativeValue(select, value) {
+    const descriptor = Object.getOwnPropertyDescriptor(
+      HTMLSelectElement.prototype,
+      "value"
+    );
+    if (descriptor?.set) {
+      descriptor.set.call(select, value);
+    } else {
+      select.value = value;
+    }
+    select.dispatchEvent(new Event("input", { bubbles: true }));
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  var SelectDecorator = class {
+    constructor(select, options, wrapperModifier, showTrigger) {
+      __publicField(this, "select");
+      __publicField(this, "wrapper");
+      __publicField(this, "options");
+      __publicField(this, "parent");
+      __publicField(this, "nextSibling");
+      __publicField(this, "observer", null);
+      __publicField(this, "destroyed", false);
+      /** Called by the click handler we attach to every replacement control. */
+      __publicField(this, "active");
+      __publicField(this, "onNativeChange", () => {
+        this.render();
+      });
+      this.select = select;
+      this.options = options;
+      this.parent = select.parentNode;
+      this.nextSibling = select.nextSibling;
+      this.wrapper = document.createElement("div");
+      this.wrapper.className = `${WRAP_CLASS} mhx-nh--${wrapperModifier}`;
+      this.wrapper.setAttribute("data-mhx-nh", "1");
+      this.active = showTrigger;
+    }
+    /** Close any open surface (searchable picker only). */
+    closeSurface() {
+    }
+    mount() {
+      if (this.destroyed || mounted.has(this.select)) return;
+      injectEnhancerStyles();
+      if (this.parent) this.parent.insertBefore(this.wrapper, this.select);
+      this.select.classList.add(NATIVE_CLASS);
+      this.wrapper.appendChild(this.select);
+      this.build();
+      this.select.addEventListener("change", this.onNativeChange);
+      this.observer = new MutationObserver(() => this.syncFromNative());
+      this.observer.observe(this.select, { childList: true, subtree: true });
+      mounted.set(this.select, this);
+      this.render();
+    }
+    /** Re-read the native select and redraw. Safe to call as often as needed. */
+    syncFromNative() {
+      if (this.destroyed) return;
+      this.render();
+    }
+    /** True when Magento replaced the field out from under us. */
+    isStale() {
+      return this.destroyed || !this.select.isConnected;
+    }
+    destroy() {
+      if (this.destroyed) return;
+      this.destroyed = true;
+      this.observer?.disconnect();
+      this.observer = null;
+      this.select.removeEventListener("change", this.onNativeChange);
+      this.detachSurface();
+      mounted.delete(this.select);
+      this.select.classList.remove(NATIVE_CLASS);
+      if (this.parent) this.parent.insertBefore(this.select, this.nextSibling);
+      this.wrapper.remove();
+    }
+    /** Subclass hook: remove document-level listeners. */
+    detachSurface() {
+    }
+    get currentValue() {
+      return this.select.value;
+    }
+  };
+  var SelectEnhancer = class extends SelectDecorator {
+    constructor(select, options) {
+      super(select, options, "search", true);
+      __publicField(this, "labelEl");
+      __publicField(this, "trigger");
+      __publicField(this, "popover");
+      __publicField(this, "search");
+      __publicField(this, "list");
+      __publicField(this, "activeIndex", -1);
+      __publicField(this, "open", false);
+      __publicField(this, "onTriggerClick", (event) => {
+        event.preventDefault();
+        if (this.open) this.close();
+        else this.openPopover();
+      });
+      __publicField(this, "onSearchInput", () => {
+        this.applyFilter();
+      });
+      __publicField(this, "onSearchKeyDown", (event) => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          this.moveCursor(1);
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          this.moveCursor(-1);
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          const item = this.visibleItems()[this.activeIndex];
+          const value = item?.dataset["value"];
+          if (value !== void 0 && item?.getAttribute("aria-disabled") !== "true") {
+            this.choose(value);
+          }
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          this.close();
+          this.trigger.focus();
+        }
+      });
+      /** Closing on an outside click keeps us from needing a backdrop element. */
+      __publicField(this, "onDocumentPointerDown", (event) => {
+        if (!this.open) return;
+        const target = event.target;
+        if (target instanceof Node && this.wrapper.contains(target)) return;
+        this.close();
+      });
+      this.trigger = document.createElement("button");
+      this.trigger.type = "button";
+      this.trigger.className = "mhx-nh-trigger";
+      this.trigger.setAttribute("aria-haspopup", "listbox");
+      this.trigger.setAttribute("aria-expanded", "false");
+      if (options.label) this.trigger.setAttribute("aria-label", options.label);
+      this.labelEl = document.createElement("span");
+      this.labelEl.className = "mhx-nh-label";
+      const caret = document.createElement("span");
+      caret.className = "mhx-nh-caret";
+      caret.setAttribute("aria-hidden", "true");
+      this.trigger.append(this.labelEl, caret);
+      this.popover = document.createElement("div");
+      this.popover.className = "mhx-nh-pop";
+      this.popover.hidden = true;
+      this.search = document.createElement("input");
+      this.search.type = "text";
+      this.search.className = "mhx-nh-search";
+      this.search.placeholder = options.searchPlaceholder ?? "Search\u2026";
+      this.search.setAttribute("autocomplete", "off");
+      this.list = document.createElement("ul");
+      this.list.className = "mhx-nh-list";
+      this.list.setAttribute("role", "listbox");
+      this.popover.append(this.search, this.list);
+    }
+    build() {
+      this.wrapper.append(this.trigger, this.popover);
+      this.trigger.addEventListener("click", this.onTriggerClick);
+      this.search.addEventListener("input", this.onSearchInput);
+      this.search.addEventListener("keydown", this.onSearchKeyDown);
+      document.addEventListener("pointerdown", this.onDocumentPointerDown, true);
+    }
+    detachSurface() {
+      this.trigger.removeEventListener("click", this.onTriggerClick);
+      this.search.removeEventListener("input", this.onSearchInput);
+      this.search.removeEventListener("keydown", this.onSearchKeyDown);
+      document.removeEventListener("pointerdown", this.onDocumentPointerDown, true);
+    }
+    syncFromNative() {
+      super.syncFromNative();
+      if (this.open) this.applyFilter();
+    }
+    render() {
+      const options = readOptions(this.select);
+      const selected = options.find((o) => o.value === this.currentValue);
+      this.labelEl.textContent = selected?.label ?? this.options.placeholder ?? "Select\u2026";
+      this.labelEl.classList.toggle("mhx-nh-label--empty", !selected);
+      this.list.textContent = "";
+      for (const option of options) {
+        const item = document.createElement("li");
+        item.className = "mhx-nh-opt";
+        item.setAttribute("role", "option");
+        item.dataset["value"] = option.value;
+        item.textContent = option.label;
+        if (option.disabled) {
+          item.classList.add("mhx-nh-opt--disabled");
+          item.setAttribute("aria-disabled", "true");
+        }
+        item.classList.toggle("mhx-nh-opt--active", option.value === this.currentValue);
+        item.addEventListener("click", () => {
+          if (option.disabled) return;
+          this.choose(option.value);
+        });
+        this.list.appendChild(item);
+      }
+    }
+    choose(value) {
+      writeNativeValue(this.select, value);
+      if (this.options.closeOnSelect !== false) this.close();
+    }
+    openPopover() {
+      if (this.open) return;
+      this.open = true;
+      this.popover.hidden = false;
+      this.trigger.setAttribute("aria-expanded", "true");
+      this.wrapper.classList.add("mhx-nh--open");
+      this.search.value = "";
+      this.applyFilter();
+      this.search.focus();
+    }
+    close() {
+      if (!this.open) return;
+      this.open = false;
+      this.popover.hidden = true;
+      this.trigger.setAttribute("aria-expanded", "false");
+      this.wrapper.classList.remove("mhx-nh--open");
+      this.activeIndex = -1;
+    }
+    closeSurface() {
+      this.close();
+    }
+    visibleItems() {
+      return Array.from(
+        this.list.querySelectorAll(".mhx-nh-opt")
+      ).filter((item) => !item.hidden);
+    }
+    applyFilter() {
+      const needle = this.search.value.trim().toLowerCase();
+      const items = Array.from(
+        this.list.querySelectorAll(".mhx-nh-opt")
+      );
+      for (const item of items) {
+        const label = (item.textContent ?? "").toLowerCase();
+        const value = (item.dataset["value"] ?? "").toLowerCase();
+        item.hidden = needle !== "" && !label.includes(needle) && !value.includes(needle);
+      }
+      const visible = items.filter((item) => !item.hidden);
+      const selected = visible.find(
+        (item) => item.dataset["value"] === this.currentValue
+      );
+      if (selected) this.activeIndex = visible.indexOf(selected);
+      else this.activeIndex = visible.length > 0 ? 0 : -1;
+      for (const item of items) item.classList.remove("mhx-nh-opt--cursor");
+      visible[this.activeIndex]?.classList.add("mhx-nh-opt--cursor");
+      visible[this.activeIndex]?.scrollIntoView({ block: "nearest" });
+    }
+    moveCursor(delta) {
+      const visible = this.visibleItems();
+      if (visible.length === 0) return;
+      const next = (this.activeIndex + delta + visible.length) % visible.length;
+      visible[this.activeIndex]?.classList.remove("mhx-nh-opt--cursor");
+      this.activeIndex = next;
+      visible[next]?.classList.add("mhx-nh-opt--cursor");
+      visible[next]?.scrollIntoView({ block: "nearest" });
+    }
+  };
+  var SegmentedSelect = class extends SelectDecorator {
+    constructor(select, options) {
+      super(select, options, "seg", false);
+      __publicField(this, "row");
+      this.row = document.createElement("div");
+      this.row.className = "mhx-nh-seg";
+      this.row.setAttribute("role", "radiogroup");
+      if (options.label) this.row.setAttribute("aria-label", options.label);
+    }
+    build() {
+      this.row.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const btn = target.closest(".mhx-nh-seg-btn");
+        if (!btn || btn.disabled) return;
+        event.preventDefault();
+        const value = btn.dataset["value"];
+        if (value !== void 0) writeNativeValue(this.select, value);
+      });
+      this.wrapper.appendChild(this.row);
+    }
+    render() {
+      this.row.textContent = "";
+      for (const option of readOptions(this.select)) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mhx-nh-seg-btn";
+        btn.textContent = option.label;
+        btn.dataset["value"] = option.value;
+        btn.disabled = option.disabled;
+        const isActive = option.value === this.currentValue;
+        btn.classList.toggle("mhx-nh-seg-btn--active", isActive);
+        btn.setAttribute("aria-checked", String(isActive));
+        btn.setAttribute("role", "radio");
+        btn.title = option.label;
+        this.row.appendChild(btn);
+      }
+    }
+  };
+  function enhanceSelect(select, options = {}) {
+    if (isEnhanced(select)) return null;
+    const decorator = options.presentation === "segmented" ? new SegmentedSelect(select, options) : new SelectEnhancer(select, options);
+    decorator.mount();
+    return decorator;
+  }
+  function isEnhanced(select) {
+    const existing = mounted.get(select);
+    return Boolean(existing) && !existing?.isStale();
+  }
+  var ENHANCER_STYLES = `
+.mhx-nh{position:relative;display:block;min-width:180px;font:13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;}
+.mhx-nh>select.mhx-nh-native{display:none !important;}
+.mhx-nh-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:6px 10px;border:1px solid #adadad;border-radius:3px;background:#fff;color:#303030;cursor:pointer;text-align:left;font:inherit;}
+.mhx-nh-trigger:hover{border-color:#8a8a8a;}
+.mhx-nh--open .mhx-nh-trigger{border-color:#007bdb;box-shadow:0 0 0 1px #007bdb;}
+.mhx-nh-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mhx-nh-label--empty{color:#8a8a8a;}
+.mhx-nh-caret{flex-shrink:0;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #555;}
+.mhx-nh-pop{position:absolute;z-index:100000;top:calc(100% + 2px);left:0;right:0;display:flex;flex-direction:column;max-height:280px;border:1px solid #adadad;border-radius:3px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+/* Author styles beat the UA sheet's [hidden]{display:none}, so a class-level
+   display would keep the closed list laid out and swallowing clicks on
+   whatever sits underneath it. Restore the close. */
+.mhx-nh-pop[hidden]{display:none;}
+.mhx-nh-search{flex-shrink:0;margin:6px;padding:5px 8px;border:1px solid #c8c8c8;border-radius:3px;font:inherit;}
+.mhx-nh-search:focus{outline:none;border-color:#007bdb;box-shadow:0 0 0 1px #007bdb;}
+.mhx-nh-list{margin:0;padding:0 0 6px;overflow-y:auto;list-style:none;}
+.mhx-nh-opt{padding:5px 10px;cursor:pointer;color:#303030;}
+.mhx-nh-opt--cursor{background:#e5f2fa;}
+.mhx-nh-opt--active{font-weight:700;color:#007bdb;}
+.mhx-nh-opt--disabled{color:#adadad;cursor:default;}
+/* Two classes so the segmented modifier wins over the block default above. */
+.mhx-nh.mhx-nh--seg{display:inline-flex;min-width:0;}
+.mhx-nh-seg{display:inline-flex;border:1px solid #adadad;border-radius:3px;overflow:hidden;background:#fff;}
+.mhx-nh-seg-btn{padding:5px 10px;min-width:40px;border:0;border-right:1px solid #e3e3e3;background:#fff;color:#303030;cursor:pointer;font:inherit;}
+.mhx-nh-seg-btn:last-child{border-right:0;}
+.mhx-nh-seg-btn:hover{background:#f0f0f0;}
+.mhx-nh-seg-btn--active{background:#007bdb;color:#fff;font-weight:700;}
+.mhx-nh-seg-btn--active:hover{background:#00629e;}
+.mhx-nh-seg-btn:disabled{color:#adadad;cursor:default;background:#fafafa;}
+`;
+
+  // src/entrypoints/demo/main.ts
+  var STORE_VIEWS = [
+    ["0", "All Store Views"],
+    ["1", "BestOfGifts EN"],
+    ["2", "BestOfGifts PT"],
+    ["3", "BestOfGifts ES"],
+    ["4", "BestOfGifts FR"],
+    ["5", "BestOfGifts DE"],
+    ["6", "BestOfGifts IT"],
+    ["7", "QA Sandbox"],
+    ["8", "B2B Wholesale EN"],
+    ["9", "Marketplace Partners"],
+    ["10", "Newsletter Segment"],
+    ["11", "Staff Preview"]
+  ];
+  var COLOURS = [
+    ["black", "Black"],
+    ["white", "White"],
+    ["navy", "Navy Blue"],
+    ["royal", "Royal Blue"],
+    ["sky", "Sky Blue"],
+    ["teal", "Teal"],
+    ["mint", "Mint Green"],
+    ["forest", "Forest Green"],
+    ["olive", "Olive"],
+    ["lime", "Lime"],
+    ["mustard", "Mustard"],
+    ["amber", "Amber"],
+    ["orange", "Orange"],
+    ["coral", "Coral"],
+    ["red", "Red"],
+    ["crimson", "Crimson"],
+    ["burgundy", "Burgundy"],
+    ["plum", "Plum"],
+    ["purple", "Purple"],
+    ["lavender", "Lavender"],
+    ["mauve", "Mauve"],
+    ["pink", "Pink"],
+    ["blush", "Blush"],
+    ["champagne", "Champagne"],
+    ["beige", "Beige"],
+    ["taupe", "Taupe"],
+    ["charcoal", "Charcoal"],
+    ["silver", "Silver"]
+  ];
+  var ATTRIBUTE_SETS = [
+    ["4", "Default"],
+    ["9", "Apparel"],
+    ["10", "Footwear"],
+    ["11", "Bags"],
+    ["12", "Accessories"],
+    ["15", "Jewellery"],
+    ["18", "Home & Living"],
+    ["22", "Gift Sets"]
+  ];
+  function optionsMarkup(list) {
+    return list.map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
+  }
+  var app = document.getElementById("app");
+  if (!app) throw new Error("demo harness: #app host is missing");
+  app.innerHTML = `
+  <header class="admin__header">
+    <strong>BOG Helper \u2014 dropdown feasibility harness</strong>
+    <span><span class="store-switcher-label">Store View:</span></span>
+    <div class="store-switcher">
+      <select id="store-select" name="store_switcher" title="Store View">${optionsMarkup(STORE_VIEWS)}</select>
+    </div>
+  </header>
+
+  <main>
+    <h1>Can the extension upgrade a Magento admin dropdown?</h1>
+    <p class="lede">
+      Magento-shaped markup, enhanced entirely from the client. The native
+      <code>&lt;select&gt;</code> stays in the page and keeps the real value.
+    </p>
+
+    <section class="panel">
+      <h2>Side by side \u2014 same markup, one untouched</h2>
+      <div class="cols">
+        <div class="admin__field">
+          <label class="admin__field-label" for="attr-raw">
+            Attribute Set <span class="tag tag--before">Magento default</span>
+          </label>
+          <div class="admin__field-control">
+            <select id="attr-raw" name="product[attribute_set_id]" class="admin__control-select raw">${optionsMarkup(ATTRIBUTE_SETS)}</select>
+          </div>
+        </div>
+        <div class="admin__field">
+          <label class="admin__field-label" for="attr-enhanced">
+            Attribute Set <span class="tag tag--after">Enhanced</span>
+          </label>
+          <div class="admin__field-control">
+            <select id="attr-enhanced" name="product[attribute_set_id]" class="admin__control-select">${optionsMarkup(ATTRIBUTE_SETS)}</select>
+          </div>
+        </div>
+      </div>
+      <p class="hint">Both hold the same eight values. Only one is searchable.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Product form fields, on the same page as the header switcher</h2>
+      <div class="cols">
+        <div class="admin__field">
+          <label class="admin__field-label" for="colour-select">Color</label>
+          <div class="admin__field-control" id="colour-field">
+            <select id="colour-select" name="product[color]" class="admin__control-select">${optionsMarkup(COLOURS)}</select>
+          </div>
+        </div>
+        <div class="admin__field">
+          <label class="admin__field-label" for="status-select">Status</label>
+          <div class="admin__field-control">
+            <select id="status-select" name="product[status]" class="admin__control-select">
+              <option value="1">Enabled</option>
+              <option value="2">Disabled</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <p class="hint">
+        Twenty-eight colours is where a plain dropdown stops being usable. A two-option
+        field is left as-is on purpose \u2014 enhancement should be opt-in per field.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Proof panel</h2>
+      <div class="status-line" id="status">Building\u2026</div>
+      <div class="controls">
+        <button type="button" id="btn-magento-set">Set value from the Magento side</button>
+        <button type="button" id="btn-knockout-options" class="secondary">Simulate Knockout rebuilding the option list</button>
+        <button type="button" id="btn-rerender-field" class="secondary">Simulate Knockout re-rendering the whole field</button>
+        <button type="button" id="btn-read" class="secondary">Read native values</button>
+        <button type="button" id="btn-reset" class="secondary">Reset</button>
+      </div>
+      <ul class="log" id="log"></ul>
+      <p class="hint">
+        Green lines are <code>input</code>/<code>change</code> events received by the
+        native selects \u2014 that is what Magento's components listen to. Amber lines are
+        the harness reporting something unexpected.
+      </p>
+    </section>
+  </main>
+`;
+  var logEl = document.getElementById("log");
+  var statusEl = document.getElementById("status");
+  function log(message, kind = "plain") {
+    if (!logEl) return;
+    const item = document.createElement("li");
+    if (kind === "event") item.className = "is-event";
+    if (kind === "warn") item.className = "is-warn";
+    item.textContent = message;
+    logEl.appendChild(item);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  function selectById(id) {
+    const el = document.querySelector(`#${id}`);
+    if (!el) throw new Error(`demo harness: #${id} is missing`);
+    return el;
+  }
+  var storeSelect = selectById("store-select");
+  var colourSelect = selectById("colour-select");
+  var attrEnhanced = selectById("attr-enhanced");
+  var statusSelect = selectById("status-select");
+  function controlLabel(select) {
+    const wrapper = select.closest(".mhx-nh");
+    const label = wrapper?.querySelector(".mhx-nh-label");
+    return label?.textContent?.trim() ?? null;
+  }
+  function nativeLabel(select) {
+    return select.selectedOptions[0]?.textContent?.trim() ?? "(nothing selected)";
+  }
+  function checkSync(select, name) {
+    const label = controlLabel(select);
+    if (label === null) {
+      log(`${name}: not enhanced (left as Magento rendered it)`);
+      return true;
+    }
+    const native = nativeLabel(select);
+    const ok = label === native;
+    log(
+      `${name}: native="${native}" \xB7 control="${label}" \xB7 ${ok ? "IN SYNC" : "OUT OF SYNC"}`,
+      ok ? "event" : "warn"
+    );
+    return ok;
+  }
+  function refreshStatus() {
+    if (!statusEl) return;
+    const changed = storeSelect.dataset["mhxChanges"] ?? "0";
+    statusEl.innerHTML = `store_switcher=<b>${storeSelect.value}</b> (${nativeLabel(storeSelect)}) \xB7 product[color]=<b>${colourSelect.value}</b> \xB7 change events seen: <b>${changed}</b>`;
+  }
+  for (const evt of ["input", "change"]) {
+    document.addEventListener(
+      evt,
+      (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement)) return;
+        const seen = Number(target.dataset["mhxChanges"] ?? "0") + 1;
+        target.dataset["mhxChanges"] = String(seen);
+        log(`${evt} \u2192 ${target.name || target.id} = "${target.value}"`, "event");
+        refreshStatus();
+      },
+      true
+    );
+  }
+  enhanceSelect(storeSelect, {
+    searchPlaceholder: "Search store views\u2026",
+    label: "Store View"
+  });
+  enhanceSelect(attrEnhanced, { searchPlaceholder: "Search attribute sets\u2026" });
+  var colourEnhancer = enhanceSelect(colourSelect, {
+    searchPlaceholder: "Search 28 colours\u2026"
+  });
+  if (isEnhanced(statusSelect)) {
+    log("Status field was enhanced, but it should have been left alone.", "warn");
+  }
+  log(`Enhanced: store switcher, colour, and the "after" attribute set.`);
+  log(`Left alone: Status (2 options) and the "before" attribute set.`);
+  checkSync(storeSelect, "store switcher");
+  checkSync(colourSelect, "color");
+  refreshStatus();
+  document.getElementById("btn-read")?.addEventListener("click", () => {
+    log("--- native state ---");
+    for (const [select, name] of [
+      [storeSelect, "store_switcher"],
+      [colourSelect, "product[color]"],
+      [attrEnhanced, "product[attribute_set_id]"],
+      [statusSelect, "product[status]"]
+    ]) {
+      log(
+        `${name}: value="${select.value}" \xB7 optionCount=${select.options.length} \xB7 still in DOM=${select.isConnected} \xB7 enhanced=${isEnhanced(select)}`
+      );
+    }
+    checkSync(storeSelect, "store switcher");
+    checkSync(colourSelect, "color");
+  });
+  document.getElementById("btn-magento-set")?.addEventListener("click", () => {
+    const next = storeSelect.value === "3" ? "5" : "3";
+    storeSelect.value = next;
+    storeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    log(`Magento side set store_switcher to "${next}" and fired change.`);
+    checkSync(storeSelect, "store switcher");
+    refreshStatus();
+  });
+  document.getElementById("btn-knockout-options")?.addEventListener("click", () => {
+    const extra = [["12", "BestOfGifts NL"]];
+    storeSelect.textContent = "";
+    for (const [value, label] of [...STORE_VIEWS, ...extra]) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      storeSelect.appendChild(option);
+    }
+    storeSelect.value = "12";
+    log('Rebuilt the option list and selected "BestOfGifts NL" (no change event).');
+    setTimeout(() => {
+      checkSync(storeSelect, "store switcher");
+      refreshStatus();
+    }, 0);
+  });
+  document.getElementById("btn-rerender-field")?.addEventListener("click", () => {
+    const field = document.getElementById("colour-field");
+    if (!field) return;
+    const preserved = colourSelect.value;
+    const fresh = document.createElement("select");
+    fresh.id = "colour-select";
+    fresh.name = "product[color]";
+    fresh.className = "admin__control-select";
+    for (const [value, label] of COLOURS) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      fresh.appendChild(option);
+    }
+    fresh.value = preserved;
+    field.textContent = "";
+    field.appendChild(fresh);
+    log(`Knockout replaced the colour field; preserved value="${preserved}".`);
+    if (colourEnhancer?.isStale()) {
+      log("Old enhancer reported isStale() \u2014 as expected, its select is detached.", "event");
+    }
+    const re = enhanceSelect(fresh, { searchPlaceholder: "Search 28 colours\u2026" });
+    log(re ? "Re-enhanced the fresh select (idempotent scan would do this)." : "Re-enhance was skipped.", re ? "plain" : "warn");
+    checkSync(fresh, "color (fresh)");
+    refreshStatus();
+  });
+  document.getElementById("btn-reset")?.addEventListener("click", () => {
+    location.reload();
+  });
+})();
+    </script>
+  </body>
+</html>

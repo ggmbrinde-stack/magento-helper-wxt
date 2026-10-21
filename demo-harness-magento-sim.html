@@ -1,0 +1,324 @@
+<script>
+// === Diagnostic Tool ===
+document.getElementById('mhx-diag-toggle').addEventListener('click', () => {
+  const existing = document.querySelector('.mhx-nav-toggle-diagnostic');
+  if (existing) {
+    existing.remove();
+  }
+
+  const panel = document.createElement('div');
+  panel.className = 'mhx-nav-toggle-diagnostic';
+  panel.innerHTML = `
+    <details open>
+      <summary>Layout Diagnostic (click to expand)</summary>
+      <div class="log" id="diag-log">
+        <div class="label">Loading diagnostics...</div>
+      </div>
+    </details>
+  `;
+  document.body.appendChild(panel);
+
+  const logEl = panel.querySelector('#diag-log');
+  const originalLog = console.log;
+  const logLines: string[] = [];
+  console.log = (...args) => {
+    const msg = args.map(a => {
+      if (typeof a === 'string') return a;
+      if (a instanceof Error) return a.message;
+      return String(a);
+    }).join(' ');
+    logLines.push(msg);
+    originalLog.apply(console, args);
+  };
+  console.group = (label) => console.log(`[GROUP] ${label}`);
+  console.groupEnd = () => console.log('[END GROUP]');
+
+  (async () => {
+    try {
+      console.group('=== ADMIN NAV TOGGLE DIAGNOSTIC ===');
+      console.log('Cleaning up...');
+      document.querySelectorAll('.mhx-nav-toggle-diagnostic').forEach(el => el.remove());
+      console.log('✓ Cleaned up');
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magento Admin Layout Simulator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+    }
+    #page-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+    .admin__menu {
+      width: 260px;
+      background: #36363e;
+      color: #cfcfd4;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .admin__menu .nav-logo {
+      padding: 16px 20px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      background: #2d2d35;
+    }
+    .admin__menu .nav-links {
+      padding: 12px 16px;
+      flex: 1;
+
+      const navSelectors = [
+        'nav.admin__menu', '#menu', '.admin__menu',
+        'nav[aria-label="Main Menu"]', '[role="navigation"]',
+      ];
+
+      console.log('\n--- NAV ELEMENTS ---');
+      let navCount = 0;
+      for (const sel of navSelectors) {
+        const els = document.querySelectorAll(sel);
+        for (const el of Array.from(els)) {
+          const rect = el.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) continue;
+          navCount++;
+          const cs = getComputedStyle(el);
+          console.log(`\n[${sel}]`);
+          console.log(`  id: ${el.id || 'none'}`);
+          console.log(`  class: ${el.className || 'none'}`);
+          console.log(`  display: ${cs.display}`);
+          console.log(`  position: ${cs.position}`);
+          console.log(`  offsetWidth: ${el.offsetWidth}`);
+          const ml = parseFloat(cs.marginLeft) || 0;
+          const pl = parseFloat(cs.paddingLeft) || 0;
+          if (ml > 0) console.log(`  ⚠ margin-left: ${ml}px`);
+          if (pl > 0) console.log(`  ⚠ padding-left: ${pl}px`);
+        }
+      }
+      console.log(`\nTotal nav: ${navCount}`);
+
+      console.log('\n--- RAIL ANCESTORS ---');
+      let railCount = 0;
+      for (const sel of navSelectors) {
+        const els = document.querySelectorAll(sel);
+        for (const nav of Array.from(els)) {
+          const navRect = nav.getBoundingClientRect();
+          let base = navRect;
+          if (base.width <= 0) {
+            const parent = nav.parentElement;
+            if (parent) base = parent.getBoundingClientRect();
+          }
+          if (base.width <= 0) continue;
+          const maxRail = Math.min(260, Math.max(120, base.width * 2 + 60));
+          let el: HTMLElement | null = nav.parentElement;
+          while (el && el !== document.body && el !== document.documentElement) {
+            const rect = el.getBoundingClientRect();
+            const sameLeft = Math.abs(rect.left - base.left) <= 8;
+            const nearWidth = rect.width > 0 && rect.width <= maxRail;
+            const tallEnough = rect.height >= Math.max(40, base.height * 0.5);
+            if (!sameLeft || !nearWidth || !tallEnough) break;
+            railCount++;
+            const cs = getComputedStyle(el);
+            console.log(`[Rail ${railCount}] display: ${cs.display}, margin-left: ${cs.marginLeft}, padding-left: ${cs.paddingLeft}`);
+
+      console.log('\n--- BODY CLASS CHECK ---');
+      const body = document.body;
+      const hasHiddenClass = body?.classList.contains('mhx-nav-hidden') || false;
+      console.log(`body.mhx-nav-hidden class: ${hasHiddenClass ? '✓ YES' : '✗ NO'}`);
+
+      console.log('\n--- SPACE OCCUPANCY ---');
+      const containerWidth = document.body ? document.body.scrollWidth : 0;
+      let leftOccupied = 0;
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('.page-main, .page-wrapper, #page-wrapper, .admin__header, main, body, #html-body, [class*="wrapper"], [class*="content"], [role="main"]'))) {
+        const cs = getComputedStyle(el);
+        const ml = parseFloat(cs.marginLeft) || 0;
+        const pl = parseFloat(cs.paddingLeft) || 0;
+        if (ml > 24 || pl > 24) {
+          leftOccupied += ml + pl;
+        }
+      }
+      console.log(`Container width: ${containerWidth}px`);
+      console.log(`Left occupied: ${leftOccupied.toFixed(1)}px`);
+      if (hasHiddenClass && leftOccupied > 24) {
+        console.log('✗ BUG: body.mhx-nav-hidden is applied but left side still has space');
+      } else if (hasHiddenClass && leftOccupied <= 24) {
+        console.log('✓ Body class applied and left space cleared');
+      } else {
+        console.log('✗ Body class not applied - collapse may not have run');
+      }
+
+      console.groupEnd();
+      console.log('=== END DIAGNOSTIC ===');
+
+      logEl.innerHTML = logLines.map(l => {
+        if (l.startsWith('⚠')) return `<div class="warn">${l}</div>`;
+        if (l.startsWith('✓')) return `<div class="ok">${l}</div>`;
+        if (l.startsWith('✗')) return `<div class="bug">${l}</div>`;
+        return `<div class="label">${l}</div>`;
+      }).join('') + '<hr>';
+    } catch (e) {
+      logEl.innerHTML = `<div class="bug">ERROR: ${e.message}</div>`;
+      console.error(e);
+    } finally {
+      console.log = originalLog;
+      console.group = () => {};
+      console.groupEnd = () => {};
+    }
+  })();
+});
+</script>
+</body>
+</html>
+
+            el = el.parentElement;
+          }
+        }
+      }
+      console.log(`\nTotal rail: ${railCount}`);
+
+      console.log('\n--- CONTENT ELEMENTS ---');
+      const contentSelectors = [
+        '.page-main', '.page-wrapper', '#page-wrapper', '.admin__header',
+        'main', 'body', '#html-body', '[class*="wrapper"]', '[class*="content"]', '[role="main"]'
+      ];
+      let contentCount = 0;
+      for (const sel of contentSelectors) {
+        const els = document.querySelectorAll(sel);
+        for (const el of Array.from(els)) {
+          const rect = el.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) continue;
+          contentCount++;
+          const cs = getComputedStyle(el);
+          const ml = parseFloat(cs.marginLeft) || 0;
+          const pl = parseFloat(cs.paddingLeft) || 0;
+          const inlineMl = parseFloat(el.style.marginLeft) || 0;
+          const inlinePl = parseFloat(el.style.paddingLeft) || 0;
+          const rel = (ml + pl + inlineMl + inlinePl) > 24 ? ' ⚠' : '';
+          console.log(
+            `[${sel}] marginL=${ml}px (inline=${inlineMl}), ` +
+            `paddingL=${pl}px (inline=${inlinePl}) rect: L=${rect.left.toFixed(1)} W=${rect.width.toFixed(1)}${rel}`
+          );
+        }
+      }
+      console.log(`\nTotal content: ${contentCount}`);
+
+    }
+    .admin__menu .nav-links a {
+      display: block;
+      padding: 8px 12px;
+      color: #cfcfd4;
+      text-decoration: none;
+      margin-bottom: 4px;
+    }
+    .admin__menu .nav-links a:hover {
+      background: #45454d;
+      color: #fff;
+    }
+    .page-wrapper {
+      flex: 1;
+      margin-left: 260px;
+      background: #fff;
+      min-height: 100vh;
+    }
+    .page-wrapper .content-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e3e3e3;
+      background: #f8f8f8;
+    }
+    .page-wrapper .content-body {
+      padding: 20px;
+    }
+    .content-body h1 { margin: 0 0 12px; }
+    .content-body .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 1200px;
+    }
+    .content-body .grid-item {
+      border: 1px solid #e3e3e3;
+      padding: 16px;
+      border-radius: 4px;
+    }
+    .mhx-nav-toggle-diagnostic {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 600px;
+      max-height: 80vh;
+      overflow: auto;
+      background: #222;
+      color: #eee;
+      font-family: monospace;
+      font-size: 12px;
+      z-index: 100000;
+      border: 1px solid #555;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .mhx-nav-toggle-diagnostic summary {
+      cursor: pointer;
+      padding: 8px 12px;
+      background: #333;
+      border-bottom: 1px solid #555;
+      user-select: none;
+    }
+    .mhx-nav-toggle-diagnostic .log {
+      padding: 8px 12px;
+      max-height: 60vh;
+      overflow: auto;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .mhx-nav-toggle-diagnostic .log .label { color: #888; }
+    .mhx-nav-toggle-diagnostic .log .warn { color: #ff8800; }
+    .mhx-nav-toggle-diagnostic .log .ok { color: #00ff88; }
+    .mhx-nav-toggle-diagnostic .log .bug { color: #ff4444; }
+    .mhx-nav-toggle-diagnostic .log hr { border: none; border-top: 1px solid #555; margin: 8px 0; }
+    .mhx-nav-toggle-diagnostic .log .group { font-weight: bold; margin-top: 12px; color: #888; }
+  </style>
+</head>
+<body>
+
+<div id="page-wrapper">
+  <nav class="admin__menu" id="menu">
+    <div class="nav-logo">Magento Admin</div>
+    <div class="nav-links">
+      <a href="#">Dashboard</a>
+      <a href="#">Products</a>
+      <a href="#">Categories</a>
+      <a href="#">Customers</a>
+      <a href="#">Orders</a>
+      <a href="#">Reports</a>
+    </div>
+  </nav>
+
+  <div class="page-wrapper" id="page-wrapper">
+    <div class="content-header">
+      <h1>Products</h1>
+      <p>Manage your product catalog</p>
+    </div>
+    <div class="content-body">
+      <h1>Product List</h1>
+      <div class="grid">
+        <div class="grid-item">Product 1</div>
+        <div class="grid-item">Product 2</div>
+        <div class="grid-item">Product 3</div>
+        <div class="grid-item">Product 4</div>
+        <div class="grid-item">Product 5</div>
+        <div class="grid-item">Product 6</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="mhx-diag-toggle" style="position:fixed;top:10px;left:10px;z-index:100000;background:#007BDB;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-size:14px;">
+  Show Layout Diagnostic
+</button>

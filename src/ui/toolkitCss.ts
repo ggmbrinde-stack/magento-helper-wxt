@@ -1,0 +1,533 @@
+// GENERATED from src/ui/toolkit.css by scripts/sync-toolkit.mjs — do not edit.
+// Inline fallback copy of the toolkit sheet (the <link> copy is
+// public/ui/toolkit.css). Regenerate with `npm run ui:sync`.
+export const TOOLKIT_CSS = `/* ============================================================================
+   One UI toolkit for every injected component — THE single sheet.
+
+   TOKEN CONTRACT (read before editing):
+   - Layer 1 \`--mhx-pg-*\`: PAGE-ADAPTIVE chrome. These describe the page the
+     widget sits on (the Magento admin), never our own app. Ink, lines and
+     fills derive from \`currentColor\` + \`color-mix\` with a flat \`rgba()\`
+     fallback declared FIRST, so the same rules work on a light or a dark
+     admin and engines without color-mix get a sane grey.
+   - Layer 2 \`--mhx-*\`: extension-owned surfaces (side panel, dashboard,
+     theme preview), published by lib/theme.ts. NEVER use them here: the
+     admin page is not our surface — that mistake caused the dark-admin
+     contrast bug.
+   - The three coloured tokens \`--mhx-pg-accent\`, \`--mhx-pg-danger\`,
+     \`--mhx-pg-ok\` are operator-overridable (Settings → Toolkit colours).
+     Overrides are written as inline custom properties on <html>, which
+     outrank this block, so removing one restores the default here.
+   - Features never style themselves: they pass a modifier
+     (\`data-variant\`, \`data-tone\`, \`--active\`) and nothing else. No colour,
+     radius, padding or font lives outside this file (plus lib/theme.ts for
+     extension-owned surfaces).
+
+   DELIVERY (do not edit those, they are generated):
+     src/ui/toolkit.css  -- this file, the ONLY source
+       -> public/ui/toolkit.css   (loaded as a <link>, cached across pages;
+                                   exposed via web_accessible_resources)
+       -> src/ui/toolkitCss.ts    (inline <style id="mhx-ui"> fallback for
+                                   setups where extension URLs are blocked)
+   Regenerate with \`npm run ui:sync\`; \`npm run check:ui\` fails on drift.
+   ============================================================================ */
+
+/* ---- layer 1: page-adaptive tokens -------------------------------------- */
+:root,
+:host {
+  --mhx-pg-ink: currentColor;
+
+  --mhx-pg-line: rgba(128, 128, 128, 0.45);
+  --mhx-pg-line: color-mix(in srgb, currentColor 22%, transparent);
+  --mhx-pg-line-soft: rgba(128, 128, 128, 0.32);
+  --mhx-pg-line-soft: color-mix(in srgb, currentColor 14%, transparent);
+  --mhx-pg-fill: rgba(128, 128, 128, 0.07);
+  --mhx-pg-fill: color-mix(in srgb, currentColor 7%, transparent);
+  --mhx-pg-fill-hover: rgba(128, 128, 128, 0.16);
+  --mhx-pg-fill-hover: color-mix(in srgb, currentColor 13%, transparent);
+
+  --mhx-pg-accent: var(--mhx-accent, #007bdb);
+  --mhx-pg-accent-strong: color-mix(in srgb, var(--mhx-pg-accent) 84%, #000000);
+  --mhx-pg-on-accent: var(--mhx-on-accent, #ffffff);
+  --mhx-pg-danger: #e5484d;
+  --mhx-pg-danger-wash: color-mix(in srgb, var(--mhx-pg-danger) 14%, transparent);
+  --mhx-pg-ok: #16a34a;
+  --mhx-pg-ok-wash: color-mix(in srgb, var(--mhx-pg-ok) 14%, transparent);
+
+  --mhx-pg-radius: 4px;
+  --mhx-pg-gap: 6px;
+  --mhx-pg-font: 13px/1.4 system-ui, "Segoe UI", Arial, sans-serif;
+}
+
+/* ---- base ----------------------------------------------------------------
+   Magento styles bare \`button\`/\`input\` with \`:not(...)\` selectors, so every
+   primitive sets font, line-height, colour, background, border, radius and
+   box-shadow explicitly instead of inheriting. */
+
+/* ---- button --------------------------------------------------------------- */
+.mhx-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0;
+  padding: 6px 12px;
+  font: var(--mhx-pg-font);
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--mhx-pg-radius);
+  background: rgba(128, 128, 128, 0.07);
+  background: color-mix(in srgb, currentColor 7%, transparent);
+  color: inherit;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.mhx-btn:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+.mhx-btn:focus-visible {
+  outline: 2px solid var(--mhx-pg-accent);
+  outline-offset: 1px;
+}
+
+.mhx-btn[disabled],
+.mhx-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.mhx-btn[data-variant="danger"] {
+  color: var(--mhx-pg-danger);
+  font-weight: 600;
+  background: transparent;
+}
+
+.mhx-btn[data-variant="danger"]:hover {
+  background: rgba(229, 72, 77, 0.14);
+  background: var(--mhx-pg-danger-wash);
+}
+
+.mhx-btn[data-variant="accent"] {
+  background: var(--mhx-pg-accent);
+  border-color: var(--mhx-pg-accent);
+  color: var(--mhx-pg-on-accent);
+  font-weight: 600;
+}
+
+.mhx-btn[data-variant="accent"]:hover {
+  background: var(--mhx-pg-accent);
+  background: var(--mhx-pg-accent-strong);
+  border-color: var(--mhx-pg-accent-strong);
+  color: var(--mhx-pg-on-accent);
+}
+
+.mhx-btn[data-variant="ghost"] {
+  background: transparent;
+}
+
+.mhx-btn[data-variant="icon"] {
+  padding: 3px 6px;
+  background: transparent;
+  border-color: transparent;
+}
+
+.mhx-btn[data-variant="icon"]:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+/* ---- button group (row actions, header actions) --------------------------- */
+.mhx-group {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: stretch;
+  max-width: 100%;
+  font: var(--mhx-pg-font);
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  overflow: hidden;
+  background: rgba(128, 128, 128, 0.07);
+  background: var(--mhx-pg-fill);
+  vertical-align: middle;
+}
+
+.mhx-group--wrap {
+  flex-wrap: wrap;
+}
+
+.mhx-group > .mhx-btn {
+  padding: 5px 10px;
+  font-weight: 400;
+  border: 0;
+  border-right: 1px solid rgba(128, 128, 128, 0.32);
+  border-right: 1px solid var(--mhx-pg-line-soft);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.mhx-group > .mhx-btn:last-child {
+  border-right: 0;
+}
+
+.mhx-group > .mhx-btn:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+.mhx-group > .mhx-btn[data-variant="danger"] {
+  color: var(--mhx-pg-danger);
+}
+
+.mhx-group > .mhx-btn[data-variant="danger"]:hover {
+  background: rgba(229, 72, 77, 0.14);
+  background: var(--mhx-pg-danger-wash);
+}
+
+/* ---- bar (full-width strip: bulk actions, toolbars) ----------------------- */
+.mhx-bar {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  max-width: 100%;
+  clear: both;
+  margin: 8px 0;
+  font: var(--mhx-pg-font);
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  overflow: hidden;
+  background: rgba(128, 128, 128, 0.07);
+  background: var(--mhx-pg-fill);
+  vertical-align: middle;
+}
+
+.mhx-bar > .mhx-btn {
+  font-weight: 400;
+  border: 0;
+  border-right: 1px solid rgba(128, 128, 128, 0.32);
+  border-right: 1px solid var(--mhx-pg-line-soft);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.mhx-bar > .mhx-btn:last-child {
+  border-right: 0;
+}
+
+.mhx-bar > .mhx-btn:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+.mhx-bar > .mhx-btn[data-variant="danger"] {
+  color: var(--mhx-pg-danger);
+  font-weight: 600;
+}
+
+.mhx-bar > .mhx-btn[data-variant="danger"]:hover {
+  background: rgba(229, 72, 77, 0.14);
+  background: var(--mhx-pg-danger-wash);
+}
+
+/* ---- segmented control ---------------------------------------------------- */
+.mhx-seg {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: stretch;
+  font: var(--mhx-pg-font);
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  overflow: hidden;
+  background: rgba(128, 128, 128, 0.07);
+  background: var(--mhx-pg-fill);
+}
+
+.mhx-seg-btn {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 5px 12px;
+  font: var(--mhx-pg-font);
+  line-height: 1.4;
+  border: 0;
+  border-right: 1px solid rgba(128, 128, 128, 0.32);
+  border-right: 1px solid var(--mhx-pg-line-soft);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mhx-seg-btn:last-child {
+  border-right: 0;
+}
+
+.mhx-seg-btn:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+.mhx-seg-btn:focus-visible {
+  outline: 2px solid var(--mhx-pg-accent);
+  outline-offset: -2px;
+}
+
+.mhx-seg-btn--active,
+.mhx-seg-btn[aria-pressed="true"] {
+  background: var(--mhx-pg-accent);
+  color: var(--mhx-pg-on-accent);
+  font-weight: 600;
+}
+
+.mhx-seg-btn--active:hover,
+.mhx-seg-btn[aria-pressed="true"]:hover {
+  background: var(--mhx-pg-accent);
+  background: var(--mhx-pg-accent-strong);
+}
+
+/* ---- chip (removable filter / pill) ---------------------------------------
+   The remove button is \`.mhx-chip-remove\`, NOT the doc's early draft name
+   \`.mhx-chip-x\`: that class belongs to activeFilters' legacy cancel button
+   on live admin pages today, and two sheets defining it would fight over
+   the same element until the activeFilters port (phase 3) lands. */ */
+.mhx-chip {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 3px 8px;
+  font: var(--mhx-pg-font);
+  line-height: 1.4;
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: 10px;
+  background: rgba(128, 128, 128, 0.07);
+  background: var(--mhx-pg-fill);
+  color: inherit;
+}
+
+.mhx-chip-remove {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  font: inherit;
+  line-height: 1;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mhx-chip-x:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+/* ---- badge (count / code / status dot) ------------------------------------- */
+.mhx-badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 18px;
+  padding: 1px 7px;
+  font: 11px/1.5 system-ui, "Segoe UI", Arial, sans-serif;
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: 999px;
+  background: rgba(128, 128, 128, 0.07);
+  background: var(--mhx-pg-fill);
+  color: inherit;
+  white-space: nowrap;
+}
+
+.mhx-badge[data-tone="ok"] {
+  color: var(--mhx-pg-ok);
+  border-color: rgba(22, 163, 74, 0.45);
+  border-color: color-mix(in srgb, var(--mhx-pg-ok) 45%, transparent);
+  background: rgba(22, 163, 74, 0.12);
+  background: var(--mhx-pg-ok-wash);
+}
+
+.mhx-badge[data-tone="danger"] {
+  color: var(--mhx-pg-danger);
+  border-color: rgba(229, 72, 77, 0.45);
+  border-color: color-mix(in srgb, var(--mhx-pg-danger) 45%, transparent);
+  background: rgba(229, 72, 77, 0.12);
+  background: var(--mhx-pg-danger-wash);
+}
+
+/* ---- inline field (chip editor, custom page size) --------------------------- */
+.mhx-inline-field {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--mhx-pg-font);
+}
+
+.mhx-inline-field input {
+  box-sizing: border-box;
+  width: 76px;
+  margin: 0;
+  padding: 4px 7px;
+  font: var(--mhx-pg-font);
+  color: inherit;
+  background: rgba(128, 128, 128, 0.07);
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+}
+
+.mhx-inline-field input:focus-visible {
+  outline: none;
+  border-color: var(--mhx-pg-accent);
+  box-shadow: 0 0 0 1px var(--mhx-pg-accent);
+}
+
+.mhx-inline-field--ok input {
+  border-color: rgba(22, 163, 74, 0.45);
+  border-color: color-mix(in srgb, var(--mhx-pg-ok) 45%, transparent);
+}
+
+/* ---- popover surface -------------------------------------------------------- */
+/* Translucent + blurred rather than a solid fill: the page background colour
+   is unknown from inside a content script (a light admin and a dark admin
+   both exist), and a derived-from-currentColor solid would invert. Phase 5
+   (enhanceSelect port) re-checks this against the real picker. */
+.mhx-pop {
+  box-sizing: border-box;
+  font: var(--mhx-pg-font);
+  color: inherit;
+  background: rgba(128, 128, 128, 0.1);
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+
+.mhx-pop-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 6px 10px;
+  font: var(--mhx-pg-font);
+  text-align: left;
+  border: 0;
+  border-radius: calc(var(--mhx-pg-radius) - 1px);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mhx-pop-item:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+.mhx-pop-item--active {
+  color: var(--mhx-pg-accent);
+  font-weight: 600;
+}
+
+/* ---- toggle (fixed chevron on the admin nav edge) ---------------------------- */
+/* Position (\`left\`) is written by adminNavToggle.ts against the measured nav;
+   everything visual lives here. */
+.mhx-toggle {
+  position: fixed;
+  top: 10px;
+  transform: translateY(0);
+  z-index: 10000;
+  box-sizing: border-box;
+  width: 16px;
+  height: 76px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--mhx-pg-font);
+  line-height: 1;
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: 0 var(--mhx-pg-radius) var(--mhx-pg-radius) 0;
+  background: rgba(128, 128, 128, 0.1);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  color: inherit;
+  cursor: pointer;
+}
+
+.mhx-toggle:hover {
+  background: rgba(128, 128, 128, 0.16);
+  background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+.mhx-toggle:focus-visible {
+  outline: 2px solid var(--mhx-pg-accent);
+  outline-offset: 1px;
+}
+
+/* ---- toast (bottom-right notification) ---------------------------------------- */
+/* Extension-owned overlay surface, like lib/theme.ts: it floats above the page
+   and must be readable on both admins, so it carries its own colours. */
+.mhx-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 340px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #1f2933;
+  color: #fff;
+  font: 13px/1.4 system-ui, "Segoe UI", Arial, sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.mhx-toast--success {
+  background: #0b6b3a;
+}
+
+.mhx-toast--error {
+  background: #9b1c1c;
+}
+
+.mhx-toast button {
+  margin-left: 4px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+}
+`;

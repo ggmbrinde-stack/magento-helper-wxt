@@ -1,0 +1,744 @@
+/* Mapped onto the shared palette in lib/theme.ts, so every surface below is
+   themed from one place. */
+:root {
+  --db-accent: var(--mhx-accent);
+  --db-accent-dark: var(--mhx-accent-2);
+  --db-tint: var(--mhx-tint);
+  --db-ink: var(--mhx-ink);
+  --db-muted: var(--mhx-muted);
+  --db-border: var(--mhx-border);
+  --db-bg: var(--mhx-bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: var(--db-ink);
+  background: var(--db-bg);
+}
+
+#app {
+  height: 100%;
+}
+
+.db-app {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  min-height: 100vh;
+}
+
+/* --- sidebar ------------------------------------------------------------ */
+
+.db-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 14px;
+  background: var(--mhx-surface);
+  border-right: 1px solid var(--db-border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.db-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 6px;
+}
+
+.db-logo {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--db-accent);
+  color: var(--mhx-on-accent);
+  font-weight: 700;
+}
+
+.db-brand strong {
+  display: block;
+  font-size: 14px;
+}
+
+.db-brand small {
+  color: var(--db-muted);
+  font-size: 11px;
+}
+
+.db-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.db-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: var(--db-ink);
+}
+
+.db-nav-item:hover {
+  background: var(--db-bg);
+}
+
+.db-nav-item.active {
+  background: var(--db-tint);
+}
+
+.db-nav-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.db-nav-item.active .db-nav-label {
+  color: var(--db-accent-dark);
+}
+
+.db-nav-hint {
+  font-size: 11px;
+  color: var(--db-muted);
+}
+
+.db-side-foot {
+  margin-top: auto;
+  padding: 0 6px;
+  font-size: 11px;
+  color: var(--db-muted);
+}
+
+.db-workspace-link {
+  display: block;
+  margin: 12px 6px 0;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: var(--db-accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+
+.db-workspace-link:hover {
+  background: var(--db-accent-dark);
+}
+
+.db-workspace-link--ghost {
+  background: transparent;
+  color: var(--db-accent-dark);
+  border: 1px solid var(--db-border);
+}
+
+.db-workspace-link--ghost:hover {
+  background: var(--db-tint);
+}
+
+/* --- main --------------------------------------------------------------- */
+
+.db-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.db-main-head {
+  padding: 24px 28px 12px;
+}
+
+.db-main-head--row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.db-main-head h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.db-main-head p {
+  margin: 2px 0 0;
+  color: var(--db-muted);
+  font-size: 13px;
+}
+
+.db-body {
+  padding: 0 28px 32px;
+}
+
+/* --- cards -------------------------------------------------------------- */
+
+.db-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.db-card {
+  background: var(--mhx-surface);
+  border: 1px solid var(--db-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.db-card.db-wide {
+  max-width: 720px;
+}
+
+.db-card h2 {
+  margin: 0 0 14px;
+  font-size: 15px;
+}
+
+.db-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.db-card-head h2 {
+  margin: 0;
+}
+
+.db-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--db-tint);
+  color: var(--db-accent-dark);
+  font-size: 12px;
+}
+
+.db-kv {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.db-kv li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--db-border);
+}
+
+.db-kv li:last-child {
+  border-bottom: 0;
+}
+
+.db-kv span {
+  color: var(--db-muted);
+}
+
+.db-kv b.ok {
+  color: var(--mhx-ok);
+}
+
+.db-kv b.bad {
+  color: var(--mhx-bad);
+}
+
+.db-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.db-links a {
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--db-accent-dark);
+  text-decoration: none;
+}
+
+.db-links a:hover {
+  background: var(--db-tint);
+}
+
+/* --- forms -------------------------------------------------------------- */
+
+.db-field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.db-field > span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.db-field em {
+  display: block;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--db-muted);
+}
+
+.db-field input {
+  background: var(--mhx-surface);
+  color: var(--mhx-ink);
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.db-field input:focus {
+  outline: none;
+  border-color: var(--db-accent);
+  box-shadow: 0 0 0 3px var(--db-tint);
+}
+
+.db-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.db-status {
+  font-size: 12px;
+  color: var(--db-accent-dark);
+}
+
+/* --- buttons ------------------------------------------------------------ */
+
+.db-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  background: var(--mhx-surface);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--db-ink);
+}
+
+.db-btn:hover:not(:disabled) {
+  background: var(--db-bg);
+}
+
+.db-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.db-btn--primary {
+  background: var(--db-accent);
+  border-color: var(--db-accent);
+  color: var(--mhx-on-accent);
+}
+
+.db-btn--primary:hover:not(:disabled) {
+  background: var(--db-accent-dark);
+}
+
+.db-btn--danger {
+  color: var(--mhx-bad);
+  border-color: var(--mhx-bad-border);
+}
+
+.db-btn--danger:hover:not(:disabled) {
+  background: var(--mhx-bad-bg);
+}
+
+/* --- table -------------------------------------------------------------- */
+
+.db-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.db-table th,
+.db-table td {
+  text-align: left;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--db-border);
+}
+
+.db-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--db-muted);
+}
+
+.db-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.db-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.db-row-actions {
+  text-align: right;
+}
+
+.db-empty {
+  margin: 8px 0;
+  color: var(--db-muted);
+  font-size: 13px;
+}
+
+/* --- reuse side-panel lookup styles inside the full page ---------------- */
+
+.mhx-content {
+  max-width: 720px;
+  padding: 0;
+}
+
+.mhx-content .mhx-header {
+  display: none;
+}
+
+/* --- audit: resolver / variants / magento links ------------------------- */
+
+.db-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.db-badge {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.db-badge.db-ok {
+  background: var(--mhx-ok-bg);
+  color: var(--mhx-ok);
+}
+
+.db-badge.db-warn {
+  background: var(--mhx-bad-bg);
+  color: var(--mhx-bad);
+}
+
+.db-badge.db-bad {
+  background: var(--mhx-bad-bg);
+  color: var(--mhx-bad);
+  box-shadow: inset 0 0 0 1px var(--mhx-bad);
+}
+
+.db-warn {
+  color: var(--mhx-bad);
+}
+
+.db-bad {
+  color: var(--mhx-bad);
+}
+
+.db-links--flush {
+  margin-top: 8px;
+}
+
+.db-links--flush li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--db-border);
+}
+
+.db-links--flush li:last-child {
+  border-bottom: 0;
+}
+
+.db-links--flush li > span {
+  flex: 0 0 150px;
+  color: var(--db-muted);
+}
+
+.db-links--flush a {
+  padding: 0;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+.db-flags {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+.db-flags--warn {
+  color: var(--mhx-bad);
+}
+
+.db-families {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.db-family {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.db-family-name {
+  flex: 0 0 150px;
+  font-weight: 600;
+}
+
+.db-family-list {
+  color: var(--db-muted);
+}
+
+.db-scopes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.db-scopes a {
+  padding: 5px 12px;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  color: var(--db-accent-dark);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.db-scopes a:hover {
+  background: var(--db-tint);
+}
+
+/* --- audit: push to Notion ---------------------------------------------- */
+
+.db-textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--mhx-ink);
+  background: var(--mhx-surface);
+  resize: vertical;
+}
+
+.db-textarea:focus {
+  outline: none;
+  border-color: var(--db-accent);
+  box-shadow: 0 0 0 3px var(--db-tint);
+}
+
+/* --- audit: model bridge ------------------------------------------------- */
+
+.db-input {
+  min-width: 220px;
+  max-width: 65%;
+  padding: 7px 9px;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--mhx-ink);
+  background: var(--mhx-surface);
+}
+
+.db-input:focus {
+  outline: none;
+  border-color: var(--db-accent);
+  box-shadow: 0 0 0 3px var(--db-tint);
+}
+
+.db-note code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: var(--db-tint);
+}
+
+.db-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.db-notes {
+  max-width: 320px;
+  color: var(--db-muted);
+  font-size: 12px;
+}
+
+.db-note {
+  margin: 0 0 12px;
+  color: var(--db-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.db-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 10px;
+}
+
+.db-checks .db-check {
+  margin-bottom: 0;
+}
+
+.db-stages td:first-child {
+  font-weight: 600;
+}
+
+.db-steps {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.db-steps li {
+  margin-bottom: 4px;
+}
+
+/* --- audit: batch runner ------------------------------------------------ */
+
+.db-progress {
+  height: 8px;
+  margin: 10px 0;
+  border-radius: 999px;
+  background: var(--db-tint);
+  overflow: hidden;
+}
+
+.db-progress-bar {
+  height: 100%;
+  background: var(--db-accent);
+  transition: width 0.3s ease;
+}
+
+.db-progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--db-muted);
+  margin-bottom: 6px;
+}
+
+.db-progress-row b {
+  color: var(--db-ink);
+}
+
+.db-sku-row--running td {
+  background: var(--db-tint);
+}
+
+.db-summary-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 10px 12px;
+  margin: 10px 0 12px;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  background: var(--db-bg);
+  font-size: 12px;
+}
+
+.db-summary-strip span {
+  color: var(--db-muted);
+}
+
+.db-summary-strip b {
+  color: var(--db-ink);
+  margin-left: 4px;
+}
+
+.db-summary-strip b.bad {
+  color: var(--mhx-bad);
+}
+
+.db-summary-strip b.ok {
+  color: var(--mhx-ok);
+}
+
+.db-kv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+
+.db-kv-grid div {
+  padding: 8px 10px;
+  border: 1px solid var(--db-border);
+  border-radius: 8px;
+  background: var(--db-bg);
+  font-size: 12px;
+}
+
+.db-kv-grid span {
+  display: block;
+  color: var(--db-muted);
+  margin-bottom: 2px;
+}
+
+.db-kv-grid b {
+  font-size: 15px;
+  color: var(--db-ink);
+}
+
+.db-kv-grid b.bad {
+  color: var(--mhx-bad);
+}
+
+.db-kv-grid b.ok {
+  color: var(--mhx-ok);
+}
+
+.db-empty-state {
+  padding: 18px;
+  text-align: center;
+  color: var(--db-muted);
+  font-size: 13px;
+  border: 1px dashed var(--db-border);
+  border-radius: 8px;
+  margin: 10px 0;
+}

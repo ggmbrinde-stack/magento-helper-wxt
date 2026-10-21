@@ -1,0 +1,8 @@
+node_modules/
+.output/
+.wxt/
+dist/
+build.log
+typecheck.log
+src/lib/_json_check.json
+src/lib/_test2.txt

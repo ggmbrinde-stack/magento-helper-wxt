@@ -1,0 +1,27 @@
+{
+  "name": "magento-helper-wxt",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Magento Helper extension on the plan stack (TypeScript strict, WXT, Zod). Migration target; sku-copy-button/ stays the working extension.",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "typecheck": "tsc --noEmit",
+    "predev": "node scripts/sync-toolkit.mjs",
+    "prebuild": "node scripts/sync-toolkit.mjs",
+    "pretypecheck": "node scripts/sync-toolkit.mjs",
+    "ui:sync": "node scripts/sync-toolkit.mjs",
+    "check:ui": "node scripts/check-ui.mjs",
+    "check:notion": "node scripts/check-notion-readonly.mjs",
+    "index:build": "node scripts/build-category-index.mjs"
+  },
+  "dependencies": {
+    "preact": "^10.29.8",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "wxt": "^0.19.9"
+  }
+}

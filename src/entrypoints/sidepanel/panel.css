@@ -1,0 +1,474 @@
+:host {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+  font-size: 13px;
+  color: var(--mhx-ink);
+  background: var(--mhx-bg);
+  width: 100%;
+  min-width: 340px;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.mhx-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.mhx-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--mhx-border);
+  padding-bottom: 8px;
+}
+
+.mhx-header h1 {
+  font-size: 15px;
+  margin: 0;
+}
+
+.mhx-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mhx-link-btn {
+  border: 1px solid var(--mhx-accent);
+  background: var(--mhx-tint);
+  color: var(--mhx-accent-2);
+  border-radius: 6px;
+  font-size: 11px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.mhx-link-btn:hover {
+  background: var(--mhx-tint-2);
+}
+
+.mhx-badge {
+  font-size: 11px;
+  color: var(--mhx-muted);
+  background: var(--mhx-surface-2);
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.mhx-warning {
+  background: var(--mhx-warn-bg);
+  border: 1px solid var(--mhx-warn-border);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mhx-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.mhx-tabs button {
+  flex: 1;
+  border: 1px solid var(--mhx-border);
+  background: var(--mhx-surface);
+  border-radius: 6px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.mhx-tabs button.active {
+  background: var(--mhx-tint);
+  border-color: var(--mhx-accent);
+  color: var(--mhx-accent);
+  font-weight: 600;
+}
+
+.mhx-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mhx-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mhx-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--mhx-muted-2);
+  min-width: 0;
+}
+
+.mhx-field--block {
+  width: 100%;
+}
+
+.mhx-field--store {
+  flex: 0 0 110px;
+}
+
+.mhx-field span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+input,
+select {
+  border: 1px solid var(--mhx-border-2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  width: 100%;
+  background: var(--mhx-surface);
+  color: inherit;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--mhx-accent);
+  outline-offset: -1px;
+}
+
+button {
+  font-family: inherit;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid var(--mhx-border-2);
+  background: var(--mhx-surface-2);
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mhx-primary {
+  background: var(--mhx-accent);
+  border-color: var(--mhx-accent);
+  color: var(--mhx-on-accent);
+  font-weight: 600;
+}
+
+.mhx-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.mhx-error {
+  background: var(--mhx-bad-bg);
+  border: 1px solid var(--mhx-bad-border);
+  color: var(--mhx-bad);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.mhx-saved {
+  color: var(--mhx-ok);
+  font-size: 12px;
+}
+
+.mhx-note {
+  font-size: 11px;
+  color: var(--mhx-muted);
+  margin: 0;
+}
+
+.mhx-result h2 {
+  font-size: 13px;
+  margin: 8px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mhx-count {
+  background: var(--mhx-border);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 11px;
+}
+
+.mhx-kv {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 2px 8px;
+  margin: 0;
+}
+
+.mhx-kv dt {
+  color: var(--mhx-muted);
+}
+
+.mhx-kv dd {
+  margin: 0;
+  word-break: break-word;
+}
+
+.mhx-empty {
+  color: var(--mhx-muted);
+  font-style: italic;
+  margin: 4px 0;
+}
+
+.mhx-errors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mhx-error-row {
+  border: 1px solid var(--mhx-border);
+  border-left: 3px solid var(--mhx-border-2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mhx-error-row.prio-high {
+  border-left-color: var(--mhx-prio-high);
+}
+
+.mhx-error-row.prio-medium {
+  border-left-color: var(--mhx-prio-medium);
+}
+
+.mhx-error-row.prio-low {
+  border-left-color: var(--mhx-prio-low);
+}
+
+.mhx-error-title {
+  font-weight: 600;
+}
+
+.mhx-error-meta {
+  font-size: 11px;
+  color: var(--mhx-muted);
+}
+
+.mhx-error-notes {
+  font-size: 12px;
+  color: var(--mhx-ink-2);
+}
+
+a {
+  color: var(--mhx-accent);
+}
+
+/* M3a — per-field fill of the open Magento product form. */
+.mhx-fill {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mhx-fill-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mhx-hint {
+  font-size: 11px;
+  color: var(--mhx-muted);
+}
+
+.mhx-guards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mhx-guard {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.mhx-guard.ok {
+  color: var(--mhx-ok);
+  background: var(--mhx-ok-bg);
+  border-color: var(--mhx-ok-border);
+}
+
+.mhx-guard.bad {
+  color: var(--mhx-bad);
+  background: var(--mhx-bad-bg);
+  border-color: var(--mhx-bad-border);
+}
+
+.mhx-fill-row {
+  border: 1px solid var(--mhx-border);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mhx-fill-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--mhx-ink-2);
+}
+
+.mhx-fill-row textarea {
+  font: inherit;
+  padding: 6px;
+  border: 1px solid var(--mhx-border-2);
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.mhx-fill-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.mhx-fill-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* V2 — Data tab: copy buttons, source labels, store-view buttons, groups. */
+.mhx-copy {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--mhx-surface-2);
+  border: 1px solid var(--mhx-border-2);
+  color: var(--mhx-muted-2);
+  cursor: pointer;
+}
+
+.mhx-linkrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mhx-storeviews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mhx-storeview {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--mhx-border-2);
+  background: var(--mhx-surface-2);
+  cursor: pointer;
+}
+
+.mhx-storeview--all {
+  background: var(--mhx-tint);
+  border-color: var(--mhx-accent);
+  color: var(--mhx-accent);
+  font-weight: 600;
+}
+
+.mhx-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mhx-section-title {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.mhx-error-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mhx-error-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mhx-group-title {
+  font-size: 12px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mhx-ink-2);
+}
+
+.mhx-error-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.mhx-config-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mhx-config-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 12px;
+}
+
+.mhx-field-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mhx-muted-2);
+  margin-bottom: 2px;
+}
+
+.mhx-source {
+  margin-left: 6px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--mhx-muted);
+}
+
+.mhx-domain {
+  min-width: 22px;
+  font-size: 11px;
+}
+
+.mhx-errors-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+

@@ -1,0 +1,154 @@
+{
+    "schema":  "bog-gender-rules/1",
+    "source":  "Notion \"Atributos - Gender\" (Projects / Master / Sizes / Gender), mirrored records/gender-rules/gen.md",
+    "generated":  "2026-10-06 09:59:30",
+    "label":  {
+                  "pt":  "GÃ©nero",
+                  "es":  "GÃ©nero",
+                  "fr":  "Genre",
+                  "de":  "Geschlecht",
+                  "it":  "Genere",
+                  "en":  "Gender"
+              },
+    "concepts":  [
+                     {
+                         "concept":  "Female",
+                         "pt":  "Mulher",
+                         "es":  "Mujer",
+                         "fr":  "Femme",
+                         "de":  "Frau",
+                         "it":  "Donna",
+                         "en":  "Female"
+                     },
+                     {
+                         "concept":  "Male",
+                         "pt":  "Homem",
+                         "es":  "Hombre",
+                         "fr":  "Homme",
+                         "de":  "Mann",
+                         "it":  "Uomo",
+                         "en":  "Male"
+                     },
+                     {
+                         "concept":  "Unisex",
+                         "pt":  "Unissexo",
+                         "es":  "Unisex",
+                         "fr":  "Unisexe",
+                         "de":  "Unisex",
+                         "it":  "Unisex",
+                         "en":  "Unisex"
+                     },
+                     {
+                         "concept":  "Kid",
+                         "pt":  "Criança",
+                         "es":  "Niño",
+                         "fr":  "Enfant",
+                         "de":  "Kind",
+                         "it":  "Bambino",
+                         "en":  "Kid"
+                     }
+                 ],
+    "aliases":  [
+                    {
+                        "admin":  "HOMEM",
+                        "concept":  "Male",
+                        "en":  "Male",
+                        "es":  "Hombre",
+                        "fr":  "Homme"
+                    },
+                    {
+                        "admin":  "MULHER",
+                        "concept":  "Female",
+                        "en":  "Female",
+                        "es":  "Mujer",
+                        "fr":  "Femme"
+                    },
+                    {
+                        "admin":  "Men",
+                        "concept":  "Male",
+                        "en":  "Male",
+                        "es":  "Hombre",
+                        "fr":  "Homme"
+                    },
+                    {
+                        "admin":  "Woman",
+                        "concept":  "Female",
+                        "en":  "Female",
+                        "es":  "Mujer",
+                        "fr":  "Femme"
+                    },
+                    {
+                        "admin":  "Senhora",
+                        "concept":  "Female",
+                        "en":  "Female",
+                        "es":  "Mujer",
+                        "fr":  "Femme"
+                    },
+                    {
+                        "admin":  "Unissexo",
+                        "concept":  "Unisex",
+                        "en":  "Unisex",
+                        "es":  "Unisex",
+                        "fr":  "Unisexe"
+                    },
+                    {
+                        "admin":  "Unisexo",
+                        "concept":  "Unisex",
+                        "en":  "Unisex",
+                        "es":  "Unisex",
+                        "fr":  "Unisexe"
+                    },
+                    {
+                        "admin":  "Crianca",
+                        "concept":  "Kid",
+                        "en":  "Kid",
+                        "es":  "Niño",
+                        "fr":  "Enfant"
+                    },
+                    {
+                        "admin":  "Criança",
+                        "concept":  "Kid",
+                        "en":  "Kid",
+                        "es":  "Niño",
+                        "fr":  "Enfant"
+                    }
+                ],
+    "canonical":  {
+                      "pt":  [
+                                 "Mulher",
+                                 "Homem",
+                                 "Unissexo",
+                                 "Criança"
+                             ],
+                      "es":  [
+                                 "Mujer",
+                                 "Hombre",
+                                 "Unisex",
+                                 "Niño"
+                             ],
+                      "fr":  [
+                                 "Femme",
+                                 "Homme",
+                                 "Unisexe",
+                                 "Enfant"
+                             ],
+                      "de":  [
+                                 "Frau",
+                                 "Mann",
+                                 "Unisex",
+                                 "Kind"
+                             ],
+                      "it":  [
+                                 "Donna",
+                                 "Uomo",
+                                 "Unisex",
+                                 "Bambino"
+                             ],
+                      "en":  [
+                                 "Female",
+                                 "Male",
+                                 "Unisex",
+                                 "Kid"
+                             ]
+                  }
+}
