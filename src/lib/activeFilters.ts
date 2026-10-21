@@ -33,11 +33,15 @@ const PENCIL_CLASS = 'mhx-chip-edit';
 const EDITING_CLASS = 'mhx-chip-editing';
 const INPUT_CLASS = 'mhx-chip-input';
 const SELECT_CLASS = 'mhx-chip-select';
-const OK_CLASS = 'mhx-chip-ok';
-const X_CLASS = 'mhx-chip-x';
+const OK_CLASS = 'mhx-btn';
+const X_CLASS = 'mhx-btn';
+const OK_VARIANT = 'data-variant="ok"';
+const X_VARIANT = 'data-variant="danger"';
 const PIN_CLASS = 'mhx-chip-pin';
 const FIELD_PIN_CLASS = 'mhx-field-pin';
 const PINNED_CHIP_CLASS = 'mhx-chip--pinned';
+const PINNED_FILTER_ATTR = 'data-mhx-pinned-filter';
+const PINNED_STRIP_CLASS = 'mhx-pinned-filter-strip';
 
 const PIN_ICON =
   '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>';
@@ -132,7 +136,7 @@ function findStrips(): HTMLElement[] {
 
   document
     .querySelectorAll<HTMLElement>(
-      '.filter-current, [data-role="filter-current"], .admin__data-grid-filter-current, .admin__data-grid-filters-current, .admin__current-filters, .admin__current-filters-list, .admin__current-filters-list-wrap, [data-role="filter-list"], .admin__data-grid-active-filters',
+      '.filter-current, [data-role="filter-current"], .admin__data-grid-filter-current, .admin__data-grid-filters-current, .admin__current-filters, .admin__current-filters-list, .admin__current-filters-list-wrap, [data-role="filter-list"], .admin__data-grid-active-filters, .mhx-pinned-filter-strip',
     )
     .forEach(push);
 
@@ -540,16 +544,26 @@ function startEdit(chip: Chip, item: HTMLElement): void {
       close();
       return;
     }
+    updatePinnedFilterValue(field, value);
     closed = true; // close()s from blur/blur-ish events must not undo this
     editing.remove();
     restore();
     item.removeAttribute(EDITING_MARK);
+    if (item.hasAttribute(PINNED_FILTER_ATTR)) {
+      if (value.trim()) {
+        item.remove();
+      } else {
+        const valueEl = item.querySelector<HTMLElement>('.filter-value');
+        if (valueEl) valueEl.textContent = 'Not set';
+      }
+    }
     triggerApply(field);
   };
 
   const cancelBtn = document.createElement('button');
   cancelBtn.type = 'button';
   cancelBtn.className = X_CLASS;
+cancelBtn.dataset['variant'] = 'danger';
   cancelBtn.title = 'Cancel';
   cancelBtn.setAttribute('aria-label', 'Cancel edit');
   cancelBtn.textContent = '✕';
@@ -598,6 +612,7 @@ function startEdit(chip: Chip, item: HTMLElement): void {
     const okBtn = document.createElement('button');
     okBtn.type = 'button';
     okBtn.className = OK_CLASS;
+okBtn.dataset['variant'] = 'ok';
     okBtn.title = 'Apply filter (Enter)';
     okBtn.setAttribute('aria-label', 'Apply filter');
     okBtn.textContent = '✓';
@@ -721,6 +736,7 @@ export function enhanceActiveFilters(): number {
         }
         savePinnedFilters(currentPins);
         enhanceFilterPanelFields();
+        ensurePinnedFilterChips();
       });
 
       if (chip.valueEl) {
@@ -741,6 +757,7 @@ export function enhanceActiveFilters(): number {
   enhanceFilterPanelFields();
   ensureClearAllInterceptor();
   applyPinnedFiltersIfMissing();
+  ensurePinnedFilterChips();
 
   return count;
 }
@@ -775,7 +792,10 @@ function ensureClearAllInterceptor(): void {
 
       const pinned = getPinnedFilters();
       const keys = Object.keys(pinned);
-      if (keys.length === 0) return;
+      if (keys.length === 0) {
+        document.querySelector(`.${PINNED_STRIP_CLASS}`)?.remove();
+        return;
+      }
 
       // After Magento's clear action fires, re-apply the pinned filters
       setTimeout(() => {
@@ -812,7 +832,11 @@ function applyPinnedFiltersIfMissing(): void {
   }
 
   const activeChips = findStrips()
-    .flatMap((s) => itemsOf(s).map(parseChip))
+    .flatMap((s) =>
+      itemsOf(s)
+        .filter((item) => !item.hasAttribute(PINNED_FILTER_ATTR))
+        .map(parseChip),
+    )
     .filter((c): c is Chip => Boolean(c));
   const activeSlugs = new Set(activeChips.map((c) => slug(c.label)));
 
@@ -865,6 +889,132 @@ function syncChipPins(): void {
       item.classList.toggle(PINNED_CHIP_CLASS, isPinned);
     }
   }
+}
+
+function updatePinnedFilterValue(field: Field, value: string): void {
+  const pinned = getPinnedFilters();
+  const name = field.getAttribute('name') ?? '';
+  const fieldSlug = name ? paramRoot(name) : '';
+  const key =
+    (fieldSlug && pinned[fieldSlug] ? fieldSlug : '') ||
+    Object.keys(pinned).find((candidate) => {
+      const item = pinned[candidate];
+      return item && slug(item.label) === slug(labelCandidates(field)[0] ?? '');
+    });
+  if (!key || !pinned[key]) return;
+
+  pinned[key].value = value;
+  pinned[key].displayValue = value;
+  savePinnedFilters(pinned);
+}
+
+function ensurePinnedFilterChips(): void {
+  const pinned = getPinnedFilters();
+  const keys = Object.keys(pinned);
+  const strips = findStrips();
+  const activeLabels = new Set(
+    strips
+      .flatMap((strip) =>
+        itemsOf(strip)
+          .filter((item) => !item.hasAttribute(PINNED_FILTER_ATTR))
+          .map(parseChip),
+      )
+      .filter((chip): chip is Chip => Boolean(chip))
+      .map((chip) => slug(chip.label)),
+  );
+
+  for (const strip of strips) {
+    strip
+      .querySelectorAll<HTMLElement>(`[${PINNED_FILTER_ATTR}]`)
+      .forEach((item) => item.remove());
+  }
+  const missingPins = keys
+    .map((key) => ({ key, pin: pinned[key] }))
+    .filter(({ pin }) => pin && !activeLabels.has(slug(pin.label)));
+  if (missingPins.length === 0) {
+    document.querySelector(`.${PINNED_STRIP_CLASS}`)?.remove();
+    return;
+  }
+
+  const strip =
+    strips.find((candidate) => !candidate.classList.contains(PINNED_STRIP_CLASS)) ??
+    createPinnedFilterStrip();
+  if (!strip) return;
+
+  for (const { key, pin } of missingPins) {
+    if (!pin) continue;
+
+    const item = document.createElement(strip.matches('ul, ol') ? 'li' : 'span');
+    item.className = 'item mhx-pinned-filter-item';
+    item.setAttribute(PINNED_FILTER_ATTR, key);
+    item.setAttribute(ITEM_MARK, '1');
+
+    const label = document.createElement('span');
+    label.className = 'filter-label';
+    label.textContent = pin.label;
+    const value = document.createElement('span');
+    value.className = 'filter-value';
+    value.textContent = pin.value.trim() ? pin.displayValue || pin.value : 'Not set';
+
+    const pencil = document.createElement('button');
+    pencil.type = 'button';
+    pencil.className = PENCIL_CLASS;
+    pencil.title = `Edit ${pin.label} filter`;
+    pencil.setAttribute('aria-label', `Edit ${pin.label} filter`);
+    pencil.innerHTML = PENCIL_ICON;
+    pencil.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      startEdit(
+        { label: pin.label, value: pin.value, valueEl: value, removeEl: null },
+        item,
+      );
+    });
+
+    const unpin = document.createElement('button');
+    unpin.type = 'button';
+    unpin.className = `${PIN_CLASS} mhx-pin--active`;
+    unpin.title = `Unpin ${pin.label} filter`;
+    unpin.setAttribute('aria-label', `Unpin ${pin.label} filter`);
+    unpin.innerHTML = PIN_ICON;
+    unpin.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const current = getPinnedFilters();
+      delete current[key];
+      savePinnedFilters(current);
+      item.remove();
+      syncChipPins();
+      enhanceFilterPanelFields();
+      ensurePinnedFilterChips();
+    });
+
+    item.append(unpin, label, document.createTextNode(': '), value, pencil);
+    strip.appendChild(item);
+  }
+}
+
+function createPinnedFilterStrip(): HTMLElement | null {
+  const existing = document.querySelector<HTMLElement>(`.${PINNED_STRIP_CLASS}`);
+  if (existing) return existing;
+
+  const filterPanel = document.querySelector<HTMLElement>(
+    '[data-role="filter-form"], .admin__data-grid-filters-wrap, .admin__data-grid-filters',
+  );
+  const anchor =
+    filterPanel ??
+    document.querySelector<HTMLElement>('.admin__data-grid-header');
+  if (!anchor?.parentElement) return null;
+
+  const strip = document.createElement('div');
+  strip.className = PINNED_STRIP_CLASS;
+  strip.setAttribute('role', 'group');
+  strip.setAttribute('aria-label', 'Pinned filters');
+  const heading = document.createElement('strong');
+  heading.textContent = 'Pinned filters:';
+  strip.appendChild(heading);
+  anchor.parentElement.insertBefore(strip, anchor);
+  return strip;
 }
 
 /** Injects pin toggle buttons on each field label inside the expanded Filters panel. */
@@ -946,6 +1096,7 @@ function enhanceFilterPanelFields(): void {
           savePinnedFilters(currentPins);
         }
         syncChipPins();
+        ensurePinnedFilterChips();
       });
 
       label.appendChild(pinBtn);
@@ -975,4 +1126,10 @@ const PENCIL_STYLES = `
 .mhx-field-pin:hover{color:var(--mhx-ink,#303030);}
 .mhx-field-pin.mhx-pin--active{color:var(--mhx-accent,#007bdb);}
 .mhx-chip--pinned{border:1px solid var(--mhx-accent,#007bdb) !important;box-shadow:0 0 0 1px rgba(0,123,219,0.2);}
+.mhx-pinned-filter-strip{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:8px 12px;border-bottom:1px solid var(--mhx-border,#d6d6d6);font:13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;}
+.mhx-pinned-filter-strip > strong{font-weight:600;}
+.mhx-pinned-filter-item{display:inline-flex;align-items:center;gap:2px;padding:2px 4px;border:1px solid var(--mhx-border,#d6d6d6);border-radius:3px;}
+.mhx-pinned-filter-item .filter-label{font-weight:600;}
+.mhx-pinned-filter-item .filter-value{color:var(--mhx-ink,#303030);}
+.mhx-pinned-filter-item .mhx-chip-edit,.mhx-pinned-filter-item .mhx-chip-pin{flex:0 0 auto;}
 `;

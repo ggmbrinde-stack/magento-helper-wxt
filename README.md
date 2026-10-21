@@ -248,6 +248,14 @@ AJAX reloads keep working. Toggle: `ENHANCE_ACTIVE_FILTERS`. If a live grid's
 markup ever hides the pencil, run `scripts/diag-active-filters.js` in the
 console (read-only) and the selectors can be matched to the real DOM.
 
+**Pinned filters** — pin a field in the expanded Filters form or pin an active
+filter chip. Pinned filters stay in the grid's visible Active filters area even
+when their value is empty (`Not set`), so they can be edited there without
+reopening the Filters form. The pencil edits Magento's native field and applies
+through Magento's normal filter action; only non-empty pinned values are
+restored/applied after reload or **Clear all**. Unpin to return the field to
+normal filter behavior.
+
 ## Admin sidebar toggle (2026-10-20, rail fix 2026-10-21)
 
 A fixed chevron on the admin nav's right edge (`src/lib/adminNavToggle.ts`)
