@@ -368,3 +368,15 @@ Toggle: `ENHANCE_CATEGORY_TREE`.
 - SKU + store-view guards: no SKU entered = no fetch; results filter by the
   detected store view.
 - Secret keys are never logged; the admin base URL is settings-driven.
+
+## Copilot Notion MCP (workspace)
+
+The workspace MCP server is configured in `.vscode/mcp.json` using Notion's
+remote endpoint. To connect your account in VS Code, run **MCP: List Servers**
+from the Command Palette, start `notion`, and complete the Notion OAuth prompt.
+The authorization is stored by VS Code, not in this repository. Notion MCP can
+read and write content available to the authorizing account.
+
+This agent connection is separate from the extension's Notion API settings.
+The extension's own Notion client remains guarded to reads and create-only
+page writes; it does not update or delete Notion content.
