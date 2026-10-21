@@ -35,6 +35,40 @@ const INPUT_CLASS = 'mhx-chip-input';
 const SELECT_CLASS = 'mhx-chip-select';
 const OK_CLASS = 'mhx-chip-ok';
 const X_CLASS = 'mhx-chip-x';
+const PIN_CLASS = 'mhx-chip-pin';
+const FIELD_PIN_CLASS = 'mhx-field-pin';
+const PINNED_CHIP_CLASS = 'mhx-chip--pinned';
+
+const PIN_ICON =
+  '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>';
+
+const PIN_STORAGE_KEY = 'mhx.pinnedFilters.v1';
+
+export interface PinnedFilter {
+  fieldSlug: string;
+  label: string;
+  value: string;
+  displayValue?: string;
+}
+
+export type PinnedMap = Record<string, PinnedFilter>;
+
+export function getPinnedFilters(): PinnedMap {
+  try {
+    const raw = localStorage.getItem(PIN_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as PinnedMap) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function savePinnedFilters(map: PinnedMap): void {
+  try {
+    localStorage.setItem(PIN_STORAGE_KEY, JSON.stringify(map));
+  } catch {
+    // storage quota or blocked
+  }
+}
 
 const REMOVE_SEL =
   '.action-remove, [data-role="remove-filter"], .admin__filter-remove, a[title*="remove" i]';
@@ -612,11 +646,13 @@ function injectStyles(): void {
 
 /**
  * Add a pencil to every Active-filters chip whose filter can be resolved to
- * one editable field. Idempotent per chip, so the debounced scan can call it
- * on every DOM mutation and after each AJAX grid reload.
+ * one editable field. Also adds a pin toggle (📌) to pin/preserve filters across
+ * reloads and "Clear all". Idempotent per chip.
  */
 export function enhanceActiveFilters(): number {
   let count = 0;
+  const pinned = getPinnedFilters();
+
   for (const strip of findStrips()) {
     const claimed: Claimed = new Set();
     for (const item of itemsOf(strip)) {
@@ -627,6 +663,10 @@ export function enhanceActiveFilters(): number {
       if (!field) continue;
 
       injectStyles();
+
+      const nameAttr = field.getAttribute('name') ?? '';
+      const fieldSlug = nameAttr ? paramRoot(nameAttr) : slug(chip.label);
+      item.setAttribute('data-mhx-field-slug', fieldSlug);
 
       const pencil = document.createElement('button');
       pencil.type = 'button';
@@ -640,16 +680,276 @@ export function enhanceActiveFilters(): number {
         startEdit(chip, item);
       });
 
-      if (chip.valueEl) chip.valueEl.after(pencil);
-      else if (chip.removeEl) item.insertBefore(pencil, chip.removeEl);
-      else item.appendChild(pencil);
+      const pinBtn = document.createElement('button');
+      pinBtn.type = 'button';
+      const isPinned = Boolean(
+        pinned[fieldSlug] ||
+          Object.values(pinned).some(
+            (p) => slug(p.label) === slug(chip.label),
+          ),
+      );
+      pinBtn.className = isPinned ? `${PIN_CLASS} mhx-pin--active` : PIN_CLASS;
+      pinBtn.title = isPinned ? `Unpin ${chip.label} filter` : `Pin ${chip.label} filter`;
+      pinBtn.setAttribute('aria-label', `Pin ${chip.label} filter`);
+      pinBtn.innerHTML = PIN_ICON;
+      if (isPinned) item.classList.add(PINNED_CHIP_CLASS);
+
+      pinBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const currentPins = getPinnedFilters();
+        const nowPinned = !pinBtn.classList.contains('mhx-pin--active');
+        pinBtn.classList.toggle('mhx-pin--active', nowPinned);
+        item.classList.toggle(PINNED_CHIP_CLASS, nowPinned);
+        pinBtn.title = nowPinned ? `Unpin ${chip.label} filter` : `Pin ${chip.label} filter`;
+
+        if (nowPinned) {
+          currentPins[fieldSlug] = {
+            fieldSlug,
+            label: chip.label,
+            value: field.value || chip.value,
+            displayValue: chip.value,
+          };
+        } else {
+          delete currentPins[fieldSlug];
+          for (const k of Object.keys(currentPins)) {
+            const pin = currentPins[k];
+            if (pin && slug(pin.label) === slug(chip.label)) {
+              delete currentPins[k];
+            }
+          }
+        }
+        savePinnedFilters(currentPins);
+        enhanceFilterPanelFields();
+      });
+
+      if (chip.valueEl) {
+        chip.valueEl.after(pencil);
+      } else if (chip.removeEl) {
+        item.insertBefore(pencil, chip.removeEl);
+      } else {
+        item.append(pencil);
+      }
+      item.insertBefore(pinBtn, item.firstChild);
 
       item.setAttribute(ITEM_MARK, '1');
       claimed.add(field);
       count += 1;
     }
   }
+
+  enhanceFilterPanelFields();
+  ensureClearAllInterceptor();
+  applyPinnedFiltersIfMissing();
+
   return count;
+}
+
+function findFieldBySlug(targetSlug: string): Field | null {
+  for (const field of editableFields()) {
+    const name = field.getAttribute('name') ?? '';
+    if (paramRoot(name) === targetSlug || slug(name) === targetSlug) {
+      return field;
+    }
+    for (const cand of labelCandidates(field)) {
+      if (slug(cand) === targetSlug) return field;
+    }
+  }
+  return null;
+}
+
+let clearListenerAttached = false;
+
+function ensureClearAllInterceptor(): void {
+  if (clearListenerAttached) return;
+  clearListenerAttached = true;
+
+  document.addEventListener(
+    'click',
+    (e) => {
+      const target = e.target as HTMLElement | null;
+      const clearBtn = target?.closest(
+        'button.action-clear, a.action-clear, [data-action="grid-filter-reset"]',
+      );
+      if (!clearBtn) return;
+
+      const pinned = getPinnedFilters();
+      const keys = Object.keys(pinned);
+      if (keys.length === 0) return;
+
+      // After Magento's clear action fires, re-apply the pinned filters
+      setTimeout(() => {
+        let appliedAny = false;
+        let lastAppliedField: Field | null = null;
+        for (const key of keys) {
+          const item = pinned[key];
+          if (!item?.value) continue;
+          const field = findFieldBySlug(item.fieldSlug);
+          if (field) {
+            writeFieldValue(field, item.value);
+            appliedAny = true;
+            lastAppliedField = field;
+          }
+        }
+        if (appliedAny && lastAppliedField) {
+          triggerApply(lastAppliedField);
+        }
+      }, 350);
+    },
+    true,
+  );
+}
+
+let initialAutoApplyDone = false;
+
+function applyPinnedFiltersIfMissing(): void {
+  if (initialAutoApplyDone) return;
+  const pinned = getPinnedFilters();
+  const keys = Object.keys(pinned);
+  if (keys.length === 0) {
+    initialAutoApplyDone = true;
+    return;
+  }
+
+  const activeChips = findStrips()
+    .flatMap((s) => itemsOf(s).map(parseChip))
+    .filter((c): c is Chip => Boolean(c));
+  const activeSlugs = new Set(activeChips.map((c) => slug(c.label)));
+
+  const missing = keys.filter((k) => {
+    const p = pinned[k];
+    if (!p) return false;
+    return !activeSlugs.has(k) && !activeSlugs.has(slug(p.label));
+  });
+  if (missing.length === 0) {
+    initialAutoApplyDone = true;
+    return;
+  }
+
+  let appliedAny = false;
+  let lastField: Field | null = null;
+  for (const key of missing) {
+    const item = pinned[key];
+    if (!item?.value) continue;
+    const field = findFieldBySlug(item.fieldSlug);
+    if (field && field.value !== item.value) {
+      writeFieldValue(field, item.value);
+      appliedAny = true;
+      lastField = field;
+    }
+  }
+  initialAutoApplyDone = true;
+  if (appliedAny && lastField) {
+    triggerApply(lastField);
+  }
+}
+
+function syncChipPins(): void {
+  const pinned = getPinnedFilters();
+  for (const strip of findStrips()) {
+    for (const item of itemsOf(strip)) {
+      const chip = parseChip(item);
+      if (!chip) continue;
+      const slugKey = slug(chip.label);
+      const isPinned = Boolean(
+        pinned[slugKey] ||
+          Object.values(pinned).some((p) => slug(p.label) === slugKey),
+      );
+      const pinBtn = item.querySelector<HTMLButtonElement>(`.${PIN_CLASS}`);
+      if (pinBtn) {
+        pinBtn.classList.toggle('mhx-pin--active', isPinned);
+        pinBtn.title = isPinned
+          ? `Unpin ${chip.label} filter`
+          : `Pin ${chip.label} filter`;
+      }
+      item.classList.toggle(PINNED_CHIP_CLASS, isPinned);
+    }
+  }
+}
+
+/** Injects pin toggle buttons on each field label inside the expanded Filters panel. */
+function enhanceFilterPanelFields(): void {
+  const panel = document.querySelector<HTMLElement>(
+    '[data-role="filter-form"], .admin__data-grid-filters-wrap, .admin__data-grid-filters',
+  );
+  if (!panel) return;
+
+  const pinned = getPinnedFilters();
+
+  panel
+    .querySelectorAll<HTMLElement>(
+      '.admin__form-field, .admin__field, fieldset.admin__fieldset > div',
+    )
+    .forEach((f) => {
+      const label = f.querySelector<HTMLLabelElement>('label');
+      const input = f.querySelector<Field>('input, select');
+      if (!label || !input) return;
+
+      const name = input.getAttribute('name') ?? '';
+      const slugKey = name ? paramRoot(name) : slug(label.textContent ?? '');
+      if (!slugKey) return;
+
+      let pinBtn = label.querySelector<HTMLButtonElement>(`.${FIELD_PIN_CLASS}`);
+      const isPinned = Boolean(
+        pinned[slugKey] ||
+          Object.values(pinned).some(
+            (p) => slug(p.label) === slug(label.textContent ?? ''),
+          ),
+      );
+
+      if (pinBtn) {
+        pinBtn.classList.toggle('mhx-pin--active', isPinned);
+        pinBtn.title = isPinned
+          ? `Unpin ${label.textContent?.trim()} filter`
+          : `Pin ${label.textContent?.trim()} filter`;
+        return;
+      }
+
+      pinBtn = document.createElement('button');
+      pinBtn.type = 'button';
+      pinBtn.className = isPinned
+        ? `${FIELD_PIN_CLASS} mhx-pin--active`
+        : FIELD_PIN_CLASS;
+      pinBtn.title = isPinned
+        ? `Unpin ${label.textContent?.trim()} filter`
+        : `Pin ${label.textContent?.trim()} filter`;
+      pinBtn.innerHTML = PIN_ICON;
+
+      pinBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const currentPins = getPinnedFilters();
+        const willPin = !pinBtn!.classList.contains('mhx-pin--active');
+        pinBtn!.classList.toggle('mhx-pin--active', willPin);
+        pinBtn!.title = willPin
+          ? `Unpin ${label.textContent?.trim()} filter`
+          : `Pin ${label.textContent?.trim()} filter`;
+
+        if (willPin) {
+          currentPins[slugKey] = {
+            fieldSlug: slugKey,
+            label: label.textContent?.trim() || slugKey,
+            value: input.value,
+          };
+          savePinnedFilters(currentPins);
+          if (!input.value) {
+            input.focus();
+          }
+        } else {
+          delete currentPins[slugKey];
+          for (const k of Object.keys(currentPins)) {
+            const pin = currentPins[k];
+            if (pin && slug(pin.label) === slug(label.textContent ?? '')) {
+              delete currentPins[k];
+            }
+          }
+          savePinnedFilters(currentPins);
+        }
+        syncChipPins();
+      });
+
+      label.appendChild(pinBtn);
+    });
 }
 
 // `--mhx-*` are set by the theme layer when the operator opts into theming the
@@ -667,4 +967,12 @@ const PENCIL_STYLES = `
 .mhx-chip-ok:hover{background:var(--mhx-ok-bg,#e6f4ea);border-color:var(--mhx-ok-border,#b7dfc2);color:var(--mhx-ok,#0b6e4f);}
 .mhx-chip-x:hover{background:var(--mhx-bad-bg,#fdecea);border-color:var(--mhx-bad-border,#f5b7b1);color:var(--mhx-bad,#912018);}
 .mhx-chip-ok:focus-visible,.mhx-chip-x:focus-visible{outline:2px solid var(--mhx-accent,#007bdb);outline-offset:1px;}
+.mhx-chip-pin{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin:0 0 0 2px;padding:0;border:1px solid transparent;border-radius:3px;background:transparent;color:var(--mhx-muted,#9e9e9e);cursor:pointer;vertical-align:middle;line-height:1;}
+.mhx-chip-pin:hover{background:var(--mhx-tint,#e5f2fa);border-color:var(--mhx-border-2,#adadad);color:var(--mhx-ink,#303030);}
+.mhx-chip-pin.mhx-pin--active{color:var(--mhx-accent,#007bdb);background:rgba(0,123,219,0.12);border-color:rgba(0,123,219,0.3);}
+.mhx-chip-pin:focus-visible{outline:2px solid var(--mhx-accent,#007bdb);outline-offset:1px;}
+.mhx-field-pin{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-left:6px;padding:0;border:none;background:transparent;color:var(--mhx-muted,#9e9e9e);cursor:pointer;vertical-align:middle;line-height:1;}
+.mhx-field-pin:hover{color:var(--mhx-ink,#303030);}
+.mhx-field-pin.mhx-pin--active{color:var(--mhx-accent,#007bdb);}
+.mhx-chip--pinned{border:1px solid var(--mhx-accent,#007bdb) !important;box-shadow:0 0 0 1px rgba(0,123,219,0.2);}
 `;
