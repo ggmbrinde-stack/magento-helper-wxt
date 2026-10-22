@@ -128,17 +128,6 @@ table.data-grid tbody tr:hover > td, table.data-grid tbody tr._odd > td { backgr
 .admin__data-grid-loading-mask { background: color-mix(in srgb, var(--mhx-bg) 70%, transparent) !important; }
 .admin__field-error, .message-error, .message-warning, .message-success, .message-notice { /* left to Magento */ }
 
-/* --- our own injected page UI, so it does not read as light chips on a dark
-       page. Kept here rather than in the enhancer, which stays
-       theme-agnostic and light by default. ----------------------------- */
-.mhx-nh-pop, .mhx-nh-search, .mhx-nh-opt, .mhx-nh-trigger, .mhx-nh-seg,
-.mhx-nh-seg-btn, .mhx-nh-label { background: var(--mhx-surface) !important; color: var(--mhx-ink) !important; border-color: var(--mhx-border-2) !important; }
-.mhx-nh-opt--active, .mhx-nh-label { color: var(--mhx-accent) !important; }
-.mhx-nh-opt--cursor { background: var(--mhx-tint) !important; }
-.mhx-nh-seg-btn--active { background: var(--mhx-accent) !important; color: var(--mhx-on-accent) !important; }
-.mhx-nh-seg-btn--active:hover { background: var(--mhx-accent-2) !important; }
-.mhx-sku-copy-btn { background: var(--mhx-surface-2) !important; border-color: var(--mhx-border-2) !important; color: var(--mhx-ink-2) !important; }
-.mhx-sku-copy-btn:hover { background: var(--mhx-surface) !important; }
 `;
 
 /**

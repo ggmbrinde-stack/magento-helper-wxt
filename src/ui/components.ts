@@ -10,6 +10,9 @@
 // fonts belong to toolkit.css alone.
 
 export type ButtonVariant = 'default' | 'danger' | 'accent' | 'ghost' | 'icon';
+export type IconName = 'close' | 'check' | 'copy' | 'chevronDown' | 'chevronRight';
+
+import { ICONS } from './icons';
 
 export interface ButtonOptions {
   label: string;
@@ -19,6 +22,8 @@ export interface ButtonOptions {
   className?: string;
   disabled?: boolean;
   onClick?: (event: MouseEvent) => void;
+  /** Icon to render inside the button (only for icon variant). */
+  icon?: IconName;
 }
 
 /** A single button: `.mhx-btn[data-variant=…]`. */
@@ -36,7 +41,26 @@ export function button(options: ButtonOptions): HTMLButtonElement {
   if (options.onClick) {
     el.addEventListener('click', options.onClick as EventListener);
   }
+  if (options.icon && variant === 'icon') {
+    const iconSvg = iconEl(options.icon);
+    el.appendChild(iconSvg);
+  }
   return el;
+}
+
+function iconEl(name: IconName): SVGSVGElement {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', '16');
+  svg.setAttribute('height', '16');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('fill', 'currentColor');
+  svg.style.display = 'inline-block';
+  svg.style.flexShrink = '0';
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', ICONS[name]);
+  svg.appendChild(path);
+  return svg;
 }
 
 export interface GroupOptions {

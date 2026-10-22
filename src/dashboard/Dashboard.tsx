@@ -2,11 +2,26 @@ import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
 import { LookupPanel } from '../entrypoints/sidepanel/LookupPanel';
+import { Batch } from './sections/Batch';
 import { Cache } from './sections/Cache';
+import { ImageAudit } from './sections/ImageAudit';
 import { Overview } from './sections/Overview';
+import { Push } from './sections/Push';
+import { Resolver } from './sections/Resolver';
 import { Settings } from './sections/Settings';
+import { TextAudit } from './sections/TextAudit';
 
-export type SectionId = 'overview' | 'settings' | 'lookup' | 'cache';
+export type SectionId =
+  | 'overview'
+  | 'settings'
+  | 'lookup'
+  | 'cache'
+  | 'auditHome'
+  | 'batch'
+  | 'resolver'
+  | 'images'
+  | 'text'
+  | 'push';
 
 interface SectionDef {
   id: SectionId;
@@ -16,6 +31,11 @@ interface SectionDef {
 
 const SECTIONS: SectionDef[] = [
   { id: 'overview', label: 'Overview', hint: 'Status & quick links' },
+  { id: 'batch', label: 'Run audit', hint: 'Paste SKUs, run the full pipeline' },
+  { id: 'resolver', label: 'Resolver', hint: 'Variants & Magento links' },
+  { id: 'images', label: 'Image audit', hint: 'Duplicates, order, background' },
+  { id: 'text', label: 'Text audit', hint: 'Translation, composition, specs' },
+  { id: 'push', label: 'Push errors', hint: 'Payloads → Notion (create-only)' },
   { id: 'settings', label: 'Settings', hint: 'Notion & admin config' },
   { id: 'lookup', label: 'SKU Lookup', hint: 'Find product links' },
   { id: 'cache', label: 'Resolver Cache', hint: 'Cached SKUs' },
@@ -53,15 +73,7 @@ export function Dashboard() {
             </button>
           ))}
         </nav>
-        <a
-          class="db-workspace-link"
-          href={browser.runtime.getURL('/audit.html')}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          Audit workspace →
-        </a>
-        <div class="db-side-foot">v0.2.0 · create-only Notion</div>
+        <div class="db-side-foot">v0.2.0 — create-only Notion</div>
       </aside>
 
       <main class="db-main">
@@ -71,6 +83,11 @@ export function Dashboard() {
         </header>
         <div class="db-body">
           {section === 'overview' ? <Overview /> : null}
+          {section === 'batch' ? <Batch /> : null}
+          {section === 'resolver' ? <Resolver /> : null}
+          {section === 'images' ? <ImageAudit /> : null}
+          {section === 'text' ? <TextAudit /> : null}
+          {section === 'push' ? <Push /> : null}
           {section === 'settings' ? <Settings /> : null}
           {section === 'lookup' ? <LookupSection /> : null}
           {section === 'cache' ? <Cache /> : null}

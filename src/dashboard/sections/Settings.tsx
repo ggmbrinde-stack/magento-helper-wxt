@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import {
   DEFAULT_LISTING_ERRORS_DB,
@@ -6,6 +6,8 @@ import {
 } from '../../lib/notion';
 import { ThemePicker } from '../../lib/ThemePicker';
 import { ToolkitColors } from '../../lib/ToolkitColors';
+import { ModelBridge } from './ModelBridge';
+import { NotionHealth } from './NotionHealth';
 import { useSettings, type DashboardSettings } from '../useSettings';
 
 export function Settings() {
@@ -47,71 +49,83 @@ export function Settings() {
   if (!loaded) return <p class="db-empty">Loading settings…</p>;
 
   return (
-    <section class="db-card db-wide">
-      <h2>Settings</h2>
+    <>
+      <section class="db-card db-wide">
+        <h2>Settings</h2>
 
-      <ThemePicker />
+        <ThemePicker />
 
-      <ToolkitColors />
+        <ToolkitColors />
 
-      <label class="db-field">
-        <span>Notion token</span>
-        <input
-          type="password"
-          value={form.notionToken}
-          placeholder="ntn_…"
-          autocomplete="off"
-          onInput={(e) => set('notionToken', e.currentTarget.value)}
-        />
-      </label>
+        <label class="db-field">
+          <span>Notion token</span>
+          <input
+            type="password"
+            value={form.notionToken}
+            placeholder="ntn_…"
+            autocomplete="off"
+            onInput={(e) => set('notionToken', e.currentTarget.value)}
+          />
+        </label>
 
-      <label class="db-field">
-        <span>
-          SKU Library database id <em>default: {DEFAULT_SKU_LIBRARY_DB}</em>
-        </span>
-        <input
-          type="text"
-          value={form.skuLibraryDb}
-          placeholder={DEFAULT_SKU_LIBRARY_DB}
-          onInput={(e) => set('skuLibraryDb', e.currentTarget.value)}
-        />
-      </label>
+        <label class="db-field">
+          <span>
+            SKU Library database id <em>default: {DEFAULT_SKU_LIBRARY_DB}</em>
+          </span>
+          <input
+            type="text"
+            value={form.skuLibraryDb}
+            placeholder={DEFAULT_SKU_LIBRARY_DB}
+            onInput={(e) => set('skuLibraryDb', e.currentTarget.value)}
+          />
+        </label>
 
-      <label class="db-field">
-        <span>
-          Listing Errors database id <em>default: {DEFAULT_LISTING_ERRORS_DB}</em>
-        </span>
-        <input
-          type="text"
-          value={form.listingErrorsDb}
-          placeholder={DEFAULT_LISTING_ERRORS_DB}
-          onInput={(e) => set('listingErrorsDb', e.currentTarget.value)}
-        />
-      </label>
+        <label class="db-field">
+          <span>
+            Listing Errors database id <em>default: {DEFAULT_LISTING_ERRORS_DB}</em>
+          </span>
+          <input
+            type="text"
+            value={form.listingErrorsDb}
+            placeholder={DEFAULT_LISTING_ERRORS_DB}
+            onInput={(e) => set('listingErrorsDb', e.currentTarget.value)}
+          />
+        </label>
 
-      <label class="db-field">
-        <span>
-          Admin base URL <em>e.g. https://bestofgifts.pt/admin_L2pZx/</em>
-        </span>
-        <input
-          type="text"
-          value={form.adminBaseUrl}
-          placeholder="https://bestofgifts.pt/admin_xxx/"
-          onInput={(e) => set('adminBaseUrl', e.currentTarget.value)}
-        />
-      </label>
+        <label class="db-field">
+          <span>
+            Admin base URL <em>e.g. https://bestofgifts.pt/admin_L2pZx/</em>
+          </span>
+          <input
+            type="text"
+            value={form.adminBaseUrl}
+            placeholder="https://bestofgifts.pt/admin_xxx/"
+            onInput={(e) => set('adminBaseUrl', e.currentTarget.value)}
+          />
+        </label>
 
-      <div class="db-actions">
-        <button
-          type="button"
-          class="db-btn db-btn--primary"
-          disabled={busy}
-          onClick={() => void onSave()}
-        >
-          {busy ? 'Saving…' : 'Save'}
-        </button>
-        {status ? <span class="db-status">{status}</span> : null}
-      </div>
-    </section>
+        <div class="db-actions">
+          <button
+            type="button"
+            class="db-btn db-btn--primary"
+            disabled={busy}
+            onClick={() => void onSave()}
+          >
+            {busy ? 'Saving…' : 'Save'}
+          </button>
+          {status ? <span class="db-status">{status}</span> : null}
+        </div>
+      </section>
+
+      <section class="db-card db-wide">
+        <h2>Notion connection</h2>
+        <NotionHealth />
+      </section>
+
+      <section class="db-card db-wide">
+        <h2>Model bridge</h2>
+        <ModelBridge />
+      </section>
+    </>
   );
 }

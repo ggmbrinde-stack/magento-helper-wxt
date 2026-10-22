@@ -184,7 +184,7 @@ export function App() {
             title="Open the audit workspace"
             onClick={() =>
               void browser.tabs.create({
-                url: browser.runtime.getURL('/audit.html'),
+                url: browser.runtime.getURL('/dashboard.html'),
               })
             }
           >

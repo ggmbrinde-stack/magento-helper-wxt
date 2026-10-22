@@ -331,20 +331,104 @@ contrast lesson into an invariant instead of a footnote.
 
 ## 10. Status, verification and limits
 
-- **Status:** this is a design investigation, not an implemented change. No file
-  under `src/` was modified for it; the only artefact is this document plus the
-  inventory script.
-- **Baseline is reproducible:** `node .output/audit-ui.mjs` prints the class
-  inventory, the cross-file class collisions, the hex-literal counts per file and
-  the `!important` total. It reads `src/` only and writes nothing.
-- **What was verified:** the numbers in §1 (140 classes / 15 collisions / 152 hex
-  literals / 144 `!important` / 9 sheets / 29,422 bytes of CSS) and the
-  feature–theme coupling in `magentoTheme.ts` (ten `.mhx-nh-*` selectors).
-- **What was not:** no toolkit code exists yet, so none of the migration rows in
-  §4 is proven; the estimates (9 → 1 sheets, 152 → ≤ 12 literals, 140 → ~40 class
-  names) are targets derived from the inventory, not measurements of a build.
-- **Contrast claims** rest on the one case already shipped and observed — the
-  bulk-actions strip's `currentColor` workaround for a native dark admin — not on
-  a light-admin test, which is why §8 leaves that as a decision.
-- **Decision needed before phase 1:** delivery mechanism (A with B fallback is
-  recommended) and whether a light admin must be supported.
+### 10.1 Current status — IMPLEMENTED (phase 1 complete)
+
+As of 2026-10-21, the UI toolkit infrastructure described in §2–§3 is live in
+`src/ui/`:
+
+- **`src/ui/tokens.ts`** — token names + page-adaptive resolution. Three
+  operator-customisable tokens (`accent`, `danger`, `ok`) with storage,
+  sanitization and inline-custom-property publishing on `<html>`. The Settings
+  panel (`src/lib/ToolkitColors.tsx`) reads/writes these; the content script
+  (`src/entrypoints/content.ts`) watches them and repaints every open admin tab
+  instantly.
+- **`src/ui/toolkit.css`** — THE single stylesheet. ~10 primitives
+  (button, group, bar, segmented, chip, badge, inline-field, popover, toggle,
+  toast) with `currentColor` + `color-mix` page-adaptive tokens and flat
+  `rgba()` fallbacks. Exactly one source of truth for injected widget styling.
+- **`src/ui/toolkitCss.ts`** — generated inline fallback copy (run
+  `npm run ui:sync`). Used when the `<link>` path is unavailable (enterprise CSP,
+  fixture without chrome.runtime).
+- **`src/ui/index.ts`** — `ensureUi()` injects the toolkit once per page via
+  `<link>` to `chrome.runtime.getURL('ui/toolkit.css')` (Option A) with an
+  inline `<style id="mhx-ui">` fallback (Option B). Re-exports the factories.
+- **`src/ui/components.ts`** — factories (`button`, `group`, `bar`, `chip`,
+  `badge`, `segmented`, `popover`) returning plain DOM nodes with toolkit classes.
+- **`src/ui/icons.ts`** — icon registry for `icon` variant buttons.
+
+### 10.2 Color customization — IMPLEMENTED
+
+The "Toolkit colours" section in Settings (`src/lib/ToolkitColors.tsx`) lets
+operators customize three colours:
+
+- **Accent** (`--mhx-pg-accent`): focus rings, active segments, accent buttons.
+  Auto = theme accent (`--mhx-accent`).
+- **Danger** (`--mhx-pg-danger`): delete/remove actions, error badges, toasts.
+- **Success/OK** (`--mhx-pg-ok`): copied/done feedback, success badges.
+
+Each token has a native `<input type="color">` picker plus an "Auto" reset
+button. Overrides are stored in `chrome.storage.local` under `toolkitColors` and
+applied as inline custom properties on `<html>`, so clearing one restores the
+stylesheet default. Preview swatches in Settings show the real token value
+(resolving to the fallback when on Auto).
+
+The color customization is available in both settings surfaces:
+- Dashboard Settings (`src/dashboard/sections/Settings.tsx`)
+- Side panel Settings (`src/entrypoints/sidepanel/SettingsForm.tsx`)
+
+### 10.3 Verification
+
+- **Guardrails pass:** `npm run check:ui` (scripts/check-ui.mjs) enforces G1–G5:
+  - G1: color literals only allowed in tokens.ts, theme.ts, magentoTheme.ts,
+    toolkit.css/toolkitCss.ts/public copy
+  - G2: primitive classes defined once (src/ui/toolkit.css is source)
+  - G3: magentoTheme.ts no longer names feature classes (cleaned)
+  - G4: !important budget tracked (currently ≤ 200)
+  - G5: ensureUi() references toolkit.css via ensureUi()
+
+- **Toolkit copies in sync:** `npm run ui:sync` regenerates
+  `public/ui/toolkit.css` and `src/ui/toolkitCss.ts` from `src/ui/toolkit.css`.
+
+- **Delivery works:** manifest exposes `ui/toolkit.css` via web_accessible_resources
+  with matches for all admin hosts. The `<link>` path is primary; inline fallback
+  is ready.
+
+- **Live on admin pages:** content script calls `ensureUi()` then
+  `watchToolkitColors()` — every admin page gets the single toolkit sheet plus
+  the operator's custom colors applied inline.
+
+### 10.4 Proven vs. target
+
+**Proven (measured, this implementation):**
+- One toolkit sheet exists (`src/ui/toolkit.css`, ~8 KB)
+- One delivery mechanism with fallback (`ensureUi()`, manifests the `<link>`)
+- Three customizable colors with Settings UI and live preview
+- Guardrails script enforcing consistency rules
+- Icon support for button variant='icon'
+
+**Target (not yet proven, from §4 migration map):**
+- 9 → 1 injected sheet: still 9+ sheets today; phase 2+ ports not done
+- 152 → ≤ 12 hex literals: still 152+ today across feature files; cleanup is
+  future work
+- 140 → ~40 class names: primitives defined, but features still carry their own
+  classes and inline styles
+- Full feature migration (rowActions, massactionButtons, pagingSizes, activeFilters,
+  categoryTree, enhanceSelect): not yet ported to primitives
+
+The infrastructure is shipped and shippable today. The payoff numbers in §4 are
+targets that the remaining phases (2–6) will realize.
+
+### 10.5 Limits
+
+- **Light admin:** not yet tested end-to-end. The token contract supports it
+  (page-adaptive currentColor + color-mix), but no fixture or live admin has
+  verified it.
+- **Dark admin contrast:** the bulk-actions strip proved the approach; full
+  primitive set on a dark admin is not yet verified.
+- **Popover surface:** translucent + blurred to survive unknown page background;
+  phase 5 (enhanceSelect port) will validate against the real picker.
+- **adoptedStyleSheets:** not used; `<link>` chosen for inspectability and caching.
+  Could be a later optimization.
+- **Remaining feature sheets:** the migration is incomplete. Until phases 2–5 land,
+  the page still carries 9+ injected sheets alongside the one toolkit sheet.
+

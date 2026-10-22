@@ -56,13 +56,6 @@
   background: var(--mhx-tint-2);
 }
 
-.mhx-badge {
-  font-size: 11px;
-  color: var(--mhx-muted);
-  background: var(--mhx-surface-2);
-  border-radius: 10px;
-  padding: 2px 8px;
-}
 
 .mhx-warning {
   background: var(--mhx-warn-bg);
