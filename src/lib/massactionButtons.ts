@@ -12,11 +12,17 @@
 //   filtering all keep running. Nothing is submitted, written or requested by
 //   the extension; with no rows selected Magento replies exactly as it would
 //   for the stock menu.
-// - Submenus are preserved inside the native dropdown (operator request,
-//   2026-10-20): only top-level leaf actions become buttons; anything with
-//   a submenu ("Change status", "Change attribute set", "AI Translate")
-//   stays reachable through the native dropdown, which remains visible
-//   whenever any submenu exists.
+// - Every top-level option becomes a button (operator request, 2026-10-22)
+//   EXCEPT the four in SKIP_ACTIONS ("Assign / Unassign Inventory Source",
+//   "Transfer Inventory To Source", "Regenerate Url" — dropped 2026-10-23;
+//   they stay in Magento's dropdown, which is never touched), including the
+//   ones that own a submenu ("Change status", "Change attribute
+//   set"): those get a caret and their OWN menu anchored to the button
+//   (operator request, 2026-10-23). The menu lists the submenu's items right
+//   under the button and forwards a pick to Magento's original item, so the
+//   native dropdown no longer has to be opened for them. The native dropdown
+//   itself is still left exactly as Magento drew it (never hidden), as the
+//   fallback for a submenu whose items we cannot read.
 // - Placement (2026-10-21): the strip is its OWN row above the grid, never
 //   inside the dropdown wrap — inside it the buttons inherited the trigger's
 //   narrow width and stacked two per line. Magento's wrap is now left
@@ -29,9 +35,10 @@
 //   dropdowns are enhanced by rowActions, never twice.
 //
 // Look & feel is the toolkit's (UI-TOOLKIT.md): `bar()` + `button({variant})`
-// from src/ui, one shared stylesheet, no colours written here. The old local
-// sheet's `currentColor` rules became the page-adaptive primitives.
-import { bar, button, ensureUi } from '../ui';
+// and `popover()` from src/ui, one shared stylesheet, no colours written here.
+// The old local sheet's `currentColor` rules became the page-adaptive
+// primitives.
+import { bar, button, ensureUi, popover } from '../ui';
 
 const MARK = 'data-mhx-mass';
 /** The strip's id, remembered on the root AND on the menu: the menu is the
@@ -52,14 +59,16 @@ let stripSeq = 0;
 const MAX_TOP_ITEMS = 40;
 
 /**
- * A menu item is renderable only when it is not hidden by attribute/class
- * AND its OWN computed display is not `none`. Magento hides bulk actions
- * with CSS classes; `display` is not inherited, so this catches li-level
- * hiding even while the parent menu itself is closed.
+ * A menu item is renderable only when it is not hidden by attribute or class.
+ * Magento hides bulk actions with the `.hidden` class or `hidden` attribute on
+ * the `<li>` itself; items inside a closed dropdown are not individually
+ * `display: none` — the parent `<ul>` is. Checking `getComputedStyle` here
+ * wrongly rejects every submenu item while the dropdown is closed, which
+ * prevented submenus (e.g. "Change attribute set") from ever getting a custom
+ * menu.
  */
 function isRenderableLi(li: HTMLElement): boolean {
   if (li.hidden || li.classList.contains('hidden')) return false;
-  if (getComputedStyle(li).display === 'none') return false;
   return true;
 }
 
@@ -68,6 +77,150 @@ interface MassItem {
   /** The native element to forward clicks to (menu item node). */
   el: HTMLElement;
   danger: boolean;
+  /** True when this item opens a submenu instead of acting directly. */
+  submenu: boolean;
+  /** The submenu list itself, when Magento rendered one. */
+  sub: HTMLElement | null;
+}
+
+/** Magento's wrap reports the open state on the trigger (aria-expanded) or on
+ *  the wrapper (`_active`); a submenu only expands inside an open dropdown. */
+function dropdownIsOpen(trigger: HTMLElement): boolean {
+  if (trigger.getAttribute('aria-expanded') === 'true') return true;
+  const wrap = trigger.closest<HTMLElement>(
+    '.admin__action-dropdown-wrap, .action-select-wrap',
+  );
+  return Boolean(wrap?.classList.contains('_active'));
+}
+
+/** The close function of the menu currently open, so another one closes it. */
+let openSubmenu: (() => void) | null = null;
+
+/**
+ * Draw a submenu as a menu anchored to its own button, instead of opening
+ * Magento's dropdown (operator request, 2026-10-23).
+ *
+ * Only the surface is ours: every item forwards its click to Magento's own
+ * submenu element, so the massaction selection check, confirmation modals, KO
+ * handlers and ACL filtering keep running exactly as they did from the native
+ * menu. The native dropdown is never opened for this pick and is left
+ * untouched (still visible) as the fallback for unreadable submenus.
+ *
+ * The menu is fixed-positioned from the button's rect, appended to the strip
+ * so a grid reload that redraws the strip takes it along, and closed by a
+ * click outside, Escape, scroll/resize or opening another submenu.
+ */
+function attachSubmenuMenu(
+  btn: HTMLButtonElement,
+  options: SubmenuOption[],
+  host: HTMLElement,
+  name: string,
+): void {
+  const menu = popover(
+    options.map((option) => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'mhx-pop-item';
+      item.setAttribute('role', 'menuitem');
+      item.textContent = option.label;
+      if (option.danger) item.dataset['variant'] = 'danger';
+      item.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeMenu();
+        // Magento's own item: its handler, modal and ACL check all run.
+        option.el.click();
+      });
+      return item;
+    }),
+    { label: name },
+  );
+  menu.classList.add('mhx-pop--menu');
+  menu.setAttribute('role', 'menu');
+  menu.hidden = true;
+  host.appendChild(menu);
+
+  let open = false;
+
+  function place(): void {
+    // Measure with the surface in the viewport, at a known origin.
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+    const anchor = btn.getBoundingClientRect();
+    const box = menu.getBoundingClientRect();
+    let left = anchor.left;
+    if (left + box.width > window.innerWidth - 8) {
+      left = Math.max(8, anchor.right - box.width);
+    }
+    let top = anchor.bottom + 4;
+    if (top + box.height > window.innerHeight - 8) {
+      const above = anchor.top - box.height - 4;
+      if (above >= 8) top = above;
+    }
+    menu.style.left = `${Math.round(left)}px`;
+    menu.style.top = `${Math.round(top)}px`;
+  }
+
+  function closeMenu(): void {
+    if (!open) return;
+    open = false;
+    menu.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('pointerdown', onOutside, true);
+    document.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('scroll', onViewport, true);
+    window.removeEventListener('resize', onViewport);
+    if (openSubmenu === closeMenu) openSubmenu = null;
+  }
+
+  function onOutside(event: Event): void {
+    const target = event.target;
+    if (
+      target instanceof Node &&
+      (menu.contains(target) || btn.contains(target))
+    ) {
+      return;
+    }
+    closeMenu();
+  }
+
+  function onKey(event: KeyboardEvent): void {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    closeMenu();
+    btn.focus();
+  }
+
+  function onViewport(): void {
+    closeMenu();
+  }
+
+  function openMenu(focusFirst: boolean): void {
+    if (openSubmenu) openSubmenu();
+    open = true;
+    menu.hidden = false;
+    place();
+    btn.setAttribute('aria-expanded', 'true');
+    // Keyboard open (detail 0): land on the first item instead of leaving
+    // focus behind on the button, out of the menu's tab order.
+    if (focusFirst) menu.querySelector<HTMLElement>('.mhx-pop-item')?.focus();
+    document.addEventListener('pointerdown', onOutside, true);
+    document.addEventListener('keydown', onKey, true);
+    window.addEventListener('scroll', onViewport, true);
+    window.addEventListener('resize', onViewport);
+    openSubmenu = closeMenu;
+  }
+
+  btn.setAttribute('aria-haspopup', 'menu');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.addEventListener('click', (event) => {
+    event.preventDefault();
+    // The massaction widget binds on the menu; ours must not re-trigger its
+    // dropdown toggling - only this menu.
+    event.stopPropagation();
+    if (open) closeMenu();
+    else openMenu(event.detail === 0);
+  });
 }
 
 function fold(text: string): string {
@@ -75,6 +228,19 @@ function fold(text: string): string {
 }
 
 const DANGER_RE = /delete|remove|deactivat/i;
+
+/**
+ * Bulk actions the strip must NOT turn into buttons (operator request,
+ * 2026-10-23: these four are never run from here). Matched on the folded
+ * caption, so casing and spacing do not matter. The items are left in
+ * Magento's own dropdown, which is untouched, so they stay reachable.
+ */
+const SKIP_ACTIONS = new Set([
+  'assign inventory source',
+  'unassign inventory source',
+  'transfer inventory to source',
+  'regenerate url',
+]);
 
 /** The node inside a menu item that carries the click (a > button > span > li). */
 function actionable(li: HTMLElement): HTMLElement | null {
@@ -88,10 +254,9 @@ function actionable(li: HTMLElement): HTMLElement | null {
   ) {
     return null;
   }
-  if (
-    !found &&
-    (li.classList.contains('_disabled') || li.classList.contains('disabled'))
-  ) {
+  // Magento marks an unavailable action on the <li> (`_disabled`), whether or
+  // not it also ships an anchor/span inside it.
+  if (li.classList.contains('_disabled') || li.classList.contains('disabled')) {
     return null;
   }
   return node;
@@ -102,6 +267,39 @@ function actionable(li: HTMLElement): HTMLElement | null {
 function submenuOf(li: HTMLElement): HTMLElement | null {
   const sub = li.querySelector<HTMLElement>(':scope > ul');
   return sub && sub.querySelector(':scope > li') ? sub : null;
+}
+
+interface SubmenuOption {
+  label: string;
+  /** Magento's own item, the only thing we ever click. */
+  el: HTMLElement;
+  danger: boolean;
+}
+
+/** Direct items of one submenu, under the same visibility rules as the bar. */
+function submenuOptions(sub: HTMLElement): SubmenuOption[] {
+  const out: SubmenuOption[] = [];
+  sub.querySelectorAll<HTMLElement>(':scope > li').forEach((li) => {
+    if (!isRenderableLi(li)) return;
+    const el = actionable(li);
+    if (!el) return;
+    const label = captionOf(li, el);
+    if (!label) return;
+    out.push({ label, el, danger: DANGER_RE.test(label) });
+  });
+  return out;
+}
+
+/** The item's own caption. For a submenu parent whose element IS the <li>, the
+ *  nested list must not leak into the label ("Change status" — never
+ *  "Change status Enable Disable"). */
+function captionOf(li: HTMLElement, el: HTMLElement): string {
+  if (el !== li) return (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+  const own = Array.from(li.childNodes)
+    .filter((node) => !(node instanceof HTMLElement && node.tagName === 'UL'))
+    .map((node) => node.textContent ?? '')
+    .join(' ');
+  return own.replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -161,13 +359,9 @@ function findMenu(root: HTMLElement): HTMLElement | null {
   return menu && menu.querySelector(':scope > li') ? menu : null;
 }
 
-function hide(el: HTMLElement): void {
-  el.style.setProperty('display', 'none', 'important');
-}
-
 /**
- * Replace each toolbar massaction dropdown with inline forwarded buttons.
- * Returns how many roots were newly enhanced (idempotent per root).
+ * Draw the toolbar's bulk actions as inline buttons beside the (kept) native
+ * dropdown. Returns how many roots were newly enhanced (idempotent per root).
  */
 export function enhanceMassactionButtons(): number {
   let count = 0;
@@ -218,24 +412,25 @@ export function enhanceMassactionButtons(): number {
     if (!signature) continue;
 
     const leaves: MassItem[] = [];
-    let nativeNeeded = false;
 
     menu.querySelectorAll<HTMLElement>(':scope > li').forEach((li) => {
       if (!isRenderableLi(li)) return;
-      if (submenuOf(li)) {
-        // Submenus stay INSIDE the native dropdown — never flattened
-        // (operator request, 2026-10-20). Their children ("Enable /
-        // Disable", "EN / ES / FR", the attribute-set list) remain exactly
-        // where Magento put them, and keeping them reachable also keeps the
-        // native trigger visible next to the button strip.
-        nativeNeeded = true;
-        return;
-      }
       const el = actionable(li);
       if (!el) return;
-      const label = (li.textContent ?? '').replace(/\s+/g, ' ').trim();
+      // A submenu parent's own text is just its title; the children stay in
+      // Magento's menu (we cannot invent their labels safely, and the menu
+      // stays visible for them).
+      const label = captionOf(li, el);
       if (!label) return;
-      leaves.push({ label, el, danger: DANGER_RE.test(label) });
+      if (SKIP_ACTIONS.has(fold(label))) return;
+      const sub = submenuOf(li);
+      leaves.push({
+        label,
+        el,
+        danger: DANGER_RE.test(label),
+        submenu: Boolean(sub),
+        sub,
+      });
     });
 
     const total = leaves.length;
@@ -250,28 +445,48 @@ export function enhanceMassactionButtons(): number {
 
     ensureUi();
 
-    const strip = bar(
-      leaves.map((leaf) =>
-        button({
-          label: leaf.label,
-          title: leaf.label,
-          variant: leaf.danger ? 'danger' : 'default',
-          onClick: (event) => {
-            event.preventDefault();
-            // The massaction widget binds on the menu; ours must not re-trigger
-            // its dropdown toggling — only the item's own handler.
-            event.stopPropagation();
-            leaf.el.click();
-          },
-        }),
-      ),
-      'Bulk actions',
-    );
-    strip.id = `mhx-mass-strip-${(stripSeq += 1)}`;
-
     const trigger = root.querySelector<HTMLElement>(
       '[data-toggle="dropdown"], .admin__actions-dropdown, .admin__action-dropdown, .action-select',
     );
+
+    const strip = bar([], 'Bulk actions');
+    for (const leaf of leaves) {
+      // A submenu we can read becomes a menu owned by its button; an empty or
+      // unreadable one keeps Magento's dropdown reachable (`attachSubmenuMenu`
+      // is only called with at least one option).
+      const options = leaf.sub ? submenuOptions(leaf.sub) : [];
+      const ownsMenu = options.length > 0;
+
+      const btn = button({
+        label: leaf.submenu ? `${leaf.label} ▾` : leaf.label,
+        title: ownsMenu
+          ? `${leaf.label} — opens its options below this button`
+          : leaf.submenu
+            ? `${leaf.label} — opens its submenu in the Actions menu`
+            : leaf.label,
+        variant: leaf.danger ? 'danger' : 'default',
+        onClick: ownsMenu
+          ? undefined
+          : (event) => {
+              event.preventDefault();
+              // The massaction widget binds on the menu; ours must not
+              // re-trigger its dropdown toggling — only the item's handler.
+              event.stopPropagation();
+              if (leaf.submenu) {
+                // Unreadable submenu: Magento's submenu only expands inside
+                // its open dropdown, so open its trigger first, then forward
+                // the pick in the same task.
+                if (trigger && !dropdownIsOpen(trigger)) trigger.click();
+              }
+              leaf.el.click();
+            },
+      });
+
+      if (ownsMenu) attachSubmenuMenu(btn, options, strip, leaf.label);
+      else if (leaf.submenu) btn.setAttribute('aria-haspopup', 'true');
+      strip.appendChild(btn);
+    }
+    strip.id = `mhx-mass-strip-${(stripSeq += 1)}`;
 
     // OUTSIDE the dropdown (operator request, 2026-10-21): the strip becomes
     // its own row above the grid. Inserted inside the dropdown wrap it took
@@ -282,10 +497,10 @@ export function enhanceMassactionButtons(): number {
     if (host) host.parent.insertBefore(strip, host.before);
     else root.insertAdjacentElement('afterend', strip);
 
-    if (!nativeNeeded) {
-      if (trigger) hide(trigger);
-      hide(menu);
-    }
+    // The native dropdown is still left visible and untouched (operator
+    // request, 2026-10-22): submenu buttons now own their menus, but the
+    // stock menu remains the fallback for a submenu we cannot read, and
+    // nothing Magento renders is hidden or restyled.
 
     root.setAttribute(MARK, '1');
     root.setAttribute(STRIP_ATTR, strip.id);
