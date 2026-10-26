@@ -20,6 +20,8 @@
 //   re-reads the native select, and `isStale()` reports when the caller should
 //   simply re-run the enhance helper.
 
+import { ensureUi } from '../ui';
+
 const WRAP_CLASS = 'mhx-nh';
 const NATIVE_CLASS = 'mhx-nh-native';
 const STYLE_ID = 'mhx-enhance-select-styles';
@@ -144,6 +146,7 @@ abstract class SelectDecorator {
 
   mount(): void {
     if (this.destroyed || mounted.has(this.select)) return;
+    void ensureUi();
     injectEnhancerStyles();
 
     // Insert the wrapper where the select sits, then reparent the select inside
@@ -233,7 +236,7 @@ export class SelectEnhancer extends SelectDecorator {
 
     this.trigger = document.createElement('button');
     this.trigger.type = 'button';
-    this.trigger.className = 'mhx-nh-trigger';
+    this.trigger.className = 'mhx-btn mhx-nh-trigger';
     this.trigger.setAttribute('aria-haspopup', 'listbox');
     this.trigger.setAttribute('aria-expanded', 'false');
     if (options.label) this.trigger.setAttribute('aria-label', options.label);
@@ -246,7 +249,7 @@ export class SelectEnhancer extends SelectDecorator {
     this.trigger.append(this.labelEl, caret);
 
     this.popover = document.createElement('div');
-    this.popover.className = 'mhx-nh-pop';
+    this.popover.className = 'mhx-pop mhx-nh-pop';
     this.popover.hidden = true;
 
     this.search = document.createElement('input');
@@ -294,7 +297,7 @@ export class SelectEnhancer extends SelectDecorator {
     this.list.textContent = '';
     for (const option of options) {
       const item = document.createElement('li');
-      item.className = 'mhx-nh-opt';
+      item.className = 'mhx-pop-item mhx-nh-opt';
       item.setAttribute('role', 'option');
       item.dataset['value'] = option.value;
       item.textContent = option.label;
@@ -302,7 +305,7 @@ export class SelectEnhancer extends SelectDecorator {
         item.classList.add('mhx-nh-opt--disabled');
         item.setAttribute('aria-disabled', 'true');
       }
-      item.classList.toggle('mhx-nh-opt--active', option.value === this.currentValue);
+      item.classList.toggle('mhx-pop-item--active', option.value === this.currentValue);
       item.addEventListener('click', () => {
         if (option.disabled) return;
         this.choose(option.value);
@@ -434,14 +437,14 @@ export class SegmentedSelect extends SelectDecorator {
   constructor(select: HTMLSelectElement, options: EnhanceSelectOptions) {
     super(select, options, 'seg', false);
     this.row = document.createElement('div');
-    this.row.className = 'mhx-nh-seg';
+    this.row.className = 'mhx-seg mhx-nh-seg';
     this.row.setAttribute('role', 'radiogroup');
     if (options.label) this.row.setAttribute('aria-label', options.label);
   }
 
   protected override focusReplacement(): void {
     const activeOrFirst =
-      this.row.querySelector<HTMLButtonElement>('.mhx-nh-seg-btn--active') ??
+      this.row.querySelector<HTMLButtonElement>('.mhx-seg-btn--active') ??
       this.row.querySelector<HTMLButtonElement>('.mhx-nh-seg-btn:not(:disabled)');
     activeOrFirst?.focus();
   }
@@ -464,13 +467,14 @@ export class SegmentedSelect extends SelectDecorator {
     for (const option of readOptions(this.select)) {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'mhx-nh-seg-btn';
+      btn.className = 'mhx-seg-btn mhx-nh-seg-btn';
       btn.textContent = option.label;
       btn.dataset['value'] = option.value;
       btn.disabled = option.disabled;
       const isActive = option.value === this.currentValue;
-      btn.classList.toggle('mhx-nh-seg-btn--active', isActive);
+      btn.classList.toggle('mhx-seg-btn--active', isActive);
       btn.setAttribute('aria-checked', String(isActive));
+      btn.setAttribute('aria-pressed', String(isActive));
       btn.setAttribute('role', 'radio');
       btn.title = option.label;
       this.row.appendChild(btn);
@@ -518,31 +522,24 @@ const ENHANCER_STYLES = `
 /* D8 fix: keep native select in layout & focusable instead of display:none,
    so Magento validation scroll/focus doesn't target a hidden element */
 .mhx-nh>select.mhx-nh-native{position:absolute !important;opacity:0 !important;pointer-events:none !important;width:1px !important;height:1px !important;margin:0 !important;border:0 !important;padding:0 !important;}
-.mhx-nh-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:6px 10px;border:1px solid #adadad;border-radius:3px;background:#fff;color:#303030;cursor:pointer;text-align:left;font:inherit;}
-.mhx-nh-trigger:hover{border-color:#8a8a8a;}
-.mhx-nh--open .mhx-nh-trigger{border-color:#007bdb;box-shadow:0 0 0 1px #007bdb;}
+.mhx-nh-trigger{justify-content:space-between;width:100%;text-align:left;}
+.mhx-nh--open .mhx-nh-trigger{border-color:var(--mhx-pg-accent);box-shadow:0 0 0 1px var(--mhx-pg-accent);}
 .mhx-nh-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.mhx-nh-label--empty{color:#8a8a8a;}
-.mhx-nh-caret{flex-shrink:0;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #555;}
-.mhx-nh-pop{position:absolute;z-index:100000;top:calc(100% + 2px);left:0;right:0;display:flex;flex-direction:column;max-height:280px;border:1px solid #adadad;border-radius:3px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+.mhx-nh-label--empty{color:var(--mhx-pg-ink);}
+.mhx-nh-caret{flex-shrink:0;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--mhx-pg-ink);}
+.mhx-nh-pop{position:absolute;z-index:100000;top:calc(100% + 2px);left:0;right:0;display:flex;flex-direction:column;max-height:280px;overflow-y:auto;}
 /* Author styles beat the UA sheet's [hidden]{display:none}, so a class-level
    display would keep the closed list laid out and swallowing clicks on
    whatever sits underneath it. Restore the close. */
 .mhx-nh-pop[hidden]{display:none;}
-.mhx-nh-search{flex-shrink:0;margin:6px;padding:5px 8px;border:1px solid #c8c8c8;border-radius:3px;font:inherit;}
-.mhx-nh-search:focus{outline:none;border-color:#007bdb;box-shadow:0 0 0 1px #007bdb;}
+.mhx-nh-search{flex-shrink:0;margin:6px;padding:5px 8px;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill);color:var(--mhx-pg-ink);font:inherit;}
+.mhx-nh-search:focus{outline:none;border-color:var(--mhx-pg-accent);box-shadow:0 0 0 1px var(--mhx-pg-accent);}
 .mhx-nh-list{margin:0;padding:0 0 6px;overflow-y:auto;list-style:none;}
-.mhx-nh-opt{padding:5px 10px;cursor:pointer;color:#303030;}
-.mhx-nh-opt--cursor{background:#e5f2fa;}
-.mhx-nh-opt--active{font-weight:700;color:#007bdb;}
-.mhx-nh-opt--disabled{color:#adadad;cursor:default;}
+.mhx-nh-opt--cursor{background:var(--mhx-pg-fill);}
+.mhx-nh-opt--disabled{color:var(--mhx-pg-line);cursor:default;}
 /* Two classes so the segmented modifier wins over the block default above. */
 .mhx-nh.mhx-nh--seg{display:inline-flex;min-width:0;}
-.mhx-nh-seg{display:inline-flex;border:1px solid #adadad;border-radius:3px;overflow:hidden;background:#fff;}
-.mhx-nh-seg-btn{padding:5px 10px;min-width:40px;border:0;border-right:1px solid #e3e3e3;background:#fff;color:#303030;cursor:pointer;font:inherit;}
-.mhx-nh-seg-btn:last-child{border-right:0;}
-.mhx-nh-seg-btn:hover{background:#f0f0f0;}
-.mhx-nh-seg-btn--active{background:#007bdb;color:#fff;font-weight:700;}
-.mhx-nh-seg-btn--active:hover{background:#00629e;}
-.mhx-nh-seg-btn:disabled{color:#adadad;cursor:default;background:#fafafa;}
+.mhx-nh-seg{width:max-content;}
+.mhx-nh-seg-btn{min-width:40px;}
+.mhx-nh-seg-btn:disabled{color:var(--mhx-pg-line);cursor:default;background:var(--mhx-pg-fill);}
 `;

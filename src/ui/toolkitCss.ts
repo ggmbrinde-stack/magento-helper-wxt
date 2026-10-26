@@ -1,6 +1,6 @@
 // GENERATED from src/ui/toolkit.css by scripts/sync-toolkit.mjs — do not edit.
 // Inline fallback copy of the toolkit sheet (the <link> copy is
-// public/ui/toolkit.css). Regenerate with `npm run ui:sync`.
+// src/public/ui/toolkit.css). Regenerate with `npm run ui:sync`.
 export const TOOLKIT_CSS = `/* ============================================================================
    One UI toolkit for every injected component — THE single sheet.
 
@@ -25,7 +25,7 @@ export const TOOLKIT_CSS = `/* =================================================
 
    DELIVERY (do not edit those, they are generated):
      src/ui/toolkit.css  -- this file, the ONLY source
-       -> public/ui/toolkit.css   (loaded as a <link>, cached across pages;
+       -> src/public/ui/toolkit.css   (loaded as a <link>, cached across pages;
                                    exposed via web_accessible_resources)
        -> src/ui/toolkitCss.ts    (inline <style id="mhx-ui"> fallback for
                                    setups where extension URLs are blocked)
@@ -36,6 +36,8 @@ export const TOOLKIT_CSS = `/* =================================================
 :root,
 :host {
   --mhx-pg-ink: currentColor;
+  --mhx-pg-muted: rgba(128, 128, 128, 0.82);
+  --mhx-pg-muted: color-mix(in srgb, currentColor 72%, transparent);
 
   --mhx-pg-line: rgba(128, 128, 128, 0.45);
   --mhx-pg-line: color-mix(in srgb, currentColor 22%, transparent);
@@ -141,6 +143,42 @@ export const TOOLKIT_CSS = `/* =================================================
 .mhx-btn[data-variant="icon"]:hover {
   background: rgba(128, 128, 128, 0.16);
   background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+.mhx-btn[data-variant="icon"][data-tone="ok"] {
+  color: var(--mhx-pg-ok);
+}
+
+/* Compact icon button: the controls that sit INSIDE a chip (pin, pencil, ✓, ✕).
+   The default icon padding would make a one-line pill taller than its text. */
+.mhx-btn--compact {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  padding: 0;
+}
+
+/* Toggle state (pin on/off) — \`aria-pressed\` is the source of truth, so the
+   state is announced to assistive tech as well as painted. */
+.mhx-btn[data-variant="icon"][aria-pressed="true"] {
+  color: var(--mhx-pg-accent);
+  background: rgba(128, 128, 128, 0.07);
+  background: color-mix(in srgb, var(--mhx-pg-accent) 14%, transparent);
+}
+
+.mhx-btn[data-variant="icon"][aria-pressed="true"]:hover {
+  background: color-mix(in srgb, var(--mhx-pg-accent) 22%, transparent);
+}
+
+.mhx-btn[data-variant="ok"] {
+  color: var(--mhx-pg-ok);
+  font-weight: 600;
+  background: transparent;
+}
+
+.mhx-btn[data-variant="ok"]:hover {
+  background: rgba(22, 163, 74, 0.14);
+  background: var(--mhx-pg-ok-wash);
 }
 
 /* ---- button group (row actions, header actions) --------------------------- */
@@ -298,25 +336,46 @@ export const TOOLKIT_CSS = `/* =================================================
 }
 
 /* ---- chip (removable filter / pill) ---------------------------------------
-   The remove button is \`.mhx-chip-remove\`, NOT the doc's early draft name
-   \`.mhx-chip-x\`: that class belongs to activeFilters' legacy cancel button
-   on live admin pages today, and two sheets defining it would fight over
-   the same element until the activeFilters port (phase 3) lands. */ */
+   One shell for every filter chip: applied filters, pinned filters and the
+   panel pills. The remove control is \`.mhx-chip-remove\`; chips that reuse
+   Magento's own markup keep Magento's \`.action-remove\` instead, so a pinned
+   chip reads exactly like the applied ones beside it. */
+/* \`inline-block\`, not flex: a chip is a run of text ("Label: value") with a few
+   controls. Flex would turn the colon into an anonymous flex item, and its
+   leading/trailing spaces are trimmed there — "Status:Disabled". */
 .mhx-chip {
   box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  display: inline-block;
   max-width: 100%;
   padding: 3px 8px;
   font: var(--mhx-pg-font);
   line-height: 1.4;
+  vertical-align: middle;
+  white-space: nowrap;
   border: 1px solid rgba(128, 128, 128, 0.45);
   border: 1px solid var(--mhx-pg-line);
   border-radius: 10px;
   background: rgba(128, 128, 128, 0.07);
   background: var(--mhx-pg-fill);
   color: inherit;
+}
+
+/* Space the CONTROLS, never the text: a chip reads "Label: value", so a flex
+   \`gap\` would push the colon away from its label (Magento's own chips keep the
+   colon in a bare text node). */
+.mhx-chip > .mhx-btn,
+.mhx-chip > .mhx-chip-remove,
+.mhx-chip > .action-remove {
+  margin-left: 4px;
+}
+
+/* Keep icons on the text's centre line now that the chip is inline. */
+.mhx-chip > * {
+  vertical-align: middle;
+}
+
+.mhx-chip > .mhx-btn:first-child {
+  margin-left: 0;
 }
 
 .mhx-chip-remove {
@@ -337,7 +396,7 @@ export const TOOLKIT_CSS = `/* =================================================
   cursor: pointer;
 }
 
-.mhx-chip-x:hover {
+.mhx-chip-remove:hover {
   background: rgba(128, 128, 128, 0.16);
   background: color-mix(in srgb, currentColor 13%, transparent);
 }
@@ -369,12 +428,90 @@ export const TOOLKIT_CSS = `/* =================================================
   background: var(--mhx-pg-ok-wash);
 }
 
+.mhx-badge[data-tone="accent"] {
+  color: var(--mhx-pg-accent);
+  border-color: var(--mhx-pg-line);
+  background: var(--mhx-pg-fill);
+}
+
 .mhx-badge[data-tone="danger"] {
   color: var(--mhx-pg-danger);
   border-color: rgba(229, 72, 77, 0.45);
   border-color: color-mix(in srgb, var(--mhx-pg-danger) 45%, transparent);
   background: rgba(229, 72, 77, 0.12);
   background: var(--mhx-pg-danger-wash);
+}
+
+/* ---- field --------------------------------------------------------------- */
+.mhx-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--mhx-pg-ink);
+  font: var(--mhx-pg-font);
+}
+
+.mhx-field-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mhx-field input,
+.mhx-field select,
+.mhx-field textarea {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  background: var(--mhx-pg-fill);
+  color: var(--mhx-pg-ink);
+  font: inherit;
+}
+
+.mhx-field input:focus-visible,
+.mhx-field select:focus-visible,
+.mhx-field textarea:focus-visible {
+  outline: 2px solid var(--mhx-pg-accent);
+  outline-offset: 1px;
+}
+
+.mhx-field[data-status="ok"] input {
+  border-color: var(--mhx-pg-ok);
+}
+
+.mhx-field[data-status="bad"] input {
+  border-color: var(--mhx-pg-danger);
+}
+
+.mhx-field-hint {
+  color: var(--mhx-pg-muted);
+  font-size: 11px;
+}
+
+/* ---- messages ------------------------------------------------------------ */
+.mhx-error {
+  padding: 8px;
+  border: 1px solid var(--mhx-pg-danger);
+  border-radius: var(--mhx-pg-radius);
+  background: var(--mhx-pg-danger-wash);
+  color: var(--mhx-pg-danger);
+}
+
+.mhx-saved {
+  color: var(--mhx-pg-ok);
+  font-size: 12px;
+}
+
+.mhx-note,
+.mhx-empty {
+  margin: 4px 0;
+  color: var(--mhx-pg-muted);
+}
+
+.mhx-empty {
+  font-style: italic;
 }
 
 /* ---- inline field (chip editor, custom page size) --------------------------- */
@@ -386,9 +523,11 @@ export const TOOLKIT_CSS = `/* =================================================
   font: var(--mhx-pg-font);
 }
 
-.mhx-inline-field input {
+.mhx-inline-field input,
+.mhx-inline-field select {
   box-sizing: border-box;
   width: 76px;
+  max-width: 100%;
   margin: 0;
   padding: 4px 7px;
   font: var(--mhx-pg-font);
@@ -400,7 +539,15 @@ export const TOOLKIT_CSS = `/* =================================================
   border-radius: var(--mhx-pg-radius);
 }
 
-.mhx-inline-field input:focus-visible {
+/* A filter value needs room to read (SKUs, names); the page-size control
+   does not, so width stays a per-use modifier. */
+.mhx-inline-field[data-size="wide"] input,
+.mhx-inline-field[data-size="wide"] select {
+  width: 150px;
+}
+
+.mhx-inline-field input:focus-visible,
+.mhx-inline-field select:focus-visible {
   outline: none;
   border-color: var(--mhx-pg-accent);
   box-shadow: 0 0 0 1px var(--mhx-pg-accent);
@@ -427,6 +574,8 @@ export const TOOLKIT_CSS = `/* =================================================
   border: 1px solid var(--mhx-pg-line);
   border-radius: var(--mhx-pg-radius);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+  max-height: 280px;
+  overflow-y: auto;
 }
 
 .mhx-pop-item {
@@ -452,6 +601,30 @@ export const TOOLKIT_CSS = `/* =================================================
 
 .mhx-pop-item--active {
   color: var(--mhx-pg-accent);
+  font-weight: 600;
+}
+
+/* Popover as a menu anchored to its own button (bulk-action submenus):
+   \`top\`/\`left\` are written inline by the caller from the trigger's rect, the
+   rest is presentation and lives here. */
+.mhx-pop--menu {
+  position: fixed;
+  z-index: 10050;
+  box-sizing: border-box;
+  min-width: 180px;
+  max-width: 320px;
+  max-height: 60vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+}
+
+.mhx-pop--menu[hidden] {
+  display: none !important;
+}
+
+.mhx-pop--menu .mhx-pop-item[data-variant="danger"] {
+  color: var(--mhx-pg-danger);
   font-weight: 600;
 }
 
@@ -492,6 +665,37 @@ export const TOOLKIT_CSS = `/* =================================================
   outline-offset: 1px;
 }
 
+/* Horizontal variant: a short tab on the page edge.
+   Position (left/right/top) is written by the feature using it —
+   adminNavToggle (left, tall) and messagesToggle (right, short). */
+.mhx-toggle--h {
+  left: auto;
+  right: 0;
+  top: 0;
+  height: 40px;
+  width: 16px;
+  border-radius: var(--mhx-pg-radius) 0 0 var(--mhx-pg-radius);
+}
+
+/* Left-edge horizontal variant: paired with the messages toggle
+   when the band lives on the left side of the content column. */
+.mhx-toggle--h--left {
+  right: auto;
+  left: 0;
+  border-radius: 0 var(--mhx-pg-radius) var(--mhx-pg-radius) 0;
+}
+
+/* Top-edge horizontal variant: paired with the messages toggle
+   when the band lives above the content column. */
+.mhx-toggle--h--top {
+  right: auto;
+  left: 0;
+  top: 0;
+  height: 16px;
+  width: 40px;
+  border-radius: 0 0 var(--mhx-pg-radius) var(--mhx-pg-radius);
+}
+
 /* ---- toast (bottom-right notification) ---------------------------------------- */
 /* Extension-owned overlay surface, like lib/theme.ts: it floats above the page
    and must be readable on both admins, so it carries its own colours. */
@@ -529,5 +733,38 @@ export const TOOLKIT_CSS = `/* =================================================
   cursor: pointer;
   font-size: 15px;
   line-height: 1;
+}
+/* Page header actions moved into header (pageHeader) */
+header.page-header > .mhx-header-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 16px 0 0 !important;
+  padding: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: auto !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  float: none !important;
+  position: static !important;
+  flex: 0 0 auto !important;
+}
+header.page-header > .mhx-header-actions .page-actions,
+header.page-header > .mhx-header-actions .page-actions-buttons {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  float: none !important;
+}
+header.page-header > .mhx-header-actions .action-primary,
+header.page-header > .mhx-header-actions .action-default {
+  margin: 0 !important;
+  white-space: nowrap !important;
 }
 `;
