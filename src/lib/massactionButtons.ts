@@ -191,7 +191,14 @@ function attachSubmenuMenu(
     btn.focus();
   }
 
-  function onViewport(): void {
+  function onViewport(_event: Event): void {
+    if (!open) return;
+    // Don't close if the scroll originated inside the dropdown menu
+    const target = document.elementFromPoint((_event as any).clientX, (_event as any).clientY);
+    if (menu && menu.contains(target)) {
+      // Scroll was inside the dropdown – don't close it
+      return;
+    }
     closeMenu();
   }
 
