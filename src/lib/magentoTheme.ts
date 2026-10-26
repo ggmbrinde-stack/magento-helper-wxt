@@ -49,7 +49,7 @@ html, body { background: var(--mhx-bg) !important; color: var(--mhx-ink) !import
 /* --- header & page actions -------------------------------------------- */
 .page-header { background: var(--mhx-surface) !important; color: var(--mhx-ink) !important; border-color: var(--mhx-border) !important; }
 .page-title, .page-title span, .admin__page-heading, .content-header h3 { color: var(--mhx-ink) !important; background: transparent !important; }
-.page-main-actions, .page-actions { background: var(--mhx-surface) !important; border-color: var(--mhx-border) !important; }
+.page-main-actions, .page-actions { background: var(--mhx-surface) !important; border-color: var(--mhx-border) !important; color: var(--mhx-ink) !important; }
 .page-actions .action-default, .page-main-actions .action-default { background: var(--mhx-surface-2) !important; border-color: var(--mhx-border-2) !important; color: var(--mhx-ink) !important; }
 .page-actions .action-primary, .page-main-actions .action-primary,
 .action-primary { background: var(--mhx-accent) !important; border-color: var(--mhx-accent) !important; color: var(--mhx-on-accent) !important; }
@@ -83,13 +83,13 @@ table.data-grid thead th, .admin__table-primary thead th { background: var(--mhx
 table.data-grid tbody td, .admin__table-primary tbody td { background: transparent !important; color: var(--mhx-ink) !important; border-color: var(--mhx-border) !important; }
 table.data-grid tbody tr:hover > td, table.data-grid tbody tr._odd > td { background: var(--mhx-surface-2) !important; }
 .data-grid-filters input, .data-grid-filters select, .data-grid-search-control input { background: var(--mhx-surface) !important; color: var(--mhx-ink) !important; border-color: var(--mhx-border-2) !important; }
-.admin__data-grid-toolbar, .sticky-header { background: var(--mhx-surface) !important; }
+.admin__data-grid-toolbar, .sticky-header { background: var(--mhx-surface) !important; color: var(--mhx-ink) !important; }
 .admin__control-support-text { color: var(--mhx-muted) !important; }
 
 /* --- buttons & dropdowns --------------------------------------------- */
 .action-default, .action-secondary, .admin__action-dropdown,
 .admin__action-multiselect, .admin__action-dropdown-text { background: var(--mhx-surface-2) !important; border-color: var(--mhx-border-2) !important; color: var(--mhx-ink) !important; }
-.action-default:hover, .admin__action-dropdown:hover { background: var(--mhx-surface) !important; }
+.action-default:hover, .admin__action-dropdown:hover { background: var(--mhx-surface) !important; color: var(--mhx-ink) !important; }
 /* --- action dropdown menus, including nested submenus -------------------
    Magento renders the bulk "Actions" menu as ul.action-menu with items as
    <span class="action-menu-item">, and puts a submenu on its own white
@@ -129,6 +129,98 @@ table.data-grid tbody tr:hover > td, table.data-grid tbody tr._odd > td { backgr
 }
 .admin__data-grid-loading-mask { background: color-mix(in srgb, var(--mhx-bg) 70%, transparent) !important; }
 .admin__field-error, .message-error, .message-warning, .message-success, .message-notice { /* left to Magento */ }
+
+/* --- breadcrumbs ------------------------------------------------------- */
+.admin__breadcrumbs, .admin__breadcrumbs li { color: var(--mhx-muted) !important; }
+.admin__breadcrumbs a { color: var(--mhx-accent) !important; }
+
+/* --- date picker / calendar ------------------------------------------- */
+.admin__date-picker, .calendar,
+.admin__date-picker .calendar-header,
+.admin__date-picker .calendar-day,
+.admin__date-picker .calendar-month,
+.admin__date-picker .calendar-year {
+  background: var(--mhx-surface) !important;
+  color: var(--mhx-ink) !important;
+  border-color: var(--mhx-border) !important;
+}
+.admin__date-picker .calendar-day:hover,
+.admin__date-picker .calendar-day._selected {
+  background: var(--mhx-tint) !important;
+  color: var(--mhx-accent-2) !important;
+}
+
+/* --- tooltips & popovers ---------------------------------------------- */
+.tooltip, .popover, .admin__tooltip,
+.admin__field-description, .admin__hint {
+  background: var(--mhx-surface-2) !important;
+  color: var(--mhx-ink-2) !important;
+  border-color: var(--mhx-border) !important;
+}
+
+/* --- store view switcher ---------------------------------------------- */
+.admin__scope-old, .store-switcher,
+.admin__scope-old select, .store-switcher select {
+  background: var(--mhx-surface) !important;
+  color: var(--mhx-ink) !important;
+  border-color: var(--mhx-border-2) !important;
+}
+
+/* --- pager controls --------------------------------------------------- */
+.admin__data-grid-pager, .pager,
+.admin__data-grid-pager .pages li,
+.admin__data-grid-pager .pages a,
+.admin__data-grid-pager .current,
+.admin__data-grid-pager .amount,
+.admin__data-grid-pager .label {
+  background: var(--mhx-surface) !important;
+  color: var(--mhx-ink) !important;
+  border-color: var(--mhx-border) !important;
+}
+.admin__data-grid-pager .pages a:hover,
+.admin__data-grid-pager .pages a._active {
+  background: var(--mhx-tint) !important;
+  color: var(--mhx-accent-2) !important;
+}
+
+/* --- row actions in grids --------------------------------------------- */
+.admin__row-actions a,
+.action-view, .action-edit, .action-delete,
+.action-select, .action-license {
+  color: var(--mhx-ink) !important;
+}
+.admin__row-actions a:hover,
+.action-view:hover, .action-edit:hover, .action-delete:hover {
+  color: var(--mhx-accent-2) !important;
+}
+
+/* --- mass action dropdown --------------------------------------------- */
+.admin__mass-action, .admin__mass-action select {
+  background: var(--mhx-surface) !important;
+  color: var(--mhx-ink) !important;
+  border-color: var(--mhx-border-2) !important;
+}
+
+/* --- collapse / expand toggles ---------------------------------------- */
+.admin__collapsible-toggle, .admin__collapsible-trigger {
+  color: var(--mhx-ink) !important;
+}
+.admin__collapsible-toggle:hover, .admin__collapsible-trigger:hover {
+  color: var(--mhx-accent) !important;
+}
+
+/* --- notification banners --------------------------------------------- */
+.admin__notification, .notice, .admin__notice {
+  background: var(--mhx-surface-2) !important;
+  color: var(--mhx-ink) !important;
+  border-color: var(--mhx-border) !important;
+}
+
+/* --- select all / header checkbox ------------------------------------ */
+.admin__data-grid-wrap thead input[type="checkbox"],
+.admin__data-grid-wrap thead input[type="radio"] {
+  accent-color: var(--mhx-accent) !important;
+}
 
 `;
 
