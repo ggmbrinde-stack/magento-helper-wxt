@@ -17,6 +17,7 @@
 import {
   MAGENTO_THEME_KEY,
   THEME_ACCENT_KEY,
+  THEME_CUSTOM_KEY,
   THEME_KEY,
   THEME_PALETTES,
   applyTheme,
@@ -24,6 +25,7 @@ import {
   isThemePreference,
   readMagentoThemeEnabled,
   readThemeAccent,
+  readThemeCustom,
   readThemePreference,
   resolveTheme,
   type ThemePreference,
@@ -231,10 +233,11 @@ export function applyMagentoPageTheme(
   enabled: boolean,
   preference: ThemePreference,
   accent: string | null = null,
+  customTheme: string | null = null,
 ): void {
   const resolved = enabled ? resolveTheme(preference) : 'light';
 
-  applyTheme(document.documentElement, resolved, accent);
+  applyTheme(document.documentElement, resolved, accent, customTheme);
   syncSheet(STYLE_ID, enabled ? MAGENTO_THEME_CSS : null);
   syncSheet(ACCENT_STYLE_ID, accent ? MAGENTO_ACCENT_CSS : null);
   applied = true;
@@ -248,17 +251,21 @@ export function watchMagentoPageTheme(onReady?: () => void): () => void {
   let enabled = false;
   let preference: ThemePreference = 'system';
   let accent: string | null = null;
+  let customTheme: string | null = null;
 
-  const apply = (): void => applyMagentoPageTheme(enabled, preference, accent);
+  const apply = (): void =>
+    applyMagentoPageTheme(enabled, preference, accent, customTheme);
 
   void Promise.all([
     readMagentoThemeEnabled(),
     readThemePreference(),
     readThemeAccent(),
-  ]).then(([on, pref, storedAccent]) => {
+    readThemeCustom(),
+  ]).then(([on, pref, storedAccent, storedCustom]) => {
     enabled = on;
     preference = pref;
     accent = storedAccent;
+    customTheme = storedCustom;
     apply();
     onReady?.();
   });
@@ -281,6 +288,11 @@ export function watchMagentoPageTheme(onReady?: () => void): () => void {
     if (THEME_ACCENT_KEY in changes) {
       const next = changes[THEME_ACCENT_KEY]?.newValue;
       accent = isHexColor(next) ? next : null;
+      touched = true;
+    }
+    if (THEME_CUSTOM_KEY in changes) {
+      const next = changes[THEME_CUSTOM_KEY]?.newValue;
+      customTheme = isHexColor(next) ? next : null;
       touched = true;
     }
     if (touched) apply();

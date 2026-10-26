@@ -12,6 +12,7 @@ import {
   ACCENT_PRESETS,
   MAGENTO_THEME_KEY,
   THEME_ACCENT_KEY,
+  THEME_CUSTOM_KEY,
   THEME_KEY,
   THEME_OPTIONS,
   THEME_PALETTES,
@@ -19,15 +20,17 @@ import {
   isThemePreference,
   readMagentoThemeEnabled,
   readThemeAccent,
+  readThemeCustom,
   readThemePreference,
   writeMagentoThemeEnabled,
   writeThemeAccent,
+  writeThemeCustom,
   writeThemePreference,
   type ThemePreference,
 } from './theme';
 
 /** The built-in accent, used to paint the "Default" swatch and seed the picker. */
-const BUILT_IN_ACCENT = THEME_PALETTES.light['--mhx-accent'] ?? '#d81b60';
+const BUILT_IN_ACCENT = THEME_PALETTES.light['--mhx-accent'];
 
 interface StorageChanges {
   [key: string]: { newValue?: unknown } | undefined;
@@ -110,10 +113,28 @@ export function useThemeAccent() {
   return { accent, setAccent };
 }
 
+/** The custom theme base colour, or null for the built-in palette. */
+export function useThemeCustom() {
+  const [custom, setCustomState] = useStoredValue<string | null>(
+    THEME_CUSTOM_KEY,
+    readThemeCustom,
+    (raw) => (isHexColor(raw) ? raw : null),
+    null,
+  );
+
+  const setCustom = (next: string | null): void => {
+    setCustomState(next);
+    void writeThemeCustom(next);
+  };
+
+  return { custom, setCustom };
+}
+
 export function ThemePicker() {
   const { preference, setPreference } = useThemePreference();
   const { enabled, setEnabled } = useMagentoTheme();
   const { accent, setAccent } = useThemeAccent();
+  const { custom, setCustom } = useThemeCustom();
 
   return (
     <div class="mhx-theme">
@@ -162,6 +183,19 @@ export function ThemePicker() {
             value={accent ?? BUILT_IN_ACCENT}
             aria-label="Custom accent colour"
             onInput={(e) => setAccent(e.currentTarget.value)}
+          />
+          <span>Custom</span>
+        </label>
+      </div>
+
+      <span class="mhx-theme-label">Theme colour</span>
+      <div class="mhx-swatches">
+        <label class="mhx-swatch-custom" title="Pick any colour">
+          <input
+            type="color"
+            value={custom ?? THEME_PALETTES.light['--mhx-bg']}
+            aria-label="Custom theme base colour"
+            onInput={(e) => setCustom(e.currentTarget.value)}
           />
           <span>Custom</span>
         </label>

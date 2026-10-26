@@ -40,6 +40,13 @@ export const MAGENTO_THEME_KEY = 'themeMagentoPages';
  */
 export const THEME_ACCENT_KEY = 'themeAccent';
 
+/**
+ * Optional custom theme base colour. One colour in, a full surface palette out:
+ * background, surface, borders, ink — all derived from the single choice so the
+ * operator can never pick an unreadable theme.
+ */
+export const THEME_CUSTOM_KEY = 'themeCustom';
+
 export interface AccentPreset {
   label: string;
   value: string | null;
@@ -339,6 +346,44 @@ export function accentOverrides(accent: string, theme: ResolvedTheme): Palette {
   };
 }
 
+/**
+ * Theme palette entries derived from one chosen base colour: background,
+ * surface, borders, ink — all blended toward light or dark so the result stays
+ * readable on either surface.
+ */
+export function themeOverrides(baseColor: string, theme: ResolvedTheme): Palette {
+  const parsed = isHexColor(baseColor) ? parseHex(baseColor) : null;
+  if (!parsed) return {};
+  const clean = toHex(parsed);
+  const base = THEME_PALETTES[theme];
+  const surface = base['--mhx-surface'] ?? '#ffffff';
+  const bg = base['--mhx-bg'] ?? '#f6f7f9';
+  const border = base['--mhx-border'] ?? '#e4e7eb';
+  const isDark = isDarkTheme(theme);
+  const towards = isDark ? '#000000' : '#ffffff';
+
+  // Tint the background and surface toward the chosen colour
+  const nextBg = mix(bg, clean, isDark ? 0.25 : 0.15);
+  const nextSurface = mix(surface, clean, isDark ? 0.20 : 0.10);
+  const ink = readableForeground(nextBg);
+
+  return {
+    '--mhx-bg': nextBg,
+    '--mhx-surface': nextSurface,
+    '--mhx-surface-2': mix(nextSurface, towards, 0.15),
+    '--mhx-border': mix(border, clean, 0.35),
+    '--mhx-border-2': mix(border, clean, 0.50),
+    '--mhx-ink': ink,
+    '--mhx-ink-2': mix(ink, towards, 0.30),
+    '--mhx-muted': mix(ink, towards, 0.55),
+    '--mhx-accent': clean,
+    '--mhx-accent-2': mix(clean, towards, 0.18),
+    '--mhx-on-accent': readableForeground(clean),
+    '--mhx-tint': mix(nextSurface, clean, isDark ? 0.22 : 0.12),
+    '--mhx-tint-2': mix(nextSurface, clean, isDark ? 0.34 : 0.22),
+  };
+}
+
 export function isThemePreference(value: unknown): value is ThemePreference {
   return (
     value === 'system' ||
@@ -373,12 +418,14 @@ export function applyTheme(
   root: HTMLElement,
   preference: ThemePreference,
   accent?: string | null,
+  customTheme?: string | null,
 ): ResolvedTheme {
   const resolved = resolveTheme(preference);
   const palette: Palette = { ...THEME_PALETTES[resolved] };
-  // Every key is written on every apply, so dropping the accent restores the
-  // built-in colours instead of leaving the derived ones behind.
+  // Every key is written on every apply, so dropping a value restores the
+  // built-in colours instead of leaving derived ones behind.
   if (accent) Object.assign(palette, accentOverrides(accent, resolved));
+  if (customTheme) Object.assign(palette, themeOverrides(customTheme, resolved));
   for (const [name, value] of Object.entries(palette)) {
     root.style.setProperty(name, value);
   }
@@ -420,6 +467,22 @@ export async function writeThemeAccent(
   await browser.storage.local.set({ [THEME_ACCENT_KEY]: accent });
 }
 
+export async function readThemeCustom(): Promise<string | null> {
+  try {
+    const data = await browser.storage.local.get([THEME_CUSTOM_KEY]);
+    const raw = data?.[THEME_CUSTOM_KEY];
+    return isHexColor(raw) ? raw : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function writeThemeCustom(
+  custom: string | null,
+): Promise<void> {
+  await browser.storage.local.set({ [THEME_CUSTOM_KEY]: custom });
+}
+
 export async function readMagentoThemeEnabled(): Promise<boolean> {
   try {
     const data = await browser.storage.local.get([MAGENTO_THEME_KEY]);
@@ -451,15 +514,21 @@ export function primeTheme(...extraRoots: HTMLElement[]): () => void {
   // rather than flashing light while storage resolves.
   let preference: ThemePreference = 'system';
   let accent: string | null = null;
+  let customTheme: string | null = null;
   const paint = (): void => {
-    for (const root of roots) applyTheme(root, preference, accent);
+    for (const root of roots) applyTheme(root, preference, accent, customTheme);
   };
   paint();
 
-  void Promise.all([readThemePreference(), readThemeAccent()]).then(
-    ([storedPreference, storedAccent]) => {
+  void Promise.all([
+    readThemePreference(),
+    readThemeAccent(),
+    readThemeCustom(),
+  ]).then(
+    ([storedPreference, storedAccent, storedCustom]) => {
       preference = storedPreference;
       accent = storedAccent;
+      customTheme = storedCustom;
       paint();
     },
   );
@@ -478,6 +547,11 @@ export function primeTheme(...extraRoots: HTMLElement[]): () => void {
     if (THEME_ACCENT_KEY in changes) {
       const next = changes[THEME_ACCENT_KEY]?.newValue;
       accent = isHexColor(next) ? next : null;
+      touched = true;
+    }
+    if (THEME_CUSTOM_KEY in changes) {
+      const next = changes[THEME_CUSTOM_KEY]?.newValue;
+      customTheme = isHexColor(next) ? next : null;
       touched = true;
     }
     if (touched) paint();
