@@ -232,10 +232,10 @@ export function applyMagentoPageTheme(
   preference: ThemePreference,
   accent: string | null = null,
 ): void {
-  const dark = enabled && resolveTheme(preference) === 'dark';
+  const resolved = enabled ? resolveTheme(preference) : 'light';
 
-  applyTheme(document.documentElement, dark ? 'dark' : 'light', accent);
-  syncSheet(STYLE_ID, dark ? MAGENTO_THEME_CSS : null);
+  applyTheme(document.documentElement, resolved, accent);
+  syncSheet(STYLE_ID, enabled ? MAGENTO_THEME_CSS : null);
   syncSheet(ACCENT_STYLE_ID, accent ? MAGENTO_ACCENT_CSS : null);
   applied = true;
 }
@@ -244,7 +244,7 @@ export function applyMagentoPageTheme(
  * Keep the admin page in step with the stored preference.
  * Called once from the content script. Returns an unsubscribe function.
  */
-export function watchMagentoPageTheme(): () => void {
+export function watchMagentoPageTheme(onReady?: () => void): () => void {
   let enabled = false;
   let preference: ThemePreference = 'system';
   let accent: string | null = null;
@@ -260,6 +260,7 @@ export function watchMagentoPageTheme(): () => void {
     preference = pref;
     accent = storedAccent;
     apply();
+    onReady?.();
   });
 
   const onStorage = (

@@ -9,8 +9,19 @@
 
 import { browser } from 'wxt/browser';
 
-export type ThemePreference = 'system' | 'light' | 'dark';
-export type ResolvedTheme = 'light' | 'dark';
+export type ThemePreference =
+  | 'system'
+  | 'light'
+  | 'dark'
+  | 'high-contrast'
+  | 'sepia'
+  | 'blue-tinted';
+export type ResolvedTheme =
+  | 'light'
+  | 'dark'
+  | 'high-contrast'
+  | 'sepia'
+  | 'blue-tinted';
 
 /** Storage key. Kept separate from the Magento/Notion settings. */
 export const THEME_KEY = 'theme';
@@ -58,6 +69,9 @@ export const THEME_OPTIONS: ThemeOption[] = [
   { id: 'system', label: 'System', hint: 'Follow the OS setting' },
   { id: 'light', label: 'Light', hint: 'Always light' },
   { id: 'dark', label: 'Dark', hint: 'Always dark' },
+  { id: 'high-contrast', label: 'High contrast', hint: 'Black background, maximum-contrast text' },
+  { id: 'sepia', label: 'Sepia', hint: 'Warm paper tone, easy on the eyes' },
+  { id: 'blue-tinted', label: 'Blue tinted', hint: 'Cool slate-blue surface' },
 ];
 
 type Palette = Record<string, string>;
@@ -124,9 +138,99 @@ const DARK: Palette = {
   '--mhx-shadow': '0 4px 16px rgba(0, 0, 0, 0.5)',
 };
 
+const HIGH_CONTRAST: Palette = {
+  '--mhx-bg': '#000000',
+  '--mhx-surface': '#0a0a0a',
+  '--mhx-surface-2': '#1a1a1a',
+  '--mhx-border': '#ffffff',
+  '--mhx-border-2': '#cccccc',
+  '--mhx-ink': '#ffffff',
+  '--mhx-ink-2': '#e0e0e0',
+  '--mhx-muted': '#a0a0a0',
+  '--mhx-muted-2': '#808080',
+  '--mhx-accent': '#ffff00',
+  '--mhx-accent-2': '#cccc00',
+  '--mhx-tint': '#1a1a00',
+  '--mhx-tint-2': '#333300',
+  '--mhx-on-accent': '#000000',
+  '--mhx-ok': '#00ff00',
+  '--mhx-ok-bg': '#001a00',
+  '--mhx-ok-border': '#006600',
+  '--mhx-bad': '#ff0000',
+  '--mhx-bad-bg': '#1a0000',
+  '--mhx-bad-border': '#660000',
+  '--mhx-warn-bg': '#1a1a00',
+  '--mhx-warn-border': '#cccc00',
+  '--mhx-prio-high': '#ff0000',
+  '--mhx-prio-medium': '#ffff00',
+  '--mhx-prio-low': '#ffffff',
+  '--mhx-shadow': '0 4px 16px rgba(0, 0, 0, 1)',
+};
+
+const SEPIA: Palette = {
+  '--mhx-bg': '#f4ecd8',
+  '--mhx-surface': '#fdf6e3',
+  '--mhx-surface-2': '#efe5d5',
+  '--mhx-border': '#d4c3a5',
+  '--mhx-border-2': '#c9b891',
+  '--mhx-ink': '#3e2723',
+  '--mhx-ink-2': '#5d4037',
+  '--mhx-muted': '#8d6e63',
+  '--mhx-muted-2': '#a1887f',
+  '--mhx-accent': '#795548',
+  '--mhx-accent-2': '#5d4037',
+  '--mhx-tint': '#d7ccc8',
+  '--mhx-tint-2': '#bcaaa4',
+  '--mhx-on-accent': '#ffffff',
+  '--mhx-ok': '#2e7d32',
+  '--mhx-ok-bg': '#e8f5e9',
+  '--mhx-ok-border': '#a5d6a7',
+  '--mhx-bad': '#c62828',
+  '--mhx-bad-bg': '#ffebee',
+  '--mhx-bad-border': '#ef9a9a',
+  '--mhx-warn-bg': '#fff3e0',
+  '--mhx-warn-border': '#ffcc80',
+  '--mhx-prio-high': '#c62828',
+  '--mhx-prio-medium': '#f9a825',
+  '--mhx-prio-low': '#fbc02d',
+  '--mhx-shadow': '0 4px 16px rgba(0, 0, 0, 0.15)',
+};
+
+const BLUE_TINTED: Palette = {
+  '--mhx-bg': '#0f172a',
+  '--mhx-surface': '#1e293b',
+  '--mhx-surface-2': '#334155',
+  '--mhx-border': '#475569',
+  '--mhx-border-2': '#64748b',
+  '--mhx-ink': '#f1f5f9',
+  '--mhx-ink-2': '#cbd5e1',
+  '--mhx-muted': '#94a3b8',
+  '--mhx-muted-2': '#64748b',
+  '--mhx-accent': '#3b82f6',
+  '--mhx-accent-2': '#2563eb',
+  '--mhx-tint': '#1e3a5f',
+  '--mhx-tint-2': '#2c5282',
+  '--mhx-on-accent': '#ffffff',
+  '--mhx-ok': '#22c55e',
+  '--mhx-ok-bg': '#064e3b',
+  '--mhx-ok-border': '#10b981',
+  '--mhx-bad': '#ef4444',
+  '--mhx-bad-bg': '#450a0a',
+  '--mhx-bad-border': '#dc2626',
+  '--mhx-warn-bg': '#713f12',
+  '--mhx-warn-border': '#f59e0b',
+  '--mhx-prio-high': '#ef4444',
+  '--mhx-prio-medium': '#f59e0b',
+  '--mhx-prio-low': '#eab308',
+  '--mhx-shadow': '0 4px 16px rgba(0, 0, 0, 0.4)',
+};
+
 export const THEME_PALETTES: Record<ResolvedTheme, Palette> = {
   light: LIGHT,
   dark: DARK,
+  'high-contrast': HIGH_CONTRAST,
+  sepia: SEPIA,
+  'blue-tinted': BLUE_TINTED,
 };
 
 interface Rgb {
@@ -199,6 +303,16 @@ function luminance(hex: string): number {
   );
 }
 
+/** Themes that use a dark surface. Used to pick the blend direction for accent ramps. */
+function isDarkTheme(theme: ResolvedTheme): boolean {
+  return theme === 'dark' || theme === 'high-contrast' || theme === 'blue-tinted';
+}
+
+/** Maps a resolved theme to a valid CSS color-scheme value. */
+function colorSchemeFor(theme: ResolvedTheme): 'light' | 'dark' {
+  return isDarkTheme(theme) ? 'dark' : 'light';
+}
+
 /**
  * Accent palette entries derived from one chosen colour: a shade for hover, a
  * pale wash blended into the current surface, and a foreground picked for
@@ -215,18 +329,25 @@ export function accentOverrides(accent: string, theme: ResolvedTheme): Palette {
   const clean = parsed
     ? toHex(parsed)
     : (base['--mhx-accent'] ?? accent);
-  const towards = theme === 'dark' ? '#ffffff' : '#000000';
+  const towards = isDarkTheme(theme) ? '#ffffff' : '#000000';
   return {
     '--mhx-accent': clean,
     '--mhx-accent-2': mix(clean, towards, 0.18),
-    '--mhx-tint': mix(surface, clean, theme === 'dark' ? 0.22 : 0.12),
-    '--mhx-tint-2': mix(surface, clean, theme === 'dark' ? 0.34 : 0.22),
+    '--mhx-tint': mix(surface, clean, isDarkTheme(theme) ? 0.22 : 0.12),
+    '--mhx-tint-2': mix(surface, clean, isDarkTheme(theme) ? 0.34 : 0.22),
     '--mhx-on-accent': readableForeground(clean),
   };
 }
 
 export function isThemePreference(value: unknown): value is ThemePreference {
-  return value === 'system' || value === 'light' || value === 'dark';
+  return (
+    value === 'system' ||
+    value === 'light' ||
+    value === 'dark' ||
+    value === 'high-contrast' ||
+    value === 'sepia' ||
+    value === 'blue-tinted'
+  );
 }
 
 /** What the OS currently asks for. Defaults to light where matchMedia is absent. */
@@ -261,7 +382,7 @@ export function applyTheme(
   for (const [name, value] of Object.entries(palette)) {
     root.style.setProperty(name, value);
   }
-  root.style.colorScheme = resolved;
+  root.style.colorScheme = colorSchemeFor(resolved);
   root.dataset['theme'] = resolved;
   root.dataset['themePreference'] = preference;
   return resolved;
