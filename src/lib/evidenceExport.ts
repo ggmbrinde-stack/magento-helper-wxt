@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Write a finished batch into the local **mirror** folder.
  *
  * Mirrors `scripts/media-map.js` (the pipeline's save step), not the evidence

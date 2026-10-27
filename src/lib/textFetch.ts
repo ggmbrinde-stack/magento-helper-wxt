@@ -26,6 +26,10 @@ export interface TextAuditFetchOptions {
   /** Languages to compare besides the EN baseline (default EN, ES, FR). */
   langs?: string[];
   fetchImpl?: typeof fetch;
+  /** Pre-resolved data (reuses resolver + EN HTML, avoiding a duplicate fetch). */
+  resolved?: { resolver: ResolverJson; enHtml: string };
+  /** Optional abort signal for cancellation. */
+  signal?: AbortSignal;
 }
 
 export interface TextAuditRun {
@@ -47,10 +51,23 @@ export async function textAuditForSku(
     (opts.langs?.length ? opts.langs : TEXT_LANGS).map((l) => l.trim().toUpperCase()),
   );
 
-  const { resolver, enHtml } = await resolveSkuWithHtml(sku, {
-    url: opts.url,
-    fetchImpl,
-  });
+  let resolver: ResolverJson;
+  let enHtml: string;
+  if (opts.resolved) {
+    resolver = opts.resolved.resolver;
+    enHtml = opts.resolved.enHtml;
+    if (resolver.sku !== sku) {
+      throw new Error(`resolved SKU ${resolver.sku} does not match requested ${sku}`);
+    }
+  } else {
+    const resolved = await resolveSkuWithHtml(sku, {
+      url: opts.url,
+      fetchImpl,
+      signal: opts.signal,
+    });
+    resolver = resolved.resolver;
+    enHtml = resolved.enHtml;
+  }
   const byLang: LangMap = { EN: getPdpFields(enHtml) };
   const anomalies: string[] = [];
 
@@ -62,13 +79,17 @@ export async function textAuditForSku(
       continue;
     }
     try {
-      byLang[lang] = getPdpFields(await fetchPdp(target, lang, fetchImpl));
+      byLang[lang] = getPdpFields(await fetchPdp(target, lang, fetchImpl, opts.signal));
     } catch (err) {
       anomalies.push(`${lang} html unreadable: ${messageOf(err)}`);
     }
   }
 
-  const audit = auditText({ sku: resolver.sku, byLang });
+  const audit = auditText({
+    sku: resolver.sku,
+    byLang,
+    langs: TEXT_LANGS.filter((lang) => wanted.has(lang)),
+  });
   if (anomalies.length > 0) {
     // The PowerShell script treats unreadable html as a review flag too.
     audit.review_flags.unshift(...anomalies);
@@ -102,10 +123,12 @@ async function fetchPdp(
   url: string,
   lang: TextLang,
   fetchImpl: typeof fetch,
+  signal?: AbortSignal,
 ): Promise<string> {
   const acceptLanguage =
     lang === 'ES' ? 'es-ES,es;q=0.9' : lang === 'FR' ? 'fr-FR,fr;q=0.9' : 'en-US,en;q=0.9';
   const resp = await fetchImpl(url, {
+    signal,
     credentials: 'omit',
     headers: {
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',

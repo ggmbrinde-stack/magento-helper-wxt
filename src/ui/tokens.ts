@@ -142,6 +142,7 @@ export function applyToolkitColors(
  */
 export function watchToolkitColors(
   root: HTMLElement = document.documentElement,
+  onReady?: () => void,
 ): () => void {
   let colors: ToolkitColors = { ...AUTO };
   const apply = (): void => applyToolkitColors(root, colors);
@@ -149,6 +150,7 @@ export function watchToolkitColors(
   void readToolkitColors().then((stored) => {
     colors = stored;
     apply();
+    onReady?.();
   });
 
   const listener = (

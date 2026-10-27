@@ -1,4 +1,4 @@
-// Batch audit runner â€” the per-SKU pipeline plus the pause/resume controls.
+// Batch audit runner — the per-SKU pipeline plus the pause/resume controls.
 //
 // Lives in the background service worker. State is kept in
 // `chrome.storage.local` (see `batch.ts`) and re-read before every step, so a
@@ -27,6 +27,7 @@ import {
   type BatchItem,
   type BatchJob,
   type BatchOptions,
+  type BatchStage,
 } from './batch';
 import { buildMagentoTable } from './magento';
 import { buildPayloadsFromMarkdown, extractBreadcrumbs } from './payload';
@@ -74,7 +75,9 @@ function normalizeOptions(
     maxChildren:
       typeof options?.maxChildren === 'number' ? options.maxChildren : undefined,
     maxImages:
-      typeof options?.maxImages === 'number' ? options.maxImages : undefined,
+      typeof options?.maxImages === 'number' && options.maxImages > 0
+        ? options.maxImages
+        : DEFAULT_BATCH_OPTIONS.maxImages,
     timeoutMs:
       typeof options?.timeoutMs === 'number' && options.timeoutMs > 0
         ? options.timeoutMs
@@ -95,15 +98,20 @@ function normalizeOptions(
 }
 
 /** Reject if `run` does not settle within `ms` (a stuck SKU must not stall). */
-function withTimeout<T>(run: Promise<T>, ms: number, sku: string): Promise<T> {
+function withTimeout<T>(
+  run: (signal: AbortSignal) => Promise<T>,
+  ms: number,
+  sku: string,
+): Promise<T> {
+  const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(
-      () => reject(new Error(`timed out after ${Math.round(ms / 1000)}s`)),
-      ms,
-    );
+    timer = setTimeout(() => {
+      controller.abort();
+      reject(new Error(`timed out after ${Math.round(ms / 1000)}s`));
+    }, ms);
   });
-  return Promise.race([run, timeout]).finally(() => {
+  return Promise.race([run(controller.signal), timeout]).finally(() => {
     if (timer) clearTimeout(timer);
   }) as Promise<T>;
 }
@@ -111,6 +119,8 @@ function withTimeout<T>(run: Promise<T>, ms: number, sku: string): Promise<T> {
 interface SkuRunResult {
   payloads: ListingErrorPayload[];
   anomalies: string[];
+  /** Dossier markdown, persisted by the caller so a timeout leaves none. */
+  dossierMd: string;
   reviewFlags: number;
   library: LibraryCells;
   /** Everything model scoring needs (kept out of the payload path entirely). */
@@ -122,6 +132,14 @@ interface SkuRunResult {
   frontendUrl: string;
   /** Resolver child ids, kept for the coverage gate. */
   children: string[];
+  /** Compact per-stage durations (ms). */
+  stageMs?: {
+    resolve: number;
+    images: number;
+    text: number;
+    payload: number;
+    total: number;
+  };
   colors: string[];
   sizes: string[];
   category: string;
@@ -135,8 +153,14 @@ interface SkuRunResult {
 async function runSku(
   sku: string,
   options: BatchOptions,
+  signal: AbortSignal | undefined,
+  onStage: (stage: BatchStage) => Promise<void>,
 ): Promise<SkuRunResult> {
-  const { resolver, enHtml } = await resolveSkuWithHtml(sku);
+  const t0 = Date.now();
+  const tResolveStart = Date.now();
+  const { resolver, enHtml } = await resolveSkuWithHtml(sku, { signal });
+  const stageResolve = Date.now() - tResolveStart;
+  await onStage('variants');
 
   const magento = buildMagentoTable(resolver);
   const variants = buildVariantSummary(resolver);
@@ -147,31 +171,65 @@ async function runSku(
     magento.configurableUrl,
   );
 
-  const images = await imageAuditForSku(resolver, {
-    langs: options.langs,
-    hashImages: options.hashImages,
-    background: options.background,
-    maxChildren: options.maxChildren,
-    maxImages: options.maxImages,
-  });
+  let stageImages = 0;
+  let stageText = 0;
+  await onStage('images');
+  const [images, text] = await Promise.all([
+    (async () => {
+      const s = Date.now();
+      const r = await imageAuditForSku(resolver, {
+        langs: options.langs,
+        hashImages: options.hashImages,
+        background: options.background,
+        maxChildren: options.maxChildren,
+        maxImages: options.maxImages,
+        signal,
+      });
+      stageImages = Date.now() - s;
+      return r;
+    })(),
+    (async () => {
+      const s = Date.now();
+      const r = await textAuditForSku(sku, {
+        url: resolver.frontend_url,
+        langs: options.langs,
+        resolved: { resolver, enHtml },
+        signal,
+      });
+      stageText = Date.now() - s;
+      return r;
+    })(),
+  ]);
 
-  const text = await textAuditForSku(sku, {
-    url: resolver.frontend_url,
-    langs: options.langs,
-  });
-
+  await onStage('payload');
   const content = [variantsBlock, images.mdBlock, text.audit.mdBlock].join(
     '\n\n',
   );
 
+  const tPayloadStart = Date.now();
   const breadcrumbs = extractBreadcrumbs(enHtml);
 
+  // textFetch folds fetch-level problems into review_flags; they are already
+  // in `text.anomalies`, so only add what it did not report there.
+  const textReviewFlags = text.audit.review_flags.filter(
+    (flag) => !text.anomalies.includes(flag),
+  );
+  // audit.anomalies already includes the collection anomalies, plus the checks
+  // that were skipped. A check the operator switched off is not an anomaly.
+  const imageNotices = images.audit.anomalies.filter((note) => {
+    if (!options.hashImages && note.startsWith('hashes not collected')) return false;
+    if (!options.background && note.startsWith('image sampling unavailable')) {
+      return false;
+    }
+    return true;
+  });
   const anomalies = [
     ...(resolver.anomalies ?? []),
     ...(magento.anomalies ?? []),
     ...(variants.anomalies ?? []),
-    ...images.collection.anomalies,
+    ...imageNotices,
     ...text.anomalies,
+    ...textReviewFlags.map((flag) => `text review flag: ${flag}`),
   ];
 
   const build = buildPayloadsFromMarkdown({
@@ -180,8 +238,11 @@ async function runSku(
     link: resolver.frontend_url,
     supplier: supplierFor(sku),
     breadcrumbs,
+    // Text lives on the product being audited; images live on the variants.
+    fixLocation: resolver.product_type === 'simple' ? 'Simple' : 'Configurable',
   });
 
+  const stagePayload = Date.now() - tPayloadStart;
   if (!build.ok) {
     throw new Error(build.error ?? 'payload build failed');
   }
@@ -198,10 +259,9 @@ async function runSku(
     payloads,
     supplier: supplierLinkFor(sku),
   });
-  await setSkuDossier(sku, dossierMd);
-  const reviewFlags = payloads.filter(
-    (p) => (p.review_flags ?? []).length > 0,
-  ).length;
+  const reviewFlags =
+    payloads.filter((p) => (p.review_flags ?? []).length > 0).length +
+    textReviewFlags.length;
 
   const library = libraryCellsFor(
     resolver,
@@ -228,6 +288,7 @@ async function runSku(
   return {
     payloads,
     anomalies,
+    dossierMd,
     reviewFlags,
     library,
     media: images.collection.media,
@@ -241,10 +302,20 @@ async function runSku(
     sizes: variants.sizes,
     category: breadcrumbs.l1,
     subcategory: breadcrumbs.l2,
+    stageMs: {
+      resolve: stageResolve,
+      images: stageImages,
+      text: stageText,
+      payload: stagePayload,
+      total: Date.now() - t0,
+    },
   };
 }
 
 let pumping = false;
+
+// The SKU in flight, so pause/cancel can stop its network work immediately.
+let activeRun: AbortController | null = null;
 
 // One opencode session per batch job: cheaper than a session per SKU and it
 // keeps the model's context warm. Dropped (and deleted) when the job ends.
@@ -315,7 +386,7 @@ export async function pump(): Promise<void> {
       }
       if (job.cursor >= job.items.length) {
         job.status = 'done';
-        job.message = `done â€” ${job.totals.payloads} payload(s)`;
+        job.message = `done \u2014 ${job.totals.payloads} payload(s)`;
         await saveBatchJob(job);
         await clearAlarm();
         await endBridgeSession();
@@ -334,17 +405,37 @@ export async function pump(): Promise<void> {
 
       item.status = 'running';
       item.stage = 'resolve';
-      job.message = `resolving ${index + 1}/${job.items.length} â€” ${item.sku}`;
+      job.message = `resolving ${index + 1}/${job.items.length} \u2014 ${item.sku}`;
       await saveBatchJob(job);
 
       const started = Date.now();
+      const jobId = job.id;
+      const perSkuMs = job.options.timeoutMs ?? DEFAULT_BATCH_TIMEOUT_MS;
+
+      // Stage markers are best-effort: a stage write must never abort an audit.
+      const markStage = async (stage: BatchStage): Promise<void> => {
+        const live = await loadBatchJob();
+        if (!live || live.id !== jobId || live.status !== 'running') return;
+        const target = live.items[index];
+        if (!target) return;
+        target.stage = stage;
+        await saveBatchJob(live);
+      };
+
+      const controller = new AbortController();
+      activeRun = controller;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const timeout = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          controller.abort();
+          reject(new Error(`timed out after ${Math.round(perSkuMs / 1000)}s`));
+        }, perSkuMs);
+      });
       try {
-        const perSkuMs = job.options.timeoutMs ?? DEFAULT_BATCH_TIMEOUT_MS;
-        const result = await withTimeout(
-          runSku(item.sku, job.options),
-          perSkuMs,
-          item.sku,
-        );
+        const result = await Promise.race([
+          runSku(item.sku, job.options, controller.signal, markStage),
+          timeout,
+        ]);
         // Persist the audit first: model scoring must never be able to lose it.
         await setSkuPayloads(item.sku, result.payloads);
         await setSkuLibraryCells(item.sku, result.library);
@@ -356,6 +447,9 @@ export async function pump(): Promise<void> {
           isSimple: result.isSimple,
           children: result.children,
         });
+        // Written here rather than inside runSku: a timed-out SKU must not
+        // leave a dossier behind after the item was recorded as failed.
+        await setSkuDossier(item.sku, result.dossierMd);
 
         const anomalies = [...result.anomalies];
         let modelFlags = 0;
@@ -367,7 +461,7 @@ export async function pump(): Promise<void> {
             const config = effectiveModel(job.options, bridge);
             const sessionId = await ensureBridgeSession(job.id, config);
             const verdict = await withTimeout(
-              scoreSkuImages(
+              () => scoreSkuImages(
                 {
                   sku: item.sku,
                   frontendUrl: result.frontendUrl,
@@ -412,7 +506,8 @@ export async function pump(): Promise<void> {
         await setSkuAnomalies(item.sku, anomalies);
 
         const current = await loadBatchJob();
-        if (!current || current.status !== 'running') return;
+        // A new batch may have replaced this one: never mark its items by index.
+        if (!current || current.id !== jobId) return;
         const target = current.items[index];
         if (target) {
           target.status = 'ok';
@@ -422,14 +517,30 @@ export async function pump(): Promise<void> {
           target.reviewFlagCount = result.reviewFlags;
           target.modelFlagCount = modelFlags;
           target.ms = Date.now() - started;
+          target.stageMs = result.stageMs;
         }
         current.cursor = index + 1;
         current.totals = recountTotals(current.items);
         await saveBatchJob(current);
+        // Pause/cancel pressed while this SKU ran: keep the result, do no more.
+        if (current.status !== 'running') return;
       } catch (err) {
         const current = await loadBatchJob();
-        if (!current || current.status !== 'running') return;
+        if (!current || current.id !== jobId) return;
         const target = current.items[index];
+        if (current.status === 'paused' || current.status === 'cancelled') {
+          // The run was stopped on purpose: do not count it as a failure.
+          if (target) {
+            const paused = current.status === 'paused';
+            target.status = paused ? 'pending' : 'cancelled';
+            target.stage = paused ? 'pending' : 'cancelled';
+            target.error = paused ? undefined : 'cancelled';
+            target.ms = Date.now() - started;
+          }
+          current.totals = recountTotals(current.items);
+          await saveBatchJob(current);
+          return;
+        }
         if (target) {
           target.status = 'failed';
           target.stage = 'failed';
@@ -439,6 +550,9 @@ export async function pump(): Promise<void> {
         current.cursor = index + 1;
         current.totals = recountTotals(current.items);
         await saveBatchJob(current);
+      } finally {
+        if (timer) clearTimeout(timer);
+        if (activeRun === controller) activeRun = null;
       }
     }
   } finally {
@@ -454,6 +568,12 @@ export async function startBatch(args: {
     .map((s) => String(s).trim().toUpperCase())
     .filter(Boolean);
   if (skus.length === 0) throw new Error('No SKUs to run');
+  // The UI disables Start while a batch runs; keep the same rule at the API so
+  // an in-flight SKU can never be recorded against a replacement job.
+  const existing = await loadBatchJob();
+  if (existing?.status === 'running') {
+    throw new Error('A batch is already running - pause or cancel it first.');
+  }
   // A new batch starts empty: never let an earlier run's payloads reach a push.
   await resetBatchResults();
   resetModelQuotaLatch();
@@ -470,6 +590,8 @@ export async function pauseBatch(): Promise<BatchJob | null> {
     job.status = 'paused';
     job.message = 'paused';
     await saveBatchJob(job);
+    // Stop the SKU in flight: the pump resets it to pending so Resume re-runs it.
+    activeRun?.abort();
   }
   return job;
 }
@@ -492,6 +614,7 @@ export async function cancelBatch(): Promise<BatchJob | null> {
   job.status = 'cancelled';
   job.message = 'cancelled';
   await saveBatchJob(job);
+  activeRun?.abort();
   await clearAlarm();
   await endBridgeSession();
   return job;

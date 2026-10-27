@@ -1,0 +1,10 @@
+const fs = require('fs');
+const d = JSON.parse(fs.readFileSync('C:/Users/user/Videos/BestOfGifts_Master/notion_db.json', 'utf8'));
+const db = d.properties['Categoria / Subcategoria'];
+console.log('property type:', db.type);
+console.log('option count:', db.multi_select.options.length);
+const names = db.multi_select.options.map(o => o.name);
+console.log('first 5:', names.slice(0, 5).join('\n'));
+console.log('last 5:', names.slice(-5).join('\n'));
+const colors = [...new Set(db.multi_select.options.map(o => o.color))];
+console.log('colors:', colors.join(', '));

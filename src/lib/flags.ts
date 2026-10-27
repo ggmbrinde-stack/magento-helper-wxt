@@ -7,21 +7,20 @@
 // honor this flag, so the pause cannot be bypassed by a stray message.
 export const WRITES_ENABLED = false;
 
-// Notion create-only writes (board direction, 2026-10-19): the extension may
-// CREATE Listing Errors rows, never update/delete/append. The background handler
-// is the only writer, and every push also requires an explicit `confirm: true`
-// from the UI. The static guard (scripts/check-notion-readonly.mjs) enforces the
-// create-only shape. Set to false to return the extension to a pure reader.
+// Notion writes (board direction, 2026-10-19): Listing Errors rows may be
+// created only, never updated/deleted/appended. The background handler is the
+// only writer, and every push also requires an explicit `confirm: true` from
+// the UI. SKU Library writes have a separate flag below. The static guard
+// enforces these database-specific request boundaries. Set to false to return
+// the extension to a pure Notion reader.
 export const NOTION_WRITES_ENABLED = true;
 
-// SKU Library updates (board direction, 2026-10-19): create-only is lifted for
-// the SKU Library database ONLY, and only for a fixed whitelist of cells
-// (Status, Last audit, Frontend, Backend, Sizes, Colors, Missing combos). The
-// Listing Errors database stays strictly create-only. Updates are matched by an
-// exact SKU title, diffed old -> new in the run report, read back afterwards,
-// and only ever touch whitelisted properties. The static guard allows the PATCH
-// call in one file only (src/lib/skuLibraryWriter.ts). Set to false to return
-// the SKU Library to create-only as well.
+// SKU Library updates (board direction, 2026-10-19): updates are limited to
+// the fixed property whitelist in skuLibraryWriter.ts. Listing Errors remains
+// strictly create-only. Updates match an exact SKU title, are diffed and read
+// back, and require explicit push confirmation. The static guard permits the
+// PATCH call only in src/lib/skuLibraryWriter.ts. Set false to disable updates
+// to existing SKU Library rows (new-row creation remains available).
 export const NOTION_LIBRARY_UPDATES_ENABLED = true;
 
 // Dropdown enhancement (2026-10-16): the page-UI half of the spike asking
@@ -43,15 +42,18 @@ export const ENHANCE_MIN_OPTIONS = 12;
 // stock row dropdowns back.
 export const ENHANCE_ROW_ACTIONS = true;
 
-// Massaction buttons (2026-10-20): the grid toolbar's bulk "Actions"
-// dropdown becomes one-click inline buttons (Delete, Change status,
-// Update attributes, …) so bulk actions stop costing a menu-open plus a
-// pick. Same forwarding contract as row actions: every button clicks
-// Magento's OWN menu element, so the massaction selection check,
-// confirmation modals, KO handlers and ACL filtering all keep running.
-// Nothing is submitted, written or requested by the extension; with no rows
-// selected Magento replies exactly as it would for the stock menu. Set to
-// false to give the toolbar's stock Actions dropdown back.
+// Massaction buttons (2026-10-20, every option 2026-10-22): the grid
+// toolbar's bulk "Actions" dropdown becomes one-click inline buttons
+// (Delete, Change status, Update attributes, …) so bulk actions stop costing
+// a menu-open plus a pick. Same forwarding contract as row actions: every
+// button clicks Magento's OWN menu element, so the massaction selection
+// check, confirmation modals, KO handlers and ACL filtering all keep
+// running. Submenu options ("Change status ▾") open the native dropdown and
+// forward the pick — only Magento can expand its submenu — and the dropdown
+// itself is never hidden, so its children stay reachable. Nothing is
+// submitted, written or requested by the extension; with no rows selected
+// Magento replies exactly as it would for the stock menu. Set to false to
+// give the toolbar's stock Actions dropdown back.
 export const ENHANCE_MASSACTIONS = true;
 
 // Admin sidebar toggle (2026-10-20): a fixed chevron on the nav's edge
@@ -62,6 +64,16 @@ export const ENHANCE_MASSACTIONS = true;
 // renders on pages that actually have the admin nav. Set to false to pin
 // the sidebar open exactly as Magento ships it.
 export const ENHANCE_NAV_TOGGLE = true;
+
+// System-messages band (2026-10-22): the admin's alert strip (the yellow
+// "1 item(s) failed to update" bar) gets the same fixed handle as the nav
+// chevron — one click hides it, the choice persists per origin, and the tab
+// stays on screen so it can be brought back. Display-only: Magento's message
+// elements and their handlers are untouched, and the band's own inline display
+// is restored on show. While it is up its sides are aligned with the page's
+// content column, which Magento leaves full-bleed. Set to false to leave the
+// band exactly as Magento drew it.
+export const ENHANCE_MESSAGES_TOGGLE = true;
 
 // Paging sizes (2026-10-19): the grid's "500 Select per page" control is a
 // Magento `.selectmenu`, not a <select>, so it needs its own handling. Numeric
@@ -100,3 +112,14 @@ export const ENHANCE_CATEGORY_TREE = true;
 // goes back to the stock strip under the title. The capability is kept intact,
 // so switching it back on re-enables the header placement.
 export const MOVE_PAGE_ACTIONS = false;
+// Page-actions hide/toggle (2026-10-23): the strip containing the page's
+// action buttons (e.g. "Add Product") gets the same fixed handle as the
+// messages band — one click hides it, the choice persists per origin, and the
+// tab stays on screen so it can be brought back. Display-only.
+export const ENHANCE_PAGE_ACTIONS_TOGGLE = true;
+
+
+// Footer hide/toggle (2026-10-23): the page footer gets the same fixed handle as
+// the page actions strip — one click hides it, the choice persists per origin,
+// and the tab stays on screen so it can be brought back. Display-only.
+export const ENHANCE_FOOTER_TOGGLE = true;

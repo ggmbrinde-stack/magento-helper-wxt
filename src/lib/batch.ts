@@ -1,4 +1,4 @@
-// Batch audit runner â€” shared types + storage.
+// Batch audit runner — shared types + storage.
 //
 // The runner itself lives in the background service worker (`batchRunner.ts`).
 // The job is persisted in `chrome.storage.local` after every SKU so a service
@@ -37,7 +37,8 @@ export type BatchStage =
   | 'text'
   | 'payload'
   | 'done'
-  | 'failed';
+  | 'failed'
+  | 'cancelled';
 
 export interface BatchOptions {
   /** Storefront languages to compare (default EN, ES, FR). */
@@ -70,7 +71,7 @@ export const DEFAULT_BATCH_OPTIONS: BatchOptions = {
 
 export interface BatchItem {
   sku: string;
-  status: 'pending' | 'running' | 'ok' | 'failed';
+  status: 'pending' | 'running' | 'ok' | 'failed' | 'cancelled';
   stage: BatchStage;
   /** Listing Errors payloads produced for this SKU. */
   payloadCount: number;
@@ -82,6 +83,14 @@ export interface BatchItem {
   modelFlagCount: number;
   error?: string;
   ms?: number;
+  /** Compact per-stage durations (ms) for benchmarking. */
+  stageMs?: {
+    resolve: number;
+    images: number;
+    text: number;
+    payload: number;
+    total: number;
+  };
 }
 
 export interface BatchTotals {
@@ -240,6 +249,8 @@ export async function resetBatchResults(): Promise<void> {
     BATCH_LIBRARY_KEY,
     BATCH_ANOMALIES_KEY,
     BATCH_MODEL_VERDICTS_KEY,
+    // The dossier is a per-run result too: a new batch must not inherit one.
+    BATCH_DOSSIER_KEY,
     BATCH_EVIDENCE_KEY,
     BATCH_PUSHED_KEY,
     BATCH_MANIFEST_KEY,

@@ -2,12 +2,12 @@ import type { ListingError, SkuLibrary } from './schemas';
 import type { MageFieldKind, MageFormState } from './magentoForm';
 import type { ResolverJson } from './resolver';
 import type { ListingErrorPayload } from './payload';
-import type { PushReport } from './listingWriter';
+import type { ListingPreflight, PushReport } from './listingWriter';
 import type { ImageAuditResult } from './imageAudit';
 import type { TextAuditResult } from './textAudit';
 import type { NotionHealthReport } from './notionHealth';
 import type { BatchJob, BatchOptions } from './batch';
-import type { LibraryReport } from './skuLibraryWriter';
+import type { LibraryPreview, LibraryReport } from './skuLibraryWriter';
 import type {
   BridgeCatalog,
   BridgeHealth,
@@ -25,6 +25,8 @@ export interface FetchSkuDataResponse {
   skuLibrary: SkuLibrary | null;
   errors: ListingError[];
   skippedRows: number;
+  /** More open errors exist than the read ceiling (10 pages / 1,000 rows). */
+  truncated?: boolean;
   error?: string;
 }
 
@@ -98,11 +100,7 @@ export interface GetSkuResponse {
   sku: string;
 }
 
-/* ------------------------------------------------------------------------- */
-/* SKU Lookup (content ⇄ background ⇄ panel)                                  */
-/* ------------------------------------------------------------------------- */
-
-export interface LookupChild {
+export interface ResolverChild {
   id: string;
   sku: string;
   color: string;
@@ -110,49 +108,23 @@ export interface LookupChild {
   backend: string;
 }
 
-/** A resolved product: how the panel renders a lookup result. */
-export interface LookupEntry {
-  title: string;
-  sku: string;
+export interface ResolverNotionMetadata {
   backend: string;
   frontend: string;
-  frontendEs?: string;
-  frontendFr?: string;
-  productId: string;
-  children: LookupChild[];
   category?: string;
   subcategory?: string;
   supplier?: string;
   status?: string;
 }
 
-export type LookupSource = 'resolver' | 'notion' | 'storefront' | 'admin';
-
-export interface LookupSkuRequest {
-  type: 'LOOKUP_SKU';
-  sku: string;
-}
-
-export interface LookupSkuResponse {
-  found: boolean;
-  source?: LookupSource;
-  entry?: LookupEntry;
-  error?: string;
-}
-
-/** Cached resolver entry, keyed by SKU in `chrome.storage.local`. */
-export interface ResolverEntry {
-  id: string;
-  sku: string;
+export interface ResolveAdminFallback {
+  productId: string;
   backend: string;
-  children: LookupChild[];
-  timestamp: number;
+  children: ResolverChild[];
 }
-
-export type ResolverMap = Record<string, ResolverEntry>;
 
 /* ------------------------------------------------------------------------- */
-/* Audit — Slice 1: resolver / variants / Magento links                       */
+/* SKU resolution: storefront resolver, Notion enrichment and admin fallback */
 /* ------------------------------------------------------------------------- */
 
 /** Run the full resolver (search -> PDP -> parse) for one SKU. */
@@ -166,7 +138,13 @@ export interface ResolveSkuRequest {
 export interface ResolveSkuResponse {
   ok: boolean;
   resolver?: ResolverJson;
+  source?: 'cache' | 'storefront' | 'admin' | 'notion';
+  adminBase?: string;
+  adminFallback?: ResolveAdminFallback;
+  notion?: ResolverNotionMetadata;
+  resolutionError?: string;
   error?: string;
+  warning?: string;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -206,7 +184,9 @@ export interface SearchMagentoRequest {
 export interface SearchMagentoResponse {
   found: boolean;
   productId?: string;
-  children?: LookupChild[];
+  sku?: string;
+  status?: string;
+  children?: ResolverChild[];
   error?: string;
 }
 
@@ -282,22 +262,6 @@ export interface NotionHealthResponse {
 }
 
 /* ------------------------------------------------------------------------- */
-/* D4 fix: single-writer resolver cache                                       */
-/* The content script and lookup path both send this message; only the        */
-/* background service worker reads and writes chrome.storage.local.           */
-/* ------------------------------------------------------------------------- */
-
-/** Ask the background to store a resolver entry (content script → background). */
-export interface ResolveCachePutRequest {
-  type: 'RESOLVE_CACHE_PUT';
-  entry: ResolverEntry;
-}
-
-export interface ResolveCachePutResponse {
-  ok: boolean;
-}
-
-/* ------------------------------------------------------------------------- */
 /* On-page error markup: panel/content -> background (query) -> content (draw) */
 /* ------------------------------------------------------------------------- */
 
@@ -309,6 +273,7 @@ export interface FetchErrorMarkupRequest {
 export interface FetchErrorMarkupResponse {
   success?: boolean;
   errorCount?: number;
+  truncated?: boolean;
   error?: string;
 }
 
@@ -377,6 +342,16 @@ export interface BatchPushRequest {
   library?: boolean;
 }
 
+export interface BatchPushPreview {
+  listingErrors: ListingPreflight;
+  library: {
+    total: number;
+    rows: LibraryPreview[];
+    errors: number;
+  };
+  health?: { ok: boolean; error?: string };
+}
+
 export interface BatchPushResponse {
   ok: boolean;
   dryRun?: boolean;
@@ -384,6 +359,7 @@ export interface BatchPushResponse {
   warnings?: string[];
   report?: PushReport;
   libraryReport?: LibraryReport;
+  preview?: BatchPushPreview;
   error?: string;
 }
 

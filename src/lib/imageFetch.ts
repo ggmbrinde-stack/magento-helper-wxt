@@ -1,7 +1,7 @@
-﻿/**
- * Image audit â€” live collection layer.
+/**
+ * Image audit — live collection layer.
  *
- * Fetches the storefront media endpoint for every child Ã— language, optionally
+ * Fetches the storefront media endpoint for every child × language, optionally
  * hashes the images (SHA-256) and samples the pos0 border tone (alpha-aware, via
  * OffscreenCanvas). Then hands everything to the pure engine in `imageAudit.ts`.
  *
@@ -37,6 +37,8 @@ export interface ImageAuditFetchOptions {
   background?: boolean;
   /** Cap on unique image downloads (safety valve for large matrices). */
   maxImages?: number;
+  /** Optional abort signal for cancellation. */
+  signal?: AbortSignal;
 }
 
 export interface ImageAuditCollection {
@@ -104,8 +106,8 @@ export async function collectImageAuditData(
     async ({ child, lang }) => {
       const origin = origins[lang] ?? origins['EN'] ?? MEDIA_ORIGINS['EN'];
       const url = `${origin}/swatches/ajax/media/?product_id=${encodeURIComponent(child)}`;
-      try {
-        const res = await fetch(url, { credentials: 'omit' });
+       try {
+         const res = await fetch(url, { credentials: 'omit', signal: opts.signal });
         if (!res.ok) {
           anomalies.push(`media ${lang} ${child}: HTTP ${res.status}`);
           return null;
@@ -129,18 +131,25 @@ export async function collectImageAuditData(
     .map((source) => readMediaSource(source, anomalies))
     .filter((p): p is NonNullable<typeof p> => p !== null);
 
-  // URL -> every file name that references it; pos0 URL -> file names.
-  const urlFiles = new Map<string, string[]>();
-  const pos0Urls = new Map<string, string[]>();
+  // Every store view serves the same photo from its own host (.eu/.es/.fr)
+  // with an identical path, so the path - not the URL - identifies an image.
+  // Download, hash and sample each image once; keep the first URL seen, with
+  // EN first so evidence always points at the canonical store.
+  const ordered = [...parsed].sort((a, b) => langRank(a.lang) - langRank(b.lang));
+  const namesByIdentity = new Map<string, string[]>();
+  const urlByIdentity = new Map<string, string>();
+  const pos0NamesByIdentity = new Map<string, string[]>();
   const byChild = new Map<string, typeof parsed>();
-  for (const p of parsed) {
+  for (const p of ordered) {
     const group = byChild.get(p.child) ?? [];
     group.push(p);
     byChild.set(p.child, group);
     for (const entry of p.entries) {
-      const files = urlFiles.get(entry.url) ?? [];
-      files.push(entry.file);
-      urlFiles.set(entry.url, files);
+      const key = imageIdentity(entry.url);
+      if (!urlByIdentity.has(key)) urlByIdentity.set(key, entry.url);
+      const names = namesByIdentity.get(key) ?? [];
+      if (!names.includes(entry.file)) names.push(entry.file);
+      namesByIdentity.set(key, names);
     }
   }
   for (const group of byChild.values()) {
@@ -148,28 +157,47 @@ export async function collectImageAuditData(
     const ref = groupLangs.includes('EN') ? 'EN' : (groupLangs[0] ?? '');
     const first = group.find((g) => g.lang === ref)?.entries[0];
     if (!first) continue;
-    const files = pos0Urls.get(first.url) ?? [];
-    if (!files.includes(first.file)) files.push(first.file);
-    pos0Urls.set(first.url, files);
+    const key = imageIdentity(first.url);
+    const names = pos0NamesByIdentity.get(key) ?? [];
+    if (!names.includes(first.file)) names.push(first.file);
+    pos0NamesByIdentity.set(key, names);
   }
 
-  const wanted = new Set<string>();
-  if (opts.hashImages) for (const url of urlFiles.keys()) wanted.add(url);
-  if (opts.background !== false) for (const url of pos0Urls.keys()) wanted.add(url);
+  // Evidence map: one URL per image (EN preferred), each naming its file once.
+  const files: Record<string, string[]> = {};
+  for (const [key, names] of namesByIdentity) {
+    const url = urlByIdentity.get(key);
+    if (url) files[url] = names;
+  }
+
+  const wantHashes = opts.hashImages === true;
+  const wantTones = opts.background !== false;
+  const wanted: string[] = [];
+  for (const key of namesByIdentity.keys()) {
+    if (wantHashes || (wantTones && pos0NamesByIdentity.has(key))) {
+      wanted.push(key);
+    }
+  }
 
   const maxImages = opts.maxImages ?? 800;
-  const queue = [...wanted].slice(0, maxImages);
-  if (wanted.size > queue.length) {
-    anomalies.push(`image download capped at ${maxImages} of ${wanted.size} unique URLs`);
+  const queue = wanted.slice(0, maxImages);
+  if (wanted.length > queue.length) {
+    anomalies.push(
+      `image download capped at ${maxImages} of ${wanted.length} unique images`,
+    );
   }
 
-  const hashes: Record<string, string[]> | undefined = opts.hashImages ? {} : undefined;
+  const hashes: Record<string, string[]> | undefined = wantHashes ? {} : undefined;
   const tones: Record<string, ImageTone> = {};
-  const samples = await mapPool(queue, 4, async (url) => {
+  const samples = await mapPool(queue, 4, async (key) => {
+    const url = urlByIdentity.get(key);
+    if (!url) return null;
     const mime = mimeFor(url);
     let bytes: ArrayBuffer;
     try {
-      bytes = await fetchBytes(url);
+      // The originals are what the audit pipeline sampled; the cache rendition
+      // (square crop) is only the fallback.
+      bytes = await fetchOriginalBytes(url, opts.signal);
       stats.imagesDownloaded++;
     } catch (err) {
       stats.imagesSkipped++;
@@ -185,31 +213,34 @@ export async function collectImageAuditData(
       }
     }
     let tone: ImageTone | null = null;
-    if (pos0Urls.has(url)) {
+    if (wantTones && pos0NamesByIdentity.has(key)) {
       try {
         tone = await toneFromBytes(bytes, mime);
       } catch (err) {
         anomalies.push(`background sample failed: ${baseName(url)} (${messageOf(err)})`);
       }
     }
-    return { url, hash, tone };
+    return { key, hash, tone };
   });
   for (const sample of samples) {
     if (!sample) continue;
     if (hashes && sample.hash) {
-      for (const file of urlFiles.get(sample.url) ?? []) {
-        (hashes[sample.hash] ??= []).push(file);
+      const bucket = (hashes[sample.hash] ??= []);
+      for (const file of namesByIdentity.get(sample.key) ?? []) {
+        if (!bucket.includes(file)) bucket.push(file);
       }
     }
     if (sample.tone) {
-      for (const file of pos0Urls.get(sample.url) ?? []) tones[file] = sample.tone;
+      for (const file of pos0NamesByIdentity.get(sample.key) ?? []) {
+        tones[file] = sample.tone;
+      }
     }
   }
 
   return {
     media,
     children: usedChildren,
-    files: Object.fromEntries(urlFiles),
+    files,
     hashes,
     backgroundTones: opts.background === false ? undefined : tones,
     anomalies,
@@ -220,6 +251,24 @@ export async function collectImageAuditData(
 /* ------------------------------------------------------------------------- */
 /* network + pixel helpers                                                    */
 /* ------------------------------------------------------------------------- */
+
+/**
+ * One photo, one identity: the stores serve the same path from their own host,
+ * so the pathname (query and host dropped) names the file.
+ */
+export function imageIdentity(url: string): string {
+  try {
+    return new URL(url).pathname;
+  } catch {
+    return url.split(/[?#]/)[0] ?? url;
+  }
+}
+
+/** EN first, then the configured order; unknown codes last. */
+function langRank(lang: string): number {
+  const index = DEFAULT_LANGS.indexOf(lang);
+  return index < 0 ? DEFAULT_LANGS.length : index;
+}
 
 function resolveOrigins(resolver: ResolverJson): Record<string, string> {
   const store = resolver.store_urls ?? {};
@@ -245,8 +294,8 @@ function originOf(url: string | undefined, fallback: string): string {
   }
 }
 
-export async function fetchBytes(url: string): Promise<ArrayBuffer> {
-  const res = await fetch(url, { credentials: 'omit' });
+export async function fetchBytes(url: string, signal?: AbortSignal): Promise<ArrayBuffer> {
+  const res = await fetch(url, { credentials: 'omit', signal });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.arrayBuffer();
 }
@@ -274,16 +323,16 @@ export function originalImageUrl(url: string): string {
 }
 
 /** Original first, cache rendition as fallback. */
-export async function fetchOriginalBytes(url: string): Promise<ArrayBuffer> {
+export async function fetchOriginalBytes(url: string, signal?: AbortSignal): Promise<ArrayBuffer> {
   const original = originalImageUrl(url);
   if (original !== url) {
     try {
-      return await fetchBytes(original);
+      return await fetchBytes(original, signal);
     } catch {
       /* fall through to the cache URL */
     }
   }
-  return fetchBytes(url);
+  return fetchBytes(url, signal);
 }
 
 async function sha256Hex(bytes: ArrayBuffer): Promise<string> {

@@ -1,0 +1,402 @@
+[
+ {
+  "name": "1.1.1. T-shirts Manga Curta",
+  "color": "red"
+ },
+ {
+  "name": "1.1.2. T-shirts Manga Comprida",
+  "color": "red"
+ },
+ {
+  "name": "1.1.3. Tops e Singletes",
+  "color": "red"
+ },
+ {
+  "name": "1.1.4. Linha Natura",
+  "color": "red"
+ },
+ {
+  "name": "1.2.1. Polos Manga Curta",
+  "color": "red"
+ },
+ {
+  "name": "1.2.2. Polos Manga Comprida",
+  "color": "red"
+ },
+ {
+  "name": "1.2.3. Linha Natura",
+  "color": "red"
+ },
+ {
+  "name": "1.3.1. Sweatshirts Simples",
+  "color": "red"
+ },
+ {
+  "name": "1.3.2. Sweatshirts Capuz",
+  "color": "red"
+ },
+ {
+  "name": "1.3.3. Sweatshirts com Fecho",
+  "color": "red"
+ },
+ {
+  "name": "1.3.4. Sweatshirts Polares",
+  "color": "red"
+ },
+ {
+  "name": "1.3.5. Linha Natura",
+  "color": "red"
+ },
+ {
+  "name": "1.4.1. Casacos Polares",
+  "color": "red"
+ },
+ {
+  "name": "1.4.2. Casacos Softshell",
+  "color": "red"
+ },
+ {
+  "name": "1.4.3. Parkas Leves",
+  "color": "red"
+ },
+ {
+  "name": "1.4.4. Parkas Acolchoadas",
+  "color": "red"
+ },
+ {
+  "name": "1.4.5. Casacos Leve",
+  "color": "red"
+ },
+ {
+  "name": "1.4.6. Casacos Acolchoadas",
+  "color": "red"
+ },
+ {
+  "name": "1.4.7. Linha Natura",
+  "color": "red"
+ },
+ {
+  "name": "1.5.1. Coletes Polares",
+  "color": "red"
+ },
+ {
+  "name": "1.5.2. Coletes Softshell",
+  "color": "red"
+ },
+ {
+  "name": "1.5.3. Coletes Leves",
+  "color": "red"
+ },
+ {
+  "name": "1.5.4. Coletes Acolchoadas",
+  "color": "red"
+ },
+ {
+  "name": "1.5.5. Linha Natura",
+  "color": "red"
+ },
+ {
+  "name": "1.6.1. Bonés",
+  "color": "red"
+ },
+ {
+  "name": "1.6.2. Chapéus",
+  "color": "red"
+ },
+ {
+  "name": "1.6.3. Panamás",
+  "color": "red"
+ },
+ {
+  "name": "1.6.4. Viseiras / Palas",
+  "color": "red"
+ },
+ {
+  "name": "1.6.5. Linha Natura",
+  "color": "red"
+ },
+ {
+  "name": "1.7.1. Interiores",
+  "color": "red"
+ },
+ {
+  "name": "1.7.2. Térmicos 🔹",
+  "color": "red"
+ },
+ {
+  "name": "1.7.3. Pijamas",
+  "color": "red"
+ },
+ {
+  "name": "1.7.4. Linha Natura",
+  "color": "red"
+ },
+ {
+  "name": "2.1.1. Equipamentos",
+  "color": "orange"
+ },
+ {
+  "name": "2.1.2. Fatos de Treino",
+  "color": "orange"
+ },
+ {
+  "name": "2.1.3. T-shirts e Singletes",
+  "color": "orange"
+ },
+ {
+  "name": "2.1.4. Polos",
+  "color": "orange"
+ },
+ {
+  "name": "2.1.5. Sweatshirts",
+  "color": "orange"
+ },
+ {
+  "name": "2.1.6. Calças e Calções",
+  "color": "orange"
+ },
+ {
+  "name": "2.1.7. Cachecóis e Golas",
+  "color": "orange"
+ },
+ {
+  "name": "2.2.1. T-shirts Manga Curta",
+  "color": "orange"
+ },
+ {
+  "name": "2.2.2. T-shirts Manga Comprida",
+  "color": "orange"
+ },
+ {
+  "name": "2.2.3. Tops e Singletes",
+  "color": "orange"
+ },
+ {
+  "name": "2.3.1. Polos Manga Curta",
+  "color": "orange"
+ },
+ {
+  "name": "2.3.2. Polos Manga Comprida",
+  "color": "orange"
+ },
+ {
+  "name": "2.4.1. Sweatshirts Simples",
+  "color": "orange"
+ },
+ {
+  "name": "2.4.2. Sweatshirts Capuz",
+  "color": "orange"
+ },
+ {
+  "name": "2.4.3. Sweatshirts com Fecho",
+  "color": "orange"
+ },
+ {
+  "name": "2.5.1. Casacos Softshell",
+  "color": "orange"
+ },
+ {
+  "name": "2.5.2. Parkas Leves",
+  "color": "orange"
+ },
+ {
+  "name": "2.5.3. Parkas Acolchoadas",
+  "color": "orange"
+ },
+ {
+  "name": "2.5.4. Casacos Leve",
+  "color": "orange"
+ },
+ {
+  "name": "2.5.5. Casacos Acolchoadas",
+  "color": "orange"
+ },
+ {
+  "name": "2.6.1. Coletes Softshell",
+  "color": "orange"
+ },
+ {
+  "name": "2.6.2. Coletes Leves",
+  "color": "orange"
+ },
+ {
+  "name": "2.6.3. Coletes Acolchoadas",
+  "color": "orange"
+ },
+ {
+  "name": "2.7.1. Calças",
+  "color": "orange"
+ },
+ {
+  "name": "2.7.2. Calções",
+  "color": "orange"
+ },
+ {
+  "name": "2.7.3. Calções de Banho",
+  "color": "orange"
+ },
+ {
+  "name": "2.7.4. Leggins",
+  "color": "orange"
+ },
+ {
+  "name": "2.8.1. Calças",
+  "color": "orange"
+ },
+ {
+  "name": "2.8.2. Camisolas e Casacos",
+  "color": "orange"
+ },
+ {
+  "name": "2.8.3. Conjuntos",
+  "color": "orange"
+ },
+ {
+  "name": "2.9.1. Bonés",
+  "color": "orange"
+ },
+ {
+  "name": "2.9.2. Gorros",
+  "color": "orange"
+ },
+ {
+  "name": "2.10.1. Acessórios 🔸",
+  "color": "orange"
+ },
+ {
+  "name": "2.10.2. Térmicos 🔹",
+  "color": "orange"
+ },
+ {
+  "name": "2.10.3. Luvas e Meias",
+  "color": "orange"
+ },
+ {
+  "name": "2.10.4. Sapatilhas e Chinelos 🔸",
+  "color": "orange"
+ },
+ {
+  "name": "2.10.5. Toucas e Golas",
+  "color": "orange"
+ },
+ {
+  "name": "2.10.6. Toalhas Desporto",
+  "color": "orange"
+ },
+ {
+  "name": "3.1.1. T-shirts",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.2. Polos",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.3. Sweatshirts",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.4. Casacos",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.5. Camisas",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.6. Batas",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.7. Parkas",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.8. Coletes",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.9. Calças",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.10. Calções",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.11. Fatos de macaco",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.12. Conjuntos",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.13. Acessórios",
+  "color": "yellow"
+ },
+ {
+  "name": "3.1.14. Linha Natura",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.1. T-shirts",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.2. Polos",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.3. Sweatshirts",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.4. Casacos",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.5. Camisas",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.6. Batas",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.7. Parkas",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.8. Coletes",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.9. Calças",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.10. Calções",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.11. Fatos de Macaco",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.12. Conjuntos",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.13. Calçado e Meias",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.14. Acessórios",
+  "color": "yellow"
+ },
+ {
+  "name": "3.2.15. Linha Natura",
+  "color": "yellow"
+ }
+]

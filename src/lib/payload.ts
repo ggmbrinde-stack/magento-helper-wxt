@@ -14,6 +14,13 @@
  */
 
 import { supplierFor } from './resolver';
+import {
+  CATEGORY_OPTIONS,
+  SUBCATEGORY_OPTIONS,
+  canonicalSupplier,
+} from './notionContract';
+
+export { CATEGORY_OPTIONS, SUBCATEGORY_OPTIONS };
 
 export const PAYLOAD_SCHEMA = 'bog-listing-errors/v1';
 
@@ -62,38 +69,6 @@ const GROUP_SHORT: Record<string, string> = {
   Category: 'Category',
   Other: 'Other',
 };
-
-/** Notion Category options (select) — breadcrumb L1 must match one 1:1. */
-export const CATEGORY_OPTIONS = [
-  'Promotional Textile', 'Sports Textiles', 'Workwear Textile',
-  'Technology', 'Bags and Backpacks', 'Writing and Office', 'Outdoors and Events',
-  "Children's and Pets", 'House and Wine', 'Personal', 'DIY and Auto',
-  '100% MADE4YOU', 'Other', 'Sweatshirts', 'Hoodies', 'Zip Hoodies',
-];
-
-/** Notion Subcategory options (select) — breadcrumb L2 matched case-insensitively. */
-export const SUBCATEGORY_OPTIONS = [
-  'T-shirts', 'Polo Shirts', 'Sweatshirts', 'Jackets', 'Vests',
-  'Caps and Hats', 'Underwear', 'Textile 100% MADE4YOU', 'Polos Shirts',
-  'Pants and Shorts', 'Sports Accessories', 'Tracksuits', 'Caps and Beanies',
-  'High Visibility', 'Industry', 'Health and Beauty', 'HORECA', 'USB',
-  'Powerbanks and Chargers', 'Computer Accessories',
-  'Mobile Phone and Tablet Accessories', 'Music Accessories',
-  'Photography and Video Accessories', 'Lighting Accessories',
-  'Clocks and Digital Stations', 'Bags', 'Backpacks', 'Messenger Bags',
-  'Other Bags', 'Insulated Bags', 'Trolleys', 'Desk Accessories', 'Pens',
-  'Pencils and Mechanical Pencils', 'Notepads and Notebooks', 'Document Holders',
-  'Winter', 'Summer and Beach', 'Outdoor Accessories', 'Travel Accessories',
-  'Events and Party', 'Christmas Special', 'Games', 'School Accessories',
-  "Children's Textiles 100% MADE4YOU", "Children's Textiles",
-  "Children's Sports Textiles", 'Toys', "Children's Utilities", 'Pet Accessories',
-  'Kitchen Accessories', 'Mugs And Cups', 'Bottles', 'Tea and Coffee Accessories',
-  'Wine Accessories', 'Bar Accessories', 'Decoration Accessories', 'Lanyards',
-  'Keychains', 'Coin Purses and Cardholders', 'Hygiene Accessories',
-  'Beauty Accessories', 'Health Accessories', 'Fashion and Footwear Accessories',
-  'Tools', 'Car Accessories', 'Flashlights', 'Lighters And Ashtrays',
-  'Exclusive Items', 'Stationery', 'Flags And Displays',
-];
 
 /** Field (Notion) for text findings, 1:1 with Magento attributes. */
 const FIELD_BY_KEYWORD: [string, string][] = [
@@ -499,6 +474,8 @@ export interface BuildContext {
   link: string | null;
   supplier: string;
   breadcrumbs: Breadcrumbs;
+  /** Where text findings are fixed (the audited product, not a variant). */
+  defaultFixLocation?: string;
 }
 
 /** Build payloads from an explicit finding list (future audit stages feed this). */
@@ -552,12 +529,23 @@ export function buildPayloads(
     }
     const short = GROUP_SHORT[groupProp] ?? groupProp;
 
-    // error type (open list - unknown values flagged, never blocked)
+    // error type (open list - unknown values flagged, never blocked). Text rows
+    // fold onto "Translation error" at push time (listingWriter), so their
+    // wording is not an unknown type.
     const type = f.type.trim();
-    if (!KNOWN_TYPES.includes(normalizeType(type))) review.push('unknown-error-type');
+    if (
+      groupProp !== 'Text / Translation' &&
+      !KNOWN_TYPES.includes(normalizeType(type))
+    ) {
+      review.push('unknown-error-type');
+    }
 
-    // fix location (closed enum; absence = review flag, invalid = anomaly)
+    // fix location (closed enum; absence = review flag, invalid = anomaly). The
+    // text marker has no Fix column, so fall back to the audited product.
     let fix = (f.fixLocation ?? '').trim();
+    if (!fix && f.sourceHint.toLowerCase() === 'text' && ctx.defaultFixLocation) {
+      fix = ctx.defaultFixLocation;
+    }
     if (fix) {
       const canon = FIX_ENUM.find((v) => v.toLowerCase() === fix.toLowerCase());
       if (canon) fix = canon;
@@ -693,6 +681,8 @@ export interface BuildFromMarkdownInput {
   link?: string | null;
   supplier?: string;
   breadcrumbs?: Breadcrumbs | null;
+  /** Default Fix Location for text rows (Simple / Configurable). */
+  fixLocation?: string;
 }
 
 /**
@@ -722,7 +712,7 @@ export function buildPayloadsFromMarkdown(input: BuildFromMarkdownInput): Payloa
     const lm = /^\s*-\s*Frontend:\s*(\S+)/m.exec(content);
     if (lm) link = lm[1] ?? null;
   }
-  const supplier = input.supplier ?? supplierFor(sku);
+  const supplier = canonicalSupplier(input.supplier ?? supplierFor(sku));
 
   // findings: both marker blocks feed payloads; legacy bullets are the fallback
   let findings = readMarkerRows(content);
@@ -762,7 +752,12 @@ export function buildPayloadsFromMarkdown(input: BuildFromMarkdownInput): Payloa
   const breadcrumbs: Breadcrumbs =
     input.breadcrumbs ?? { l1: '', l2: '', l3: '', ok: false, error: 'not provided' };
 
-  const built = buildPayloads(sku, findings, { link, supplier, breadcrumbs });
+  const built = buildPayloads(sku, findings, {
+    link,
+    supplier,
+    breadcrumbs,
+    defaultFixLocation: input.fixLocation,
+  });
   anomalies.push(...built.anomalies);
 
   return {

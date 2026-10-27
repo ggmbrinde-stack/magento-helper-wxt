@@ -74,17 +74,19 @@ function MarkFieldsButton({
   sku: string;
   count: number;
 }) {
-  const [state, setState] = useState<'idle' | 'busy' | 'done' | 'error'>(
-    'idle',
-  );
+  const [state, setState] = useState<
+    'idle' | 'busy' | 'done' | 'partial' | 'error'
+  >('idle');
   if (!sku || count === 0) return null;
   const run = (): void => {
     setState('busy');
     void browser.runtime
       .sendMessage({ type: 'FETCH_ERROR_MARKUP', sku })
       .then((resp) => {
-        const result = resp as { error?: string } | undefined;
-        setState(result?.error ? 'error' : 'done');
+        const result = resp as
+          | { error?: string; truncated?: boolean }
+          | undefined;
+        setState(result?.error ? 'error' : result?.truncated ? 'partial' : 'done');
       })
       .catch(() => setState('error'))
       .finally(() => setTimeout(() => setState('idle'), 1600));
@@ -101,9 +103,11 @@ function MarkFieldsButton({
         ? 'Marking…'
         : state === 'done'
           ? 'Marked'
-          : state === 'error'
-            ? 'Failed'
-            : 'Mark fields'}
+          : state === 'partial'
+            ? 'Marked (partial)'
+            : state === 'error'
+              ? 'Failed'
+              : 'Mark fields'}
     </button>
   );
 }
@@ -246,6 +250,11 @@ export function DataPanel({
         Listing Errors <span class="mhx-count">{result.errors.length}</span>
         <MarkFieldsButton sku={markupSku} count={result.errors.length} />
       </h2>
+      {result.truncated ? (
+        <p class="mhx-warning">
+          Showing the first 1,000 open errors. More rows exist in Notion.
+        </p>
+      ) : null}
       {result.errors.length === 0 ? (
         <p class="mhx-empty">No open errors.</p>
       ) : (

@@ -9,20 +9,13 @@
 // Idempotent: Magento replaces parts of the header on some navigations, and the
 // content script re-scans on every DOM mutation, so the move re-applies cleanly.
 
+import { ensureUi } from '../ui';
+
 const MOVED_CLASS = 'mhx-header-actions';
-const STYLE_ID = 'mhx-page-header-styles';
 
 /** Where the actions belong: just before the right-hand header cluster. */
 const HEADER_ANCHOR =
   '.admin-user, .notifications, .search-global, .search-global-init';
-
-function injectStyles(): void {
-  if (document.getElementById(STYLE_ID)) return;
-  const style = document.createElement('style');
-  style.id = STYLE_ID;
-  style.textContent = HEADER_STYLES;
-  (document.head ?? document.documentElement).appendChild(style);
-}
 
 /**
  * Returns true when this call moved something.
@@ -42,7 +35,7 @@ export function movePageActionsToHeader(): boolean {
     return false;
   }
 
-  injectStyles();
+  ensureUi();
   source.classList.add(MOVED_CLASS);
 
   // `insertBefore` needs the reference node to be a *direct* child. Magento
@@ -59,37 +52,4 @@ export function movePageActionsToHeader(): boolean {
   return true;
 }
 
-const HEADER_STYLES = `
-header.page-header > .mhx-header-actions {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin: 0 16px 0 0 !important;
-  padding: 0 !important;
-  height: auto !important;
-  min-height: 0 !important;
-  width: auto !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  float: none !important;
-  position: static !important;
-  flex: 0 0 auto !important;
-}
-header.page-header > .mhx-header-actions .page-actions,
-header.page-header > .mhx-header-actions .page-actions-buttons {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  float: none !important;
-}
-header.page-header > .mhx-header-actions .action-primary,
-header.page-header > .mhx-header-actions .action-default {
-  margin: 0 !important;
-  white-space: nowrap !important;
-}
-`;
+

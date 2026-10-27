@@ -28,6 +28,94 @@ export type Block =
     };
 
 const MAX_RICH = 1900;
+export const MAX_BLOCKS_PER_REQUEST = 100;
+export const BODY_CHUNK_BLOCKS = 90;
+
+type TableBlock = Extract<Block, { type: 'table' }>;
+
+/** Count every block object, including table rows nested inside a table. */
+export function countBlockObjects(blocks: Block[]): number {
+  let total = 0;
+  for (const block of blocks) {
+    total += 1;
+    if (block.type === 'table') total += block.table.children.length;
+  }
+  return total;
+}
+
+function splitTableBlock(block: TableBlock, max: number): TableBlock[] {
+  const rows = block.table.children;
+  if (rows.length === 0 || rows.length + 1 <= max) return [block];
+
+  const header = rows[0];
+  if (!header) return [block];
+  const body = rows.slice(1);
+  const perChunk = Math.max(1, max - 2); // table block + header row
+  const out: TableBlock[] = [];
+  for (let i = 0; i < body.length; i += perChunk) {
+    out.push({
+      ...block,
+      table: {
+        ...block.table,
+        children: [header, ...body.slice(i, i + perChunk)],
+      },
+    });
+  }
+  return out;
+}
+
+/**
+ * Split a block list into request-sized chunks. A table is split only when its
+ * own table + rows exceed the budget, so no single chunk can be rejected for
+ * being over the block limit.
+ */
+export function chunkBlocks(
+  blocks: Block[],
+  max = BODY_CHUNK_BLOCKS,
+): Block[][] {
+  const expanded: Block[] = blocks.flatMap((block): Block[] =>
+    block.type === 'table' ? splitTableBlock(block, max) : [block],
+  );
+  const chunks: Block[][] = [];
+  let current: Block[] = [];
+  let count = 0;
+  for (const block of expanded) {
+    const size = block.type === 'table' ? 1 + block.table.children.length : 1;
+    if (current.length > 0 && count + size > max) {
+      chunks.push(current);
+      current = [];
+      count = 0;
+    }
+    current.push(block);
+    count += size;
+    if (count > max) {
+      chunks.push(current);
+      current = [];
+      count = 0;
+    }
+  }
+  if (current.length > 0) chunks.push(current);
+  return chunks;
+}
+
+function cellRichText(text: string): RichText[] {
+  return splitChunks(text).flatMap((chunk) => richText(chunk));
+}
+
+function parseTableCells(line: string): string[] {
+  const trimmed = line.trim();
+  const withoutStart = trimmed.startsWith('|') ? trimmed.slice(1) : trimmed;
+  const body = withoutStart.endsWith('|')
+    ? withoutStart.slice(0, -1)
+    : withoutStart;
+  return body.split('|').map((cell) => cell.trim());
+}
+
+function fitCells(cells: string[], width: number): string[] {
+  const out = cells.slice(0, width);
+  while (out.length < width) out.push('');
+  return out;
+}
 
 export function richText(text: string): RichText[] {
   const segs: RichText[] = [];
@@ -117,32 +205,26 @@ export function markdownToNotionBlocks(markdown: string): Block[] {
       i + 1 < lines.length &&
       /^\|[\s\-:|]+\|\s*$/.test(nextLine)
     ) {
-    const hdr = line
-      .split('|')
-      .map((c) => (c ?? '').trim())
-      .filter((c) => c !== '');
+    const hdr = parseTableCells(line);
       const rows: string[][] = [];
       i += 2;
       while (i < lines.length && /^\|/.test((lines[i] ?? '').trim())) {
-        const cells = (lines[i] ?? '')
-          .split('|')
-          .map((c) => (c ?? '').trim())
-          .filter((c) => c !== '');
+        const cells = parseTableCells(lines[i] ?? '');
         if (cells.length > 0) rows.push(cells);
         i += 1;
       }
-      if (rows.length > 0) {
+      if (hdr.length > 0 && rows.length > 0) {
         const width = hdr.length;
         const kids = [
           {
             object: 'block' as const,
             type: 'table_row' as const,
-            table_row: { cells: hdr.map((h) => richText(h)) },
+            table_row: { cells: hdr.map((h) => cellRichText(h)) },
           },
           ...rows.map((r) => ({
             object: 'block' as const,
             type: 'table_row' as const,
-            table_row: { cells: r.map((c) => richText(c)) },
+            table_row: { cells: fitCells(r, width).map((c) => cellRichText(c)) },
           })),
         ];
         blocks.push({

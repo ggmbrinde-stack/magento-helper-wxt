@@ -1,7 +1,11 @@
 import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
-import type { ResolveSkuResponse } from '../../lib/messages';
+import type {
+  ResolveAdminFallback,
+  ResolveSkuResponse,
+  ResolverNotionMetadata,
+} from '../../lib/messages';
 import type { ResolverJson } from '../../lib/resolver';
 import { supplierFor } from '../../lib/resolver';
 import { buildVariantSummary } from '../../lib/variants';
@@ -19,9 +23,33 @@ function LinkRow({ label, url }: { label: string; url: string }) {
   );
 }
 
-function ResolverResult({ r }: { r: ResolverJson }) {
+function urlsEqual(a?: string, b?: string): boolean {
+  if (!a || !b) return false;
+  const normalize = (value: string): string => {
+    try {
+      const parsed = new URL(value);
+      const path = parsed.pathname.replace(/\/+/g, '/').replace(/\/+$/, '');
+      return `${parsed.origin}${path}`.toLowerCase();
+    } catch {
+      return value.trim().replace(/\/+$/, '').toLowerCase();
+    }
+  };
+  return normalize(a) === normalize(b);
+}
+
+function ResolverResult({
+  r,
+  notion,
+  adminBase,
+  source,
+}: {
+  r: ResolverJson;
+  notion?: ResolverNotionMetadata;
+  adminBase?: string;
+  source?: ResolveSkuResponse['source'];
+}) {
   const v = buildVariantSummary(r);
-  const m = buildMagentoTable(r);
+  const m = buildMagentoTable(r, adminBase);
 
   return (
     <>
@@ -30,6 +58,7 @@ function ResolverResult({ r }: { r: ResolverJson }) {
           <h2>
             Resolver <span class="db-mono">{r.sku}</span>
           </h2>
+          {source ? <span class="db-badge">{source}</span> : null}
           <span class={r.verified ? 'db-badge db-ok' : 'db-badge db-warn'}>
             {r.verified ? 'verified' : `${r.anomalies.length} anomalies`}
           </span>
@@ -41,7 +70,7 @@ function ResolverResult({ r }: { r: ResolverJson }) {
           </li>
           <li>
             <span>Supplier</span>
-            <b>{supplierFor(r.sku)}</b>
+            <b>{notion?.supplier || supplierFor(r.sku)}</b>
           </li>
           <li>
             <span>{m.isSimple ? 'Simple ID' : 'Configurable ID'}</span>
@@ -58,11 +87,42 @@ function ResolverResult({ r }: { r: ResolverJson }) {
             <b>{r.source ?? '-'}</b>
           </li>
         </ul>
+        {notion?.category || notion?.subcategory || notion?.status ? (
+          <ul class="db-kv">
+            {notion.category || notion.subcategory ? (
+              <li>
+                <span>Notion category</span>
+                <b>
+                  {notion.category}
+                  {notion.subcategory ? ` / ${notion.subcategory}` : ''}
+                </b>
+              </li>
+            ) : null}
+            {notion.status ? (
+              <li>
+                <span>Notion status</span>
+                <b>{notion.status}</b>
+              </li>
+            ) : null}
+          </ul>
+        ) : null}
         <ul class="db-links db-links--flush">
           <LinkRow label="Frontend" url={r.frontend_url} />
           {Object.entries(r.store_urls).map(([lang, url]) => (
             <LinkRow key={lang} label={`Frontend (${lang.toUpperCase()})`} url={url} />
           ))}
+          <LinkRow label="Backend" url={m.configurableUrl} />
+          {Object.entries(m.parentUrls)
+            .filter(([scope]) => scope !== 'all')
+            .map(([scope, url]) => (
+              <LinkRow key={scope} label={`Backend (${scope.toUpperCase()})`} url={url} />
+            ))}
+          {notion?.frontend && !urlsEqual(notion.frontend, r.frontend_url) ? (
+            <LinkRow label="SKU Library frontend" url={notion.frontend} />
+          ) : null}
+          {notion?.backend && !urlsEqual(notion.backend, m.configurableUrl) ? (
+            <LinkRow label="SKU Library backend" url={notion.backend} />
+          ) : null}
         </ul>
         {r.anomalies.length > 0 ? (
           <ul class="db-flags db-flags--warn">
@@ -178,18 +238,141 @@ function ResolverResult({ r }: { r: ResolverJson }) {
   );
 }
 
+function AdminFallbackResult({
+  fallback,
+  sku,
+}: {
+  fallback: ResolveAdminFallback;
+  sku: string;
+}) {
+  return (
+    <section class="db-card db-wide">
+      <div class="db-card-head">
+        <h2>
+          Magento admin result <span class="db-mono">{sku}</span>
+        </h2>
+        <span class="db-badge db-warn">storefront resolver unavailable</span>
+      </div>
+      <ul class="db-kv">
+        <li>
+          <span>Product ID</span>
+          <b class="db-mono">{fallback.productId}</b>
+        </li>
+      </ul>
+      <ul class="db-links db-links--flush">
+        <LinkRow label="Backend" url={fallback.backend} />
+      </ul>
+      {fallback.children.length ? (
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>Child ID</th>
+              <th>Colour</th>
+              <th>Size</th>
+              <th>Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fallback.children.map((child) => (
+              <tr key={child.id}>
+                <td class="db-mono">{child.id}</td>
+                <td>{child.color}</td>
+                <td>{child.size}</td>
+                <td>
+                  {child.backend ? (
+                    <a href={child.backend} target="_blank" rel="noreferrer noopener">
+                      edit
+                    </a>
+                  ) : null}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : null}
+    </section>
+  );
+}
+
+function NotionOnlyResult({
+  sku,
+  notion,
+}: {
+  sku: string;
+  notion: ResolverNotionMetadata;
+}) {
+  return (
+    <section class="db-card db-wide">
+      <div class="db-card-head">
+        <h2>
+          SKU Library result <span class="db-mono">{sku}</span>
+        </h2>
+        <span class="db-badge db-warn">resolver unavailable</span>
+      </div>
+      <ul class="db-kv">
+        {notion.category || notion.subcategory ? (
+          <li>
+            <span>Category</span>
+            <b>
+              {notion.category}
+              {notion.subcategory ? ` / ${notion.subcategory}` : ''}
+            </b>
+          </li>
+        ) : null}
+        {notion.supplier ? (
+          <li>
+            <span>Supplier</span>
+            <b>{notion.supplier}</b>
+          </li>
+        ) : null}
+        {notion.status ? (
+          <li>
+            <span>Status</span>
+            <b>{notion.status}</b>
+          </li>
+        ) : null}
+      </ul>
+      <ul class="db-links db-links--flush">
+        <LinkRow label="Frontend" url={notion.frontend} />
+        <LinkRow label="Backend" url={notion.backend} />
+      </ul>
+    </section>
+  );
+}
+
 export function Resolver() {
   const [sku, setSku] = useState('');
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<ResolverJson | null>(null);
+  const [result, setResult] = useState<ResolveSkuResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        const tab = tabs[0];
+        if (!tab?.id || !(tab.url ?? '').includes('/catalog/product')) return;
+        const response = (await browser.tabs.sendMessage(tab.id, {
+          type: 'GET_SKU',
+        })) as { sku?: string } | undefined;
+        if (response?.sku) setSku(response.sku);
+      } catch {
+        // The active tab may not have the Magento content script.
+      }
+    })();
+  }, []);
 
   const run = async (): Promise<void> => {
     const trimmed = sku.trim();
     if (!trimmed) return;
     setLoading(true);
     setError(null);
+    setWarning(null);
     setResult(null);
     try {
       const response = (await browser.runtime.sendMessage({
@@ -197,8 +380,16 @@ export function Resolver() {
         sku: trimmed,
         url: url.trim() || undefined,
       })) as ResolveSkuResponse;
-      if (response?.ok && response.resolver) {
-        setResult(response.resolver);
+      if (response?.ok) {
+        setResult(response);
+        setWarning(response.warning ?? null);
+        if (response.resolutionError) {
+          setWarning(
+            [response.warning, `Storefront resolver failed: ${response.resolutionError}`]
+              .filter(Boolean)
+              .join(' '),
+          );
+        }
       } else {
         setError(response?.error ?? 'Resolve failed.');
       }
@@ -213,7 +404,7 @@ export function Resolver() {
     <>
       <section class="db-card db-wide">
         <div class="db-card-head">
-          <h2>Resolve a SKU</h2>
+          <h2>Resolve SKU</h2>
         </div>
         <label class="db-field">
           <span>SKU</span>
@@ -251,7 +442,21 @@ export function Resolver() {
       </section>
 
       {error ? <div class="mhx-error">{error}</div> : null}
-      {result ? <ResolverResult r={result} /> : null}
+      {warning ? <div class="mhx-error">{warning}</div> : null}
+      {result?.resolver ? (
+        <ResolverResult
+          r={result.resolver}
+          notion={result.notion}
+          adminBase={result.adminBase}
+          source={result.source}
+        />
+      ) : null}
+      {result?.adminFallback ? (
+        <AdminFallbackResult fallback={result.adminFallback} sku={sku.trim()} />
+      ) : null}
+      {result && !result.resolver && !result.adminFallback && result.notion ? (
+        <NotionOnlyResult sku={sku.trim()} notion={result.notion} />
+      ) : null}
     </>
   );
 }

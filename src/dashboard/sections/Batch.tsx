@@ -62,6 +62,7 @@ const STAGE_LABEL: Record<string, string> = {
   payload: 'payload',
   done: 'done',
   failed: 'failed',
+  cancelled: 'cancelled',
 };
 
 const STATUS_CLASS: Record<string, string> = {
@@ -82,6 +83,7 @@ export function Batch() {
   const [background, setBackground] = useState(true);
   const [timeoutSec, setTimeoutSec] = useState(180);
   const [maxImages, setMaxImages] = useState(2000);
+  const [maxChildren, setMaxChildren] = useState(120);
   const [modelScoring, setModelScoring] = useState(false);
   const [bridge, setBridge] = useState<ModelBridgeConfig>({ ...DEFAULT_BRIDGE_CONFIG });
   const [bridgeHealth, setBridgeHealth] = useState<{
@@ -222,6 +224,7 @@ export function Batch() {
           background,
           timeoutMs: Math.max(30, timeoutSec) * 1000,
           maxImages: Math.max(100, maxImages),
+          maxChildren: Math.max(1, maxChildren),
           modelScoring,
           ...(modelScoring && bridge.modelID
             ? {
@@ -575,6 +578,7 @@ export function Batch() {
           background,
           timeoutMs: Math.max(30, timeoutSec) * 1000,
           maxImages: Math.max(100, maxImages),
+          maxChildren: Math.max(1, maxChildren),
           modelScoring,
           ...(modelScoring && bridge.modelID ? { model: { providerID: bridge.providerID, modelID: bridge.modelID } } : {}),
         },
@@ -705,6 +709,13 @@ export function Batch() {
         const lr = res.libraryReport;
         if (lr) {
           push(`  Library: created ${lr.created.length}, updated ${lr.updated.length}, unchanged ${lr.unchanged.length}, failed ${lr.failed.length}.`);
+          if (lr.bodyIncomplete.length > 0) {
+            push(`  Library body incomplete: ${lr.bodyIncomplete.join(', ')}`);
+            for (const sku of lr.bodyIncomplete) {
+              const reason = lr.bodyErrors?.[sku];
+              if (reason) push(`    ! ${sku}: ${reason}`);
+            }
+          }
           if (lr.failed.length > 0) for (const f of lr.failed.slice(0, 5)) push(`    ! ${f}`);
         } else {
           push('  Library: no report (no library cells stored for these SKUs).');
@@ -825,16 +836,16 @@ export function Batch() {
   function verdictCell(sku: string, flagCount: number) {
     const verdict = verdicts[sku];
     if (!verdict) {
-      return flagCount > 0 ? flagCount : 'â€”';
+      return flagCount > 0 ? flagCount : '—';
     }
     const cost =
-      typeof verdict.cost === 'number' ? verdict.cost.toFixed(4) : 'â€”';
+      typeof verdict.cost === 'number' ? verdict.cost.toFixed(4) : '—';
     return (
       <details>
         <summary>{verdict.flags.length}</summary>
         <p class="db-note">
-          {verdict.images.length} image(s) Â· {verdict.providerID}/{verdict.modelID} Â·{' '}
-          {verdict.ms} ms Â· cost {cost}
+          {verdict.images.length} image(s) · {verdict.providerID}/{verdict.modelID} ·{' '}
+          {verdict.ms} ms · cost {cost}
         </p>
         {verdict.flags.length > 0 ? (
           <ul class="db-flags db-flags--warn">
@@ -846,8 +857,8 @@ export function Batch() {
         <ul class="db-flags">
           {verdict.images.map((im, ii) => (
             <li key={`${ii}-${im.url}`}>
-              IMG{ii + 1} â€” {im.view} Â· {im.background}
-              {im.concerns.length > 0 ? ` Â· ${im.concerns.join('; ')}` : ''}
+              IMG{ii + 1} — {im.view} · {im.background}
+              {im.concerns.length > 0 ? ` · ${im.concerns.join('; ')}` : ''}
             </li>
           ))}
         </ul>
@@ -870,7 +881,7 @@ export function Batch() {
         </div>
         <p class="db-note">
           Paste SKUs (one per line, or comma/space separated). Each SKU runs the
-          full browser pipeline â€” resolve, variants, images, text, payload â€” and
+          full browser pipeline — resolve, variants, images, text, payload — and
           is saved after every step, so a paused or interrupted run resumes where
           it stopped. Nothing is written to Notion here.
         </p>
@@ -884,7 +895,7 @@ export function Batch() {
         <p class="db-note">
           {parsed.skus.length} valid SKU(s)
           {parsed.invalid.length > 0
-            ? ` Â· ${parsed.invalid.length} unsupported token(s) skipped`
+            ? ` · ${parsed.invalid.length} unsupported token(s) skipped`
             : ''}
         </p>
 
@@ -964,6 +975,21 @@ export function Batch() {
               }
             />
             Max image downloads
+          </label>
+          <label class="db-check">
+            <input
+              type="number"
+              min={1}
+              step={1}
+              style="width:76px"
+              value={maxChildren}
+              onInput={(e) =>
+                setMaxChildren(
+                  Number((e.target as HTMLInputElement).value) || 0,
+                )
+              }
+            />
+            Max children per SKU
           </label>
         </div>
 
@@ -1061,7 +1087,7 @@ export function Batch() {
             <h2>Progress</h2>
           </div>
           <p class="db-empty-state">
-            No batch yet â€” paste SKUs above and press Start batch.
+            No batch yet — paste SKUs above and press Start batch.
           </p>
         </section>
       ) : null}
@@ -1076,16 +1102,16 @@ export function Batch() {
               }`}
             >
               {job.status}
-              {running && current ? ` Â· ${current.sku}` : ''}
+              {running && current ? ` · ${current.sku}` : ''}
             </span>
           </div>
           <div class="db-progress-row">
             <span>
-              <b>{done}</b>/{total} SKUs Â· <b>{pct}%</b>
+              <b>{done}</b>/{total} SKUs · <b>{pct}%</b>
             </span>
             <span>
               {running
-                ? `elapsed ${fmtMs(elapsedMs)}${etaMs ? ` Â· ETA ${fmtMs(etaMs)}` : ''}`
+                ? `elapsed ${fmtMs(elapsedMs)}${etaMs ? ` · ETA ${fmtMs(etaMs)}` : ''}`
                 : job.status === 'done'
                   ? `finished in ${fmtMs((job.updatedAt ?? 0) - (job.createdAt ?? 0))}`
                   : ''}
@@ -1096,11 +1122,11 @@ export function Batch() {
           </div>
           {running && current ? (
             <p class="db-note">
-              Now running: <b>{current.sku}</b> â€” stage <b>{STAGE_LABEL[current.stage] ?? current.stage}</b>
-              {current.anomalyCount > 0 ? ` Â· ${current.anomalyCount} anomal${current.anomalyCount === 1 ? 'y' : 'ies'}` : ''}
+              Now running: <b>{current.sku}</b> — stage <b>{STAGE_LABEL[current.stage] ?? current.stage}</b>
+              {current.anomalyCount > 0 ? ` · ${current.anomalyCount} anomal${current.anomalyCount === 1 ? 'y' : 'ies'}` : ''}
             </p>
           ) : null}
-          {paused ? <p class="db-note db-flags--warn">Paused â€” press Resume to continue.</p> : null}
+          {paused ? <p class="db-note db-flags--warn">Paused — press Resume to continue.</p> : null}
           {job.message ? <p class="db-note">{job.message}</p> : null}
           <div class="db-summary-strip">
             <span>Payloads <b>{payloadCount}</b></span>
@@ -1268,7 +1294,7 @@ export function Batch() {
               disabled={!evidenceFolder || savingEvidence || (job?.totals.ok ?? 0) === 0}
               onClick={() => void saveEvidence()}
             >
-              {savingEvidence ? 'Savingâ€¦' : 'Save images'}
+              {savingEvidence ? 'Saving…' : 'Save images'}
             </button>
             <button
               type="button"
@@ -1284,7 +1310,7 @@ export function Batch() {
               disabled={testingEvidence || !evidenceFolder}
               onClick={() => void testEvidenceFolder()}
             >
-              {testingEvidence ? 'Testingâ€¦' : 'Test folder'}
+              {testingEvidence ? 'Testing…' : 'Test folder'}
             </button>
             <button
               type="button"
@@ -1457,7 +1483,7 @@ export function Batch() {
             <div class="db-progress" style="margin:8px 0">
               <div
                 class="db-progress__bar"
-                style={`width:${gatePct}%;height:6px;background:#d81b60;border-radius:3px;transition:width .2s`}
+                style={`width:${gatePct}%;height:6px;background:var(--mhx-accent);border-radius:3px;transition:width .2s`}
               />
             </div>
           ) : null}
@@ -1504,9 +1530,9 @@ export function Batch() {
               <ul>
                 {dryRun.sampled.map((row) => (
                   <li key={row.path}>
-                    <code>{row.path}</code> â€” {row.status}
+                    <code>{row.path}</code> — {row.status}
                     {row.bytes !== undefined ? ` (${row.bytes} bytes)` : ''}
-                    {row.error ? ` â€” ${row.error}` : ''}
+                    {row.error ? ` — ${row.error}` : ''}
                   </li>
                 ))}
               </ul>
@@ -1517,13 +1543,13 @@ export function Batch() {
           ) : null}
           {!folderPickingSupported() ? (
             <p class="db-note db-flags--warn">
-              This browser has no File System Access API â€” use Chrome or Edge.
+              This browser has no File System Access API — use Chrome or Edge.
             </p>
           ) : null}
           {evidenceProgress ? (
             <p class="db-note">
               {evidenceProgress.sku} ({evidenceProgress.skuIndex}/
-              {evidenceProgress.skuTotal}) â€” {evidenceProgress.filesDone}/
+              {evidenceProgress.skuTotal}) — {evidenceProgress.filesDone}/
               {evidenceProgress.filesTotal}: {evidenceProgress.file}
             </p>
           ) : null}
@@ -1534,7 +1560,7 @@ export function Batch() {
               <b>{evidenceResult.folder}</b>.{evidenceResult.aliases > 0 ? ` ${evidenceResult.aliases} duplicate byte(s) skipped.` : ''}{' '}
               {evidenceResult.failed > 0 ? (
                 <span>
-                  {evidenceResult.failed} failed â€”{' '}
+                  {evidenceResult.failed} failed —{' '}
                   {evidenceResult.errors.slice(0, 3).join('; ')}
                 </span>
               ) : null}
@@ -1577,7 +1603,7 @@ export function Batch() {
           </label>
           {!updateLibrary ? (
             <p class="db-note db-flags--warn">
-              SKU Library is not selected â€” nothing will be created or updated
+              SKU Library is not selected — nothing will be created or updated
               there.
             </p>
           ) : null}
@@ -1611,12 +1637,71 @@ export function Batch() {
           </div>
           {pushResult?.dryRun ? (
             <p class="db-note">
-              Preview only â€” {pushResult.payloadCount ?? 0} payload(s), nothing
+              Preview only — {pushResult.payloadCount ?? 0} payload(s), nothing
               written.
               {pushResult.warnings && pushResult.warnings.length > 0
                 ? ` ${pushResult.warnings.length} contract warning(s).`
                 : ''}
             </p>
+          ) : null}
+          {pushResult?.preview ? (
+            <details class="db-note" open>
+              <summary>
+                Preflight preview — Listing Errors{' '}
+                {pushResult.preview.listingErrors.unique} unique /{' '}
+                {pushResult.preview.listingErrors.duplicates} duplicate(s) /{' '}
+                {pushResult.preview.listingErrors.failures.length} invalid;{' '}
+                SKU Library {pushResult.preview.library.total} row(s) /{' '}
+                {pushResult.preview.library.errors} invalid
+              </summary>
+              {pushResult.preview.health ? (
+                <p class={pushResult.preview.health.ok ? 'db-ok' : 'db-bad'}>
+                  Notion health: {pushResult.preview.health.ok ? 'OK' : 'failed'}
+                  {pushResult.preview.health.error
+                    ? ` — ${pushResult.preview.health.error}`
+                    : ''}
+                </p>
+              ) : null}
+              {pushResult.preview.listingErrors.failures.length > 0 ? (
+                <ul class="db-flags db-flags--warn">
+                  {pushResult.preview.listingErrors.failures.map((failure, i) => (
+                    <li key={`${i}-${failure.title}`}>
+                      Listing error: {failure.title} — {failure.error}
+                      {failure.field ? ` (field: ${failure.field})` : ''}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <ul class="db-flags">
+                {pushResult.preview.library.rows.slice(0, 60).map((row) => (
+                  <li key={row.sku}>
+                    <b>{row.sku}</b> — {row.action}
+                    {row.bodyBlocks > 0
+                      ? ` · body ${row.bodyBlocks} block(s) / ${row.bodyChunks} chunk(s) · ${row.bodyAction}`
+                      : ' · no body'}
+                    {row.changes.length > 0 ? (
+                      <span>
+                        {' '}
+                        ·{' '}
+                        {row.changes
+                          .map(
+                            (c) =>
+                              `${c.field}: "${c.from || '—'}" → "${c.to}"`,
+                          )
+                          .join('; ')}
+                      </span>
+                    ) : null}
+                    {row.error ? <span> · {row.error}</span> : null}
+                  </li>
+                ))}
+              </ul>
+              {pushResult.preview.library.rows.length > 60 ? (
+                <p class="db-note">
+                  Showing the first 60 of {pushResult.preview.library.rows.length}{' '}
+                  SKU rows.
+                </p>
+              ) : null}
+            </details>
           ) : null}
           {pushResult?.report ? (
             <ul class="db-kv">
@@ -1674,7 +1759,7 @@ export function Batch() {
                 <details class="db-note">
                   <summary>
                     {Object.keys(pushResult.libraryReport.changes).length} row(s)
-                    changed â€” old â†’ new
+                    changed — old → new
                   </summary>
                   <ul class="db-flags">
                     {Object.entries(pushResult.libraryReport.changes).map(
@@ -1684,9 +1769,26 @@ export function Batch() {
                           {changes
                             .map(
                               (c) =>
-                                `${c.field} "${c.from || 'â€”'}" â†’ "${c.to}"`,
+                                `${c.field} "${c.from || '—'}" → "${c.to}"`,
                             )
                             .join('; ')}
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                </details>
+              ) : null}
+              {pushResult.libraryReport.bodyIncomplete.length > 0 ? (
+                <details class="db-note db-flags--warn">
+                  <summary>
+                    Body incomplete for {pushResult.libraryReport.bodyIncomplete.join(', ')} —
+                    the row exists, but its dossier body was only partly written.
+                  </summary>
+                  <ul class="db-flags">
+                    {Object.entries(pushResult.libraryReport.bodyErrors ?? {}).map(
+                      ([sku, reason]) => (
+                        <li key={sku}>
+                          {sku}: {reason}
                         </li>
                       ),
                     )}

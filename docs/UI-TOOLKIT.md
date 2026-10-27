@@ -1,6 +1,11 @@
 # One UI toolkit for every injected component
 
 **Date:** 2026-10-21
+**Status note:** Sections 1–9 retain the original design and measurement
+snapshot from 2026-10-21; §10 is the current implementation status. The
+side-panel component inventory predates the SKU-flow consolidation: the
+separate Lookup UI has been removed. Current SKU resolution lives only in the
+dashboard's Resolve SKU tab; see the README for the current flow.
 **Question:** can all injected components (grid buttons, chips, strips, pickers,
 pills, badges, the nav toggle, the bulk-actions bar) share one style system —
 delivered centrally, "like a CDN"?
@@ -74,6 +79,15 @@ Three rules:
    flat `rgba` fallbacks; `--mhx-*` is reserved for our own surfaces (panel,
    dashboard, theme preview).
 
+The seam between 2 and 3 is drawn per file, and it is the one thing feature
+classes are forbidden: **extension surfaces read `--mhx-*`, anything injected onto
+the operator's Magento page reads `--mhx-pg-*`.** The single bridge from layer 2
+to layer 1 belongs to the toolkit itself —
+`--mhx-pg-accent: var(--mhx-accent, #007bdb)` maps the operator's accent onto
+page chrome — so a feature never has to know a palette exists. `check-ui.mjs`
+(G6) enforces this: reading `--mhx-*` from a page-chrome file is a failure, not a
+style question.
+
 ### 2.1 Tokens
 
 Two layers, both plain CSS custom properties:
@@ -87,9 +101,53 @@ Two layers, both plain CSS custom properties:
   --mhx-pg-fill: color-mix(in srgb, currentColor 7%, transparent);
   --mhx-pg-fill-hover: color-mix(in srgb, currentColor 13%, transparent);
   --mhx-pg-danger: #e5484d;            /* readable on light and dark */
+  --mhx-pg-ok: #16a34a;
+  --mhx-pg-warn: #e65100;              /* attention: "Open All", medium */
+  --mhx-pg-caution: #f57f17;           /* low priority */
+  --mhx-pg-info: #0369a1;              /* informational badge */
+  --mhx-pg-on-solid: #ffffff;          /* text on a solid semantic fill */
+  --mhx-pg-tip-bg: rgba(51, 51, 51, 0.96);
+  --mhx-pg-tip-ink: rgba(255, 255, 255, 0.98);
   --mhx-pg-radius: 4px;
   --mhx-pg-gap: 6px;
 }
+```
+
+The one place layer 1 is allowed to know which admin it is on is the measured
+page surface. `data-theme` is *not* the signal: it records the theme the operator
+asked for, and a Magento admin with its own dark theme is dark while `data-theme`
+still says "light" and `--mhx-*` is still the light palette (README,
+massactions). So `magentoTheme.ts` measures the page it has painted and publishes
+two facts on `<html>`:
+
+- `data-mhx-page="light|dark"` — the page background's luminance;
+- `--mhx-pg-page-ink` — the page's own text colour, for controls that sit inside
+  a Magento widget whose `currentColor` is the *widget's* colour, not the page's.
+
+That second one is the live fix for the grid pager: its "per page" strip hands us
+`#6a6a6a`, so 7% of it for a fill and 22% of it for a line are nothing and its
+labels measured 3:1 on the operator's dark admin. Chrome floors and the measured
+ink take the same labels to 13.9:1.
+
+```css
+[data-mhx-page="light"] {
+  --mhx-pg-fill: rgba(0, 0, 0, 0.05);
+  --mhx-pg-line: rgba(0, 0, 0, 0.2);
+}
+[data-mhx-page="dark"] {
+  --mhx-pg-fill: rgba(255, 255, 255, 0.07);
+  --mhx-pg-line: rgba(255, 255, 255, 0.26);
+  /* a solid fill must LIGHTEN on hover on a dark page */
+  --mhx-pg-accent-strong: color-mix(in srgb, var(--mhx-pg-accent) 84%, #ffffff);
+  --mhx-pg-warn: #ff9a52;
+  --mhx-pg-caution: #ffc961;
+  --mhx-pg-info: #6cb6e8;
+}
+```
+
+Both blocks are additive: before the measurement lands, every token keeps its
+`currentColor` default, so this degrades to the pre-measurement appearance rather
+than to nothing. Everything else stays `currentColor`-derived.
 /* layer 2 — extension surfaces (panel / dashboard) */
 :root {
   --mhx-surface: #ffffff;              /* from THEME_PALETTES */
@@ -106,20 +164,22 @@ bulk-actions strip already uses successfully on the operator's dark admin.
 
 | Primitive | Class | Replaces today |
 |---|---|---|
-| button | `.mhx-btn` (+ `--danger`, `--accent`, `--ghost`, `--icon`) | `.mhx-row-action`, `.mhx-mass-btn`, `.mhx-size-btn`, `.mhx-chip-ok/x`, `.mhx-grid-copy-all`, `.mhx-sku-copy-btn` |
+| button | `.mhx-btn` (+ `--danger`, `--accent`, `--ok`, `--ghost`, `--icon`, `--compact`; `aria-pressed` for toggles; glyph = `.mhx-icon`) | `.mhx-row-action`, `.mhx-mass-btn`, `.mhx-size-btn`, `.mhx-grid-copy-all`, `.mhx-sku-copy-btn` |
 | button group / strip | `.mhx-group`, `.mhx-group--wrap` | `.mhx-row-actions`, `.mhx-mass`, `.mhx-size-row` |
 | segmented control | `.mhx-seg`, `.mhx-seg-btn`, `.mhx-seg-btn--active` | `.mhx-size-row`, `.mhx-nh-seg*`, category Tree/List switch, theme picker |
-| chip (removable filter) | `.mhx-chip`, `.mhx-chip-x` | active-filter chips, category pills |
+| chip (removable filter) | `.mhx-chip`, `.mhx-chip-remove` (pinned state = the chip's pin control with `aria-pressed="true"`) | active-filter chips, pinned-filter chips, category pills |
 | badge (code / count) | `.mhx-badge` | category numbers, priority dots, counters |
-| inline field | `.mhx-field`, `.mhx-field--ok` | chip inline editor, custom page size |
-| popover | `.mhx-pop`, `.mhx-pop-item` | picker surface, massaction overflow |
+| inline field | `.mhx-inline-field` (+ `--ok`, `[data-size="wide"]`) | chip inline editor, custom page size |
+| popover | `.mhx-pop`, `.mhx-pop-item` (+ `--menu` for a menu anchored to its button) | picker surface, bulk-action submenu menu |
 | bar (full-width strip) | `.mhx-bar` | bulk-action strip, active-filter strip, category toolbar |
 | toggle / chevron | `.mhx-toggle` | nav chevron |
 | toast | `.mhx-toast` | `content.ts` toast (already close) |
 
 That is ~10 primitives against 140 classes: the remaining ~30 class names are
-feature hooks (`mhx-cat-tree-row`, `mhx-sku-copy-btn`) that stay but only carry
-layout-neutral modifiers.
+feature hooks (`mhx-cat-tree-row`, `mhx-sku-copy-btn`) that stay, but carry only
+layout or a named state (`--high`, `--all`, `--open`) — never a colour of their
+own. Since the content script stopped injecting a sheet, they are defined in
+`toolkit.css` too ("Magento page features"), in layer-1 tokens.
 
 ### 2.3 Factories
 
@@ -331,10 +391,13 @@ contrast lesson into an invariant instead of a footnote.
 
 ## 10. Status, verification and limits
 
-### 10.1 Current status — IMPLEMENTED (phase 1 complete)
+### 10.1 Current status — INFRASTRUCTURE COMPLETE, MIGRATION PARTIAL
 
 As of 2026-10-21, the UI toolkit infrastructure described in §2–§3 is live in
-`src/ui/`:
+`src/ui/`. The foundations are fully implemented; the feature migration described
+in §4 is partial.
+
+**Implemented (infrastructure):**
 
 - **`src/ui/tokens.ts`** — token names + page-adaptive resolution. Three
   operator-customisable tokens (`accent`, `danger`, `ok`) with storage,
@@ -355,6 +418,28 @@ As of 2026-10-21, the UI toolkit infrastructure described in §2–§3 is live i
 - **`src/ui/components.ts`** — factories (`button`, `group`, `bar`, `chip`,
   `badge`, `segmented`, `popover`) returning plain DOM nodes with toolkit classes.
 - **`src/ui/icons.ts`** — icon registry for `icon` variant buttons.
+- **`src/ui/field.ts` + `src/ui/message.ts`** — reusable form field and message
+  helpers (label + input + status) for extension-owned surfaces.
+
+**Color customization — IMPLEMENTED**
+
+The "Toolkit colours" section in Settings (`src/lib/ToolkitColors.tsx`) lets
+operators customize three colours:
+
+- **Accent** (`--mhx-pg-accent`): focus rings, active segments, accent buttons.
+  Auto = theme accent (`--mhx-accent`).
+- **Danger** (`--mhx-pg-danger`): delete/remove actions, error badges, toasts.
+- **Success/OK** (`--mhx-pg-ok`): copied/done feedback, success badges.
+
+Each token has a native `<input type="color">` picker plus an "Auto" reset
+button. Overrides are stored in `chrome.storage.local` under `toolkitColors` and
+applied as inline custom properties on `<html>`, so clearing one restores the
+stylesheet default. Preview swatches in Settings show the real token value
+(resolving to the fallback when on Auto).
+
+Available in both settings surfaces:
+- Dashboard Settings (`src/dashboard/sections/Settings.tsx`)
+- Side panel Settings (`src/entrypoints/sidepanel/SettingsForm.tsx`)
 
 ### 10.2 Color customization — IMPLEMENTED
 
@@ -378,16 +463,24 @@ The color customization is available in both settings surfaces:
 
 ### 10.3 Verification
 
-- **Guardrails pass:** `npm run check:ui` (scripts/check-ui.mjs) enforces G1–G5:
+- **Guardrails pass:** `npm run check:ui` (scripts/check-ui.mjs) enforces G1–G6:
   - G1: color literals only allowed in tokens.ts, theme.ts, magentoTheme.ts,
     toolkit.css/toolkitCss.ts/public copy
   - G2: primitive classes defined once (src/ui/toolkit.css is source)
   - G3: magentoTheme.ts no longer names feature classes (cleaned)
   - G4: !important budget tracked (currently ≤ 200)
-  - G5: ensureUi() references toolkit.css via ensureUi()
+  - G5: ensureUi() references toolkit.css and generated copies match the canonical sheet exactly
+  - G6: page-chrome files use layer-1 tokens only, never an extension-surface
+    token, and never a hardcoded white (`white`, `#fff`, `#ffffff`, `rgb(...)`
+    in any of `background`/`color`/`border`/`fill`/`stroke`). The page-chrome set
+    is *derived* — every `src` file except the extension surfaces (panel,
+    dashboard, their `*.tsx` settings components) and the layer owners — so a new
+    feature file is covered the moment it lands. 57 files today; the earlier
+    hardcoded four-file list is how the other page-injected owners
+    (adminNavToggle, activeFilters, massactionButtons, rowActions, …) escaped it.
 
 - **Toolkit copies in sync:** `npm run ui:sync` regenerates
-  `public/ui/toolkit.css` and `src/ui/toolkitCss.ts` from `src/ui/toolkit.css`.
+  `src/public/ui/toolkit.css` and `src/ui/toolkitCss.ts` from `src/ui/toolkit.css`.
 
 - **Delivery works:** manifest exposes `ui/toolkit.css` via web_accessible_resources
   with matches for all admin hosts. The `<link>` path is primary; inline fallback
@@ -403,32 +496,61 @@ The color customization is available in both settings surfaces:
 - One toolkit sheet exists (`src/ui/toolkit.css`, ~8 KB)
 - One delivery mechanism with fallback (`ensureUi()`, manifests the `<link>`)
 - Three customizable colors with Settings UI and live preview
-- Guardrails script enforcing consistency rules
+- Guardrails script enforcing consistency rules (G1–G6)
 - Icon support for button variant='icon'
+- Reusable field and message helpers for extension-owned surfaces
+- Dashboard navigation card, buttons, form fields use extension theme palette
+- Side panel Shadow DOM theming via `primeTheme()` works correctly
 
-**Target (not yet proven, from §4 migration map):**
-- 9 → 1 injected sheet: still 9+ sheets today; phase 2+ ports not done
-- 152 → ≤ 12 hex literals: still 152+ today across feature files; cleanup is
-  future work
-- 140 → ~40 class names: primitives defined, but features still carry their own
-  classes and inline styles
-- Full feature migration (rowActions, massactionButtons, pagingSizes, activeFilters,
-  categoryTree, enhanceSelect): not yet ported to primitives
+**Migrated (partial):**
+- `activeFilters.ts` — the whole filter-chip surface is toolkit: chips (`.mhx-chip`), pin/pencil/remove controls (`.mhx-btn--compact[data-variant="icon"]`, pinned state via `aria-pressed`), and the inline editor (`.mhx-inline-field[data-size="wide"]`). The feature sheet left is layout only and the file no longer trips G1/G4
+- `pagingSizes.ts` — segmented control and custom-size input use toolkit primitives; pager reset and inline sizing remain local
+- `categoryTree.ts` — view switch and tree/list actions use `segmented()`/`button()`; code badges now use `badge()` with feature-specific overrides (monospace font, 34px min-width, 3px border-radius); selected pills now use `chip()` with feature-specific overrides (accent border, accent text, 12px border-radius). The search field, category list, tree layout, checkbox state indicators, indentation, collapse behavior, and Magento-specific wiring remain feature-specific
+- `enhanceSelect.ts` — trigger, popover, option rows, and segmented controls use toolkit primitives; feature-specific wrapper, search-field, and positioning styles remain
+- `content.ts` — copy/action buttons, product-type badges, and toast use toolkit primitives; error indicators and labels remain feature-specific
+- Dashboard: navigation, cards, buttons, form fields use `dashboard.css` with `--mhx-*` palette from `theme.ts`
+- Side panel: Shadow DOM styled via `panel.css` using `--mhx-*` palette; the
+  current tabs (Data, Fill, Config) use shared pattern classes. The former
+  Lookup component was removed during the SKU-flow consolidation.
+
+**Target (not yet proven, remaining migration work):**
+- Dashboard and side panel still carry their own CSS files (`dashboard.css`, `panel.css`) in addition to the toolkit sheet; these are extension-owned surfaces, so having separate stylesheets is acceptable but could be reduced
+- Some Magento admin features still inject feature-specific styles (`pagingSizes`, `categoryTree`, `enhanceSelect`, and `content.ts`); `activeFilters` injects only layout styles because its controls use toolkit primitives. These feature sheets use page-adaptive tokens, but their custom search/list/pill/indicator/layout surfaces are not yet fully consolidated.
+- Full consolidation to "one sheet per page" (9 → 1) is a future goal; today's state is: one toolkit sheet on admin pages + feature-specific style injections that have been palette-aligned
+- Migration from custom `mhx-*` classes in feature CSS to standard toolkit primitives is incremental work; `activeFilters` is converted end to end and is the reference for the rest
 
 The infrastructure is shipped and shippable today. The payoff numbers in §4 are
 targets that the remaining phases (2–6) will realize.
 
 ### 10.5 Limits
 
-- **Light admin:** not yet tested end-to-end. The token contract supports it
-  (page-adaptive currentColor + color-mix), but no fixture or live admin has
-  verified it.
-- **Dark admin contrast:** the bulk-actions strip proved the approach; full
-  primitive set on a dark admin is not yet verified.
+- **Live Magento environment:** the extension is already in active use against
+  the live admin. Keep checks for visual regressions grounded in the actual
+  live theme and controls used.
+  Do not execute destructive actions on live records just to test styling.
+- **Theme coverage:** page-adaptive tokens support light and dark backgrounds,
+  but appearance can vary by admin theme and page. Avoid claiming a theme or
+  feature combination is verified unless it has been observed in live use.
 - **Popover surface:** translucent + blurred to survive unknown page background;
-  phase 5 (enhanceSelect port) will validate against the real picker.
+  the enhanceSelect picker uses the toolkit `.mhx-pop` primitive. Preserve its
+  interaction and contrast behavior when changing the primitive.
 - **adoptedStyleSheets:** not used; `<link>` chosen for inspectability and caching.
   Could be a later optimization.
-- **Remaining feature sheets:** the migration is incomplete. Until phases 2–5 land,
-  the page still carries 9+ injected sheets alongside the one toolkit sheet.
-
+- **Feature style sheets:** each Magento admin feature (`activeFilters`,
+  `pagingSizes`, `categoryTree`, `enhanceSelect`) injects its own style element
+  with palette-aligned rules. These have been updated to use `--mhx-*` palette
+  variables but are separate from the single toolkit sheet. Consolidation into the
+  toolkit sheet is future work; until then, the page carries the toolkit sheet
+  plus per-feature style injections.
+- **Extension-owned surfaces:** dashboard and side panel use their own CSS files
+  (`dashboard.css`, `panel.css`) that reference the `--mhx-*` theme palette. These
+  are extension-owned surfaces (not admin-page widgets), so having separate
+  stylesheets is architecturally acceptable. They have been reviewed to ensure
+  they use the theme palette correctly and do not accidentally inherit page-adaptive
+  `--mhx-pg-*` tokens.
+- **Feature classes vs toolkit primitives:** some features still use custom
+  `mhx-*` classes (e.g., `.mhx-size-btn`, `.mhx-cat-toggle`) that are styled in
+  feature-specific sheets. Where these map semantically to toolkit primitives
+  (button, segmented, chip), migration to standard primitives is incremental
+  work — `activeFilters.ts` is the first one fully converted (its remaining
+  `mhx-chip-edit`/`mhx-chip-pin` classes are DOM hooks with no styles).

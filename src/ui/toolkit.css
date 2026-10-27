@@ -10,15 +10,32 @@
    - Layer 2 `--mhx-*`: extension-owned surfaces (side panel, dashboard,
      theme preview), published by lib/theme.ts. NEVER use them here: the
      admin page is not our surface — that mistake caused the dark-admin
-     contrast bug.
+     contrast bug. `--mhx-surface` is the panel's white (or dark) card, not
+     the page, and it only lands once storage resolves, so
+     `var(--mhx-surface, #fff)` paints light-theme chrome onto a dark admin
+     for the first frames. The ONE exception is `--mhx-pg-accent`, which
+     deliberately bridges to the operator's `--mhx-accent` (below).
    - The three coloured tokens `--mhx-pg-accent`, `--mhx-pg-danger`,
      `--mhx-pg-ok` are operator-overridable (Settings → Toolkit colours).
      Overrides are written as inline custom properties on <html>, which
      outrank this block, so removing one restores the default here.
-   - Features never style themselves: they pass a modifier
-     (`data-variant`, `data-tone`, `--active`) and nothing else. No colour,
-     radius, padding or font lives outside this file (plus lib/theme.ts for
-     extension-owned surfaces).
+     `--mhx-pg-accent` reads `--mhx-accent` so the page follows the theme
+     accent; `--mhx-pg-on-accent` reads its contrast-derived foreground, so a
+     light accent gets dark text without asking.
+   - Being theme-aware is allowed in exactly TWO places, both below and both
+     keyed off state the page states about itself, never off the palette: the
+     `currentColor`-derived layer 1 (works on any admin, before any JS), and
+     the measured page-surface blocks (`data-mhx-page` + `--mhx-pg-page-ink`,
+     published by lib/magentoTheme.ts). Note `data-theme` is deliberately NOT
+     the signal: it records the theme the operator asked for, and a Magento
+     admin with its own dark theme is dark while `data-theme` still says
+     "light" and the palette is still the light one.
+   - Features never style themselves: they pass a modifier (`data-variant`,
+     `data-tone`, `--active`, or a named state such as `--high`), and nothing
+     else. No colour, radius, padding or font lives outside this file (plus
+     lib/theme.ts for extension-owned surfaces); content.ts no longer injects
+     a stylesheet of its own, and its controls are the "Magento page features"
+     section at the bottom of this file.
 
    DELIVERY (do not edit those, they are generated):
      src/ui/toolkit.css  -- this file, the ONLY source
@@ -46,22 +63,118 @@
   --mhx-pg-fill-hover: color-mix(in srgb, currentColor 13%, transparent);
 
   --mhx-pg-accent: var(--mhx-accent, #007bdb);
-  --mhx-pg-accent-strong: color-mix(in srgb, var(--mhx-pg-accent) 84%, #000000);
   --mhx-pg-on-accent: var(--mhx-on-accent, #ffffff);
+  /* The hover shade of a solid accent fill. "Stronger = darker" only holds on a
+     LIGHT surface, so this is the light-page value: the measured dark block
+     below flips the mix towards white, or hovering an accent button on a dark
+     admin would sink it into the page instead of responding to it. */
+  --mhx-pg-accent-strong: color-mix(in srgb, var(--mhx-pg-accent) 84%, #000000);
   --mhx-pg-danger: #e5484d;
   --mhx-pg-danger-wash: color-mix(in srgb, var(--mhx-pg-danger) 14%, transparent);
   --mhx-pg-ok: #16a34a;
   --mhx-pg-ok-wash: color-mix(in srgb, var(--mhx-pg-ok) 14%, transparent);
+
+  /* The semantic set above is danger + ok. The page features (priority
+     indicators, "Open All", product-type badges) need the two that were
+     missing, plus an informational hue. Mid tones, because the base palette
+     light and dark are both in use; the dark-admin block below lifts them. */
+  --mhx-pg-warn: #e65100;
+  --mhx-pg-warn-strong: color-mix(in srgb, var(--mhx-pg-warn) 84%, #000000);
+  --mhx-pg-warn-wash: rgba(230, 81, 0, 0.14);
+  --mhx-pg-warn-wash: color-mix(in srgb, var(--mhx-pg-warn) 14%, transparent);
+  --mhx-pg-caution: #f57f17;
+  --mhx-pg-caution-wash: rgba(245, 127, 23, 0.14);
+  --mhx-pg-caution-wash: color-mix(in srgb, var(--mhx-pg-caution) 14%, transparent);
+  --mhx-pg-info: #0369a1;
+  --mhx-pg-info-wash: rgba(3, 105, 161, 0.12);
+  --mhx-pg-info-wash: color-mix(in srgb, var(--mhx-pg-info) 12%, transparent);
+
+  /* Foreground for a SOLID semantic fill (the green "copied" flash, the amber
+     "Open All"). Fixed white, not a palette value: the fill is ours and
+     opaque, so it reads the same on either admin. */
+  --mhx-pg-on-solid: #ffffff;
+
+  /* Tooltip chip. An opaque surface whose job is to contrast with the PAGE,
+     which currentColor cannot give us (it would invert to the page's own
+     ink), so it is a fixed pair, flipped by the dark-admin block below. */
+  --mhx-pg-tip-bg: rgba(51, 51, 51, 0.96);
+  --mhx-pg-tip-ink: rgba(255, 255, 255, 0.98);
 
   --mhx-pg-radius: 4px;
   --mhx-pg-gap: 6px;
   --mhx-pg-font: 13px/1.4 system-ui, "Segoe UI", Arial, sans-serif;
 }
 
+/* ---- measured page surface -------------------------------------------------
+   lib/magentoTheme.ts measures the page it has just painted and publishes two
+   facts on <html>: `data-mhx-page="light|dark"`, and the page's own text
+   colour as `--mhx-pg-page-ink`.
+
+   Why measure, when everything else here is derived? Two things CSS cannot
+   see, and both bite the injected controls:
+   1. `data-theme` says which theme the operator ASKED for, not what the page
+      is. `--mhx-*` is published as the light palette unless OUR dark admin is
+      enabled, so on an admin with its own dark theme the page is dark while the
+      palette is light (README, massactions).
+   2. Inside Magento's own widgets `currentColor` is the WIDGET's colour, not
+      the page's ink. The grid pager's "per page" strip hands us `#6a6a6a`
+      (muted), so 7% of it for a fill and 22% of it for a line are both nothing,
+      and its labels land at 3:1 — a percentage of an unknown colour cannot be
+      made visible, which is what the measured ink is for.
+
+   Both blocks are additive. Before the measurement lands (or without it) every
+   token keeps its `currentColor` default from the layer-1 block above, so this
+   degrades to exactly the pre-measurement appearance rather than to nothing. */
+[data-mhx-page="light"] {
+  /* Chrome floors. On a light page a dark ink gives 7%/22% a visible grey, but
+     the muted widget colour does not, so the page states which it is. */
+  --mhx-pg-fill: rgba(0, 0, 0, 0.05);
+  --mhx-pg-fill-hover: rgba(0, 0, 0, 0.11);
+  --mhx-pg-line: rgba(0, 0, 0, 0.2);
+  --mhx-pg-line-soft: rgba(0, 0, 0, 0.12);
+}
+
+[data-mhx-page="dark"] {
+  /* The same floors, lifting instead of darkening: on a dark page a
+     translucent white reads as "raised" whatever the inherited colour is. */
+  --mhx-pg-fill: rgba(255, 255, 255, 0.07);
+  --mhx-pg-fill-hover: rgba(255, 255, 255, 0.15);
+  --mhx-pg-line: rgba(255, 255, 255, 0.26);
+  --mhx-pg-line-soft: rgba(255, 255, 255, 0.16);
+
+  /* Hover on a solid fill must LIGHTEN on a dark page, so the -strong shade
+     flips direction (the same rule theme.ts applies when it derives a palette)
+     — otherwise the active segment and "Open All" dim into the page instead of
+     responding. The mid-tone semantics are lifted off the background too. */
+  --mhx-pg-accent-strong: color-mix(in srgb, var(--mhx-pg-accent) 84%, #ffffff);
+  --mhx-pg-warn: #ff9a52;
+  --mhx-pg-warn-strong: color-mix(in srgb, var(--mhx-pg-warn) 84%, #ffffff);
+  --mhx-pg-caution: #ffc961;
+  --mhx-pg-info: #6cb6e8;
+
+  /* The tooltip chip contrasts with the page, so it inverts. */
+  --mhx-pg-tip-bg: rgba(242, 242, 242, 0.98);
+  --mhx-pg-tip-ink: rgba(17, 17, 17, 0.98);
+}
+
 /* ---- base ----------------------------------------------------------------
    Magento styles bare `button`/`input` with `:not(...)` selectors, so every
    primitive sets font, line-height, colour, background, border, radius and
    box-shadow explicitly instead of inheriting. */
+
+/* ---- icon ------------------------------------------------------------------
+   The SVG glyph a factory puts inside a control (components.ts
+   `createIconElement`).
+   Both properties used to be written as inline styles on the element; they
+   belong here with the rest of the presentation. A class rule also needs no
+   inline write on every icon, and it still beats Magento's own bare `svg`
+   rules on source order, because this sheet is injected after the page's. If a
+   more specific Magento rule ever wins, scope this to the primitive carrying
+   the icon rather than going back to an inline style. */
+.mhx-icon {
+  display: inline-block;
+  flex-shrink: 0;
+}
 
 /* ---- button --------------------------------------------------------------- */
 .mhx-btn {
@@ -281,6 +394,9 @@
   display: inline-flex;
   align-items: stretch;
   font: var(--mhx-pg-font);
+  /* The control's ink is the page's, never inherited from a Magento widget it
+     happens to sit in: a pager hands us its own muted colour. */
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
   border: 1px solid rgba(128, 128, 128, 0.45);
   border: 1px solid var(--mhx-pg-line);
   border-radius: var(--mhx-pg-radius);
@@ -324,6 +440,15 @@
   background: var(--mhx-pg-accent);
   color: var(--mhx-pg-on-accent);
   font-weight: 600;
+  /* The accent is the operator's and can sit as close to the page as they
+     like — a dark brand colour on a dark admin, a pale one on a light admin —
+     so the selected shape also carries a ring in the fill's own foreground.
+     That foreground is contrast-derived from the accent (theme.ts
+     `readableForeground`, ui/tokens.ts for an override), so the ring always
+     separates the shape even when the fill itself does not. */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--mhx-pg-on-accent) 45%, transparent);
 }
 
 .mhx-seg-btn--active:hover,
@@ -501,13 +626,16 @@
   font-size: 12px;
 }
 
-.mhx-note,
-.mhx-empty {
+.mhx-note {
   margin: 4px 0;
   color: var(--mhx-pg-muted);
 }
 
+/* An empty-state is the note treatment in italic — one rule per class instead
+   of a shared block plus a follow-up override for the same selector. */
 .mhx-empty {
+  margin: 4px 0;
+  color: var(--mhx-pg-muted);
   font-style: italic;
 }
 
@@ -518,6 +646,8 @@
   align-items: center;
   gap: 6px;
   font: var(--mhx-pg-font);
+  /* Same reasoning as .mhx-seg: the page's ink, not the surrounding widget's. */
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
 }
 
 .mhx-inline-field input,
@@ -763,4 +893,304 @@ header.page-header > .mhx-header-actions .action-primary,
 header.page-header > .mhx-header-actions .action-default {
   margin: 0 !important;
   white-space: nowrap !important;
+}
+
+/* ============================================================================
+   Magento page features
+   ============================================================================
+   The controls the content script injects INTO Magento's own markup. They are
+   not primitives: each one sits inside a Magento table cell, field label or
+   page title and inherits that box model (its width, margins and
+   vertical-align are load-bearing), which is why they stay named features
+   instead of becoming `.mhx-btn` variants.
+
+   They are also why layer 2 must stay out of the page. The same sheet is on a
+   light and a dark admin, and the palette only lands after storage resolves —
+   so `var(--mhx-surface, #fff)` is not "the page" and not "our panel" either:
+   it is the LIGHT palette's surface applied to whatever admin is open. Every
+   value below is layer 1 or an opaque surface we own (toast, tooltip), so the
+   worst case before the palette arrives is neutral chrome, never a white
+   control painted onto a dark page.
+
+   The feature keeps the class names and passes state as a modifier
+   (`--high/--medium/--low`, `--all`, `--open`, `--feedback`), exactly as the
+   simple primitives take `data-variant`. Nothing here is written from
+   content.ts any more.
+   ---------------------------------------------------------------------------- */
+
+/* --- copy-SKU button (product fields, grid cells) -------------------------- */
+.mhx-sku-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  padding: 0 6px;
+  width: 28px;
+  height: 24px;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: 2px;
+  background: var(--mhx-pg-fill);
+  color: inherit;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.mhx-sku-copy-btn:hover {
+  background: var(--mhx-pg-fill-hover);
+  border-color: var(--mhx-pg-line);
+}
+
+.mhx-sku-copy-btn:active {
+  background: var(--mhx-pg-fill-hover);
+}
+
+/* "Copied" flash — the toolkit's ok tone, so it stays legible either way. */
+.mhx-sku-copy-btn--feedback {
+  color: var(--mhx-pg-ok) !important;
+  border-color: var(--mhx-pg-ok) !important;
+}
+
+/* The paired control that opens the product: accent outline at rest. */
+.mhx-sku-copy-btn--open {
+  color: var(--mhx-pg-accent);
+  border-color: var(--mhx-pg-accent);
+}
+
+.mhx-sku-copy-btn--open:hover {
+  background: var(--mhx-pg-accent);
+  border-color: var(--mhx-pg-accent);
+  color: var(--mhx-pg-on-accent);
+}
+
+/* --- store-view quick buttons (EN / ES / FR + Open All) -------------------- */
+.mhx-store-buttons {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 32px;
+  align-items: center;
+}
+
+/* Outline at rest, filled on hover. The rest state is `transparent`, not a
+   surface colour: an outline button needs no background of its own, and any
+   background we picked here would be wrong on one of the two admins. */
+.mhx-store-btn {
+  padding: 2px 8px;
+  font-size: 11px;
+  border: 1px solid var(--mhx-pg-accent);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--mhx-pg-accent);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.mhx-store-btn:hover {
+  background: var(--mhx-pg-accent);
+  color: var(--mhx-pg-on-accent);
+}
+
+/* "Open All": solid, and deliberately NOT the accent — it is the one button
+   here that acts on every store, so it reads as attention, not as selection. */
+.mhx-store-btn--all {
+  border-color: var(--mhx-pg-warn);
+  background: var(--mhx-pg-warn);
+  color: var(--mhx-pg-on-solid);
+}
+
+.mhx-store-btn--all:hover {
+  background: var(--mhx-pg-warn-strong);
+  border-color: var(--mhx-pg-warn-strong);
+}
+
+/* --- open every size of one colour ----------------------------------------- */
+.mhx-open-sizes-btn {
+  margin-left: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  border: 1px solid var(--mhx-pg-accent);
+  border-radius: 3px;
+  background: var(--mhx-pg-accent);
+  color: var(--mhx-pg-on-accent);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.mhx-open-sizes-btn:hover {
+  background: var(--mhx-pg-accent-strong);
+  border-color: var(--mhx-pg-accent-strong);
+}
+
+/* --- error indicator (priority dot beside a field label) --------------------
+   Priority is carried by the ring and the glyph; the background is only a
+   wash over whatever the page is, so the indicator keeps its meaning on a
+   light and a dark admin without a pastel chip that only works on one. */
+.mhx-error-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-left: 6px;
+  cursor: help;
+  position: relative;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.mhx-error-indicator svg {
+  width: 14px;
+  height: 14px;
+}
+
+.mhx-error-indicator--high {
+  background: var(--mhx-pg-danger-wash);
+  color: var(--mhx-pg-danger);
+  border: 1px solid var(--mhx-pg-danger);
+}
+
+.mhx-error-indicator--medium {
+  background: var(--mhx-pg-warn-wash);
+  color: var(--mhx-pg-warn);
+  border: 1px solid var(--mhx-pg-warn);
+}
+
+.mhx-error-indicator--low {
+  background: var(--mhx-pg-caution-wash);
+  color: var(--mhx-pg-caution);
+  border: 1px solid var(--mhx-pg-caution);
+}
+
+/* Tooltip: opaque, because it floats over the page (same reasoning as the
+   toast) and nothing about the page tells us what would contrast with it. */
+.mhx-error-indicator:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: var(--mhx-pg-tip-bg);
+  color: var(--mhx-pg-tip-ink);
+  font-size: 11px;
+  font-weight: 400;
+  white-space: normal;
+  max-width: 300px;
+  text-align: left;
+  line-height: 1.4;
+  border-radius: 3px;
+  z-index: 10000;
+  margin-bottom: 4px;
+}
+
+/* D2: host class drives display — reversible on indicator clear (no inline
+   styles on Magento's own labels). */
+.mhx-error-label-host {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mhx-error-label--high label,
+.mhx-error-label--high .admin__field-label,
+.mhx-error-label--high .admin_field-label {
+  color: var(--mhx-pg-danger) !important;
+  font-weight: 700 !important;
+}
+
+.mhx-error-label--medium label,
+.mhx-error-label--medium .admin__field-label,
+.mhx-error-label--medium .admin_field-label {
+  color: var(--mhx-pg-warn) !important;
+  font-weight: 700 !important;
+}
+
+.mhx-error-label--low label,
+.mhx-error-label--low .admin__field-label,
+.mhx-error-label--low .admin_field-label {
+  color: var(--mhx-pg-caution) !important;
+  font-weight: 700 !important;
+}
+
+/* --- "copy all SKUs" button in a grid toolbar ------------------------------ */
+.mhx-grid-copy-wrap {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.mhx-grid-copy-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--mhx-pg-accent);
+  border-radius: 3px;
+  background: var(--mhx-pg-accent);
+  color: var(--mhx-pg-on-accent);
+  cursor: pointer;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.mhx-grid-copy-all:hover {
+  background: var(--mhx-pg-accent-strong);
+  border-color: var(--mhx-pg-accent-strong);
+}
+
+.mhx-grid-copy-all svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.mhx-grid-copy-all.mhx-sku-copy-btn--feedback {
+  background: var(--mhx-pg-ok) !important;
+  border-color: var(--mhx-pg-ok) !important;
+  color: var(--mhx-pg-on-solid) !important;
+}
+
+/* --- product-type badge (page title + SKU label) --------------------------- */
+/* The type is the point, so the hue sits in the wash and the ring while the
+   text stays the page's own ink. A filled pastel chip would only be legible on
+   the admin it was picked for. */
+.mhx-product-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 12px;
+  line-height: 1.2;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: inherit;
+}
+
+.mhx-product-type-badge--title {
+  margin-left: 12px;
+  font-size: 12px;
+  padding: 3px 10px;
+}
+
+.mhx-product-type-badge--sku {
+  margin-left: 8px;
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+.mhx-product-type-badge--configurable {
+  background: var(--mhx-pg-info-wash);
+  border: 1px solid rgba(3, 105, 161, 0.45);
+  border: 1px solid color-mix(in srgb, var(--mhx-pg-info) 45%, transparent);
+}
+
+.mhx-product-type-badge--simple {
+  background: var(--mhx-pg-ok-wash);
+  border: 1px solid rgba(22, 163, 74, 0.45);
+  border: 1px solid color-mix(in srgb, var(--mhx-pg-ok) 45%, transparent);
 }

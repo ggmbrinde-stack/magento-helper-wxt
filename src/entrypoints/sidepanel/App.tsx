@@ -11,7 +11,6 @@ import { SettingsForm } from './SettingsForm';
 import { FillPanel } from './FillPanel';
 import { DataPanel } from './DataPanel';
 import { ConfigPanel } from './ConfigPanel';
-import { LookupPanel } from './LookupPanel';
 
 interface Settings {
   notionToken: string;
@@ -27,12 +26,11 @@ const EMPTY_SETTINGS: Settings = {
   adminBaseUrl: '',
 };
 
-type Tab = 'data' | 'config' | 'lookup' | 'fill' | 'settings';
+type Tab = 'data' | 'config' | 'fill' | 'settings';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'data', label: 'Data' },
   { id: 'config', label: 'Config' },
-  { id: 'lookup', label: 'Lookup' },
   { id: 'fill', label: 'Fill' },
   { id: 'settings', label: 'Settings' },
 ];
@@ -219,7 +217,7 @@ export function App() {
       {tab === 'data' ? (
         <main class="mhx-content">
           <div class="mhx-row">
-            <label class="mhx-field">
+            <label class="mhx-panel-field">
               <span>SKU</span>
               <input
                 type="text"
@@ -231,7 +229,7 @@ export function App() {
                 }}
               />
             </label>
-            <label class="mhx-field mhx-field--store">
+            <label class="mhx-panel-field mhx-panel-field--store">
               <span>
                 Store view
                 {detectedStoreView !== 'all'
@@ -264,8 +262,6 @@ export function App() {
         </main>
       ) : tab === 'config' ? (
         <ConfigPanel />
-      ) : tab === 'lookup' ? (
-        <LookupPanel sku={sku} onSkuChange={setSku} />
       ) : tab === 'fill' ? (
         <main class="mhx-content">
           <FillPanel

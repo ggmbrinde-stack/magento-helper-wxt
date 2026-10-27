@@ -6,24 +6,50 @@ export const DEFAULT_SKU_LIBRARY_DB = 'a14943ff-001c-471a-b5c5-9737060f7903';
 export const DEFAULT_LISTING_ERRORS_DB = 'b66b7bba-175c-4460-b1e4-455334ec7141';
 
 const NOTION_HOST = 'api.notion.com';
+const NOTION_REQUEST_TIMEOUT_MS = 20_000;
+
+/** Fetch with a hard per-request ceiling so one hung call cannot stall the queue. */
+async function fetchWithTimeout(
+  input: string,
+  init?: RequestInit,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), NOTION_REQUEST_TIMEOUT_MS);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } catch (err) {
+    if (controller.signal.aborted) {
+      throw new NotionApiError(
+        408,
+        'timeout',
+        `Notion request timed out after ${NOTION_REQUEST_TIMEOUT_MS / 1000}s`,
+      );
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 // ---------------------------------------------------------------------------
-// Rule (board direction, updated 2026-10-19): Notion is CREATE-ONLY. The
-// extension may add new Listing Errors rows, but must never update, delete,
-// reorder, or append blocks. Every Notion call goes through a guarded fetch:
+// Rule (board direction, updated 2026-10-19; body completion 2026-10-27):
+// Listing Errors is CREATE-ONLY. The SKU Library has one separate, explicitly
+// gated property-update path in skuLibraryWriter.ts, plus body completion for
+// a newly created page or an existing page whose body is empty. Deletes and
+// overwrites of non-empty pages are never allowed. Every Notion call goes
+// through a guarded fetch:
 //
 //   readOnlyNotionFetch    - query / search / GET endpoints only.
 //   createOnlyNotionFetch  - the above + POST /v1/pages (page creation).
 //
-// A property update (PATCH), delete, or block append fails fast with a clear
-// error instead of silently mutating the workspace. Dedup BEFORE create is the
-// caller's job (see listingWriter.ts). The matching static guard lives in
-// scripts/check-notion-readonly.mjs.
+// All other property updates, deletes, or block appends fail fast. Dedup BEFORE
+// Listing Errors creation is the caller's job (see listingWriter.ts). The
+// matching static guard lives in scripts/check-notion-readonly.mjs.
 // ---------------------------------------------------------------------------
 
 export class NotionWriteBlockedError extends Error {
   constructor(method: string, url: string) {
-    super(`Notion is create-only: blocked ${method} ${url}`);
+    super(`Notion request is not allowed: blocked ${method} ${url}`);
     this.name = 'NotionWriteBlockedError';
   }
 }
@@ -48,7 +74,7 @@ export class NotionApiError extends Error {
 }
 
 /** Parse Notion's error body (`{ code, message }`) plus the Retry-After header. */
-async function notionApiError(
+export async function notionApiError(
   response: Response,
   context: string,
 ): Promise<NotionApiError> {
@@ -75,13 +101,21 @@ async function notionApiError(
 /** True when a failed response is transient and worth retrying. */
 function isRetryable(error: unknown): boolean {
   if (error instanceof NotionApiError) {
-    return error.status === 429 || (error.status >= 500 && error.status <= 599);
+    return (
+      error.status === 408 ||
+      error.status === 429 ||
+      (error.status >= 500 && error.status <= 599)
+    );
   }
   const status =
     typeof error === 'object' && error !== null
       ? (error as { status?: unknown }).status
       : undefined;
-  return status === 429 || (typeof status === 'number' && status >= 500);
+  return (
+    status === 408 ||
+    status === 429 ||
+    (typeof status === 'number' && status >= 500)
+  );
 }
 
 function notionPath(url: string): string {
@@ -132,7 +166,7 @@ export async function readOnlyNotionFetch(
   ) {
     throw new NotionWriteBlockedError(method, input);
   }
-  return fetch(input, init);
+  return fetchWithTimeout(input, init);
 }
 
 /** Fetch a Notion read endpoint or create a page; refuse every other write. */
@@ -147,16 +181,17 @@ export async function createOnlyNotionFetch(
   ) {
     throw new NotionWriteBlockedError(method, input);
   }
-  return fetch(input, init);
+  return fetchWithTimeout(input, init);
 }
 
 /**
  * Fetch a Notion read endpoint, create a page, or PATCH one page's properties.
  *
  * The PATCH allowance exists ONLY for the SKU Library writer
- * (src/lib/skuLibraryWriter.ts), which is also the only file the static guard
- * lets hold the `/v1/pages/{id}` literal. Every other write (delete, block
- * append, schema edit) still fails fast.
+ * (src/lib/skuLibraryWriter.ts): property updates on an existing row, and body
+ * completion for a newly created page or an existing page whose body is empty.
+ * The static guard permits those paths only in that file. Every other write
+ * (delete, schema edit, overwriting a non-empty page) still fails fast.
  */
 export async function patchOnlyNotionFetch(
   input: string,
@@ -167,11 +202,12 @@ export async function patchOnlyNotionFetch(
   const allowed =
     input.startsWith(`https://${NOTION_HOST}/`) &&
     (isCreateOnlyNotionRequest(method, input, path) ||
-      (method === 'PATCH' && /^\/v1\/pages\/[^/]+$/.test(path)));
+      (method === 'PATCH' && /^\/v1\/pages\/[^/]+$/.test(path)) ||
+      (method === 'PATCH' && /^\/v1\/blocks\/[^/]+\/children$/.test(path)));
   if (!allowed) {
     throw new NotionWriteBlockedError(method, input);
   }
-  return fetch(input, init);
+  return fetchWithTimeout(input, init);
 }
 
 export interface StoredSettings {
@@ -238,7 +274,12 @@ function pump(): void {
           if (isRetryable(err) && item.retries < 5) {
             item.retries += 1;
             queue.unshift(item);
-            const backoff = Math.max(retryAfter * 1000, 1000 * item.retries);
+            const base = Math.min(
+              30_000,
+              1000 * 2 ** (item.retries - 1),
+            );
+            const jitter = Math.floor(Math.random() * 250);
+            const backoff = Math.max(retryAfter * 1000, base + jitter);
             setTimeout(step, backoff);
           } else {
             item.reject(err);
@@ -318,6 +359,86 @@ export async function queryDatabase(
 ): Promise<unknown[]> {
   const page = await queryDatabasePage(token, dbId, filter, pageSize);
   return page.results;
+}
+
+/**
+ * Read all pages, up to a visible ceiling. Callers that need completeness must
+ * surface `truncated`; it is never silently treated as a full result.
+ */
+export async function queryAllDatabase(
+  token: string,
+  dbId: string,
+  filter: unknown,
+  pageSize = 100,
+  maxPages = 10,
+): Promise<{ results: unknown[]; truncated: boolean }> {
+  const results: unknown[] = [];
+  let cursor: string | null = null;
+  for (let page = 0; page < maxPages; page += 1) {
+    const batch = await queryDatabasePage(
+      token,
+      dbId,
+      filter,
+      pageSize,
+      cursor ?? undefined,
+    );
+    results.push(...batch.results);
+    if (!batch.hasMore) return { results, truncated: false };
+    if (!batch.nextCursor) return { results, truncated: true };
+    cursor = batch.nextCursor;
+  }
+  return { results, truncated: true };
+}
+
+/** Read every top-level child block of a page (read-only, paginated). */
+export async function listBlockChildren(
+  token: string,
+  blockId: string,
+): Promise<unknown[]> {
+  const results: unknown[] = [];
+  let cursor: string | null = null;
+  for (let page = 0; page < 20; page += 1) {
+    const batch = await queued(async () => {
+      const url = new URL(
+        `https://api.notion.com/v1/blocks/${blockId}/children`,
+      );
+      url.searchParams.set('page_size', '100');
+      if (cursor) url.searchParams.set('start_cursor', cursor);
+      const response = await readOnlyNotionFetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Notion-Version': NOTION_VERSION,
+        },
+      });
+      if (!response.ok) throw await notionApiError(response, 'listBlocks');
+      return (await response.json()) as {
+        results?: unknown[];
+        has_more?: boolean;
+        next_cursor?: string | null;
+      };
+    });
+    results.push(...(batch.results ?? []));
+    if (batch.has_more !== true) return results;
+    if (typeof batch.next_cursor !== 'string') return results;
+    cursor = batch.next_cursor;
+  }
+  return results;
+}
+
+/** Delete exactly one block; used only by the explicit body-repair path. */
+export async function deleteBlockOnlyNotionFetch(
+  input: string,
+  init?: RequestInit,
+): Promise<Response> {
+  const method = (init?.method ?? 'GET').toUpperCase();
+  const path = notionPath(input);
+  const allowed =
+    input.startsWith(`https://${NOTION_HOST}/`) &&
+    method === 'DELETE' &&
+    /^\/v1\/blocks\/[^/]+$/.test(path);
+  if (!allowed) throw new NotionWriteBlockedError(method, input);
+  return fetchWithTimeout(input, init);
 }
 
 /**

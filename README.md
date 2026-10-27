@@ -1,33 +1,62 @@
-# BOG Helper (WXT) — plan-stack migration
+# BOG Helper — WXT / TypeScript extension
 
-Migration target for the BestOfGifts admin helper extension, built on the stack
-chosen in the Notion Build Plan: **TypeScript strict · WXT (MV3) · Zod · Preact
-in Shadow DOM**, with all Notion calls from the service worker only.
+This repository is the active BestOfGifts helper extension: **TypeScript strict
+· WXT (Manifest V3) · Zod · Preact**. The earlier JavaScript extension is
+historical and is not the implementation target. Notion API calls run from the
+background service worker; the Magento content script does not call Notion.
 
-The current working extension stays untouched in
-[`../sku-copy-button/`](../sku-copy-button/) and still loads independently —
-this folder is a separate, loadable extension.
+The current product structure is one side panel and one dashboard page. Audit
+sections are integrated into the dashboard; there is no separate Audit page or
+extension Options page in the current build. This README is maintained against
+the WXT source and should be used with the current code, not older port plans.
 
-## Development rule — Notion is CREATE-ONLY (board direction, 2026-10-19)
+## Notion write policy (current implementation)
 
-> "create rows only — never update, delete, or append."
+The two Notion databases have different write rules:
 
-The extension may **create** Listing Errors rows, but never update properties,
-delete pages, or append blocks. Dedup (`SKU + Error title`) runs before every
-create.
+- **Listing Errors:** create new rows only. The writer deduplicates by
+  `SKU + Error title` before creation. Existing rows are never updated or
+  deleted, and blocks are never appended.
+- **SKU Library:** create missing SKU rows and, when
+  `NOTION_LIBRARY_UPDATES_ENABLED` is enabled, update only the explicit
+  whitelist in `src/lib/skuLibraryWriter.ts`. Existing rows are matched by
+  exact SKU title; changes are diffed and read back. This update path is
+  currently enabled. Its Category/Subcategory selectors mirror Listing Errors
+  (16 categories / 71 subcategories), and `ALLBEST` is stored as
+  `ALLBEST (interno)` in both databases.
 
-This is enforced, not just intended:
+**Body completion (SKU Library only):** a newly created page, or an existing
+page whose body is empty or only a blank paragraph, may have its dossier body
+completed in chunks of at most 90 blocks. The writer reads the page body first;
+a non-empty body is never overwritten. This path never touches Listing Errors
+and reports `bodyIncomplete` when a chunk fails. A local receipt in
+`chrome.storage.local` records the page, body hash, and appended chunk count so
+a partial append can resume on the next push. Notion requests have a 20-second
+ceiling, and list reads paginate up to 10 pages (1,000 rows) with a visible
+`truncated` flag rather than silently dropping rows.
 
-- `src/lib/notion.ts` routes every Notion call through a guarded fetch:
-  `readOnlyNotionFetch` (query / search / GET) and `createOnlyNotionFetch`
-  (the same reads **plus** `POST /v1/pages` only). Anything else throws
-  `NotionWriteBlockedError`.
-- `npm run check:notion` statically fails the build if any source references a
-  Notion update/delete/schema endpoint or issues an unguarded `fetch`.
-- `npm run build` and `npm run typecheck` both stay green alongside it.
+**Batch push preflight:** before the first create, the background validates all
+selected Listing Errors payloads, all selected Library cells, and the body plan.
+It also runs the read-only Notion health check. A failed preflight writes
+nothing. The Preview action returns per-SKU Library rows with create/update/
+unchanged state, cell diffs, body block/chunk counts, and health status.
 
-Notion writes also require `NOTION_WRITES_ENABLED` (`src/lib/flags.ts`) **and**
-an explicit `confirm: true` from the UI.
+**Listing Errors dedupe:** existing titles are read in batches of up to 50
+SKUs and compared locally, instead of issuing one dedup query per payload. If a
+batch read is truncated, the affected SKUs fall back to exact per-SKU checks.
+SKU Library existing rows are also batch-loaded for preview and writes (one
+query per 50 SKUs), and the read-only health report is cached for five minutes
+while previewing; an actual push forces a fresh health check.
+
+Every push also requires explicit user confirmation and is checked by the
+background handler. The static `npm run check:notion` guard permits the
+SKU Library page-property update and empty-body completion only in the
+dedicated writer; all other Notion calls must use the guarded read/create
+helpers. Do not describe the
+entire integration as create-only: only Listing Errors is strictly
+create-only. The Notion page **Extention** is the current product overview;
+older audit-port reference pages are historical context where they differ from
+the current repository.
 
 ## Status (2026-10-15)
 
@@ -45,19 +74,20 @@ and `npm run build`:
 - **M2 copy buttons** — content script adds a copy button on the SKU field of
   the product edit page and on SKU / Parent SKU columns in product grids.
   Incremental scan with a debounced MutationObserver (no full re-creation).
-- **M3a (first increment) — fill `name` / `short_description`** — a “Fill
-  fields” panel reads the open product form (`product[name]`,
-  `product[short_description]`), shows the page SKU and store-view scope, and
-  writes each field with per-field **Apply** / **Undo**. Values are written
-  through the element's native setter plus `input`/`change` events so Magento's
-  UI components actually observe them. A pre-apply snapshot per field powers
-  Undo. **No Save button is ever clicked** — the operator saves themselves.
-- **M3a guards** — every apply and undo is refused unless the open page is a
+- **M3a — guarded field fill** — the “Fill” panel contains per-field Apply /
+  Undo machinery for `name` and `short_description`, with SKU and store-view
+  guards and a pre-apply snapshot. **Magento form writes are currently
+  disabled** by `WRITES_ENABLED = false`; no field is applied until that gate
+  is deliberately enabled.
+- **M3a guards** — the retained apply/undo path checks that the open page is a
   product edit page, the page SKU matches the SKU selected in the panel
-  (case-insensitive), and the store view matches the detected scope.
-- **Notion client** — rate-limited request queue (~3 req/s) with 429 backoff;
-  property extractors for title / rich_text / select / multi_select / url /
-  date; Zod schemas for both databases.
+  (case-insensitive), and the store view matches the detected scope. Runtime
+  apply/undo is currently disabled by `WRITES_ENABLED = false`.
+- **Notion client** — rate-limited request queue (~2.5 req/s), 20-second
+  per-request timeout, retry/backoff for 408/429/5xx, paginated reads (10-page
+  ceiling with a visible truncation flag), property extractors for title /
+  rich_text / select / multi_select / url / date, and Zod schemas for both
+  databases.
 - **Tab groups** — `OPEN_TAB_GROUP` groups opened tabs and responds correctly
   to the panel.
 
@@ -74,16 +104,19 @@ npm run typecheck  # strict typecheck
 `.output/chrome-mv3`. Then open the side panel, go to **Settings**, and add
 your Notion token.
 
-Content script matches are currently defaulted to the QA admin host
-(`bestofgifts-pt-qa.toogas.net`) in `src/entrypoints/content.ts`; the live host
-belongs in extension settings, not in committed code.
+The extension is used with the live Magento environment. Content-script host
+matches are explicitly declared in `src/entrypoints/content.ts` and
+`wxt.config.ts`; the Magento Admin base URL setting is used when constructing
+backend links. Keep any host-pattern changes aligned across both configuration
+surfaces.
 
 ## V2 port (2026-10-16)
 
 Read-only half of the V2 port, in the same stack. `npm run typecheck`,
 `npm run check:notion`, and `npm run build` all stay green.
 
-- **5-tab panel** — Data / Config / Lookup / Fill / Settings.
+- **4-tab panel** — Data / Config / Fill / Settings. Resolve SKU is handled by
+  the single Resolve SKU tab in the dashboard.
 - **Data tab (`DataPanel.tsx`)** — priority colours (High red / Medium orange /
   Low amber), errors grouped by Error Group, supplier / brand / CSV row per
   error, copy buttons for SKU / colours / sizes / links.
@@ -98,11 +131,17 @@ Read-only half of the V2 port, in the same stack. `npm run typecheck`,
   (grid); store-view quick-open buttons (EN / ES / FR) + **Open All** next to the
   product store switcher; **Color (N)** buttons that open each colour's sizes in
   a tab group. Styles are injected once (hover/active, toast).
-- **Lookup tab (`LookupPanel.tsx`)** — full chain ported: resolver cache → Notion
-  → storefront scrape → admin-grid search (`LOOKUP_SKU` → `lib/lookup.ts`, with
-  the content-script `SEARCH_MAGENTO` AJAX fallback). Renders Frontend / Backend
-  / All-domains (EU/ES/FR) links with copy buttons, plus Category / Supplier /
-  Status. The panel prefills the SKU from the open product page (`GET_SKU`).
+- **Resolve SKU tab (`Resolver.tsx`)** — the only SKU lookup/resolution flow
+  (`RESOLVE_SKU` → `src/lib/skuResolution.ts` → `resolveSkuWithHtml`). There is
+  no separate Lookup tab, panel, message, or storefront parser. Resolve SKU
+  uses the full `ResolverJson` as its canonical product result, reuses a
+  complete cached resolver unless an explicit product URL is supplied, and
+  enriches the result with Notion SKU Library metadata. It searches the open
+  Magento admin grid only when storefront resolution fails; if that is
+  unavailable, matching Notion data can still be shown as a fallback. Full
+  resolver payloads are cached; older compact cache entries are not treated as
+  complete and are resolved again on demand. The tab renders frontend/store-view
+  and Magento backend links, variants, audit anomalies, and any fallback data.
 - **On-page error indicators** — priority dots (High/Medium/Low) next to each
   matching form field, label colouring, hover tooltip, and auto-expanding
   collapsed sections. Driven by the `FETCH_ERROR_MARKUP` (panel/content) →
@@ -111,28 +150,17 @@ Read-only half of the V2 port, in the same stack. `npm run typecheck`,
 - **Clipboard** — `clipboardWrite` permission plus an `execCommand` fallback.
 - **Copy all SKUs** — grid toolbar buttons next to the search box that copy
   every SKU / Parent SKU currently listed on the page, newline-separated.
-- **Dashboard page** (`src/dashboard/Dashboard.tsx`) — a full-page management UI,
-  exposed **both** as the extension **Options page** (`entrypoints/options/`) and
-  a standalone `dashboard.html` tab (button in the panel header). Extensible
-  left-nav shell; sections: **Overview** (status + quick links), **Settings**
-  (Notion token / DB ids / admin URL, with read-back verify), **SKU Lookup**
-  (reuses `LookupPanel`), and **Resolver Cache** (list / delete / clear cached
-  SKUs).
-- **Audit workspace** (`src/dashboard/AuditDashboard.tsx`, `audit.html`) — a
-  separate page reached from the dashboard sidebar or the panel header
-  (**Audit**). Audit-only nav: **Audit home** (pipeline status), **Resolver**
-  (variants matrix + Magento admin links), **Image audit** (live storefront
-  media: duplicates / carousel order / pos0 background, with a generated
-  `<!-- image-audit:begin -->` block), **Text audit** (live EN/ES/FR PDPs:
-  untranslated text, gender, composition rules, JSON-LD brand, dimensions /
-  grammage, with a generated `<!-- text-audit:begin -->` block), and **Push
-  errors** (dossier markdown → Listing Errors payloads → create-only Notion
-  write, dedup first).
+- **Dashboard page** (`src/dashboard/Dashboard.tsx`) — a full-page management
+  UI exposed as `dashboard.html`. It contains Overview, Run audit, Resolve SKU,
+  Image audit, Text audit, Push errors, Settings, and Resolver Cache. There is
+  one SKU resolution tab; audit sections are part of this dashboard, with no separate
+  `AuditDashboard.tsx`, `audit.html`, or Options page in the current build.
 
-Write features (fill, Page Builder, image upload/reorder) are ported/gated but
-left **OFF** (`src/lib/flags.ts` → `WRITES_ENABLED = false`). Notion stays
-**create-only** (`NOTION_WRITES_ENABLED = true`): new Listing Errors rows only,
-never updates/deletes/appends.
+Magento form-write features (including field fill and future Page Builder or
+image-write work) are gated **OFF** (`WRITES_ENABLED = false`). Notion writes
+are separately gated: Listing Errors creation is enabled and SKU Library
+whitelisted updates are enabled, subject to explicit confirmation. Neither
+policy means the extension automatically saves Magento forms.
 
 ## Theme manager (2026-10-16)
 
@@ -153,9 +181,14 @@ the only place the palette is defined:
 Two layers, and the distinction matters:
 
 1. **The palette is always published** on admin pages, whatever the checkbox
-   says. Our own injected widgets (copy buttons, the segmented pager) read
-   `--mhx-*`, so they follow the accent in a light admin too. The page itself is
-   light unless the operator asked for the dark admin.
+   says, because our own surfaces (the side panel, the dashboard) read `--mhx-*`
+   wherever they are. The page chrome we inject reads layer 1 only — the
+   palette's *accent* reaches it through the toolkit's one bridge,
+   `--mhx-pg-accent: var(--mhx-accent, …)` — so the widgets follow the accent in
+   a light admin without inheriting a palette that describes the panel rather
+   than the page. The page itself is light unless the operator asked for the
+   dark admin; for an admin that is dark by its own theme, see the measured
+   `data-mhx-page` in UI-TOOLKIT.md §2.1.
 2. **The accent sheet is separate and opt-in by virtue of having an accent.**
    `MAGENTO_ACCENT_CSS` recolours links, `.action-primary` buttons ("Add
    Product", "Save"), active nav/view states, focus rings and native
@@ -169,8 +202,10 @@ pages, the shadow host for the side panel — so the panel (which renders inside
 Shadow DOM) and the admin pages share one source of truth. `color-scheme` is set
 with it so native controls and scrollbars follow.
 
-The admin overrides are a first pass over the common surfaces and are unverified
-against a live Magento admin; missing surfaces get added as they are reported.
+The extension is in active use against the live Magento admin. The admin
+overrides cover common surfaces; adjust them based on issues observed during
+normal live use, and avoid triggering destructive Magento actions solely to
+test presentation changes.
 
 ## Header reordering (2026-10-19)
 
@@ -201,6 +236,18 @@ size joins the segments on the next scan.
 
 The widget's own white panel (`.selectmenu` background, border and padding) is
 stripped, otherwise a pale frame is left around the control in a dark admin.
+
+**Its ink and chrome come from the measured page, not from the widget it sits
+in.** The pager hands us its own muted colour (`#6a6a6a` on the operator's native
+dark admin) and `--mhx-*` is the light palette unless OUR dark admin is on, so a
+`currentColor`-derived control was invisible there: labels measured **3.05:1**,
+and the container, its separators and the size box had no visible edge.
+`magentoTheme.ts` now measures the page it has painted and publishes
+`data-mhx-page` + `--mhx-pg-page-ink` on `<html>` (UI-TOOLKIT.md §2.1); the same
+labels read **13.9:1** and the chrome is visible on both admins. The active
+segment keeps the operator's accent and adds a ring in the accent's own
+contrast-derived foreground, so the selected shape still reads when the accent
+sits close to the page colour.
 Toggle: `ENHANCE_PAGING_SIZES`.
 
 **Copy SKUs / Copy Parent SKUs** — reading is centralised in
@@ -227,11 +274,10 @@ button forwards its click to the original item, so Magento's hrefs, handlers,
 confirm modals and ACL filtering keep working. Nothing is written and no request
 is made. Rows with more than four actions keep the stock dropdown. A row with a single
 action already renders as a bare `a.action-menu-item` in Magento's template, so
-nothing is added there. The toolbar's bulk **Actions** dropdown is deliberately
-left alone — turning destructive bulk actions into always-visible buttons was
-not asked for. The scan is idempotent, so Magento's AJAX grid reloads are picked
-up by the existing debounced re-scan. Toggle: `ENHANCE_ROW_ACTIONS` in
-`src/lib/flags.ts`.
+nothing is added there. The toolbar's bulk **Actions** dropdown has its own
+feature (see *Toolbar massaction buttons* below). The scan is idempotent, so
+Magento's AJAX grid reloads are picked up by the existing debounced re-scan.
+Toggle: `ENHANCE_ROW_ACTIONS` in `src/lib/flags.ts`.
 
 **Active filters pencil** — every chip in the grid's **Active filters** strip
 gets a ✎ button that edits its value inline (`src/lib/activeFilters.ts`), so
@@ -281,27 +327,45 @@ hides/shows the left sidebar so the grid gets the width back.
   so it never shows on storefront pages.
   Toggle: `ENHANCE_NAV_TOGGLE`.
 
-## Toolbar massaction buttons (2026-10-20, placement 2026-10-21)
+## Toolbar massaction buttons (2026-10-20, placement 2026-10-21, all options 2026-10-22)
 
 The grid toolbar's bulk **Actions** dropdown (`Delete`, `Change status`,
 `Update attributes`, `Assign Inventory Source`, …) becomes one-click inline
 buttons (`src/lib/massactionButtons.ts`), so bulk actions stop costing a
 menu-open plus a pick from a nine-item list.
 
+**Every top-level option gets a button**, including the ones that own a submenu
+(`Change status ▾`, `Change attribute set ▾`, `AI Translate ▾`). Those buttons
+own their dropdown: the menu opens right under the button and lists the
+submenu's items. Picking one forwards the click to Magento's own item, so the
+handlers, confirmation modals and ACL filtering are untouched — the stock
+"Actions" dropdown no longer has to be opened at all. It is **never hidden**
+either: it stays exactly as Magento drew it, as the fallback for a submenu we
+cannot read.
+
 - **Forwarding only** — every button clicks Magento's OWN menu element, so
   the massaction selection check, confirmation modals ("Are you sure?"), KO
   handlers and ACL filtering all keep running. Nothing is submitted, written
   or requested by the extension; with no rows selected Magento replies
   exactly as it would for the stock menu.
+- **Four actions stay in the menu** — "Assign Inventory Source", "Unassign
+  Inventory Source", "Transfer Inventory To Source" and "Regenerate Url" get
+  no button (operator request, 2026-10-23). They remain in Magento's own
+  dropdown, which is never hidden or restyled, so they stay reachable.
 - **Its own row, outside the dropdown** — the strip is inserted after the
   grid's last header row, i.e. the full-width line between the toolbar and the
   table. (First cut put it inside the dropdown wrap, where it inherited the
   trigger's width and stacked two buttons per line, half over the menu.) The
   native wrap is never restyled — only where the strip lives.
-- **Submenus preserved** — nothing inside the Actions menu is flattened.
-  Anything with a submenu (`Change status`, `Change attribute set`,
-  `AI Translate`) stays reachable through the native dropdown, which stays
-  visible and works exactly as Magento drew it.
+- **Submenus preserved, never flattened** — the children (`Enable /
+  Disable`, the attribute-set list, the languages) stay exactly where Magento
+  put them, and the buttons list them verbatim. A submenu button carries a
+  `▾` and its menu is anchored to the button (`.mhx-pop--menu`, fixed
+  position): it opens below, flips above when there is no room, closes on a
+  click outside, `Escape`, scroll/resize or opening another submenu, and only
+  one is open at a time. If a submenu cannot be read, the button falls back to
+  opening Magento's dropdown exactly as before. The dropdown itself is never
+  hidden or restyled.
 - **Colours follow the admin, not our palette** — `--mhx-*` is published as
   the light palette unless the dark admin is enabled, so on an admin with its
   own dark theme `var(--mhx-surface)` is white. The strip is translucent
@@ -353,13 +417,19 @@ checkboxes, which stay the only writers of form state.
 - **Tree | List** — collapsible tree, or a flat depth-indented list that drives
   the same checkboxes.
 - **Selected only** — hides everything not checked, in either view.
+- **Tick Linha Natura** — one click ticks the “Linha Natura” category in the
+  same parent list for every category already checked, so a multi-category
+  pick needs no second pass. Additive only (nothing is ever unticked) and it
+  reports how many it ticked.
 - **Filter** — accent-insensitive search over names *and* numbers (“1.2.3”
   finds it, “textil” finds “Têxtil Promocional”), ancestors kept on screen.
 - **View state persists** — mode, filter text and “Selected only” survive
   navigation/reloads in `localStorage` (`mhx.catTree.prefs.v1`).
 
-Colours come from the shared `--mhx-*` palette (light fallbacks), so the bar,
-list and pills follow the dark admin theme like the rest of the injected UI.
+Colours come from the toolkit's page layer (`--mhx-pg-*`), not from the extension
+palette: that is the rule for anything injected onto a Magento page
+(UI-TOOLKIT.md §2), and `check:ui` G6 enforces it. The bar, list and pills follow
+a light admin, Magento's own dark one and our themed dark one alike.
 Toggle: `ENHANCE_CATEGORY_TREE`.
 
 ## Deliberately NOT ported
@@ -386,5 +456,36 @@ The authorization is stored by VS Code, not in this repository. Notion MCP can
 read and write content available to the authorizing account.
 
 This agent connection is separate from the extension's Notion API settings.
-The extension's own Notion client remains guarded to reads and create-only
-page writes; it does not update or delete Notion content.
+The extension's Notion client remains guarded: Listing Errors are
+create-only; the only property-update exception is the confirmed, whitelisted
+SKU Library writer in `src/lib/skuLibraryWriter.ts`. The extension does not
+delete Notion pages or append blocks.
+
+## Model bridge providers (2026-10-26)
+
+Settings → **Model bridge** offers two adapters and a picker grouped by where the
+model runs:
+
+| Group | Presets |
+| --- | --- |
+| Runs on this machine | `opencode` local server, Ollama `:11434/v1`, LM Studio `:1234/v1`, llama.cpp `:8080/v1` |
+| Local gateway (borrowed sign-in) | CLIProxyAPI `:8317`, copilot-api `:4141`, LiteLLM `:4000` — paste the gateway's base URL |
+| Hosted | Freebuff (`freebuff.com/api/v1/paid`), OpenRouter, Groq, Google Gemini (OpenAI-compatible), Z.AI / GLM (`api.z.ai/api/paas/v4`, free `*-flash` and `GLM-4.6V-Flash`), NVIDIA NIM (`integrate.api.nvidia.com/v1`, free dev serverless), Mistral, OpenAI |
+| Other | any custom URL |
+
+Any OpenAI-compatible endpoint works: the bridge probes `<base>/models`, scores
+with `/chat/completions`, and negotiates JSON output down from strict
+`json_schema` to `json_object` to a plain prompt. Keys live in
+`chrome.storage.local` beside the Notion token; local servers need none. Hosted
+presets are declared in `host_permissions`; a custom URL asks for its origin when
+you press **Save**.
+
+Cline, Google Antigravity, VS Code / GitHub Copilot and Kiro Crew are
+**clients, not providers**: they sign in through their own interface and never
+hand out a paste-able bearer key (GitHub Models, the VS Code-adjacent key route,
+was retired on 30 Jul 2026). The **Clients & IDEs** card lists how each one
+shares the same model — point the client at the local server above, or run a
+local gateway (unofficial, borrows the OAuth session) and select the
+`gateway` preset. Kiro Crew routes to hosted models through its own credit
+system, so configure the matching hosted preset (e.g. Z.AI for GLM,
+OpenRouter for DeepSeek/Qwen) to use the same model family.

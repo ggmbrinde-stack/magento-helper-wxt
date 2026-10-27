@@ -103,6 +103,30 @@ function resolverChildren(entry: BatchEvidence): Set<string> {
   return out;
 }
 
+/** The dossier prints at most this many child rows per colour group. */
+const MAX_DOSSIER_ROWS_PER_GROUP = 8;
+
+/**
+ * How many child rows the dossier should show for these children: every child
+ * when each colour group fits under the cap, otherwise `cap` per group. Used
+ * to tell "truncated on purpose" from "rows went missing".
+ */
+function expectedDossierRows(entry: BatchEvidence, resolver: Set<string>): number {
+  const groups = new Map<string, number>();
+  for (const child of resolver) {
+    const label = (entry.childColor?.[child] ?? '').trim() || '(unlabelled)';
+    groups.set(label, (groups.get(label) ?? 0) + 1);
+  }
+  if (groups.size === 0) {
+    return Math.min(resolver.size, MAX_DOSSIER_ROWS_PER_GROUP);
+  }
+  let expected = 0;
+  for (const size of groups.values()) {
+    expected += Math.min(size, MAX_DOSSIER_ROWS_PER_GROUP);
+  }
+  return expected;
+}
+
 export async function checkCoverage(skus?: string[]): Promise<{
   results: CoverageResult[];
   withGaps: number;
@@ -184,17 +208,37 @@ export async function checkCoverage(skus?: string[]): Promise<{
             detail: 'child links table missing from the dossier',
             remedy: remedy('magento-mismatch', sku),
           });
-        } else if (resolver.size <= 8) {
-          // The dossier table is capped at 8 rows per colour group; above that
-          // a missing row is expected, not drift.
-          for (const child of resolver) {
-            if (!rows.has(child)) {
+        } else {
+          // A row for a child the resolver does not know is drift, always.
+          for (const child of rows) {
+            if (!resolver.has(child)) {
               gaps.push({
                 check: 'magento-mismatch',
-                detail: `resolver child ${child} has no dossier child row`,
+                detail: `dossier child row ${child} is not a resolver child`,
                 remedy: remedy('magento-mismatch', sku),
               });
             }
+          }
+          const expectedRows = entry
+            ? expectedDossierRows(entry, resolver)
+            : resolver.size;
+          if (expectedRows >= resolver.size) {
+            // Every child should be listed: check them one by one.
+            for (const child of resolver) {
+              if (!rows.has(child)) {
+                gaps.push({
+                  check: 'magento-mismatch',
+                  detail: `resolver child ${child} has no dossier child row`,
+                  remedy: remedy('magento-mismatch', sku),
+                });
+              }
+            }
+          } else if (rows.size < expectedRows) {
+            gaps.push({
+              check: 'magento-mismatch',
+              detail: `dossier lists ${rows.size} of ${expectedRows} child rows (per-colour cap ${MAX_DOSSIER_ROWS_PER_GROUP})`,
+              remedy: remedy('magento-mismatch', sku),
+            });
           }
         }
       }

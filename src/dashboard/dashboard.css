@@ -283,6 +283,12 @@ body {
 
 /* --- forms -------------------------------------------------------------- */
 
+/* Dashboard-owned field treatment. The dashboard is intentionally wider and
+   calmer than the injected toolkit sheet, so it keeps its own form block rather
+   than redefining toolkit primitives twice. Shared primitives elsewhere (buttons,
+   badges) are aligned to the toolkit contract; this is the dashboard's private
+   field vocabulary. */
+
 .db-field {
   display: block;
   margin-bottom: 16px;
@@ -303,7 +309,8 @@ body {
   color: var(--db-muted);
 }
 
-.db-field input {
+.db-field input,
+.db-field select {
   background: var(--mhx-surface);
   color: var(--mhx-ink);
   width: 100%;
@@ -314,7 +321,8 @@ body {
   font-family: inherit;
 }
 
-.db-field input:focus {
+.db-field input:focus,
+.db-field select:focus {
   outline: none;
   border-color: var(--db-accent);
   box-shadow: 0 0 0 3px var(--db-tint);
@@ -334,6 +342,11 @@ body {
 
 /* --- buttons ------------------------------------------------------------ */
 
+/* Dashboard button styling. Semantically aligned to the toolkit button
+   contract (same hover/disabled/accent/danger roles), but kept as a dashboard-
+   owned block because the dashboard uses a slightly larger pad/radius than the
+   injected widget sheet. */
+
 .db-btn {
   padding: 8px 14px;
   border: 1px solid var(--db-border);
@@ -343,6 +356,8 @@ body {
   font-family: inherit;
   cursor: pointer;
   color: var(--db-ink);
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
 .db-btn:hover:not(:disabled) {
@@ -358,15 +373,18 @@ body {
   background: var(--db-accent);
   border-color: var(--db-accent);
   color: var(--mhx-on-accent);
+  font-weight: 600;
 }
 
 .db-btn--primary:hover:not(:disabled) {
   background: var(--db-accent-dark);
+  border-color: var(--db-accent-dark);
 }
 
 .db-btn--danger {
   color: var(--mhx-bad);
   border-color: var(--mhx-bad-border);
+  font-weight: 600;
 }
 
 .db-btn--danger:hover:not(:disabled) {
@@ -413,17 +431,6 @@ body {
   font-size: 13px;
 }
 
-/* --- reuse side-panel lookup styles inside the full page ---------------- */
-
-.mhx-content {
-  max-width: 720px;
-  padding: 0;
-}
-
-.mhx-content .mhx-header {
-  display: none;
-}
-
 /* --- audit: resolver / variants / magento links ------------------------- */
 
 .db-body {
@@ -432,24 +439,32 @@ body {
   gap: 16px;
 }
 
+/* Status badges.
+   Dashboard-owned badge style. It is deliberately close to the toolkit badge
+   contract (same ok/bad roles, same pill shape), but kept here because the
+   dashboard uses a slightly different colour wash than the injected widget sheet.
+   If the two systems ever need to be merged, this block is the one to align
+   against `mhx-badge[data-tone]`. */
+
 .db-badge {
   padding: 2px 9px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
+  line-height: 1.4;
 }
 
-.db-badge.db-ok {
+.db-badge[data-tone="ok"] {
   background: var(--mhx-ok-bg);
   color: var(--mhx-ok);
 }
 
-.db-badge.db-warn {
+.db-badge[data-tone="warn"] {
   background: var(--mhx-bad-bg);
   color: var(--mhx-bad);
 }
 
-.db-badge.db-bad {
+.db-badge[data-tone="bad"] {
   background: var(--mhx-bad-bg);
   color: var(--mhx-bad);
   box-shadow: inset 0 0 0 1px var(--mhx-bad);

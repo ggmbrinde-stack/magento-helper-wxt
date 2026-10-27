@@ -14,6 +14,7 @@ export default defineConfig({
       'clipboardWrite',
       'storage',
       'sidePanel',
+      'scripting',
       'tabs',
       'tabGroups',
       'unlimitedStorage',
@@ -28,7 +29,19 @@ export default defineConfig({
       'https://bestofgifts-pt-qa.toogas.net/*',
       'https://bestofgifts.pt/*',
       'https://www.roly.es/*',
+      // Model bridge presets (OpenAI-compatible backends). Local servers are
+      // covered by the localhost entries above; anything else is requested at
+      // runtime from Model bridge settings (optional_host_permissions).
+      'https://freebuff.com/*',
+      'https://openrouter.ai/*',
+      'https://api.groq.com/*',
+      'https://generativelanguage.googleapis.com/*',
+      'https://api.z.ai/*',
+      'https://integrate.api.nvidia.com/*',
+      'https://api.mistral.ai/*',
+      'https://api.openai.com/*',
     ],
+    optional_host_permissions: ['https://*/*', 'http://*/*'],
     // The single UI-toolkit stylesheet, loaded as a <link> by ensureUi()
     // (src/ui/index.ts). Matches mirror the content script's admin hosts —
     // the sheet only ever loads on those pages.

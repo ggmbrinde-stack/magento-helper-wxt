@@ -101,14 +101,15 @@ export function buildDossierMarkdown(input: DossierInput): string {
   const compFinding = payloads.find((p) => /composition/i.test(p.type));
   if (nameFinding || genderFinding || compFinding) {
     out.push('## Text facts');
+    // These lines quote the finding, not the product value: label them so.
     if (nameFinding) {
-      out.push(`Name: ${cap(nameFinding.notes, 200)}`);
+      out.push(`Name finding: ${cap(nameFinding.notes, 200)}`);
     }
     if (genderFinding) {
-      out.push(`Gender: ${cap(genderFinding.notes, 200)}`);
+      out.push(`Gender finding: ${cap(genderFinding.notes, 200)}`);
     }
     if (compFinding) {
-      out.push(`Composition: ${cap(compFinding.notes, 200)}`);
+      out.push(`Composition finding: ${cap(compFinding.notes, 200)}`);
     }
     out.push('');
   }

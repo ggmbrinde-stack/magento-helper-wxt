@@ -5,6 +5,7 @@ import {
   DEFAULT_LISTING_ERRORS_DB,
   DEFAULT_SKU_LIBRARY_DB,
 } from '../../lib/notion';
+import { isResolverJson } from '../../lib/resolver';
 import { useSettings } from '../useSettings';
 
 function notionUrl(id: string): string {
@@ -16,10 +17,22 @@ export function Overview() {
   const [cacheCount, setCacheCount] = useState<number | null>(null);
 
   useEffect(() => {
-    void browser.storage.local.get(['resolverMap']).then((data) => {
-      const map = (data.resolverMap as Record<string, unknown> | undefined) ?? {};
-      setCacheCount(Object.keys(map).length);
-    });
+    void browser.storage.local
+      .get(['resolverMap', 'resolverMapV2'])
+      .then((data) => {
+        const resolverSkus = new Set<string>();
+        for (const cache of [data.resolverMap, data.resolverMapV2]) {
+          if (!cache || typeof cache !== 'object' || Array.isArray(cache)) {
+            continue;
+          }
+          for (const value of Object.values(cache as Record<string, unknown>)) {
+            if (isResolverJson(value)) {
+              resolverSkus.add(value.sku.trim().toUpperCase());
+            }
+          }
+        }
+        setCacheCount(resolverSkus.size);
+      });
   }, []);
 
   const skuDb = settings.skuLibraryDb || DEFAULT_SKU_LIBRARY_DB;

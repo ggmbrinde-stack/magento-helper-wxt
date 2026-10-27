@@ -13,40 +13,42 @@
  * from a rate limit or an auth problem.
  */
 
-import { createNotionPage, NotionApiError, queryDatabase } from './notion';
+import {
+  createNotionPage,
+  mapListingErrorPage,
+  NotionApiError,
+  queryAllDatabase,
+  queryDatabase,
+} from './notion';
 import {
   KNOWN_TYPES,
   normalizeType,
   type ListingErrorPayload,
 } from './payload';
+import {
+  CATEGORY_OPTIONS,
+  ERROR_FLAG_OPTIONS,
+  ERROR_GROUP_OPTIONS,
+  ERROR_TYPE_OPTIONS,
+  FIELD_OPTIONS,
+  FIX_LOCATION_OPTIONS,
+  LANGUAGE_OPTIONS,
+  LISTING_ERROR_SUPPLIER_OPTIONS,
+  LISTING_STATUS_OPTIONS,
+  PRIORITY_OPTIONS,
+  SOURCE_OPTIONS,
+  SUBCATEGORY_OPTIONS,
+  canonicalCategory,
+  canonicalSubcategory,
+  canonicalSupplier,
+  isOption,
+} from './notionContract';
 
-/** The Notion Listing Errors DB's closed Error Type options. */
-export const NOTION_ERROR_TYPE_OPTIONS = [
-  'Wrong image order',
-  'Remove Model image',
-  'Duplicate image',
-  'Grey background',
-  'Missing image',
-  'Translation error',
-  'Wrong product information',
-  'Wrong category',
-  'Other',
-  'Model image on simple',
-  'Printing instruction sheet',
-  'Text on image',
-];
-
-/** Error Group is a closed multi-select; anything else must be folded. */
-export const NOTION_GROUP_OPTIONS = [
-  'Images',
-  'Text / Translation',
-  'Product Information',
-  'Category',
-  'Other',
-];
-
-export const NOTION_FLAG_OPTIONS = ['Normal', 'Complex'];
-export const NOTION_STATUS_OPTIONS = ['To Fix'];
+// Backwards-compatible aliases for callers that imported the old names.
+export const NOTION_ERROR_TYPE_OPTIONS = ERROR_TYPE_OPTIONS;
+export const NOTION_GROUP_OPTIONS = ERROR_GROUP_OPTIONS;
+export const NOTION_FLAG_OPTIONS = ERROR_FLAG_OPTIONS;
+export const NOTION_STATUS_OPTIONS = LISTING_STATUS_OPTIONS;
 export const NOTES_MAX = 1000;
 const MAX_RICH_TEXT_ITEMS = 100;
 
@@ -128,36 +130,79 @@ export function assertWritablePayload(payload: ListingErrorPayload): void {
   if (!payload.sku.trim()) {
     throw new PayloadValidationError('sku', 'SKU is empty');
   }
-  if (!NOTION_GROUP_OPTIONS.includes(payload.group)) {
+  if (!isOption(payload.group, ERROR_GROUP_OPTIONS)) {
     throw new PayloadValidationError(
       'group',
       `unknown Error Group "${payload.group}" (expected one of ${NOTION_GROUP_OPTIONS.join(', ')})`,
     );
   }
   const folded = foldErrorType(payload);
-  if (!NOTION_ERROR_TYPE_OPTIONS.includes(folded)) {
+  if (!isOption(folded, ERROR_TYPE_OPTIONS)) {
     throw new PayloadValidationError(
       'type',
       `Error Type "${folded}" is not a DB option`,
     );
   }
-  if (!NOTION_FLAG_OPTIONS.includes(payload.flag)) {
+  if (!isOption(payload.flag, ERROR_FLAG_OPTIONS)) {
     throw new PayloadValidationError(
       'flag',
       `unknown Error Flag "${payload.flag}" (expected ${NOTION_FLAG_OPTIONS.join('/')})`,
     );
   }
-  if (!NOTION_STATUS_OPTIONS.includes(payload.status)) {
+  if (!isOption(payload.status, LISTING_STATUS_OPTIONS)) {
     throw new PayloadValidationError(
       'status',
       `unexpected Status "${payload.status}" (writer only creates "To Fix")`,
     );
   }
-  if (!payload.language.trim()) {
-    throw new PayloadValidationError('language', 'Language is empty');
+  if (!isOption(payload.language, LANGUAGE_OPTIONS)) {
+    throw new PayloadValidationError(
+      'language',
+      `unknown Language "${payload.language}" (expected ${LANGUAGE_OPTIONS.join(', ')})`,
+    );
   }
-  if (!payload.source.trim()) {
-    throw new PayloadValidationError('source', 'Source is empty');
+  if (!isOption(payload.source, SOURCE_OPTIONS)) {
+    throw new PayloadValidationError(
+      'source',
+      `unknown Source "${payload.source}" (expected ${SOURCE_OPTIONS.join(', ')})`,
+    );
+  }
+  if (payload.priority && !isOption(payload.priority, PRIORITY_OPTIONS)) {
+    throw new PayloadValidationError(
+      'priority',
+      `unknown Priority "${payload.priority}"`,
+    );
+  }
+  if (payload.fix_location && !isOption(payload.fix_location, FIX_LOCATION_OPTIONS)) {
+    throw new PayloadValidationError(
+      'fix_location',
+      `unknown Fix Location "${payload.fix_location}"`,
+    );
+  }
+  if (payload.category && !canonicalCategory(payload.category)) {
+    throw new PayloadValidationError(
+      'category',
+      `unknown Category "${payload.category}" (expected ${CATEGORY_OPTIONS.join(', ')})`,
+    );
+  }
+  if (payload.subcategory && !canonicalSubcategory(payload.subcategory)) {
+    throw new PayloadValidationError(
+      'subcategory',
+      `unknown Subcategory "${payload.subcategory}"`,
+    );
+  }
+  const supplier = canonicalSupplier(payload.supplier);
+  if (supplier && !isOption(supplier, LISTING_ERROR_SUPPLIER_OPTIONS)) {
+    throw new PayloadValidationError(
+      'supplier',
+      `unknown Supplier "${payload.supplier}" (expected ${LISTING_ERROR_SUPPLIER_OPTIONS.join(', ')})`,
+    );
+  }
+  if (payload.field && !isOption(payload.field, FIELD_OPTIONS)) {
+    throw new PayloadValidationError(
+      'field',
+      `unknown Field "${payload.field}"`,
+    );
   }
 }
 
@@ -195,17 +240,18 @@ export function payloadToProperties(
     Source: { select: { name: payload.source } },
     Language: { select: { name: payload.language } },
   };
-  if (payload.supplier) props.Supplier = { select: { name: payload.supplier } };
+  const supplier = canonicalSupplier(payload.supplier);
+  if (supplier) props.Supplier = { select: { name: supplier } };
   if (payload.priority) props.Priority = { select: { name: payload.priority } };
   if (payload.fix_location) {
     props['Fix Location'] = { select: { name: payload.fix_location } };
   }
   if (payload.link) props.Link = { url: payload.link };
   if (payload.fix) props.Fix = { rich_text: richText(payload.fix) };
-  if (payload.category) props.Category = { select: { name: payload.category } };
-  if (payload.subcategory) {
-    props.Subcategory = { select: { name: payload.subcategory } };
-  }
+  const category = canonicalCategory(payload.category);
+  const subcategory = canonicalSubcategory(payload.subcategory);
+  if (category) props.Category = { select: { name: category } };
+  if (subcategory) props.Subcategory = { select: { name: subcategory } };
   if (payload.field) props.Field = { select: { name: payload.field } };
   return props;
 }
@@ -232,6 +278,14 @@ export interface PushReport {
   warnings: string[];
 }
 
+export interface ListingPreflight {
+  total: number;
+  unique: number;
+  duplicates: number;
+  warnings: string[];
+  failures: PushFailure[];
+}
+
 /** Split a batch into first-seen payloads and later duplicates. */
 export function dedupePayloadsInBatch(payloads: ListingErrorPayload[]): {
   unique: ListingErrorPayload[];
@@ -251,6 +305,114 @@ export function dedupePayloadsInBatch(payloads: ListingErrorPayload[]): {
     unique.push(payload);
   }
   return { unique, duplicates };
+}
+
+export function preflightListingPayloads(
+  payloads: ListingErrorPayload[],
+): ListingPreflight {
+  const { unique, duplicates } = dedupePayloadsInBatch(payloads);
+  const warnings: string[] = [];
+  const failures: PushFailure[] = [];
+  for (const payload of unique) {
+    try {
+      assertWritablePayload(payload);
+      warnings.push(...payloadWarnings(payload));
+    } catch (err) {
+      failures.push(toFailure(payload, err));
+    }
+  }
+  return {
+    total: payloads.length,
+    unique: unique.length,
+    duplicates: duplicates.length,
+    warnings,
+    failures,
+  };
+}
+
+/** Load one SKU's existing titles; used as the truncation fallback. */
+async function loadTitlesForSku(
+  token: string,
+  dbId: string,
+  sku: string,
+): Promise<{ titles: Set<string>; truncated: boolean }> {
+  const key = sku.trim().toUpperCase();
+  const page = await queryAllDatabase(
+    token,
+    dbId,
+    { property: 'SKU', rich_text: { equals: key } },
+    100,
+    10,
+  );
+  const titles = new Set<string>();
+  for (const row of page.results) {
+    const mapped = mapListingErrorPage(row);
+    const title = String(mapped.title ?? '').trim();
+    if (title) titles.add(title);
+  }
+  return { titles, truncated: page.truncated };
+}
+
+function chunkArray<T>(items: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    out.push(items.slice(i, i + size));
+  }
+  return out;
+}
+
+/** Load existing Listing Errors titles in batches of 50 SKUs. */
+async function loadExistingListingTitles(
+  token: string,
+  dbId: string,
+  skus: string[],
+): Promise<{
+  titles: Map<string, Set<string>>;
+  truncated: Set<string>;
+}> {
+  const titles = new Map<string, Set<string>>();
+  const truncated = new Set<string>();
+  const unique = [
+    ...new Set(
+      skus
+        .map((sku) => sku.trim().toUpperCase())
+        .filter((sku) => sku.length > 0),
+    ),
+  ];
+  for (const chunk of chunkArray(unique, 50)) {
+    const page = await queryAllDatabase(
+      token,
+      dbId,
+      {
+        or: chunk.map((sku) => ({
+          property: 'SKU',
+          rich_text: { equals: sku },
+        })),
+      },
+      100,
+      10,
+    );
+    for (const row of page.results) {
+      const mapped = mapListingErrorPage(row);
+      const sku = String(mapped.sku ?? '').trim().toUpperCase();
+      const title = String(mapped.title ?? '').trim();
+      if (!sku || !title) continue;
+      if (!titles.has(sku)) titles.set(sku, new Set());
+      titles.get(sku)?.add(title);
+    }
+    if (page.truncated) {
+      for (const sku of chunk) {
+        const exact = await loadTitlesForSku(token, dbId, sku);
+        titles.set(sku, exact.titles);
+        if (exact.truncated) truncated.add(sku);
+      }
+    } else {
+      for (const sku of chunk) {
+        if (!titles.has(sku)) titles.set(sku, new Set());
+      }
+    }
+  }
+  return { titles, truncated };
 }
 
 function toFailure(payload: ListingErrorPayload, err: unknown): PushFailure {
@@ -295,16 +457,30 @@ export async function listingErrorExists(
   return pages.length > 0;
 }
 
+// The dedup query and the create must be one critical section. Without this,
+// two pushes (single-SKU and batch) can both see "missing" and both create.
+let listingWriteChain: Promise<unknown> = Promise.resolve();
+
+function withListingWriteLock<T>(run: () => Promise<T>): Promise<T> {
+  const next = listingWriteChain.then(run, run);
+  listingWriteChain = next.then(
+    () => undefined,
+    () => undefined,
+  );
+  return next;
+}
+
 /**
  * Create-only push with dedup. Duplicates in the batch are dropped locally,
  * existing rows are skipped (never updated), and every failure is reported with
  * its Notion status/code. Returns a per-title report.
  */
-export async function pushListingErrorPayloads(
+export function pushListingErrorPayloads(
   token: string,
   dbId: string,
   payloads: ListingErrorPayload[],
 ): Promise<PushReport> {
+  return withListingWriteLock(async () => {
   const report: PushReport = {
     created: [],
     createdPageIds: {},
@@ -316,12 +492,27 @@ export async function pushListingErrorPayloads(
   const { unique, duplicates } = dedupePayloadsInBatch(payloads);
   report.skippedInBatch = duplicates.map((p) => p.title);
 
+  // Validate the whole batch before the first create. A bad payload must not
+  // leave earlier rows written.
+  const preflight = preflightListingPayloads(unique);
+  report.warnings.push(...preflight.warnings);
+  if (preflight.failures.length > 0) {
+    report.failed.push(...preflight.failures);
+    return report;
+  }
+
+  const skus = [...new Set(unique.map((p) => p.sku.trim().toUpperCase()))];
+  const existing = await loadExistingListingTitles(token, dbId, skus);
+
   for (const payload of unique) {
     try {
-      assertWritablePayload(payload);
-      report.warnings.push(...payloadWarnings(payload));
+      const sku = payload.sku.trim().toUpperCase();
+      const title = payload.title.trim();
+      const known = existing.titles.get(sku);
       if (
-        await listingErrorExists(token, dbId, payload.sku, payload.title)
+        known?.has(title) ||
+        (existing.truncated.has(sku) &&
+          (await listingErrorExists(token, dbId, payload.sku, payload.title)))
       ) {
         report.skipped.push(payload.title);
         continue;
@@ -330,6 +521,7 @@ export async function pushListingErrorPayloads(
         parent: { database_id: dbId },
         properties: payloadToProperties(payload),
       });
+      known?.add(title);
       report.created.push(payload.title);
       if (page.id) report.createdPageIds[payload.title] = page.id;
     } catch (err) {
@@ -337,4 +529,5 @@ export async function pushListingErrorPayloads(
     }
   }
   return report;
+  });
 }

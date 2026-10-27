@@ -23,7 +23,7 @@
 // That is the "500 Select per page" text an operator sees.
 //
 // What this module does:
-// - Numeric sizes become segments, one click each.
+// - Numeric sizes become a segmented control (.mhx-seg), one click each.
 // - A number box accepts any size the grid allows, committed with Enter. It
 //   uses Magento's own custom-size path (show it, write the bound input, press
 //   its Save button), so `applyCustom` → `addSize` → `setSize` runs and the
@@ -31,9 +31,20 @@
 // - Magento's white panel stays in the document but is stripped visually, so
 //   no pale frame is left around the control in a dark admin.
 //
+// This module still needs its own small style for two reasons:
+// 1. The .selectmenu reset is pager-specific and is intentionally !important
+//    because Magento paints .selectmenu as a white panel and we are hiding it.
+// 2. The pager wraps the segmented control + the custom-size box into a single
+//    inline flow; the wrapped layout is pager-owned, not a generic primitive.
+//
+// The segmented control itself now uses the toolkit primitive directly, so the
+// pager is no longer maintaining its own button + segmented vocabulary.
+//
 // Nothing is saved and no request is made by this code; Magento's own widget
 // does the work. Idempotent, so the debounced re-scan and Knockout re-renders
 // cannot stack two controls.
+
+import { segmented } from '../ui';
 
 const MARK_ATTR = 'data-mhx-paging-sizes';
 const WIDGET_CLASS = 'mhx-size-widget';
@@ -115,43 +126,57 @@ function hide(el: Element | null): void {
 /** Mark the segment matching the widget's current value. */
 function syncActive(root: HTMLElement, row: HTMLElement): void {
   const value = currentValue(root);
-  row.querySelectorAll<HTMLButtonElement>('.mhx-size-btn').forEach((btn) => {
-    const on = btn.dataset['size'] === value;
-    btn.classList.toggle('mhx-size-btn--active', on);
+  row.querySelectorAll<HTMLButtonElement>('.mhx-seg-btn').forEach((btn) => {
+    const on = btn.dataset['value'] === value;
+    btn.classList.toggle('mhx-seg-btn--active', on);
     btn.setAttribute('aria-pressed', String(on));
   });
 }
 
 /** Mirror the current size into the number box unless it is being typed in. */
-function syncInput(root: HTMLElement, input: HTMLInputElement): void {
+function syncInput(root: HTMLElement, input?: HTMLInputElement): void {
+  if (!input) return;
   if (document.activeElement === input) return;
   const value = currentValue(root);
   if (value) input.value = value;
 }
 
+/**
+ * Build the page-size control from the toolkit primitive.
+ *
+ * Numeric sizes are one-of-N choices, so they are now a `.mhx-seg` with
+ * `.mhx-seg-btn` buttons. The active state mirrors the widget's current value
+ * (not the toolkit factory's initial `active`), because Magento can change the
+ * size from elsewhere and we must follow it.
+ *
+ * Custom sizes are intentionally left out of the segmented control: they are
+ * handled by our own number box through Magento's custom-size path, so a
+ * committed custom value becomes a real segment on the next scan.
+ */
 function buildSegments(
   root: HTMLElement,
   row: HTMLElement,
   choices: SizeChoice[],
 ): void {
-  row.textContent = '';
-  for (const choice of choices) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'mhx-size-btn';
-    btn.textContent = choice.label;
-    btn.title = `${choice.label} per page`;
-    btn.dataset['size'] = choice.label;
-    btn.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      choice.button.click(); // Magento's own setSize runs
-      syncActive(root, row);
-      const box = root.querySelector<HTMLInputElement>('.mhx-size-input');
-      if (box) syncInput(root, box);
-    });
-    row.appendChild(btn);
-  }
+  row.replaceChildren();
+  const seg = segmented({
+    label: 'Results per page',
+    options: choices.map((c) => ({ label: c.label, value: c.label })),
+    active: currentValue(root),
+    onPick: (value) => {
+      // The segment is a UI preview. The real commit still runs through
+      // Magento's own button so its setSize / Knockout handling runs.
+      const choice = choices.find((c) => c.label === value);
+      choice?.button.click();
+      syncInput(
+        root,
+        row
+          .closest<HTMLElement>(`.${WIDGET_CLASS}`)
+          ?.querySelector<HTMLInputElement>('.mhx-size-input') ?? undefined,
+      );
+    },
+  });
+  row.appendChild(seg);
   row.dataset['sizes'] = choices.map((c) => c.label).join(',');
 }
 
@@ -161,9 +186,10 @@ function buildBar(root: HTMLElement): HTMLElement {
 
   const row = document.createElement('div');
   row.className = 'mhx-size-row';
-  row.setAttribute('role', 'group');
-  row.setAttribute('aria-label', 'Results per page');
   bar.appendChild(row);
+
+  const field = document.createElement('span');
+  field.className = 'mhx-inline-field mhx-size-input-wrap';
 
   const input = document.createElement('input');
   input.type = 'text';
@@ -179,7 +205,8 @@ function buildBar(root: HTMLElement): HTMLElement {
     if (applyCustomSize(root, input.value)) syncActive(root, row);
   });
   input.addEventListener('blur', () => syncInput(root, input));
-  bar.appendChild(input);
+  field.appendChild(input);
+  bar.appendChild(field);
 
   return bar;
 }
@@ -262,21 +289,30 @@ export function enhancePagingSizes(): number {
   return count;
 }
 
-// `--mhx-*` come from the theme layer when admin theming is on; the fallbacks
-// are Magento's own admin colours.
+// Page-size control styles.
+//
+// Two reasons this stays a pager-owned sheet rather than moving wholesale into
+// the toolkit:
+// 1. The .selectmenu reset is pager-specific and is intentionally !important
+//    because Magento paints .selectmenu as a white panel and this module hides
+//    it. That reset is not a generic primitive — it is the pager's own
+//    presentation cleanup for a Magento widget it does not replace.
+// 2. The wrapped layout is pager-owned: the segmented control and the custom
+//    size box are arranged as one inline toolbar, and that arrangement is not
+//    a shared primitive.
+//
+// What changed: the segmented control itself now uses the toolkit primitive
+// (.mhx-seg + .mhx-seg-btn), so the pager is no longer maintaining its own
+// segmented-button vocabulary. The custom-size input is still pager-owned
+// because it is a narrow typed box wired to Magento's custom-size flow, not a
+// generic inline field.
+
 const PAGING_STYLES = `
 /* Magento paints .selectmenu as a white panel. Strip it so no pale frame is
    left around the control, and keep the box in the toolbar's flow. */
 .selectmenu.mhx-size-widget{background:transparent !important;border:0 !important;padding:0 !important;margin:0 !important;box-shadow:none !important;min-width:0 !important;min-height:0 !important;display:inline-flex !important;align-items:center !important;vertical-align:middle;}
 .selectmenu.mhx-size-widget:before,.selectmenu.mhx-size-widget:after{content:none !important;display:none !important;border:0 !important;}
 .mhx-size-bar{display:inline-flex;align-items:stretch;gap:6px;}
-.mhx-size-row{display:inline-flex;align-items:stretch;border:1px solid var(--mhx-border-2,#adadad);border-radius:3px;overflow:hidden;background:var(--mhx-surface,#fff);}
-.mhx-size-btn{margin:0;padding:4px 10px;border:0;border-right:1px solid var(--mhx-border-2,#d6d6d6);border-radius:0;background:transparent;color:var(--mhx-ink,#303030);font:13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer;white-space:nowrap;}
-.mhx-size-btn:last-child{border-right:0;}
-.mhx-size-btn:hover{background:var(--mhx-tint,#e5f2fa);color:var(--mhx-ink,#303030);}
-.mhx-size-btn:focus-visible{outline:2px solid var(--mhx-accent,#007bdb);outline-offset:-2px;}
-.mhx-size-btn--active{background:var(--mhx-accent,#007bdb);color:var(--mhx-on-accent,#fff);font-weight:700;}
-.mhx-size-btn--active:hover{background:var(--mhx-accent-2,#00629e);color:var(--mhx-on-accent,#fff);}
-.mhx-size-input{width:64px;min-width:0;margin:0;padding:4px 6px;border:1px solid var(--mhx-border-2,#adadad);border-radius:3px;background:var(--mhx-surface,#fff);color:var(--mhx-ink,#303030);font:13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;text-align:center;}
-.mhx-size-input:focus{outline:2px solid var(--mhx-accent,#007bdb);outline-offset:-1px;border-color:var(--mhx-accent,#007bdb);}
+.mhx-size-row{display:inline-flex;align-items:center;gap:6px;}
+.mhx-size-input-wrap input{width:64px;text-align:center;}
 `;

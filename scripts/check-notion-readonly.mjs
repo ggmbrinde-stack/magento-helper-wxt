@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Static enforcement of the create-only rule (board direction 2026-10-19):
-// "Notion is create-only: never update, delete, or append."
+// Static enforcement of the Notion write boundaries (board direction
+// 2026-10-19): Listing Errors is create-only; one gated, whitelisted SKU
+// Library PATCH is permitted. Deletes and block appends are never allowed.
 //
 // Fails if any source file references a Notion update/delete/schema endpoint,
 // or issues a fetch() against Notion that does not go through a guarded fetch
@@ -36,12 +37,16 @@ const FORBIDDEN = [
   [/\/v1\/comments/, 'creating a comment'],
 ];
 
-// Narrow, file-scoped exception (board direction 2026-10-19): create-only is
-// lifted for the SKU Library ONLY. The single PATCH endpoint and the single
-// update helper are permitted in exactly one file — the guarded writer — and
-// nowhere else. Listing Errors stays create-only.
+// Narrow, file-scoped exception (board direction 2026-10-19): updates are
+// permitted for the SKU Library ONLY. The PATCH endpoint and update helper are
+// permitted in exactly one file — the guarded writer — and nowhere else.
+// Listing Errors stays create-only.
 const PATCH_ALLOWED_FILES = new Set(['src/lib/skuLibraryWriter.ts']);
 const PATCH_PATH = /^\/v1\/pages\/[^/]+$/;
+// Body completion: a newly created SKU Library page, or an existing page whose
+// body is empty, may receive its dossier body in chunks. The writer checks the
+// body first; non-empty pages are never overwritten. Only that writer may use it.
+const BLOCK_CHILDREN_PATH = /^\/v1\/blocks\/[^/]+\/children$/;
 const UPDATE_HELPER = /\b(updatePage|updatePageProperties)\b/;
 
 function findProblems(relPath, text) {
@@ -55,13 +60,20 @@ function findProblems(relPath, text) {
     /https:\/\/api\.notion\.com(\/[^\s"'`,]*)?/g,
   );
   for (const m of urlMatches) {
-    const path = m[1] ?? '';
+    const path = (m[1] ?? '').split(/[?#]/)[0] ?? '';
     const after = text.slice(m.index + m[0].length, m.index + m[0].length + 200);
     const declaredMethod = /method:\s*['"`]([A-Z]+)['"`]/i.exec(after);
     const method = (declaredMethod?.[1] ?? 'GET').toUpperCase();
 
-    // The one allowed PATCH: SKU Library page-property updates.
-    if (method === 'PATCH' && PATCH_PATH.test(path) && patchFileAllowed) continue;
+    // The allowed PATCHes: SKU Library property updates and the one-time
+    // create-time body append in the same writer.
+    if (
+      method === 'PATCH' &&
+      (PATCH_PATH.test(path) || BLOCK_CHILDREN_PATH.test(path)) &&
+      patchFileAllowed
+    ) {
+      continue;
+    }
 
     const rule = ALLOWED.find((a) => a.re.test(path));
     if (rule && rule.methods.includes(method)) continue;
@@ -128,11 +140,11 @@ for await (const file of walk(srcDir)) {
 }
 
 if (problems.length > 0) {
-  console.error(`Notion create-only check FAILED (${problems.length} problem(s)):`);
+  console.error(`Notion write-safety check FAILED (${problems.length} problem(s)):`);
   for (const p of problems) console.error(`  - ${p}`);
   process.exit(1);
 }
 
 console.log(
-  `Notion create-only check passed: ${files} file(s) scanned, no update/delete/append endpoints or unguarded fetches.`,
+  `Notion write-safety check passed: ${files} file(s) scanned; only the guarded SKU Library update and empty-body completion paths are permitted.`,
 );

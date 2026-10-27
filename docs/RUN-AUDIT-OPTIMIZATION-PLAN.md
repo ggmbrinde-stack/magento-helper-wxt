@@ -103,7 +103,8 @@ same input and options are compared and the required outputs still match.
 - Do not allow concurrent read-modify-write storage updates to overwrite
   another SKU's results.
 - Do not weaken Notion's deduplication, rate-limit handling, explicit
-  confirmation, or create-only restrictions.
+  confirmation, Listing Errors create-only behavior, or the SKU Library's
+  separately gated and whitelisted update policy.
 
 ## Research sources
 

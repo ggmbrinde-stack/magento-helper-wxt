@@ -54,8 +54,6 @@ import type {
   GetConfigResponse,
   GetFormStateResponse,
   GetSkuResponse,
-  LookupChild,
-  ResolverEntry,
   SearchMagentoResponse,
 } from '../lib/messages';
 
@@ -69,10 +67,6 @@ const OPEN_ATTR = 'data-mhx-open';
 // Both of our injected controls: stripped from any text read out of a cell, so
 // a copied SKU can never pick up a stray icon or label.
 const INJECTED_SELECTOR = `[${BTN_ATTR}="1"], [${OPEN_ATTR}="1"]`;
-
-// Last resolver key written, so the debounced scan doesn't hit storage on every
-// DOM mutation when nothing relevant changed.
-let lastResolverKey = '';
 
 // SKU we last requested error-markup for, so the request fires once per product.
 let markedSku = '';
@@ -174,55 +168,6 @@ const EDIT_COPY_FIELDS = [
 // Snapshots live for the lifetime of the content script (the open tab), so an
 // Undo always steps back to what the field held before this extension wrote.
 const snapshots = new FieldSnapshotStore();
-
-const PAGE_STYLES = `
-.mhx-sku-copy-btn{display:inline-flex;align-items:center;justify-content:center;margin-right:8px;padding:0 6px;width:28px;height:24px;border:1px solid #c8c8c8;border-radius:2px;background:#f8f8f8;color:#555;cursor:pointer;vertical-align:middle;}
-.mhx-sku-copy-btn:hover{background:#efefef;border-color:#b0b0b0;}
-.mhx-sku-copy-btn:active{background:#e4e4e4;}
-.mhx-sku-copy-btn--feedback{color:#2e7d32 !important;border-color:#2e7d32 !important;}
-.mhx-sku-copy-btn--open{color:var(--mhx-accent,#d81b60);border-color:var(--mhx-accent,#d81b60);}
-.mhx-sku-copy-btn--open:hover{background:var(--mhx-accent,#d81b60);border-color:var(--mhx-accent,#d81b60);color:var(--mhx-on-accent,#fff);}
-.mhx-store-buttons{display:inline-flex;gap:4px;margin-left:32px;align-items:center;}
-.mhx-store-btn{padding:2px 8px;font-size:11px;border:1px solid var(--mhx-accent,#d81b60);border-radius:3px;background:var(--mhx-surface,#fff);color:var(--mhx-accent,#d81b60);cursor:pointer;font-weight:600;}
-.mhx-store-btn:hover{background:var(--mhx-accent,#d81b60);color:var(--mhx-on-accent,#fff);}
-.mhx-store-btn--all{border-color:#e65100;background:#e65100;color:#fff;}
-.mhx-store-btn--all:hover{background:#bf360c;border-color:#bf360c;}
-.mhx-open-sizes-btn{margin-left:4px;padding:2px 6px;font-size:11px;border:1px solid var(--mhx-accent,#d81b60);border-radius:3px;background:var(--mhx-accent,#d81b60);color:var(--mhx-on-accent,#fff);cursor:pointer;font-weight:600;}
-.mhx-open-sizes-btn:hover{background:var(--mhx-accent-2,#ad1457);border-color:var(--mhx-accent-2,#ad1457);}
-/* .mhx-toast + variants: the toolkit's toast primitive (src/ui/toolkit.css). */
-.mhx-error-indicator{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;margin-left:6px;cursor:help;position:relative;vertical-align:middle;flex-shrink:0;}
-.mhx-error-indicator svg{width:14px;height:14px;}
-.mhx-error-indicator--high{background:#ffebee;color:#c62828;border:1px solid #c62828;}
-.mhx-error-indicator--medium{background:#fff3e0;color:#e65100;border:1px solid #e65100;}
-.mhx-error-indicator--low{background:#fff9c4;color:#f57f17;border:1px solid #f57f17;}
-.mhx-error-indicator:hover::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);padding:6px 10px;background:#333;color:#fff;font-size:11px;font-weight:400;white-space:normal;max-width:300px;text-align:left;line-height:1.4;border-radius:3px;z-index:10000;margin-bottom:4px;}
-/* D2: host class drives display — reversible on indicator clear (no inline styles on Magento's labels). */
-.mhx-error-label-host{display:inline-flex;align-items:center;}
-.mhx-error-label--high label,.mhx-error-label--high .admin__field-label,.mhx-error-label--high .admin_field-label{color:#c62828 !important;font-weight:700 !important;}
-.mhx-error-label--medium label,.mhx-error-label--medium .admin__field-label,.mhx-error-label--medium .admin_field-label{color:#e65100 !important;font-weight:700 !important;}
-.mhx-error-label--low label,.mhx-error-label--low .admin__field-label,.mhx-error-label--low .admin_field-label{color:#f57f17 !important;font-weight:700 !important;}
-.mhx-grid-copy-wrap{display:inline-flex;gap:6px;align-items:center;margin-left:8px;vertical-align:middle;}
-.mhx-grid-copy-all{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;font-size:12px;font-weight:600;border:1px solid var(--mhx-accent,#d81b60);border-radius:3px;background:var(--mhx-accent,#d81b60);color:var(--mhx-on-accent,#fff);cursor:pointer;vertical-align:middle;white-space:nowrap;}
-.mhx-grid-copy-all:hover{background:var(--mhx-accent-2,#ad1457);border-color:var(--mhx-accent-2,#ad1457);}
-.mhx-grid-copy-all svg{width:14px;height:14px;display:block;}
-.mhx-grid-copy-all.mhx-sku-copy-btn--feedback{background:#2e7d32 !important;border-color:#2e7d32 !important;color:#fff !important;}
-.mhx-product-type-badge{display:inline-flex;align-items:center;padding:2px 8px;font-size:11px;font-weight:700;border-radius:12px;line-height:1.2;vertical-align:middle;text-transform:uppercase;letter-spacing:0.5px;}
-.mhx-product-type-badge--title{margin-left:12px;font-size:12px;padding:3px 10px;}
-.mhx-product-type-badge--sku{margin-left:8px;font-size:10px;padding:1px 6px;}
-.mhx-product-type-badge--configurable{background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;}
-.mhx-product-type-badge--simple{background:#dcfce7;color:#15803d;border:1px solid #86efac;}
-`;
-
-const STYLE_ID = 'mhx-page-styles';
-
-/** Inject the page-UI stylesheet once (hover/active need real CSS). */
-function ensureStyles(): void {
-  if (document.getElementById(STYLE_ID)) return;
-  const style = document.createElement('style');
-  style.id = STYLE_ID;
-  style.textContent = PAGE_STYLES;
-  (document.head ?? document.documentElement).appendChild(style);
-}
 
 /** Small bottom-right notification, replacing the vanilla toast helper. */
 function showToast(text: string, kind: 'info' | 'success' | 'error' = 'info'): void {
@@ -596,7 +541,9 @@ function scan(): void {
       console.warn(`[BOG Helper] scan step "${name}" failed:`, err);
     }
   };
-  safe('styles', ensureStyles);
+  // The page-feature styles are no longer injected from here: they are part of
+  // the toolkit sheet (src/ui/toolkit.css), which ensureUi() puts on the page
+  // in main() before the first scan. Features only pass classes.
   // First, so a later step throwing cannot cost the operator their dropdowns.
   safe('selects', enhanceAdminSelects);
   safe('navToggle', () => {
@@ -614,7 +561,6 @@ function scan(): void {
   safe('gridCopy', addGridCopyButtons);
   safe('storeViews', addStoreViewButtons);
   safe('configButtons', renderConfigButtons);
-  safe('resolver', buildResolver);
   safe('errorMarkup', maybeRequestErrorMarkup);
 }
 
@@ -801,72 +747,6 @@ function renderConfigButtons(): void {
     });
     parent.insertBefore(btn, title.nextSibling);
   });
-}
-
-/**
- * Cache the open product's id + child ids in `resolverMap`, so a later lookup
- * for this SKU resolves without scraping. Best-effort and read-only.
- */
-function buildResolver(): void {
-  const idMatch = location.pathname.match(
-    /\/catalog\/product\/edit\/id\/(\d+)/,
-  );
-  const productId = idMatch?.[1];
-  const skuInput = document.querySelector<HTMLInputElement>(
-    'input[name="product[sku]"]',
-  );
-  const sku = skuInput?.value.trim() ?? '';
-  if (!productId || !sku) return;
-
-  const adminPath = location.pathname.match(/^(\/[^/]+\/)/)?.[1] ?? '/';
-  const editUrl = (id: string): string =>
-    `${location.origin}${adminPath}catalog/product/edit/id/${id}/`;
-
-  const children: LookupChild[] = [];
-  const table = findConfigSection()?.querySelector('table');
-  if (table) {
-    table.querySelectorAll('tbody tr').forEach((row) => {
-      let rowId = row.getAttribute('data-product-id') ?? '';
-      if (!rowId) {
-        const idText = (
-          row.querySelector('td[data-index="product_id"], td:first-child')
-            ?.textContent ?? ''
-        ).trim();
-        if (/^\d+$/.test(idText)) rowId = idText;
-      }
-      if (!rowId) return;
-      const attrText = (
-        row.querySelector('td[data-index="attributes"]')?.textContent ?? ''
-      ).trim();
-      children.push({
-        id: rowId,
-        sku: (
-          row.querySelector('td[data-index="sku"]')?.textContent ?? ''
-        ).trim(),
-        color: attrText.match(/Color:\s*([^,]+)/i)?.[1]?.trim() ?? '',
-        size: attrText.match(/Size:\s*([^,]+)/i)?.[1]?.trim() ?? '',
-        backend: editUrl(rowId),
-      });
-    });
-  }
-
-  // D4 fix: delegate the write to the background service worker so there is
-  // exactly one reader-modify-writer path for the resolver map.
-  const key = `${productId}:${sku}:${children.length}`;
-  if (key === lastResolverKey) return;
-  lastResolverKey = key;
-  const entry: ResolverEntry = {
-    id: productId,
-    sku,
-    backend: editUrl(productId),
-    children,
-    timestamp: Date.now(),
-  };
-  void chrome.runtime
-    .sendMessage({ type: 'RESOLVE_CACHE_PUT', entry })
-    .catch(() => {
-      // Background worker may be dormant; it will pick up the entry next wake.
-    });
 }
 
 /** Last-resort lookup: search the open admin tab's product grid via AJAX. */
@@ -1286,14 +1166,14 @@ export default defineContentScript({
   ],
   runAt: 'document_idle',
   main() {
-    scan();
-    // Keep the admin's own colours in step with the stored theme preference.
-    watchMagentoPageTheme();
     // One toolkit sheet per page (link, inline fallback) plus the operator's
-    // custom toolkit colours from Settings. Features call ensureUi() too;
-    // this first call just gets it on the page before the first scan draws.
+    // custom toolkit colours from Settings. Features call ensureUi() too; this
+    // first call gets the sheet on the page before the first scan draws.
     ensureUi();
     watchToolkitColors();
+    // Keep the admin's own colours in step with the stored theme preference.
+    watchMagentoPageTheme();
+    scan();
     let timer: number | undefined;
     new MutationObserver(() => {
       window.clearTimeout(timer);

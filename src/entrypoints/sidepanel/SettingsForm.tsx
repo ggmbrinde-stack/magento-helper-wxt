@@ -85,7 +85,7 @@ export function SettingsForm(props: Props) {
     <main class="mhx-content">
       <ThemePicker />
       <ToolkitColors />
-      <label class="mhx-field mhx-field--block">
+      <label class="mhx-panel-field mhx-panel-field--block">
         <span>Notion token</span>
         <input
           type="password"
@@ -95,7 +95,7 @@ export function SettingsForm(props: Props) {
           onInput={(e) => update('notionToken', e.currentTarget.value)}
         />
       </label>
-      <label class="mhx-field mhx-field--block">
+      <label class="mhx-panel-field mhx-panel-field--block">
         <span>SKU Library database id</span>
         <input
           type="text"
@@ -106,7 +106,7 @@ export function SettingsForm(props: Props) {
           onInput={(e) => update('skuLibraryDb', e.currentTarget.value)}
         />
       </label>
-      <label class="mhx-field mhx-field--block">
+      <label class="mhx-panel-field mhx-panel-field--block">
         <span>Listing Errors database id</span>
         <input
           type="text"
@@ -117,7 +117,7 @@ export function SettingsForm(props: Props) {
           onInput={(e) => update('listingErrorsDb', e.currentTarget.value)}
         />
       </label>
-      <label class="mhx-field mhx-field--block">
+      <label class="mhx-panel-field mhx-panel-field--block">
         <span>Magento Admin base URL</span>
         <input
           type="url"

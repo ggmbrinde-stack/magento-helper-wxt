@@ -23,6 +23,44 @@ export const SCOPE_STORE_IDS: Record<string, string> = {
   fr: '5',
 };
 
+/**
+ * Admin front name only: `https://host/admin_xxxxx` with no trailing slash and
+ * no `/catalog/...` tail. Settings often store a trailing slash; pasting a
+ * product-edit URL is also accepted.
+ */
+export function normalizeAdminBase(
+  raw: string,
+  fallback: string = DEFAULT_ADMIN_BASE,
+): string {
+  const source = raw.trim() || fallback;
+  try {
+    const parsed = new URL(source);
+    const path = parsed.pathname
+      .replace(/\/catalog\/.*$/i, '')
+      .replace(/\/{2,}/g, '/')
+      .replace(/\/+$/, '');
+    return `${parsed.origin}${path}`;
+  } catch {
+    return fallback.replace(/\/+$/, '');
+  }
+}
+
+/**
+ * Unkeyed product-edit URL:
+ * `https://bestofgifts.pt/admin_L2pZx/catalog/product/edit/id/<ID>/`
+ * plus optional `store/<id>/`.
+ */
+export function adminEditUrl(
+  adminBase: string,
+  id: string,
+  storeId = '',
+): string {
+  const base = normalizeAdminBase(adminBase);
+  if (!id) return '';
+  const url = `${base}/catalog/product/edit/id/${id}/`;
+  return storeId ? `${url}store/${storeId}/` : url;
+}
+
 export interface MagentoRow {
   child: string;
   color: string;
@@ -43,11 +81,6 @@ export interface MagentoBuild {
   parentUrls: Record<string, string>;
   configurableUrl: string;
   anomalies: string[];
-}
-
-function editUrl(adminBase: string, id: string, storeId: string): string {
-  const suffix = storeId ? `store/${storeId}/` : '';
-  return `${adminBase}/catalog/product/edit/id/${id}/${suffix}`;
 }
 
 /**
@@ -78,15 +111,15 @@ export function buildMagentoTable(
         child: sid,
         color: '(simple)',
         size: '-',
-        url: editUrl(adminBase, sid, ''),
+        url: adminEditUrl(adminBase, sid),
       };
       rows.push(row);
       groupOrder.push('(simple)');
       groups['(simple)'] = [row];
       for (const [scope, storeId] of Object.entries(SCOPE_STORE_IDS)) {
-        parentUrls[scope] = editUrl(adminBase, sid, storeId);
+        parentUrls[scope] = adminEditUrl(adminBase, sid, storeId);
       }
-      configurableUrl = editUrl(adminBase, sid, '');
+      configurableUrl = adminEditUrl(adminBase, sid);
     }
     return {
       isSimple: true,
@@ -139,7 +172,7 @@ export function buildMagentoTable(
       child: kid,
       color: clabel,
       size: slabel,
-      url: editUrl(adminBase, kid, ''),
+      url: adminEditUrl(adminBase, kid),
     };
     rows.push(row);
     const list = groups[clabel] ?? (groups[clabel] = []);
@@ -162,7 +195,7 @@ export function buildMagentoTable(
 
   const parentUrls: Record<string, string> = {};
   for (const [scope, storeId] of Object.entries(SCOPE_STORE_IDS)) {
-    parentUrls[scope] = editUrl(adminBase, conf, storeId);
+    parentUrls[scope] = adminEditUrl(adminBase, conf, storeId);
   }
 
   return {
@@ -176,7 +209,7 @@ export function buildMagentoTable(
     groupOrder,
     groups,
     parentUrls,
-    configurableUrl: editUrl(adminBase, conf, ''),
+    configurableUrl: adminEditUrl(adminBase, conf),
     anomalies,
   };
 }

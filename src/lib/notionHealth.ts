@@ -20,13 +20,40 @@ import {
 } from './notion';
 import {
   listingErrorExists,
-  NOTION_ERROR_TYPE_OPTIONS,
   payloadToProperties,
 } from './listingWriter';
 import { EM_DASH, type ListingErrorPayload } from './payload';
-import { NOTION_WRITES_ENABLED } from './flags';
+import { NOTION_WRITES_ENABLED, NOTION_LIBRARY_UPDATES_ENABLED } from './flags';
+import {
+  CATEGORY_OPTIONS,
+  ERROR_FLAG_OPTIONS,
+  ERROR_GROUP_OPTIONS,
+  ERROR_TYPE_OPTIONS,
+  FIELD_OPTIONS,
+  FIX_LOCATION_OPTIONS,
+  LANGUAGE_OPTIONS,
+  LIBRARY_STATUS_OPTIONS,
+  LISTING_ERROR_SUPPLIER_OPTIONS,
+  PRIORITY_OPTIONS,
+  SKU_LIBRARY_SUPPLIER_OPTIONS,
+  SOURCE_OPTIONS,
+  SUBCATEGORY_OPTIONS,
+} from './notionContract';
+import { createLibraryProperties, type LibraryCells } from './skuLibraryWriter';
 
 export type HealthStatus = 'ok' | 'warn' | 'fail';
+
+export interface NotionHealthOptions {
+  /** Force a live check (default). Preview can reuse a recent report. */
+  fresh?: boolean;
+  maxAgeMs?: number;
+}
+
+let healthCache: { at: number; report: NotionHealthReport } | null = null;
+
+export function clearNotionHealthCache(): void {
+  healthCache = null;
+}
 
 export interface HealthCheck {
   id: string;
@@ -74,11 +101,13 @@ export interface NotionHealthReport {
   ok: boolean;
   generated: string;
   writesEnabled: boolean;
+  libraryUpdatesEnabled: boolean;
   token: { source: string; configured: boolean; shape: string };
   checks: HealthCheck[];
   skuLibrary: DbHealth;
   listingErrors: DbHealth;
   simulation: WriteSimulation;
+  librarySimulation: WriteSimulation;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -89,7 +118,7 @@ interface PropSpec {
   name: string;
   type: string;
   required: boolean;
-  values?: string[];
+  values?: readonly string[];
 }
 
 const LISTING_ERRORS_SPEC: PropSpec[] = [
@@ -98,43 +127,69 @@ const LISTING_ERRORS_SPEC: PropSpec[] = [
     name: 'Error Group',
     type: 'multi_select',
     required: true,
-    values: ['Images', 'Text / Translation', 'Product Information', 'Category', 'Other'],
+    values: ERROR_GROUP_OPTIONS,
   },
   {
     name: 'Error Type',
     type: 'multi_select',
     required: true,
-    values: NOTION_ERROR_TYPE_OPTIONS,
+    values: ERROR_TYPE_OPTIONS,
   },
-  { name: 'Error Flag', type: 'select', required: true, values: ['Normal', 'Complex'] },
+  {
+    name: 'Error Flag',
+    type: 'select',
+    required: true,
+    values: ERROR_FLAG_OPTIONS,
+  },
   { name: 'Status', type: 'select', required: true, values: ['To Fix'] },
   { name: 'Notes', type: 'rich_text', required: true },
   { name: 'SKU', type: 'rich_text', required: true },
-  { name: 'Source', type: 'select', required: true },
-  { name: 'Language', type: 'select', required: true },
-  { name: 'Priority', type: 'select', required: false, values: ['High', 'Medium', 'Low'] },
+  { name: 'Source', type: 'select', required: true, values: SOURCE_OPTIONS },
+  { name: 'Language', type: 'select', required: true, values: LANGUAGE_OPTIONS },
+  { name: 'Priority', type: 'select', required: false, values: PRIORITY_OPTIONS },
   {
     name: 'Fix Location',
     type: 'select',
     required: false,
-    values: ['Configurable', 'Simple'],
+    values: FIX_LOCATION_OPTIONS,
   },
   { name: 'Link', type: 'url', required: false },
   { name: 'Fix', type: 'rich_text', required: false },
-  { name: 'Category', type: 'select', required: false },
-  { name: 'Subcategory', type: 'select', required: false },
-  { name: 'Supplier', type: 'select', required: false },
-  { name: 'Field', type: 'select', required: false },
+  {
+    name: 'Category',
+    type: 'select',
+    required: false,
+    values: CATEGORY_OPTIONS,
+  },
+  {
+    name: 'Subcategory',
+    type: 'select',
+    required: false,
+    values: SUBCATEGORY_OPTIONS,
+  },
+  {
+    name: 'Supplier',
+    type: 'select',
+    required: false,
+    values: LISTING_ERROR_SUPPLIER_OPTIONS,
+  },
+  { name: 'Field', type: 'select', required: false, values: FIELD_OPTIONS },
 ];
 
 const SKU_LIBRARY_SPEC: PropSpec[] = [
   { name: 'SKU', type: 'title', required: true },
-  { name: 'Frontend', type: 'url', required: false },
-  { name: 'Backend', type: 'url', required: false },
-  { name: 'Category', type: 'select', required: false },
-  { name: 'Subcategory', type: 'select', required: false },
-  { name: 'Supplier', type: 'select', required: false },
-  { name: 'Status', type: 'select', required: false },
+  { name: 'Frontend', type: 'url', required: true },
+  { name: 'Backend', type: 'url', required: true },
+  { name: 'Category', type: 'select', required: true, values: CATEGORY_OPTIONS },
+  { name: 'Subcategory', type: 'select', required: true, values: SUBCATEGORY_OPTIONS },
+  { name: 'Supplier', type: 'select', required: true, values: SKU_LIBRARY_SUPPLIER_OPTIONS },
+  { name: 'Status', type: 'select', required: true, values: LIBRARY_STATUS_OPTIONS },
+  { name: 'Last audit', type: 'date', required: true },
+  { name: 'Sizes', type: 'rich_text', required: true },
+  { name: 'Colors', type: 'rich_text', required: true },
+  { name: 'Missing combos', type: 'rich_text', required: true },
+  { name: 'Supplier Link', type: 'url', required: false },
+  { name: 'Supplier Product', type: 'url', required: false },
 ];
 
 /* ------------------------------------------------------------------------- */
@@ -155,7 +210,6 @@ const SAMPLE_MINIMAL: ListingErrorPayload = {
   notes: 'dry-run validation only — no page is created',
   fix: '',
   notes_full: '',
-  source: 'Manual',
   supplier: '',
   category: null,
   subcategory: null,
@@ -163,6 +217,8 @@ const SAMPLE_MINIMAL: ListingErrorPayload = {
   field: null,
   page_content: '',
   review_flags: [],
+  // The live DB's Source options are Storefront / Magento export.
+  source: 'Storefront',
 };
 
 const SAMPLE_FULL: ListingErrorPayload = {
@@ -175,6 +231,21 @@ const SAMPLE_FULL: ListingErrorPayload = {
   category: 'Other',
   subcategory: 'T-shirts',
   field: 'name',
+};
+
+const SAMPLE_LIBRARY: LibraryCells = {
+  frontend: 'https://example.invalid/product',
+  backend: 'https://example.invalid/admin/catalog/product/edit/id/1',
+  sizes: 'S, M, L',
+  colors: 'Black, White',
+  missingCombos: 'none (full matrix)',
+  status: 'Audited',
+  lastAudit: '2026-01-01',
+  category: 'Promotional Textile',
+  subcategory: 'T-shirts',
+  supplier: 'ROLY',
+  supplierLink: 'https://example.invalid/supplier',
+  supplierProduct: 'https://example.invalid/supplier/product',
 };
 
 /* ------------------------------------------------------------------------- */
@@ -273,6 +344,7 @@ function classifyValue(value: unknown): { type: string; values: string[] } {
     };
   }
   if ('url' in v) return { type: 'url', values: [] };
+  if ('date' in v) return { type: 'date', values: [] };
   return { type: 'unknown', values: [] };
 }
 
@@ -494,6 +566,41 @@ function simulate(listingErrors: DbHealth): WriteSimulation {
   };
 }
 
+function simulateLibrary(skuLibrary: DbHealth): WriteSimulation {
+  if (!skuLibrary.reachable) {
+    return {
+      ran: false,
+      ok: false,
+      reason: 'SKU Library DB unreachable — simulation skipped',
+      rows: [],
+    };
+  }
+  const byName = new Map(skuLibrary.properties.map((p) => [p.name, p]));
+  const rows: WriteSimulationRow[] = [];
+  const properties = createLibraryProperties('DRYRUN', SAMPLE_LIBRARY);
+  for (const spec of SKU_LIBRARY_SPEC) {
+    const value = properties[spec.name];
+    if (value === undefined) {
+      rows.push({
+        property: spec.name,
+        status: spec.required ? 'fail' : 'warn',
+        detail: 'sample does not set this property',
+      });
+      continue;
+    }
+    rows.push(validateProperty(spec.name, value, byName, spec.required));
+  }
+  const ok = rows.every((row) => row.status !== 'fail');
+  return {
+    ran: true,
+    ok,
+    reason: ok
+      ? 'a full SKU Library row maps cleanly onto the live schema'
+      : 'at least one SKU Library property would be rejected by Notion',
+    rows,
+  };
+}
+
 function simulationCheck(simulation: WriteSimulation): HealthCheck {
   if (!simulation.ran) {
     return {
@@ -511,11 +618,36 @@ function simulationCheck(simulation: WriteSimulation): HealthCheck {
   };
 }
 
+function librarySimulationCheck(simulation: WriteSimulation): HealthCheck {
+  if (!simulation.ran) {
+    return {
+      id: 'library-simulation',
+      label: 'SKU Library write simulation (local)',
+      status: 'warn',
+      detail: simulation.reason,
+    };
+  }
+  return {
+    id: 'library-simulation',
+    label: 'SKU Library write simulation (local)',
+    status: simulation.ok ? 'ok' : 'fail',
+    detail: simulation.reason,
+  };
+}
+
 /* ------------------------------------------------------------------------- */
 /* Entry point                                                                */
 /* ------------------------------------------------------------------------- */
 
-export async function notionHealth(): Promise<NotionHealthReport> {
+export async function notionHealth(
+  options: NotionHealthOptions = {},
+): Promise<NotionHealthReport> {
+  const fresh = options.fresh !== false;
+  const maxAgeMs = options.maxAgeMs ?? 5 * 60_000;
+  if (!fresh && healthCache && Date.now() - healthCache.at <= maxAgeMs) {
+    return healthCache.report;
+  }
+
   const settings = await loadSettings();
   const token = settings.notionToken;
 
@@ -532,17 +664,26 @@ export async function notionHealth(): Promise<NotionHealthReport> {
     'listingErrors',
   );
   const simulation = simulate(listingErrors);
+  const librarySimulation = simulateLibrary(skuLibrary);
   const dedup = await dedupCheck(token, settings.listingErrorsDb, listingErrors);
 
   const checks: HealthCheck[] = [
     tokenCheck(token),
     {
       id: 'writes',
-      label: 'Notion writes flag',
+      label: 'Listing Errors writes',
       status: NOTION_WRITES_ENABLED ? 'ok' : 'warn',
       detail: NOTION_WRITES_ENABLED
         ? 'NOTION_WRITES_ENABLED = true (create-only)'
         : 'NOTION_WRITES_ENABLED = false (reader mode)',
+    },
+    {
+      id: 'library-writes',
+      label: 'SKU Library writes',
+      status: NOTION_LIBRARY_UPDATES_ENABLED ? 'ok' : 'warn',
+      detail: NOTION_LIBRARY_UPDATES_ENABLED
+        ? 'NOTION_LIBRARY_UPDATES_ENABLED = true (whitelist updates)'
+        : 'NOTION_LIBRARY_UPDATES_ENABLED = false (create-only)',
     },
     reachCheck('sku-reach', 'SKU Library reachable', skuLibrary),
     schemaCheck('sku-schema', 'SKU Library schema', skuLibrary),
@@ -550,13 +691,15 @@ export async function notionHealth(): Promise<NotionHealthReport> {
     schemaCheck('err-schema', 'Listing Errors schema', listingErrors),
     dedup,
     simulationCheck(simulation),
+    librarySimulationCheck(librarySimulation),
   ];
 
   const info = tokenInfo(token);
-  return {
+  const report: NotionHealthReport = {
     ok: checks.every((c) => c.status !== 'fail'),
     generated: new Date().toISOString(),
     writesEnabled: NOTION_WRITES_ENABLED,
+    libraryUpdatesEnabled: NOTION_LIBRARY_UPDATES_ENABLED,
     token: {
       source: 'chrome.storage.local → notionToken',
       configured: info.configured,
@@ -566,5 +709,8 @@ export async function notionHealth(): Promise<NotionHealthReport> {
     skuLibrary,
     listingErrors,
     simulation,
+    librarySimulation,
   };
+  healthCache = { at: Date.now(), report };
+  return report;
 }

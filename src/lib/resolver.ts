@@ -62,6 +62,75 @@ export interface ResolverJson {
   error?: string;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isStringRecord(value: unknown): value is Record<string, string> {
+  return (
+    isRecord(value) &&
+    Object.values(value).every((item) => typeof item === 'string')
+  );
+}
+
+function isResolverAttribute(value: unknown): value is ResolverAttribute | null {
+  if (value === null) return true;
+  if (
+    !isRecord(value) ||
+    typeof value.code !== 'string' ||
+    typeof value.label !== 'string'
+  ) {
+    return false;
+  }
+  return (
+    Array.isArray(value.options) &&
+    value.options.every(
+      (option) =>
+        isRecord(option) &&
+        typeof option.id === 'string' &&
+        typeof option.label === 'string' &&
+        Array.isArray(option.products) &&
+        option.products.every((product) => typeof product === 'string'),
+    )
+  );
+}
+
+export function isResolverJson(value: unknown): value is ResolverJson {
+  if (!isRecord(value)) return false;
+  if (!isRecord(value.attributes) || !isRecord(value.index)) return false;
+  const candidate = value as Partial<ResolverJson>;
+  return (
+    candidate.schema === RESOLVER_SCHEMA &&
+    typeof candidate.sku === 'string' &&
+    candidate.ok === true &&
+    typeof candidate.verified === 'boolean' &&
+    typeof candidate.generated === 'string' &&
+    Number.isFinite(Date.parse(candidate.generated)) &&
+    typeof candidate.store === 'string' &&
+    (candidate.source === null || typeof candidate.source === 'string') &&
+    typeof candidate.frontend_url === 'string' &&
+    (candidate.slug === null || typeof candidate.slug === 'string') &&
+    (candidate.product_type === 'configurable' ||
+      candidate.product_type === 'simple') &&
+    (candidate.configurable_id === null ||
+      typeof candidate.configurable_id === 'number') &&
+    (candidate.simple_product_id === null ||
+      typeof candidate.simple_product_id === 'number') &&
+    isResolverAttribute(value.attributes['93']) &&
+    isResolverAttribute(value.attributes['142']) &&
+    Object.values(value.index).every((entry) => isStringRecord(entry)) &&
+    Array.isArray(candidate.children) &&
+    candidate.children.every((child) => typeof child === 'string') &&
+    typeof candidate.child_count === 'number' &&
+    typeof candidate.option_prices_count === 'number' &&
+    isStringRecord(candidate.hreflang) &&
+    isStringRecord(candidate.store_urls) &&
+    isStringRecord(candidate.snapshots) &&
+    Array.isArray(candidate.anomalies) &&
+    candidate.anomalies.every((anomaly) => typeof anomaly === 'string')
+  );
+}
+
 /** Supplier grouping rule (SYSTEM.md): TT* -> TOPTEX, AB* -> ALLBEST, else ROLY. */
 export function supplierFor(sku: string): 'TOPTEX' | 'ALLBEST' | 'ROLY' {
   const s = sku.trim().toUpperCase();
@@ -439,8 +508,13 @@ export function parseResolver(input: ParseResolverInput): ResolverJson {
 const DEFAULT_UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 
-async function fetchHtml(url: string, fetchImpl: typeof fetch): Promise<string> {
+async function fetchHtml(
+  url: string,
+  fetchImpl: typeof fetch,
+  signal?: AbortSignal,
+): Promise<string> {
   const resp = await fetchImpl(url, {
+    signal,
     headers: {
       'User-Agent': DEFAULT_UA,
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -460,6 +534,8 @@ export interface ResolveSkuOptions {
   languages?: string[];
   fetchImpl?: typeof fetch;
   base?: string;
+  /** Optional abort signal for cancellation. */
+  signal?: AbortSignal;
 }
 
 export interface ResolvedSku {
@@ -496,7 +572,7 @@ export async function resolveSkuWithHtml(
     source = 'url-override';
   } else {
     const searchUrl = `${base}/catalogsearch/result/?q=${encodeURIComponent(sku)}`;
-    const searchHtml = await fetchHtml(searchUrl, fetchImpl);
+    const searchHtml = await fetchHtml(searchUrl, fetchImpl, opts.signal);
 
     // attribute order varies (142 may precede 93) - do not assume "93" is first.
     if (/"attributes"\s*:\s*\{\s*"(?:93|142)"/.test(searchHtml)) {
@@ -527,8 +603,10 @@ export async function resolveSkuWithHtml(
     }
   }
 
-  const enHtml = await fetchHtml(resolvedUrl, fetchImpl);
-  if (!enHtml.includes(sku)) {
+  const enHtml = await fetchHtml(resolvedUrl, fetchImpl, opts.signal);
+  // Case-insensitive: stores may render the SKU lower-cased (or only inside
+  // JSON), which is still the right page.
+  if (!enHtml.toLowerCase().includes(sku.toLowerCase())) {
     throw new Error(`SKU ${sku} not present on ${resolvedUrl} - wrong slug?`);
   }
 

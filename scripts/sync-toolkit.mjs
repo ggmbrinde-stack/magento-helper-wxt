@@ -2,12 +2,12 @@
 // Generate the two delivery copies of the single toolkit stylesheet.
 //
 //   src/ui/toolkit.css  (the ONLY source — edit this)
-//     -> public/ui/toolkit.css   served as a <link> via web_accessible_resources
+//     -> src/public/ui/toolkit.css   served as a <link> via web_accessible_resources
 //     -> src/ui/toolkitCss.ts    inline <style id="mhx-ui"> fallback string
 //
 // Usage:
 //   node scripts/sync-toolkit.mjs          regenerate (idempotent)
-//   node scripts/sync-toolkit.mjs --check  exit 1 if a copy is out of date
+//   node scripts/sync-toolkit.mjs --check  exit 1 if any copy is out of date
 //
 // Keeping both copies generated from one file is what makes "one sheet per
 // page" enforceable: `npm run check:ui` fails on drift, so a hand edit to a
@@ -19,7 +19,6 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(root, 'src', 'ui', 'toolkit.css');
-const PUBLIC = join(root, 'public', 'ui', 'toolkit.css');
 const SRC_PUBLIC = join(root, 'src', 'public', 'ui', 'toolkit.css');
 const TS = join(root, 'src', 'ui', 'toolkitCss.ts');
 
@@ -35,12 +34,11 @@ const literal = css
 
 const ts = `// GENERATED from src/ui/toolkit.css by scripts/sync-toolkit.mjs — do not edit.
 // Inline fallback copy of the toolkit sheet (the <link> copy is
-// public/ui/toolkit.css). Regenerate with \`npm run ui:sync\`.
+// src/public/ui/toolkit.css). Regenerate with \`npm run ui:sync\`.
 export const TOOLKIT_CSS = \`${literal}\`;
 `;
 
 const targets = [
-  [PUBLIC, css],
   [SRC_PUBLIC, css],
   [TS, ts],
 ];

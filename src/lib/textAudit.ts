@@ -583,6 +583,8 @@ export function getTextChecks(
   byLang: LangMap,
   genderRules: GenderRules = GENDER_RULES,
   compositionRules: CompositionRules | null = COMPOSITION_RULES,
+  /** Languages the caller asked for; an unrequested page is not "missing". */
+  requested: TextLang[] = TEXT_LANGS,
 ): TextCheckResult {
   const findings: TextFinding[] = [];
   const flags: string[] = [];
@@ -613,7 +615,9 @@ export function getTextChecks(
     }
   }
 
+  const wanted = new Set<TextLang>(requested);
   for (const lang of ['ES', 'FR'] as const) {
+    if (!wanted.has(lang)) continue;
     const o = byLang[lang];
     if (!o) {
       flags.push(`${lang} page not extracted (missing html)`);
@@ -1128,6 +1132,8 @@ export interface TextAuditInput {
   byLang: LangMap;
   genderRules?: GenderRules;
   compositionRules?: CompositionRules | null;
+  /** Languages the caller asked for (default: every language present). */
+  langs?: TextLang[];
 }
 
 /** Run the checks for one SKU (the extracted PDP fields are the evidence). */
@@ -1163,13 +1169,23 @@ export function auditText(input: TextAuditInput): TextAuditResult {
     return base;
   }
 
+  const requested = input.langs?.length
+    ? TEXT_LANGS.filter((l) => input.langs?.includes(l))
+    : TEXT_LANGS;
   const reviewFlags: string[] = [];
   for (const lang of ['ES', 'FR'] as const) {
+    if (!requested.includes(lang)) continue;
     if (!byLang[lang]) reviewFlags.push(`${lang} html missing - partial matrix`);
   }
 
   const matrix = buildTextMatrix(byLang);
-  const chk = getTextChecks(sku, byLang, input.genderRules, input.compositionRules);
+  const chk = getTextChecks(
+    sku,
+    byLang,
+    input.genderRules,
+    input.compositionRules,
+    requested,
+  );
   reviewFlags.push(...chk.flags);
 
   return {

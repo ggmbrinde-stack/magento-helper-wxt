@@ -2,7 +2,7 @@ import { h, render } from 'preact';
 import { Dashboard } from '../../dashboard/Dashboard';
 import { primeTheme } from '../../lib/theme';
 import { watchToolkitColors } from '../../ui/tokens';
-import '../sidepanel/panel.css';
+import '../../ui/toolkit.css';
 import '../../lib/theme.css';
 import '../../dashboard/dashboard.css';
 

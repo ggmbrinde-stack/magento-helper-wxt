@@ -9,10 +9,17 @@
 // colour. A feature may set `variant`/`tone`, but colours, radii, paddings and
 // fonts belong to toolkit.css alone.
 
-export type ButtonVariant = 'default' | 'danger' | 'accent' | 'ghost' | 'icon';
-export type IconName = 'close' | 'check' | 'copy' | 'chevronDown' | 'chevronRight';
+export type ButtonVariant = 'default' | 'danger' | 'accent' | 'ok' | 'ghost' | 'icon';
+export type IconName =
+  | 'close'
+  | 'check'
+  | 'copy'
+  | 'externalLink'
+  | 'chevronDown'
+  | 'chevronRight';
 
 import { ICONS } from './icons';
+export type { FieldOptions } from './field';
 
 export interface ButtonOptions {
   label: string;
@@ -37,28 +44,40 @@ export function button(options: ButtonOptions): HTMLButtonElement {
   if (variant !== 'default') el.dataset['variant'] = variant;
   el.textContent = options.label;
   if (options.title) el.title = options.title;
+  if (variant === 'icon' && !options.label) {
+    el.setAttribute('aria-label', options.title ?? 'Action');
+  }
   if (options.disabled) el.disabled = true;
   if (options.onClick) {
     el.addEventListener('click', options.onClick as EventListener);
   }
   if (options.icon && variant === 'icon') {
-    const iconSvg = iconEl(options.icon);
-    el.appendChild(iconSvg);
+    el.prepend(createIconElement(options.icon));
   }
   return el;
 }
 
-function iconEl(name: IconName): SVGSVGElement {
+/**
+ * The SVG glyph for an `ICONS` entry. Sizing lives in the stylesheet
+ * (`.mhx-icon`); the intrinsic 16x16 box comes from the width/height/viewBox
+ * attributes here, which also keep the glyph correct before the sheet lands.
+ */
+export function createIconElement(name: IconName): SVGSVGElement {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
   svg.setAttribute('width', '16');
   svg.setAttribute('height', '16');
   svg.setAttribute('viewBox', '0 0 16 16');
   svg.setAttribute('fill', 'currentColor');
-  svg.style.display = 'inline-block';
-  svg.style.flexShrink = '0';
+  svg.setAttribute('class', 'mhx-icon');
   const path = document.createElementNS(ns, 'path');
   path.setAttribute('d', ICONS[name]);
+  if (name === 'close' || name === 'copy' || name === 'externalLink') {
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'currentColor');
+    path.setAttribute('stroke-width', '1.8');
+    path.setAttribute('stroke-linecap', 'round');
+  }
   svg.appendChild(path);
   return svg;
 }
@@ -131,7 +150,7 @@ export function chip(options: ChipOptions): HTMLElement {
 /** A count / status pill: `.mhx-badge`. */
 export function badge(
   text: string,
-  options: { title?: string; tone?: 'ok' | 'danger' } = {},
+  options: { title?: string; tone?: 'accent' | 'ok' | 'danger' } = {},
 ): HTMLElement {
   const el = document.createElement('span');
   el.className = 'mhx-badge';
@@ -165,6 +184,7 @@ export function segmented(options: SegmentedOptions): HTMLElement {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'mhx-seg-btn';
+    btn.dataset['value'] = option.value;
     const active = option.value === options.active;
     if (active) btn.classList.add('mhx-seg-btn--active');
     btn.setAttribute('aria-pressed', active ? 'true' : 'false');
@@ -178,8 +198,10 @@ export function segmented(options: SegmentedOptions): HTMLElement {
 
 /**
  * A popover *surface* (`.mhx-pop`) with optional item rows — positioning is
- * the caller's job, because only the feature knows its anchor. Kept for the
- * enhanceSelect port (phase 5); not yet used by a shipped feature.
+ * the caller's job, because only the feature knows its anchor. In use for the
+ * bulk-action submenu (`massactionButtons.ts`); `enhanceSelect.ts` still builds
+ * its own `.mhx-pop` around a search field and a listbox, which this surface
+ * does not model.
  */
 export function popover(
   children: Node[],
@@ -189,5 +211,30 @@ export function popover(
   el.className = 'mhx-pop';
   if (options.label) el.setAttribute('aria-label', options.label);
   el.append(...children);
+  return el;
+}
+
+export interface ToastOptions {
+  tone?: 'info' | 'success' | 'error';
+  onClose?: () => void;
+}
+
+export function toast(text: string, options: ToastOptions = {}): HTMLDivElement {
+  const tone = options.tone ?? 'info';
+  const el = document.createElement('div');
+  el.className = `mhx-toast mhx-toast--${tone}`;
+  el.setAttribute('role', tone === 'error' ? 'alert' : 'status');
+  el.setAttribute('aria-live', tone === 'error' ? 'assertive' : 'polite');
+  const message = document.createElement('span');
+  message.textContent = text;
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.textContent = '×';
+  close.setAttribute('aria-label', 'Dismiss notification');
+  close.addEventListener('click', () => {
+    el.remove();
+    options.onClose?.();
+  });
+  el.append(message, close);
   return el;
 }

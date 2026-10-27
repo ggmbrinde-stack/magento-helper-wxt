@@ -101,7 +101,7 @@
   gap: 8px;
 }
 
-.mhx-field {
+.mhx-panel-field {
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -110,15 +110,15 @@
   min-width: 0;
 }
 
-.mhx-field--block {
+.mhx-panel-field--block {
   width: 100%;
 }
 
-.mhx-field--store {
+.mhx-panel-field--store {
   flex: 0 0 110px;
 }
 
-.mhx-field span {
+.mhx-panel-field span {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -165,25 +165,6 @@ button {
   cursor: default;
 }
 
-.mhx-error {
-  background: var(--mhx-bad-bg);
-  border: 1px solid var(--mhx-bad-border);
-  color: var(--mhx-bad);
-  border-radius: 6px;
-  padding: 8px;
-}
-
-.mhx-saved {
-  color: var(--mhx-ok);
-  font-size: 12px;
-}
-
-.mhx-note {
-  font-size: 11px;
-  color: var(--mhx-muted);
-  margin: 0;
-}
-
 .mhx-result h2 {
   font-size: 13px;
   margin: 8px 0 4px;
@@ -215,10 +196,32 @@ button {
   word-break: break-word;
 }
 
-.mhx-empty {
-  color: var(--mhx-muted);
-  font-style: italic;
-  margin: 4px 0;
+.mhx-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  background: var(--mhx-surface, #f3f4f6);
+  color: var(--mhx-text, #374151);
+  font-size: 13px;
+}
+
+.mhx-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--mhx-border, #d1d5db);
+  border-top-color: var(--mhx-accent, #d81b60);
+  border-radius: 50%;
+  animation: mhx-spin 0.7s linear infinite;
+  flex: 0 0 auto;
+}
+
+@keyframes mhx-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .mhx-errors {
@@ -440,28 +443,8 @@ a {
   font-size: 12px;
 }
 
-.mhx-field-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--mhx-muted-2);
-  margin-bottom: 2px;
-}
-
-.mhx-source {
-  margin-left: 6px;
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--mhx-muted);
-}
-
-.mhx-domain {
-  min-width: 22px;
-  font-size: 11px;
-}
-
 .mhx-errors-head {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-

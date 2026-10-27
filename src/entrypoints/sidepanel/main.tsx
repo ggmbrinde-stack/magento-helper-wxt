@@ -4,6 +4,7 @@ import { primeTheme } from '../../lib/theme';
 import { watchToolkitColors } from '../../ui/tokens';
 import cssText from './panel.css?raw';
 import themeCss from '../../lib/theme.css?raw';
+import toolkitCss from '../../ui/toolkit.css?raw';
 
 // The panel renders in a Shadow DOM so Magento's page CSS cannot leak in
 // (Build Plan rule: isolated UI). WXT serves sidepanel.html; we mount into it.
@@ -18,7 +19,7 @@ if (host) {
 
   const shadow = host.attachShadow({ mode: 'open' });
   const style = document.createElement('style');
-  style.textContent = `${cssText}\n${themeCss}`;
+  style.textContent = `${toolkitCss}\n${cssText}\n${themeCss}`;
   shadow.appendChild(style);
   const mount = document.createElement('div');
   shadow.appendChild(mount);

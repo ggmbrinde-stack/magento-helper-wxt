@@ -1,7 +1,13 @@
 # Audit summary — performance, defects, UI toolkit
 
 **Date:** 2026-10-21 · **Scope:** `magento-helper-wxt` (content script, injected
-UI, MV3 worker) · **Status:** analysis only, no `src` changes shipped.
+UI, MV3 worker) · **Status:** historical audit snapshot; its findings describe
+the repository on 2026-10-21, not the current implementation.
+
+The separate SKU Lookup tab discussed in later audit details has since been
+removed. Resolve SKU is now the only SKU-resolution flow and combines the
+canonical storefront resolver, Notion enrichment, full-result caching, and
+Magento admin-grid fallback. See the current flow description in the README.
 
 Three documents, one per question:
 

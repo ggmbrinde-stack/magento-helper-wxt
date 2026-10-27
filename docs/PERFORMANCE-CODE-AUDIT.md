@@ -10,6 +10,13 @@ on a synthetic Magento-like grid (`.output/scanbench`, harness described in §8)
 Nothing here is guesswork: every number below came from this repo at this
 revision.
 
+> Historical snapshot: this audit describes the repository as of 2026-10-21.
+> The later SKU-flow consolidation removed the separate Lookup tab and
+> `LOOKUP_SKU` path. The current user-facing flow is Resolve SKU, implemented
+> in `src/lib/skuResolution.ts` and described in the README. The old dispatch
+> example and D4 cache proposal below document the audit-time implementation,
+> not the current message or cache architecture.
+
 > Repo-state note: while this audit ran, two diagnostic artefacts appeared
 > inside `src/lib` (`adminNavToggle-diag.ts` — a console IIFE fused with a copy
 > of `hideRail`'s body, so it did not parse — and an empty
@@ -493,6 +500,9 @@ function scanGrid(root: ParentNode) {
 
 ### 6.4 Background
 
+Historical dispatch sketch from the audit revision; the active SKU resolution
+request is now `RESOLVE_SKU` and is handled by `src/lib/skuResolution.ts`.
+
 ```ts
 const handlers = {
   GET_SKU: () => ({ sku: readPageSku() }),
@@ -610,7 +620,7 @@ Verified by reading the code paths named below. Severities are about user-visibl
 | D1 | **Fixed** | High (latent) | Error **priority is exact-case only**: `priority: z.string().default('Low')` accepts anything, while the icon/colour/rank maps key on `High`/`Medium`/`Low`. A Notion value like `high`, `HIGH` or `P1` silently renders as *low* and can never be upgraded by a later high indicator (`PRIORITY_RANK[...] ?? 0`). | `schemas.ts:35`, `content.ts:88–98`, `content.ts:858–870` | Normalise once (`z.string().transform(p => canonical(p))`) or `z.enum(['High','Medium','Low'])`; rank from the canonical value only. *(Fixed 2026-10-21)* |
 | D2 | **Fixed** | Medium | Error indicators are **never cleared and pollute Magento's markup**: `addIndicator` sets `label.style.display = 'inline-flex'` permanently, and nothing removes `.mhx-error-indicator` / `mhx-error-label--*` when the error set changes. | `content.ts:866–907` (only creation + replace-by-priority) | Clear the previous set at the start of `applyErrorMarkup`; use a class (`mhx-error-label` host class) instead of inline styles on Magento's label. *(Fixed 2026-10-21)* |
 | D3 | **Fixed** | Medium | Receiving error markup **expands every collapsed section on the page** (`expandCollapsedSections()` clicks all `.admin__collapsible-block-wrapper._hide`), not just the ones with errors — a large layout jump and scroll position loss on big product pages. | `content.ts:846–855`, called from `applyErrorMarkup` | Expand only ancestors of the matched fields (`field.closest('._hide')` chain), or offer an explicit "show all" control. *(Fixed 2026-10-21)* |
-| D4 | **Fixed** | Medium | `resolverMap` **grows forever and is rewritten whole** on every product page. Three independent read-modify-write paths can lose each other's entries (last writer wins). | `content.ts:728–751`, `background.ts:255–262`, `lookup.ts:289` | One writer (background) + a small `RESOLVE_CACHE_PUT` message; write only when the entry changed; prune by `timestamp`/max entries. *(Fixed 2026-10-21)* |
+| D4 | **Fixed** | Medium | `resolverMap` **grows forever and is rewritten whole** on every product page. Three independent read-modify-write paths can lose each other's entries (last writer wins). | `content.ts:728–751`, `background.ts:255–262`, `lookup.ts:289` (audit-time locations) | Audit-time fix: one background writer via `RESOLVE_CACHE_PUT`. The later SKU-flow consolidation removed the compact content-script cache write and the separate lookup writer; Resolve SKU now stores full resolver payloads through `src/lib/skuResolution.ts`. Legacy compact entries are not accepted as complete resolver results. *(Original D4 fix 2026-10-21; current flow documented in README.)* |
 | D5 | **Fixed** | Medium | Bulk-actions strip can be inserted **after the grid table** on themes where the header row's parent also hosts the table/wrap; `stripHost` appends when there is no next sibling. | `massactionButtons.ts` `stripHost()` | After choosing the position, check the next sibling chain for `table.data-grid` / `.admin__data-grid-wrap` and insert before it instead. *(Fixed 2026-10-21)* |
 | D6 | **Fixed** | Medium | Copy-SKU toolbar buttons can land in **another grid's toolbar**: when the owning grid has no search wrap, the fallback is `document.querySelector('.data-grid-search-control-wrap…')`, which may be a different grid's. | `content.ts:431–437` | Scope strictly to the grid's own `outer` (header/`data-role="grid"`); if absent, skip rather than borrow another grid's toolbar. *(Fixed 2026-10-21)* |
 | D7 | Open | Medium | With the sidebar collapsed, if Magento replaces `.page-wrapper` in-page, the **new wrapper keeps its rail margin** while the rail stays hidden — the grey band returns (the retry logic only re-hides the rail). | `adminNavToggle.ts` `setHidden()` (restores only the saved nodes) | Keep the collapsed offsets derived: on each scan, re-measure and zero any element that is still indented while `mhx-nav-hidden` is set. |
@@ -655,4 +665,3 @@ re-investigated:
 - The defect sweep was targeted (message layer, error markup, resolver cache,
   enhancement placement, picker/select handling), not an exhaustive audit of
   `imageAudit.ts` / `textAudit.ts` / `notion.ts` parsing paths.
-

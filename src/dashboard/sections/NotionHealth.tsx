@@ -163,9 +163,19 @@ export function NotionHealth() {
             </b>
           </li>
           <li>
-            <span>Writes flag</span>
+            <span>Listing Errors writes</span>
             <b class={report?.writesEnabled ? 'ok' : 'bad'}>
               {report ? (report.writesEnabled ? 'create-only enabled' : 'disabled') : '…'}
+            </b>
+          </li>
+          <li>
+            <span>SKU Library writes</span>
+            <b class={report?.libraryUpdatesEnabled ? 'ok' : 'bad'}>
+              {report
+                ? report.libraryUpdatesEnabled
+                  ? 'whitelist updates enabled'
+                  : 'updates disabled (create-only)'
+                : '…'}
             </b>
           </li>
         </ul>
@@ -223,7 +233,7 @@ export function NotionHealth() {
       {report ? (
         <section class="db-card db-wide">
           <div class="db-card-head">
-            <h2>Write simulation</h2>
+            <h2>Listing Errors write simulation</h2>
             <StatusBadge status={report.simulation.ran ? (report.simulation.ok ? 'ok' : 'fail') : 'warn'} />
           </div>
           <p class="db-note">{report.simulation.reason}</p>
@@ -238,6 +248,46 @@ export function NotionHealth() {
               </thead>
               <tbody>
                 {report.simulation.rows.map((row) => (
+                  <tr key={row.property}>
+                    <td>{row.property}</td>
+                    <td>
+                      <StatusBadge status={row.status} />
+                    </td>
+                    <td class="db-notes">{row.detail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : null}
+        </section>
+      ) : null}
+
+      {report ? (
+        <section class="db-card db-wide">
+          <div class="db-card-head">
+            <h2>SKU Library write simulation</h2>
+            <StatusBadge
+              status={
+                report.librarySimulation.ran
+                  ? report.librarySimulation.ok
+                    ? 'ok'
+                    : 'fail'
+                  : 'warn'
+              }
+            />
+          </div>
+          <p class="db-note">{report.librarySimulation.reason}</p>
+          {report.librarySimulation.rows.length > 0 ? (
+            <table class="db-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Status</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                {report.librarySimulation.rows.map((row) => (
                   <tr key={row.property}>
                     <td>{row.property}</td>
                     <td>

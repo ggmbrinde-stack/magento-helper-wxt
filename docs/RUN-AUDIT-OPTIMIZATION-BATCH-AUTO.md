@@ -207,7 +207,8 @@ may not be material next to network, model, or image hashing.
 ### F. Notion push
 
 Do not solve batch latency by blindly parallelizing Notion writes. Listing
-Errors rows are deduplicated by SKU + title before creation. The SKU Library
+Errors rows are deduplicated by SKU + title before creation and remain
+create-only. The SKU Library
 path performs lookups and may read back changed rows. The shared client uses a
 serialized queue with spacing and retries.
 
@@ -222,7 +223,8 @@ Safe areas to measure/improve:
 
 The public Notion documentation describes per-connection and workspace limits
 and specifically recommends queuing requests and respecting retry headers.
-Keep user confirmation, create-only behavior, and database rules intact.
+Keep user confirmation, Listing Errors create-only behavior, the SKU Library
+update whitelist, and the existing database-specific rules intact.
 
 ## Benchmark matrix
 
