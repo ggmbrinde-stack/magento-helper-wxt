@@ -4,9 +4,9 @@ import { browser } from 'wxt/browser';
 import {
   DEFAULT_LISTING_ERRORS_DB,
   DEFAULT_SKU_LIBRARY_DB,
-} from '../../lib/notion';
-import type { FetchSkuDataResponse } from '../../lib/messages';
-import { STORE_VIEWS, detectStoreView } from '../../lib/store';
+} from '../../shared/notion/client';
+import type { FetchSkuDataResponse } from '../../core/messages';
+import { STORE_VIEWS, detectStoreView } from '../../shared/store';
 import { SettingsForm } from './SettingsForm';
 import { FillPanel } from './FillPanel';
 import { DataPanel } from './DataPanel';

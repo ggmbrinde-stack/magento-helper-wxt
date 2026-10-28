@@ -4,13 +4,13 @@ import { browser } from 'wxt/browser';
 import type {
   ApplyFieldResponse,
   GetFormStateResponse,
-} from '../../lib/messages';
+} from '../../core/messages';
 import {
   FIELD_LABELS,
   MAGE_FIELDS,
   type MageFieldKind,
-} from '../../lib/magentoForm';
-import { WRITES_ENABLED } from '../../lib/flags';
+} from '../../page/shared/magentoForm';
+import { WRITES_ENABLED } from '../../shared/flags';
 
 interface FillPanelProps {
   sku: string;

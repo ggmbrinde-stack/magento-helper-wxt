@@ -1,13 +1,13 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
-import type { FetchSkuDataResponse } from '../../lib/messages';
-import type { ListingError } from '../../lib/schemas';
+import type { FetchSkuDataResponse } from '../../core/messages';
+import type { ListingError } from '../../shared/schemas';
 import {
   OPEN_STORE_VIEWS,
   STORE_VIEW_IDS,
   withStoreView,
-} from '../../lib/store';
+} from '../../shared/store';
 import { CopyButton } from './CopyButton';
 
 interface DataPanelProps {

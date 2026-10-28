@@ -1,9 +1,9 @@
 import { h, render } from 'preact';
 import { App } from './App';
-import { primeTheme } from '../../lib/theme';
+import { primeTheme } from '../../ui/theme';
 import { watchToolkitColors } from '../../ui/tokens';
 import cssText from './panel.css?raw';
-import themeCss from '../../lib/theme.css?raw';
+import themeCss from '../../ui/theme.css?raw';
 import toolkitCss from '../../ui/toolkit.css?raw';
 
 // The panel renders in a Shadow DOM so Magento's page CSS cannot leak in

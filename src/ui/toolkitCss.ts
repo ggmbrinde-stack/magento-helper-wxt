@@ -11,7 +11,7 @@ export const TOOLKIT_CSS = `/* =================================================
      fallback declared FIRST, so the same rules work on a light or a dark
      admin and engines without color-mix get a sane grey.
    - Layer 2 \`--mhx-*\`: extension-owned surfaces (side panel, dashboard,
-     theme preview), published by lib/theme.ts. NEVER use them here: the
+     theme preview), published by src/ui/theme.ts. NEVER use them here: the
      admin page is not our surface — that mistake caused the dark-admin
      contrast bug. \`--mhx-surface\` is the panel's white (or dark) card, not
      the page, and it only lands once storage resolves, so
@@ -29,14 +29,14 @@ export const TOOLKIT_CSS = `/* =================================================
      keyed off state the page states about itself, never off the palette: the
      \`currentColor\`-derived layer 1 (works on any admin, before any JS), and
      the measured page-surface blocks (\`data-mhx-page\` + \`--mhx-pg-page-ink\`,
-     published by lib/magentoTheme.ts). Note \`data-theme\` is deliberately NOT
+     published by src/page/theme/magentoTheme.ts). Note \`data-theme\` is deliberately NOT
      the signal: it records the theme the operator asked for, and a Magento
      admin with its own dark theme is dark while \`data-theme\` still says
      "light" and the palette is still the light one.
    - Features never style themselves: they pass a modifier (\`data-variant\`,
      \`data-tone\`, \`--active\`, or a named state such as \`--high\`), and nothing
      else. No colour, radius, padding or font lives outside this file (plus
-     lib/theme.ts for extension-owned surfaces); content.ts no longer injects
+     src/ui/theme.ts for extension-owned surfaces); content.ts no longer injects
      a stylesheet of its own, and its controls are the "Magento page features"
      section at the bottom of this file.
 
@@ -109,7 +109,7 @@ export const TOOLKIT_CSS = `/* =================================================
 }
 
 /* ---- measured page surface -------------------------------------------------
-   lib/magentoTheme.ts measures the page it has just painted and publishes two
+   src/page/theme/magentoTheme.ts measures the page it has just painted and publishes two
    facts on <html>: \`data-mhx-page="light|dark"\`, and the page's own text
    colour as \`--mhx-pg-page-ink\`.
 
@@ -827,7 +827,7 @@ export const TOOLKIT_CSS = `/* =================================================
 }
 
 /* ---- toast (bottom-right notification) ---------------------------------------- */
-/* Extension-owned overlay surface, like lib/theme.ts: it floats above the page
+/* Extension-owned overlay surface, like src/ui/theme.ts: it floats above the page
    and must be readable on both admins, so it carries its own colours. */
 .mhx-toast {
   position: fixed;
@@ -920,6 +920,296 @@ header.page-header > .mhx-header-actions .action-default {
    simple primitives take \`data-variant\`. Nothing here is written from
    content.ts any more.
    ---------------------------------------------------------------------------- */
+
+/* --- companion chrome for the custom-options editors -----------------------
+   This is optional layout wrapped AROUND Magento's own Knockout editors. It
+   does not replace the editor's inputs/selects/templates: those remain Magento's
+   source of truth (Knockout, validation, Save). The companion only adds:
+   - a clear panel separator between the Options table and the Options Items
+     table, because both editors render as similar repeat rows and the page
+     otherwise blends them;
+   - readable labels lifted from the editor row (option name, parent name,
+     selected item name) so the row can be scanned without opening every
+     dropdown;
+   - a compact store chip set per option row when the same store(s) repeat,
+     so store assignment stops being one tiny dropdown per row;
+   - a search control for long selects (item name, parent) without rewiring
+     Magento's own select.
+
+   Everything here is layer 1 (\`--mhx-pg-*\`) plus the one opaque surface we own
+   for tooltips/chips that float over the page. No \`--mhx-*\` page chrome.
+   ---------------------------------------------------------------------------- */
+
+.mhx-opt-shell {
+  box-sizing: border-box;
+  margin: 12px 0 16px;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  background: var(--mhx-pg-fill);
+
+  /* Design A: the shell gains a contained look and a scroll cap so the whole
+     options editor stays glued to the page instead of drifting to the bottom
+     of a long form. */
+}
+
+.mhx-opt-shell--scroll {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.mhx-opt-panel {
+  box-sizing: border-box;
+  padding: 10px 12px;
+}
+
+.mhx-opt-panel--items {
+  border-top: 1px solid var(--mhx-pg-line-soft);
+}
+
+.mhx-opt-head-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.mhx-opt-head-tab {
+  box-sizing: border-box;
+  padding: 4px 10px;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  background: transparent;
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  font: var(--mhx-pg-font);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mhx-opt-head-tab[data-active="true"] {
+  background: var(--mhx-pg-accent);
+  color: var(--mhx-pg-on-accent);
+  border-color: var(--mhx-pg-accent);
+}
+
+.mhx-opt-head-tab[data-active="false"] {
+  opacity: 0.7;
+}
+
+.mhx-opt-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  font: var(--mhx-pg-font);
+
+  /* Design A: stacked editor bands with a compact tab strip in one band.
+     This panel is not the app shell — the extension has its own real UI for
+     that — but long custom-options editors still benefit from a contained
+     header so the page does not read as a loose list of rows. */
+}
+
+.mhx-opt-head strong {
+  font-weight: 600;
+}
+
+.mhx-opt-head .mhx-opt-count {
+  margin-left: auto;
+  color: var(--mhx-pg-muted);
+  font-size: 12px;
+}
+
+.mhx-opt-band {
+  box-sizing: border-box;
+  margin: 10px 0 12px;
+}
+
+/* Row chips: store set + parent link, kept compact so the editor table still
+   breathes. */
+.mhx-opt-row-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  font: var(--mhx-pg-font);
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+}
+
+.mhx-opt-store {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: 3px;
+  background: var(--mhx-pg-fill);
+  color: var(--mhx-pg-muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.mhx-opt-store strong {
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  font-weight: 600;
+}
+
+.mhx-opt-parent {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 7px;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: 10px;
+  background: var(--mhx-pg-fill);
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.mhx-opt-parent strong {
+  color: var(--mhx-pg-accent);
+  font-weight: 600;
+}
+
+/* Readable name label lifted from the editor row. */
+.mhx-opt-name,
+.mhx-opt-item-name {
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  font: var(--mhx-pg-font);
+  line-height: 1.35;
+}
+
+.mhx-opt-name {
+  font-weight: 600;
+}
+
+.mhx-opt-del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--mhx-pg-muted);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.mhx-opt-del:hover {
+  color: var(--mhx-pg-danger);
+  border-color: var(--mhx-pg-danger);
+  background: var(--mhx-pg-danger-wash);
+}
+
+/* Search control for long selects (item name / parent). It sits adjacent to
+   the row, not on top of Magento's markup. */
+.mhx-opt-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--mhx-pg-font);
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+}
+
+.mhx-opt-search {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0 0 4px;
+}
+
+.mhx-opt-search input {
+  box-sizing: border-box;
+  width: 160px;
+  max-width: 100%;
+  padding: 3px 6px;
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  color: inherit;
+}
+
+.mhx-opt-search input:focus-visible {
+  outline: none;
+  border-color: var(--mhx-pg-accent);
+  box-shadow: 0 0 0 1px var(--mhx-pg-accent);
+}
+
+.mhx-opt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font: var(--mhx-pg-font);
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  background: var(--mhx-pg-fill);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+}
+
+.mhx-opt-chip strong {
+  font-weight: 600;
+  color: var(--mhx-pg-accent);
+}
+
+.mhx-opt-chip em {
+  color: var(--mhx-pg-muted);
+  font-style: normal;
+}
+
+.mhx-opt-chip .mhx-opt-chip-close {
+  margin-left: 2px;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.mhx-opt-chip .mhx-opt-chip-close:hover {
+  background: var(--mhx-pg-fill-hover);
+  color: var(--mhx-pg-danger);
+}
+
+/* Visibility toggle for the companion row. Kept subtle so Magento's own
+   row actions stay the primary delete affordance; this is just a fast
+   companion control. */
+.mhx-opt-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px dashed var(--mhx-pg-line-soft);
+}
+
+.mhx-opt-row:first-child {
+  border-top: 0;
+}
+
+.mhx-opt-row[data-hidden="true"] {
+  display: none;
+}
+
+.mhx-opt-row > :last-child {
+  justify-self: end;
+}
+
+/* A small badge that says which Option an item row belongs to.
+   This is a read-only reference line, not a control; it exists only because
+   the page already requires a per-row store dropdown to identify the current
+   option, and a companion row would otherwise show items with no visible
+   context. */
+.mhx-opt-belongs {
+  color: var(--mhx-pg-muted);
+  font-size: 11px;
+}
 
 /* --- copy-SKU button (product fields, grid cells) -------------------------- */
 .mhx-sku-copy-btn {
@@ -1196,5 +1486,140 @@ header.page-header > .mhx-header-actions .action-default {
   background: var(--mhx-pg-ok-wash);
   border: 1px solid rgba(22, 163, 74, 0.45);
   border: 1px solid color-mix(in srgb, var(--mhx-pg-ok) 45%, transparent);
+}
+
+/* ----------------------------------------------------------------------------
+   Options editor: per-language companion row + option-item groups
+   (src/page/features/options-companion, src/page/features/options-items)
+
+   These replace the inline styles the features used to write with
+   \`style.cssText\`. Nothing here hardcodes a surface or an ink colour: the row
+   inherits the admin's own colour and only tints with layer-1 tokens, so it
+   reads on a light and on a dark Magento admin alike.
+   -------------------------------------------------------------------------- */
+
+.mhx-opt-lang-row > .mhx-opt-lang-cell {
+  padding: 4px 12px 8px;
+  border-bottom: 2px solid var(--mhx-pg-line-soft);
+  background: var(--mhx-pg-fill);
+}
+
+.mhx-opt-lang-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.mhx-opt-lang-grid {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.mhx-opt-lang-field {
+  display: flex;
+  flex: 1;
+  min-width: 130px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mhx-opt-lang-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: currentColor;
+  opacity: 0.55;
+}
+
+.mhx-opt-lang-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 7px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  background: var(--mhx-pg-fill);
+  border: 1px solid var(--mhx-pg-line);
+  border-radius: var(--mhx-pg-radius);
+}
+
+.mhx-opt-lang-input:focus-visible {
+  outline: none;
+  border-color: var(--mhx-pg-accent);
+  box-shadow: 0 0 0 1px var(--mhx-pg-accent);
+}
+
+.mhx-opt-lang-input--off {
+  opacity: 0.3;
+}
+
+.mhx-opt-lang-input--sort {
+  width: 60px;
+  text-align: center;
+}
+
+.mhx-opt-lang-sortcell {
+  display: flex;
+  width: 60px;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mhx-opt-lang-del {
+  margin-left: 4px;
+  align-self: flex-end;
+  flex-shrink: 0;
+}
+
+/* The Original / Lang-fields switch above the options table. */
+.mhx-opt-mode-btn {
+  margin: 6px 0 4px;
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+  background: var(--mhx-pg-fill);
+  border: 1px solid var(--mhx-pg-line-strong, var(--mhx-pg-line));
+  border-radius: var(--mhx-pg-radius);
+  cursor: pointer;
+}
+
+.mhx-opt-mode-btn:hover {
+  background: var(--mhx-pg-fill-hover);
+}
+
+.mhx-opt-group-head {
+  cursor: pointer;
+  user-select: none;
+  background: var(--mhx-pg-fill);
+}
+
+.mhx-opt-group-head:hover {
+  background: var(--mhx-pg-fill-hover);
+}
+
+.mhx-opt-group-title {
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--mhx-pg-page-ink, var(--mhx-pg-ink));
+}
+
+.mhx-opt-group-arrow {
+  margin-right: 6px;
+  font-size: 11px;
+}
+
+.mhx-opt-group-count {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.55;
 }
 `;

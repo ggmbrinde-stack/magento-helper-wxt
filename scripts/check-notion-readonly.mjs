@@ -41,7 +41,7 @@ const FORBIDDEN = [
 // permitted for the SKU Library ONLY. The PATCH endpoint and update helper are
 // permitted in exactly one file — the guarded writer — and nowhere else.
 // Listing Errors stays create-only.
-const PATCH_ALLOWED_FILES = new Set(['src/lib/skuLibraryWriter.ts']);
+const PATCH_ALLOWED_FILES = new Set(['src/audit/skuLibraryWriter.ts']);
 const PATCH_PATH = /^\/v1\/pages\/[^/]+$/;
 // Body completion: a newly created SKU Library page, or an existing page whose
 // body is empty, may receive its dossier body in chunks. The writer checks the

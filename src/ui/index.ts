@@ -10,7 +10,7 @@
 //      fixtures without a chrome runtime, or a link that failed to load.
 //
 // Either way there is exactly ONE toolkit sheet per page, plus at most one
-// theme overlay from lib/magentoTheme.ts. Features call `ensureUi()` before
+// theme overlay from page/theme/magentoTheme.ts. Features call `ensureUi()` before
 // drawing anything; it is idempotent, so every feature can call it and the
 // first call wins.
 

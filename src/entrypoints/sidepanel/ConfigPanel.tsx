@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
-import type { ConfigGroup, GetConfigResponse } from '../../lib/messages';
+import type { ConfigGroup, GetConfigResponse } from '../../core/messages';
 
 interface ConfigPanelProps {
   refreshKey?: number;

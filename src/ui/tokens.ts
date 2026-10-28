@@ -16,7 +16,7 @@
 // widgets, and the content script is the only writer on admin pages.
 
 import { browser } from 'wxt/browser';
-import { isHexColor, readableForeground } from '../lib/theme';
+import { isHexColor, readableForeground } from './theme';
 
 /** Storage key. Deliberately separate from theme/settings keys. */
 export const TOOLKIT_COLORS_KEY = 'toolkitColors';

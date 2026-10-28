@@ -23,15 +23,15 @@ const errors = [];
 
 const allowedColorOwners = new Set([
   'src/ui/tokens.ts',
-  'src/lib/theme.ts',
-  'src/lib/magentoTheme.ts',
+  'src/ui/theme.ts',
+  'src/page/theme/magentoTheme.ts',
   'src/ui/toolkit.css',
   'src/ui/toolkitCss.ts',
   'src/public/ui/toolkit.css',
   'src/entrypoints/sidepanel/panel.css',
-  'src/dashboard/dashboard.css',
-  'src/lib/theme.css',
-  'src/lib/imageAudit.ts',
+  'src/dashboard/shell/dashboard.css',
+  'src/ui/theme.css',
+  'src/audit/imageAudit.ts',
 ]);
 const colorDebtAllowlist = new Set([
 ]);
@@ -128,7 +128,7 @@ if (importantCount > importantBudget) {
 /*
  * G6 — page chrome may read layer 1 ONLY.
  *
- * The seam (toolkit.css header, docs/UI-TOOLKIT.md §2): extension-owned surfaces
+ * The seam (toolkit.css header, docs/ui/UI-TOOLKIT.md §2): extension-owned surfaces
  * (side panel, dashboard, theme pickers, the admin theme sheet) read `--mhx-*`.
  * Everything injected onto the operator's Magento page reads `--mhx-pg-*`, because
  * `--mhx-*` is the LIGHT palette unless OUR dark admin is enabled, so on an admin
@@ -152,9 +152,9 @@ const layerOwnerFiles = new Set([
   'src/public/ui/toolkit.css',
   // Writes the operator's live overrides: knows both layers by definition.
   'src/ui/tokens.ts',
-  'src/lib/theme.ts',
-  'src/lib/theme.css',
-  'src/lib/magentoTheme.ts',
+  'src/ui/theme.ts',
+  'src/ui/theme.css',
+  'src/page/theme/magentoTheme.ts',
 ]);
 /**
  * Extension surfaces, in three shapes:

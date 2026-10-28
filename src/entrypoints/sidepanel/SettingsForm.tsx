@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
-import { ThemePicker } from '../../lib/ThemePicker';
-import { ToolkitColors } from '../../lib/ToolkitColors';
+import { ThemePicker } from '../../dashboard/kit/ThemePicker';
+import { ToolkitColors } from '../../dashboard/kit/ToolkitColors';
 
 export interface SettingsValues {
   notionToken: string;
