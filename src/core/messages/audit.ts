@@ -16,6 +16,7 @@ import type { ListingPreflight, PushReport } from '../../audit';
 import type { ImageAuditResult } from '../../audit';
 import type { TextAuditResult } from '../../audit';
 import type { NotionHealthReport } from '../../audit';
+import type { VariantTargets } from '../../audit';
 
 /* ------------------------------------------------------------------------- */
 /* SKU data for the panel (SKU Library row + open errors, read-only)          */
@@ -46,6 +47,11 @@ export interface ResolverChild {
   color: string;
   size: string;
   backend: string;
+  /**
+   * False when the admin reports the child disabled. Undefined = the page did
+   * not expose a status column (unknown, never assumed enabled).
+   */
+  enabled?: boolean;
 }
 
 export interface ResolverNotionMetadata {
@@ -60,7 +66,10 @@ export interface ResolverNotionMetadata {
 export interface ResolveAdminFallback {
   productId: string;
   backend: string;
+  /** Every assigned child, including disabled ones (the admin matrix is status-blind). */
   children: ResolverChild[];
+  /** Why `children` is empty, when it is. */
+  childrenReason?: string;
 }
 
 /** Run the full resolver (search -> PDP -> parse) for one SKU. */
@@ -78,6 +87,10 @@ export interface ResolveSkuResponse {
   adminBase?: string;
   adminFallback?: ResolveAdminFallback;
   notion?: ResolverNotionMetadata;
+  /** Intended colour x size matrix from the admin matrix (all children, any status). */
+  targets?: VariantTargets;
+  /** Why the target matrix could not be built. */
+  targetsError?: string;
   resolutionError?: string;
   error?: string;
   warning?: string;
@@ -125,7 +138,10 @@ export interface SearchMagentoResponse {
   productId?: string;
   sku?: string;
   status?: string;
+  /** Every assigned child read from the open product's Configurations matrix. */
   children?: ResolverChild[];
+  /** Why `children` is empty, when it is (collapsed section, no edit page, …). */
+  childrenReason?: string;
   error?: string;
 }
 

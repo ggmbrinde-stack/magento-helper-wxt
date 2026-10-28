@@ -49,6 +49,11 @@ export interface ResolverJson {
   configurable_id: number | null;
   simple_product_id: number | null;
   attributes: { '93': ResolverAttribute | null; '142': ResolverAttribute | null };
+  /**
+   * Option count per configurable attribute. Recorded separately from the
+   * options themselves so an empty or shrunken list is visible, not inferred.
+   */
+  attribute_option_counts?: { '93': number; '142': number };
   index: Record<string, ResolverIndexEntry>;
   children: string[];
   child_count: number;
@@ -95,6 +100,14 @@ function isResolverAttribute(value: unknown): value is ResolverAttribute | null 
   );
 }
 
+function isOptionCounts(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    typeof value['93'] === 'number' &&
+    typeof value['142'] === 'number'
+  );
+}
+
 export function isResolverJson(value: unknown): value is ResolverJson {
   if (!isRecord(value)) return false;
   if (!isRecord(value.attributes) || !isRecord(value.index)) return false;
@@ -118,6 +131,8 @@ export function isResolverJson(value: unknown): value is ResolverJson {
       typeof candidate.simple_product_id === 'number') &&
     isResolverAttribute(value.attributes['93']) &&
     isResolverAttribute(value.attributes['142']) &&
+    (candidate.attribute_option_counts === undefined ||
+      isOptionCounts(candidate.attribute_option_counts)) &&
     Object.values(value.index).every((entry) => isStringRecord(entry)) &&
     Array.isArray(candidate.children) &&
     candidate.children.every((child) => typeof child === 'string') &&
@@ -413,6 +428,7 @@ export function parseResolver(input: ParseResolverInput): ResolverJson {
   let productId: number | null = null;
   let attr93: ResolverAttribute | null = null;
   let attr142: ResolverAttribute | null = null;
+  const optionCounts: { '93': number; '142': number } = { '93': 0, '142': 0 };
   const indexMap: Record<string, ResolverIndexEntry> = {};
   let children: string[] = [];
   let opCount = 0;
@@ -460,12 +476,21 @@ export function parseResolver(input: ParseResolverInput): ResolverJson {
       anomalies.push(`child count ${children.length} != optionPrices count ${opCount}`);
     }
 
-    for (const ab of [attr93, attr142]) {
-      if (!ab) continue;
-      for (const o of ab.options) {
+    for (const { id, block } of [
+      { id: '93' as const, block: attr93 },
+      { id: '142' as const, block: attr142 },
+    ]) {
+      if (!block) continue;
+      optionCounts[id] = block.options.length;
+      for (const o of block.options) {
+        // An option with no product is either mid-maintenance or a payload that
+        // lost its children; either way the matrix must show it, not hide it.
+        if (o.products.length === 0) {
+          anomalies.push(`option ${block.code}=${o.label} lists no child products`);
+        }
         for (const p of o.products) {
           if (!(p in indexMap)) {
-            anomalies.push(`option ${ab.code}=${o.label} lists child ${p} that is not in index`);
+            anomalies.push(`option ${block.code}=${o.label} lists child ${p} that is not in index`);
           }
         }
       }
@@ -494,6 +519,7 @@ export function parseResolver(input: ParseResolverInput): ResolverJson {
     configurable_id: productId,
     simple_product_id: simpleId,
     attributes: { '93': attr93, '142': attr142 },
+    attribute_option_counts: optionCounts,
     index: indexMap,
     children,
     child_count: children.length,

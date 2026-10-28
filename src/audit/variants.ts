@@ -5,6 +5,14 @@
  * (schema `bog-variants/1`). Operates purely on a `ResolverJson` (no network).
  * The colour-family step is the only judgment step and comes from a FIXED
  * keyword map; unmatched labels land in "Unclassified (review)".
+ *
+ * Availability independence: colours and sizes come from the attribute option
+ * lists (93 / 142) ONLY - never from the `index` keys or from how many children
+ * exist. The storefront payload is itself status-filtered upstream (Magento
+ * drops options that have no enabled child), so the payload alone cannot prove
+ * a colour is absent. That is what the optional `targets` matrix is for: the
+ * admin Configurations list every assigned child, any status, and gives the
+ * intended grid to measure the storefront against (`missingVsTarget`).
  */
 
 import {
@@ -59,6 +67,29 @@ export function colorFamily(label: string): string {
   return UNCLASSIFIED_FAMILY;
 }
 
+/** A colour x size grid, either measured (storefront) or intended (admin). */
+export interface VariantMatrix {
+  colors: string[];
+  sizes: string[];
+  /** "colour|size" combos that exist in this matrix. */
+  present: string[];
+  /** Combos in the grid that do not exist. */
+  missing: string[];
+  expected: number;
+  source: 'storefront' | 'target';
+}
+
+/**
+ * The intended matrix, built from a source that ignores status (the admin
+ * Configurations list). `source` is carried into the report so the operator
+ * knows what the comparison is against.
+ */
+export interface VariantTargets {
+  colors: string[];
+  sizes: string[];
+  source: string;
+}
+
 export interface VariantSummary {
   store: string;
   confId: string;
@@ -72,12 +103,26 @@ export interface VariantSummary {
   total: number;
   expected: number;
   optCount: number;
+  /** Option counts recorded by the resolver (null when absent in old payloads). */
+  optionCounts: { '93': number | null; '142': number | null };
   /** Missing combos as "colour|size" (labels may contain '/'). */
   missing: string[];
   /** Missing combos with '|' rendered as '/' for display. */
   missingDisplay: string[];
   /** Missing combos grouped by size: "size: colour, colour | size: colour". */
   missingText: string;
+  /** Both grids side by side; `target` is null without admin data. */
+  matrix: { storefront: VariantMatrix; target: VariantMatrix | null };
+  /** Expected combos (admin) with no storefront child — the availability gap. */
+  missingVsTarget: string[];
+  missingVsTargetDisplay: string[];
+  missingVsTargetText: string;
+  /** Storefront combos that the admin target does not contain (data drift). */
+  extraVsTarget: string[];
+  extraVsTargetText: string;
+  targetsSource: string | null;
+  /** Why a supplied target matrix could not be compared. */
+  targetsNote: string | null;
   familyOrder: string[];
   families: Record<string, string[]>;
   familiesCompact: string;
@@ -85,8 +130,61 @@ export interface VariantSummary {
   notes: string[];
 }
 
+function normLabel(value: string): string {
+  return value.trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function uniqueLabels(values: string[]): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of values) {
+    const value = raw.trim();
+    if (!value || seen.has(value)) continue;
+    seen.add(value);
+    out.push(value);
+  }
+  return out;
+}
+
+/** "size: colour, colour | size: colour" from "colour|size" keys. */
+export function groupMissingText(combos: string[]): string {
+  if (combos.length === 0) return '';
+  const bySize = new Map<string, string[]>();
+  for (const combo of combos) {
+    const [color = '', size = ''] = combo.split('|', 2);
+    const list = bySize.get(size) ?? [];
+    list.push(color);
+    bySize.set(size, list);
+  }
+  return [...bySize.entries()]
+    .map(([size, colors]) => `${size}: ${colors.join(', ')}`)
+    .join(' | ');
+}
+
+/**
+ * Build the intended matrix from admin children (any status). Empty labels are
+ * skipped; order follows the admin rows.
+ */
+export function variantTargetsFromRows(
+  rows: { color?: string; size?: string }[],
+  source = 'admin-config',
+): VariantTargets {
+  const colors: string[] = [];
+  const sizes: string[] = [];
+  for (const row of rows) {
+    const color = (row.color ?? '').trim();
+    const size = (row.size ?? '').trim();
+    if (color && !colors.includes(color)) colors.push(color);
+    if (size && !sizes.includes(size)) sizes.push(size);
+  }
+  return { colors, sizes, source };
+}
+
 /** Build the variants summary from a resolver payload. */
-export function buildVariantSummary(r: ResolverJson): VariantSummary {
+export function buildVariantSummary(
+  r: ResolverJson,
+  targets?: VariantTargets,
+): VariantSummary {
   const anomalies: string[] = [];
   const notes: string[] = [];
 
@@ -116,9 +214,28 @@ export function buildVariantSummary(r: ResolverJson): VariantSummary {
       total: kids.length,
       expected: 1,
       optCount,
+      optionCounts: { '93': null, '142': null },
       missing: [],
       missingDisplay: [],
       missingText: '',
+      matrix: {
+        storefront: {
+          colors: [],
+          sizes: [],
+          present: [],
+          missing: [],
+          expected: 1,
+          source: 'storefront',
+        },
+        target: null,
+      },
+      missingVsTarget: [],
+      missingVsTargetDisplay: [],
+      missingVsTargetText: '',
+      extraVsTarget: [],
+      extraVsTargetText: '',
+      targetsSource: targets?.source ?? null,
+      targetsNote: null,
       familyOrder: [],
       families: {},
       familiesCompact: '',
@@ -138,6 +255,7 @@ export function buildVariantSummary(r: ResolverJson): VariantSummary {
   const sMap = new Map<string, string>();
   for (const o of a142?.options ?? []) sMap.set(o.id, o.label);
 
+  // Colours/sizes = option lists. Not `idx`, not `kids` (A4).
   const colors = [...cMap.values()];
   const sizes = [...sMap.values()];
   const colorSet: Record<string, true> = {};
@@ -146,6 +264,7 @@ export function buildVariantSummary(r: ResolverJson): VariantSummary {
   for (const s of sizes) sizeSet[s] = true;
 
   const present: Record<string, true> = {};
+  const presentPairs: string[] = [];
   for (const [kid, entry] of Object.entries(idx)) {
     const cid = entry[COLOR_ATTR_ID] ?? '';
     const sid = entry[SIZE_ATTR_ID] ?? '';
@@ -155,7 +274,10 @@ export function buildVariantSummary(r: ResolverJson): VariantSummary {
     if (sl === null) anomalies.push(`child ${kid} has unknown size id ${sid}`);
     if (cl && !(cl in colorSet)) anomalies.push(`index color "${cl}" not in attribute 93 options`);
     if (sl && !(sl in sizeSet)) anomalies.push(`index size "${sl}" not in attribute 142 options`);
-    if (cl && sl) present[`${cl}|${sl}`] = true;
+    if (cl && sl) {
+      present[`${cl}|${sl}`] = true;
+      presentPairs.push(`${cl}|${sl}`);
+    }
   }
 
   const missing: string[] = [];
@@ -176,6 +298,62 @@ export function buildVariantSummary(r: ResolverJson): VariantSummary {
     );
   }
 
+  const optionCounts = {
+    '93': r.attribute_option_counts?.['93'] ?? (a93 ? a93.options.length : null),
+    '142': r.attribute_option_counts?.['142'] ?? (a142 ? a142.options.length : null),
+  };
+
+  // ---- target matrix (admin, status-blind) --------------------------------
+  const targetColors = uniqueLabels(targets?.colors ?? []);
+  const targetSizes = uniqueLabels(targets?.sizes ?? []);
+  let target: VariantMatrix | null = null;
+  let missingVsTarget: string[] = [];
+  let extraVsTarget: string[] = [];
+  let targetsNote: string | null = null;
+
+  if (targets && (targetColors.length > 0 || targetSizes.length > 0)) {
+    if (targetColors.length === 0 || targetSizes.length === 0) {
+      targetsNote =
+        'target matrix incomplete: admin children carry no colour or no size label';
+    } else {
+      const colorByNorm = new Map(colors.map((c) => [normLabel(c), c]));
+      const sizeByNorm = new Map(sizes.map((s) => [normLabel(s), s]));
+      const colorHits = targetColors.filter((c) => colorByNorm.has(normLabel(c))).length;
+      const sizeHits = targetSizes.filter((s) => sizeByNorm.has(normLabel(s))).length;
+
+      if (colors.length > 0 && sizes.length > 0 && colorHits === 0 && sizeHits === 0) {
+        // Enabled children are a subset of assigned children, so zero overlap
+        // means the two sides use different labels (e.g. admin store scope).
+        targetsNote = `admin labels (${targets.source}) do not match storefront labels - comparison skipped`;
+      } else {
+        const targetPresent: string[] = [];
+        const targetGrid = new Set<string>();
+        for (const c of targetColors) {
+          for (const s of targetSizes) {
+            const key = `${c}|${s}`;
+            targetGrid.add(`${normLabel(c)}|${normLabel(s)}`);
+            const sc = colorByNorm.get(normLabel(c)) ?? c;
+            const ss = sizeByNorm.get(normLabel(s)) ?? s;
+            if (`${sc}|${ss}` in present) targetPresent.push(key);
+            else missingVsTarget.push(key);
+          }
+        }
+        target = {
+          colors: targetColors,
+          sizes: targetSizes,
+          present: targetPresent,
+          missing: missingVsTarget,
+          expected: targetColors.length * targetSizes.length,
+          source: 'target',
+        };
+        extraVsTarget = presentPairs.filter((pair) => {
+          const [c = '', s = ''] = pair.split('|', 2);
+          return !targetGrid.has(`${normLabel(c)}|${normLabel(s)}`);
+        });
+      }
+    }
+  }
+
   const familyOrder: string[] = [];
   const families: Record<string, string[]> = {};
   for (const c of colors) {
@@ -189,22 +367,7 @@ export function buildVariantSummary(r: ResolverJson): VariantSummary {
     notes.push(`unclassified colors (review): ${unclassified.join(', ')}`);
   }
 
-  let missingText = '';
-  if (missing.length > 0) {
-    const bySize = new Map<string, string[]>();
-    for (const m of missing) {
-      const parts = m.split('|', 2);
-      const co = parts[0] ?? '';
-      const sz = parts[1] ?? '';
-      const list = bySize.get(sz) ?? [];
-      list.push(co);
-      bySize.set(sz, list);
-    }
-    missingText = [...bySize.entries()]
-      .map(([sz, cos]) => `${sz}: ${cos.join(', ')}`)
-      .join(' | ');
-  }
-
+  const missingText = groupMissingText(missing);
   const familiesCompact = familyOrder
     .map((f) => `${f}: ${(families[f] ?? []).join(', ')}`)
     .join('; ');
@@ -222,9 +385,28 @@ export function buildVariantSummary(r: ResolverJson): VariantSummary {
     total: kids.length,
     expected,
     optCount,
+    optionCounts,
     missing,
     missingDisplay: missing.map((m) => m.replace('|', '/')),
     missingText,
+    matrix: {
+      storefront: {
+        colors,
+        sizes,
+        present: presentPairs,
+        missing,
+        expected,
+        source: 'storefront',
+      },
+      target,
+    },
+    missingVsTarget,
+    missingVsTargetDisplay: missingVsTarget.map((m) => m.replace('|', '/')),
+    missingVsTargetText: groupMissingText(missingVsTarget),
+    extraVsTarget,
+    extraVsTargetText: groupMissingText(extraVsTarget),
+    targetsSource: targets?.source ?? null,
+    targetsNote,
     familyOrder,
     families,
     familiesCompact,

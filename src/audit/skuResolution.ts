@@ -16,6 +16,7 @@ import {
   type ResolverJson,
 } from '../shared/resolver';
 import { adminEditUrl, DEFAULT_ADMIN_BASE, normalizeAdminBase } from '../shared/magento';
+import { variantTargetsFromRows } from './variants';
 import type {
   ResolveAdminFallback,
   ResolverChild,
@@ -201,6 +202,7 @@ async function tryAdminGrid(
     productId: response.productId,
     backend: adminEditUrl(base, response.productId),
     children,
+    childrenReason: response.childrenReason,
   };
 }
 
@@ -225,6 +227,14 @@ export async function resolveSkuForDashboard(
   let source: ResolveSkuResponse['source'];
   let warning: string | undefined;
   let resolverFailure: string | undefined;
+
+  // The admin matrix runs in parallel with the storefront: it is the only
+  // source of the full, status-blind child list, so it feeds `targets` even
+  // when the resolver succeeds. It costs one message to an open admin tab and
+  // fails fast when none is open.
+  const adminAttempt = tryAdminGrid(sku, adminBase)
+    .then((fallback) => ({ ok: true as const, fallback }))
+    .catch((err) => ({ ok: false as const, error: errorMessage(err) }));
 
   if (!url) {
     try {
@@ -257,20 +267,29 @@ export async function resolveSkuForDashboard(
   }
 
   let adminFallback: ResolveAdminFallback | undefined;
-  try {
-    if (!resolver) adminFallback = await tryAdminGrid(sku, adminBase);
-  } catch (err) {
-    warning = [
-      warning,
-      errorMessage(err),
-    ]
-      .filter(Boolean)
-      .join(' ');
+  const admin = await adminAttempt;
+  if (!resolver && admin.ok) adminFallback = admin.fallback;
+  if (!resolver && !admin.ok) {
+    warning = [warning, admin.error].filter(Boolean).join(' ') || undefined;
   }
+
   const enrichment = await notionEnrichment(sku, settings);
   warning = [warning, enrichment.warning].filter(Boolean).join(' ') || undefined;
   if (!source && adminFallback) source = 'admin';
   if (!source && enrichment.metadata) source = 'notion';
+
+  // Target matrix: every assigned child from the admin, enabled or not. Only
+  // present when the admin actually returned children; `targetsError` says why
+  // when it did not, so the UI can be explicit instead of silently omitting it.
+  const targets =
+    admin.ok && admin.fallback.children.length > 0
+      ? variantTargetsFromRows(admin.fallback.children, 'admin-config')
+      : undefined;
+  const targetsError = targets
+    ? undefined
+    : admin.ok
+      ? admin.fallback.childrenReason || 'admin returned no child rows'
+      : admin.error;
 
   if (!resolver && !adminFallback && !enrichment.metadata) {
     return {
@@ -294,6 +313,8 @@ export async function resolveSkuForDashboard(
     notion: enrichment.metadata,
     source,
     adminBase,
+    targets,
+    targetsError,
     resolutionError: resolverFailure,
     warning,
   };

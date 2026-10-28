@@ -7,6 +7,7 @@ import type {
   ResolverNotionMetadata,
 } from '../../../core/messages';
 import type { ResolverJson } from '../../../shared/resolver';
+import type { VariantTargets } from '../../../audit';
 import { supplierFor } from '../../../shared/resolver';
 import { buildVariantSummary } from '../../../audit';
 import { buildMagentoTable } from '../../../shared/magento';
@@ -42,13 +43,17 @@ function ResolverResult({
   notion,
   adminBase,
   source,
+  targets,
+  targetsError,
 }: {
   r: ResolverJson;
   notion?: ResolverNotionMetadata;
   adminBase?: string;
   source?: ResolveSkuResponse['source'];
+  targets?: VariantTargets;
+  targetsError?: string;
 }) {
-  const v = buildVariantSummary(r);
+  const v = buildVariantSummary(r, targets);
   const m = buildMagentoTable(r, adminBase);
 
   return (
@@ -155,6 +160,13 @@ function ResolverResult({
                 <span>Sizes</span>
                 <b>{v.sizes.join(', ')}</b>
               </li>
+              <li>
+                <span>Attribute options</span>
+                <b>
+                  {v.optionCounts['93'] === null ? '?' : v.optionCounts['93']} colours /{' '}
+                  {v.optionCounts['142'] === null ? '?' : v.optionCounts['142']} sizes
+                </b>
+              </li>
             </ul>
             <div class="db-families">
               {v.familyOrder.map((f) => (
@@ -177,6 +189,37 @@ function ResolverResult({
             ) : (
               <p class="db-empty">Missing combos: none (full matrix).</p>
             )}
+            {v.matrix.target ? (
+              <div class="db-target">
+                <ul class="db-kv">
+                  <li>
+                    <span>Admin target ({v.targetsSource})</span>
+                    <b>
+                      {v.matrix.target.colors.length} x {v.matrix.target.sizes.length} ={' '}
+                      {v.matrix.target.expected} / present {v.matrix.target.present.length}
+                    </b>
+                  </li>
+                </ul>
+                {v.missingVsTarget.length > 0 ? (
+                  <p class="db-flags db-flags--warn">
+                    Missing vs target {v.missingVsTarget.length}:{' '}
+                    {v.missingVsTargetText}
+                  </p>
+                ) : (
+                  <p class="db-empty">
+                    Missing vs target: none (storefront covers the whole admin matrix).
+                  </p>
+                )}
+                {v.extraVsTarget.length > 0 ? (
+                  <p class="db-flags db-flags--warn">
+                    On storefront but not in the admin target: {v.extraVsTargetText}
+                  </p>
+                ) : null}
+                {v.targetsNote ? <p class="db-empty">{v.targetsNote}</p> : null}
+              </div>
+            ) : targetsError ? (
+              <p class="db-empty">Target matrix unavailable: {targetsError}.</p>
+            ) : null}
           </>
         )}
         {v.anomalies.length > 0 ? (
@@ -267,8 +310,10 @@ function AdminFallbackResult({
           <thead>
             <tr>
               <th>Child ID</th>
+              <th>SKU</th>
               <th>Colour</th>
               <th>Size</th>
+              <th>Status</th>
               <th>Admin</th>
             </tr>
           </thead>
@@ -276,8 +321,16 @@ function AdminFallbackResult({
             {fallback.children.map((child) => (
               <tr key={child.id}>
                 <td class="db-mono">{child.id}</td>
-                <td>{child.color}</td>
-                <td>{child.size}</td>
+                <td class="db-mono">{child.sku || '-'}</td>
+                <td>{child.color || '-'}</td>
+                <td>{child.size || '-'}</td>
+                <td>
+                  {child.enabled === undefined
+                    ? '-'
+                    : child.enabled
+                      ? 'enabled'
+                      : 'disabled'}
+                </td>
                 <td>
                   {child.backend ? (
                     <a href={child.backend} target="_blank" rel="noreferrer noopener">
@@ -289,6 +342,8 @@ function AdminFallbackResult({
             ))}
           </tbody>
         </table>
+      ) : fallback.childrenReason ? (
+        <p class="db-empty">Child list unavailable: {fallback.childrenReason}.</p>
       ) : null}
     </section>
   );
@@ -449,6 +504,8 @@ export function Resolver() {
           notion={result.notion}
           adminBase={result.adminBase}
           source={result.source}
+          targets={result.targets}
+          targetsError={result.targetsError}
         />
       ) : null}
       {result?.adminFallback ? (
