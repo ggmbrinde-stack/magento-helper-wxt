@@ -189,9 +189,21 @@ export function readConfigurableChildren(productId: string): ConfigChildren {
     const id = link?.href.match(/\/edit\/id\/(\d+)/)?.[1] ?? '';
     if (!id) continue;
 
-    const sku = skuCol >= 0 ? (cells[skuCol]?.textContent ?? '').trim() : '';
-    const statusText =
-      statusCol >= 0 ? (cells[statusCol]?.textContent ?? '').trim() : '';
+    const skuCell = skuCol >= 0 ? cells[skuCol] : undefined;
+    const skuInput =
+      skuCell?.querySelector<HTMLInputElement>('input, textarea') ??
+      row.querySelector<HTMLInputElement>(
+        'input[name*="[sku]"], [data-index="sku"] input',
+      );
+    const sku = (skuInput ? skuInput.value : skuCell?.textContent ?? '').trim();
+
+    const statusCell = statusCol >= 0 ? cells[statusCol] : undefined;
+    const statusSelect = statusCell?.querySelector<HTMLSelectElement>('select');
+    const statusText = (
+      statusSelect
+        ? statusSelect.options[statusSelect.selectedIndex]?.text ?? ''
+        : statusCell?.textContent ?? ''
+    ).trim();
     const enabled = statusText
       ? !/disab|inactiv|desactiv/i.test(statusText)
       : undefined;

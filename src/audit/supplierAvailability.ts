@@ -237,16 +237,33 @@ export async function loadRolySitemap(
  * sitemap, never assumed, and the review line says the mapping is a guess.
  */
 export function rolyRefCandidates(sku: string): string[] {
-  const digits = /(\d+)\s*$/.exec(sku.trim().toUpperCase())?.[1] ?? '';
-  if (!digits) return [];
+  const s = sku.trim().toUpperCase();
   const out: string[] = [];
   const add = (value: string): void => {
-    const ref = `PO${value}`;
-    if (!out.includes(ref)) out.push(ref);
+    const clean = value.toUpperCase();
+    if (clean && !out.includes(clean)) out.push(clean);
   };
-  add(digits);
-  if (digits.length > 4) add(digits.slice(-4));
-  if (digits.length < 4) add(digits.padStart(4, '0'));
+
+  // 1. Direct match when SKU has 2-letter prefix + digits (e.g. PA0317, CA6650)
+  const exact = /^([A-Z]{2})(\d{4,5})/.exec(s);
+  if (exact?.[0]) {
+    add(exact[0]);
+  }
+
+  // 2. Extracted digits with standard ROLY model prefixes
+  const mDigits = /(\d{4,5})/.exec(s) ?? /(\d+)\s*$/.exec(s);
+  const digits = mDigits?.[1] ?? '';
+  if (digits) {
+    const padded = digits.length < 4 ? digits.padStart(4, '0') : digits;
+    const prefixes = ['PO', 'PA', 'CA', 'CH', 'SU', 'BE', 'FO'];
+    for (const pfx of prefixes) {
+      add(`${pfx}${padded}`);
+      if (digits !== padded) add(`${pfx}${digits}`);
+    }
+    add(padded);
+    add(digits);
+  }
+
   return out;
 }
 
@@ -312,7 +329,7 @@ async function rolyAvailability(
     return {
       ...base,
       verdict: 'available',
-      url: `${ROLY_REF_BASE}/es/model_${ref}`,
+      url: `${ROLY_REF_BASE}/pt/model_${ref}`,
       urlSource: 'guessed',
       title: `model_${ref}`,
       misses: [],
@@ -324,7 +341,7 @@ async function rolyAvailability(
     };
   }
 
-  const tried = candidates.map((candidate) => `${ROLY_REF_BASE}/es/model_${candidate}`);
+  const tried = candidates.map((candidate) => `${ROLY_REF_BASE}/pt/model_${candidate}`);
   if (!sitemap) {
     return {
       ...base,

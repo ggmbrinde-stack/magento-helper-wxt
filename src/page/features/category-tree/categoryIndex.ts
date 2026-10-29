@@ -37,6 +37,76 @@ const NODES: CategoryIndexNode[] = (rawIndex as { nodes: CategoryIndexNode[] })
   .nodes;
 
 /**
+ * English storefront category slugs and SKU Library English names mapped to
+ * their Portuguese counterparts in the Notion "Categorias - Índice" tree.
+ */
+const EN_TO_PT_CATEGORY_MAP: Record<string, string> = {
+  // Top-level categories (1..12)
+  'promotional textile': 'textil promocional',
+  'promotional textiles': 'textil promocional',
+  'promotional-textile': 'textil promocional',
+  'promotional-textiles': 'textil promocional',
+  'sports textile': 'textil desporto',
+  'sports textiles': 'textil desporto',
+  'sports-textile': 'textil desporto',
+  'sports-textiles': 'textil desporto',
+  'workwear textile': 'textil trabalho',
+  'workwear textiles': 'textil trabalho',
+  'workwear-textile': 'textil trabalho',
+  'workwear-textiles': 'textil trabalho',
+  technology: 'tecnologia',
+  'bags and backpacks': 'sacos e mochilas',
+  'bags-and-backpacks': 'sacos e mochilas',
+  'writing and office': 'escrita e escritorio',
+  'writing-and-office': 'escrita e escritorio',
+  'outdoors and events': 'outdoor e eventos',
+  'outdoors-and-events': 'outdoor e eventos',
+  'outdoor and events': 'outdoor e eventos',
+  "children's and pets": 'crianca e animais',
+  'childrens and pets': 'crianca e animais',
+  'children-and-pets': 'crianca e animais',
+  'house and wine': 'casa e bebidas',
+  'house-and-wine': 'casa e bebidas',
+  personal: 'cuidado pessoal',
+  'diy and auto': 'bricolage e auto',
+  'diy-and-auto': 'bricolage e auto',
+  '100% made4you': '100% made 4 you',
+  '100-made4you': '100% made 4 you',
+
+  // Common subcategories & leaf sections
+  'pants and shorts': 'calcas e calcoes',
+  'pants-and-shorts': 'calcas e calcoes',
+  leggings: 'leggins',
+  'polo shirts': 'polos',
+  'polo-shirts': 'polos',
+  't shirts': 't-shirts',
+  't-shirts': 't-shirts',
+  sweatshirts: 'sweatshirts',
+  jackets: 'casacos',
+  vests: 'coletes',
+  tracksuits: 'fatos de treino',
+  'caps and hats': 'bones e gorros',
+  'caps-and-hats': 'bones e gorros',
+  'caps and beanies': 'bones e gorros',
+  'sports accessories': 'acessorios de desporto',
+  'sports-accessories': 'acessorios de desporto',
+  backpacks: 'mochilas',
+  bags: 'sacos',
+  bottles: 'garrafas',
+  'mugs and cups': 'canecas',
+  'mugs-and-cups': 'canecas',
+  umbrellas: 'guarda-chuvas',
+  towels: 'toalhas',
+  stationery: 'papelaria',
+  keychains: 'porta-chaves',
+  lanyards: 'fitas e lanyards',
+  tools: 'ferramentas',
+  'kitchen accessories': 'cozinha',
+  'wine accessories': 'acessorios de vinho',
+  'travel accessories': 'acessorios de viagem',
+};
+
+/**
  * Fold case, accents and punctuation so both spellings compare equal.
  *
  * The source document sometimes embeds a trailing note inside parentheses
@@ -45,7 +115,8 @@ const NODES: CategoryIndexNode[] = (rawIndex as { nodes: CategoryIndexNode[] })
  */
 export function normalizeCategoryText(text: string): string {
   const stripped = stripParentheticalNote(text);
-  return foldCategoryText(stripped);
+  const folded = foldCategoryText(stripped);
+  return EN_TO_PT_CATEGORY_MAP[folded] ?? folded;
 }
 
 /**

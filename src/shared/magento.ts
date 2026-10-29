@@ -25,8 +25,9 @@ export const SCOPE_STORE_IDS: Record<string, string> = {
 
 /**
  * Admin front name only: `https://host/admin_xxxxx` with no trailing slash and
- * no `/catalog/...` tail. Settings often store a trailing slash; pasting a
- * product-edit URL is also accepted.
+ * no subroutes (`/catalog/...`, `/admin/dashboard/...`, `/key/...`).
+ * Settings often store a trailing slash; pasting a dashboard or product-edit
+ * URL is also normalized down to the base front-name.
  */
 export function normalizeAdminBase(
   raw: string,
@@ -35,11 +36,15 @@ export function normalizeAdminBase(
   const source = raw.trim() || fallback;
   try {
     const parsed = new URL(source);
-    const path = parsed.pathname
-      .replace(/\/catalog\/.*$/i, '')
-      .replace(/\/{2,}/g, '/')
-      .replace(/\/+$/, '');
-    return `${parsed.origin}${path}`;
+    // In Magento, the admin base is origin + the secret admin frontname (the
+    // first path segment, e.g. /admin_L2pZx or /admin). Any subroutes like
+    // /admin/dashboard, /catalog/..., /key/... are stripped.
+    const match = parsed.pathname.match(/^(\/[^/]+)/);
+    const firstSegment = (match?.[1] ?? '').replace(/\/+$/, '');
+    if (!firstSegment || firstSegment === '/') {
+      return fallback.replace(/\/+$/, '');
+    }
+    return `${parsed.origin}${firstSegment}`;
   } catch {
     return fallback.replace(/\/+$/, '');
   }

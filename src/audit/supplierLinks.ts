@@ -76,10 +76,17 @@ export function guessCatalogUrl(sku: string, supplier: SupplierName): string {
   // blocks unaudited clients and its product paths were never verified, so it
   // gets no guess at all.
   if (supplier !== 'ROLY') return '';
-  const m = /(\d+)\s*$/.exec(sku.trim().toUpperCase());
+  const s = sku.trim().toUpperCase();
+  // 1. If the SKU already starts with a 2-letter ROLY prefix (PA, PO, CA, CH, SU, etc.)
+  const exact = /^([A-Z]{2}\d{4,5})/.exec(s);
+  if (exact?.[1]) {
+    return `https://roly.eu/pt/model_${exact[1]}`;
+  }
+  // 2. Trailing or embedded 4-5 digits
+  const m = /(\d{4,5})/.exec(s) ?? /(\d+)\s*$/.exec(s);
   const digits = m?.[1] ?? '';
   if (!digits) return '';
-  return `https://www.roly.es/es/model_PO${digits}`;
+  return `https://roly.eu/pt/model_PO${digits}`;
 }
 
 export function supplierLinkFor(

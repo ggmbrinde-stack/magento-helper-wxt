@@ -17,6 +17,7 @@ import type { VariantTargets } from '../../../audit';
 import { supplierFor } from '../../../shared/resolver';
 import { buildVariantSummary } from '../../../audit';
 import { buildMagentoTable } from '../../../shared/magento';
+import { categoryCode } from '../../../page/features/category-tree/categoryIndex';
 
 function LinkRow({ label, url }: { label: string; url: string }) {
   if (!url) return null;
@@ -169,6 +170,19 @@ function CategoryCard({
 }) {
   const path = r.categories?.path ?? [];
   if (path.length === 0 && !notion?.category) return null;
+
+  const leafName = path[path.length - 1] ?? '';
+  const leafCode = leafName ? categoryCode(leafName, path.slice(0, -1)) : null;
+
+  const notionParts = [
+    notion?.category,
+    notion?.subcategory,
+    notion?.subSubCategory,
+  ].filter(Boolean) as string[];
+  const notionLeaf = notionParts[notionParts.length - 1] ?? '';
+  const notionCode = notionLeaf
+    ? categoryCode(notionLeaf, notionParts.slice(0, -1))
+    : null;
   return (
     <section class="db-card db-wide">
       <div class="db-card-head">
@@ -182,7 +196,14 @@ function CategoryCard({
         {path.length > 0 ? (
           <li>
             <span>Storefront path</span>
-            <b>{path.join(' › ')}</b>
+            <b>
+              {leafCode ? (
+                <span class="db-badge db-ok" style={{ marginRight: '6px' }}>
+                  {leafCode}
+                </span>
+              ) : null}
+              {path.join(' › ')}
+            </b>
           </li>
         ) : (
           <li>
@@ -190,13 +211,16 @@ function CategoryCard({
             <b>not published on the PDP</b>
           </li>
         )}
-        {notion?.category ? (
+        {notionParts.length > 0 ? (
           <li>
             <span>SKU Library</span>
             <b>
-              {[notion.category, notion.subcategory, notion.subSubCategory]
-                .filter(Boolean)
-                .join(' › ')}
+              {notionCode ? (
+                <span class="db-badge db-ok" style={{ marginRight: '6px' }}>
+                  {notionCode}
+                </span>
+              ) : null}
+              {notionParts.join(' › ')}
             </b>
           </li>
         ) : null}
@@ -205,8 +229,13 @@ function CategoryCard({
         <ul class="db-links db-links--flush">
           {r.categories.path.map((name, index) => {
             const url = r.categories?.urls[index] ?? '';
+            const stepCode = categoryCode(name, r.categories?.path.slice(0, index));
             return url ? (
-              <LinkRow key={`${name}-${index}`} label={name} url={url} />
+              <LinkRow
+                key={`${name}-${index}`}
+                label={stepCode ? `${stepCode} · ${name}` : name}
+                url={url}
+              />
             ) : null;
           })}
         </ul>
