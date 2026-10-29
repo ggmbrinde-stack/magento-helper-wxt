@@ -20,7 +20,7 @@
 import { supplierFor } from '../shared/resolver';
 import { SUPPLIER_CATALOG } from './rules/supplierCatalog';
 
-export type SupplierName = 'ROLY' | 'TOPTEX' | 'ALLBEST';
+export type SupplierName = 'ROLY' | 'TOPTEX' | 'ALLBEST' | 'MAKITO';
 
 interface SupplierRow {
   tier: number;
@@ -34,6 +34,10 @@ export const SUPPLIER_TABLE: Record<SupplierName, SupplierRow> = {
   TOPTEX: { tier: 10, official: 'https://toptex.eu', alt: '' },
   // ALLBEST is an internal supplier: no public site exists.
   ALLBEST: { tier: 6, official: '', alt: '' },
+  // Makito's shop is reachable from makito.pt, which redirects to the ePages
+  // shop on makito.es (the host blocks unaudited clients, so nothing beyond the
+  // official entry is claimed here).
+  MAKITO: { tier: 1, official: 'https://makito.es', alt: '' },
 };
 
 /** Where a catalogue URL came from. `guessed` is always disclosed as such. */
@@ -68,6 +72,9 @@ export interface SupplierLinkInput {
  * `/model_<REF>` shape; nothing is guessed for the other suppliers.
  */
 export function guessCatalogUrl(sku: string, supplier: SupplierName): string {
+  // Only ROLY's catalogue is addressed by a derivable reference; MAKITO's shop
+  // blocks unaudited clients and its product paths were never verified, so it
+  // gets no guess at all.
   if (supplier !== 'ROLY') return '';
   const m = /(\d+)\s*$/.exec(sku.trim().toUpperCase());
   const digits = m?.[1] ?? '';
@@ -108,6 +115,11 @@ export function supplierLinkFor(
     reviewFlags.push('catalog-url-missing');
   } else if (catalogSource === 'guessed') {
     reviewFlags.push('catalog-url-guessed');
+  }
+  // MAKITO is attributed from the SKU prefix alone (the Notion `SKU & Prefixes`
+  // rule); no catalogue URL pattern has been proven for it.
+  if (supplier === 'MAKITO') {
+    reviewFlags.push('supplier-from-prefix-rule');
   }
 
   return {

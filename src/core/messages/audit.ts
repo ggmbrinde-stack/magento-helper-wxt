@@ -73,6 +73,12 @@ export interface ResolverNotionMetadata {
 export interface ResolveAdminFallback {
   productId: string;
   backend: string;
+  /**
+   * The product grid's Status cell (`Enabled` / `Disabled`). The grid lists
+   * disabled products, which is the only way to name the state of a SKU that
+   * has no storefront page at all. Empty when the column was not returned.
+   */
+  status?: string;
   /** Every assigned child, including disabled ones (the admin matrix is status-blind). */
   children: ResolverChild[];
   /** Why `children` is empty, when it is. */

@@ -97,6 +97,14 @@ export default defineContentScript({
   ],
   runAt: 'document_idle',
   main() {
+    // Tab that predates an extension reload? The background injects this bundle
+    // on demand (see ensureHelperContentScript). A second injection must not
+    // bind a second message listener or start a second scan loop, so the boot
+    // is idempotent per document.
+    const booted = window as unknown as Record<string, unknown>;
+    if (booted.__mhxContentLoaded) return;
+    booted.__mhxContentLoaded = true;
+
     // One toolkit sheet per page (link, inline fallback) plus the operator's
     // custom toolkit colours from Settings. Features call ensureUi() too; this
     // first call gets the sheet on the page before the first scan draws.

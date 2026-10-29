@@ -556,6 +556,18 @@ function propsOf(page: unknown): Record<string, Prop> {
   return out;
 }
 
+/**
+ * First property that exists under any of the given names. Notion keys are
+ * case- and punctuation-sensitive, and a renamed property otherwise reads as an
+ * empty value with no error at all.
+ */
+function pickProp(p: Record<string, Prop>, ...names: string[]): Prop {
+  for (const name of names) {
+    if (p[name] !== undefined) return p[name] as Prop;
+  }
+  return undefined as unknown as Prop;
+}
+
 /** Raw (unvalidated) row for the SKU Library database. */
 export function mapSkuLibraryPage(page: unknown): Record<string, unknown> {
   const p = propsOf(page);
@@ -566,9 +578,11 @@ export function mapSkuLibraryPage(page: unknown): Record<string, unknown> {
     frontend: extractUrl(p.Frontend),
     category: extractSelect(p.Category),
     subcategory: extractSelect(p.Subcategory),
-    // C4: the property may not exist yet; a missing one maps to '' and is
-    // never written, so the reader stays compatible either way.
-    subSubcategory: extractSelect(p['Sub-subcategory']),
+    // C4: the live property is spelled `Sub-Subcategory`; the older spelling is
+    // still read so a renamed property cannot silently blank the L3 check.
+    subSubcategory: extractSelect(
+      pickProp(p, 'Sub-Subcategory', 'Sub-subcategory', 'Sub Subcategory'),
+    ),
     supplier: extractSelect(p.Supplier),
     supplierLink: extractUrl(p['Supplier Link']),
     supplierProduct: extractUrl(p['Supplier Product']),

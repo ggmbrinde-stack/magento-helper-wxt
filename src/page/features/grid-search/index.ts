@@ -13,6 +13,107 @@ interface ConfigChildren {
   reason: string;
 }
 
+/** One lazy-loaded grid page, as the listing provider returns it. */
+interface GridItem {
+  sku?: string;
+  entity_id?: string | number;
+  id?: string | number;
+  /** Status column: `1`/`2`, `Enabled`/`Disabled`, or a boolean. */
+  status?: unknown;
+}
+
+/**
+ * The product grid's Status column, normalised to the admin's own words.
+ *
+ * Magento returns `1`/`2` in JSON, `Enabled`/`Disabled` when the column is
+ * rendered with its option labels, and `true`/`false` in some themes. An
+ * unrecognised value is passed through untouched rather than guessed at, so the
+ * resolver never claims a product is enabled without evidence.
+ */
+function statusLabel(raw: unknown): string {
+  if (raw === undefined || raw === null) return '';
+  if (typeof raw === 'boolean') return raw ? 'Enabled' : 'Disabled';
+  const text = String(raw).replace(/<[^>]*>/g, '').trim();
+  if (!text) return '';
+  if (/^(1|true|enabled|enable|active)$/i.test(text)) return 'Enabled';
+  if (/^(2|false|disabled|disable|inactive)$/i.test(text)) return 'Disabled';
+  return text;
+}
+
+/** Status cell -> the child's `enabled` flag; undefined when unreported. */
+function statusEnabled(raw: unknown): boolean | undefined {
+  const label = statusLabel(raw);
+  if (label === 'Enabled') return true;
+  if (label === 'Disabled') return false;
+  return undefined;
+}
+
+/** Admin AJAX base for this tab: honours the secret `/key/<hash>/` segment. */
+function gridBaseUrl(): string {
+  const keyHash = location.href.match(/\/key\/([a-f0-9]+)\//)?.[1] ?? '';
+  const adminPath = location.pathname.match(/^(\/[^/]+\/)/)?.[1] ?? '/';
+  let url = `${location.origin}${adminPath}mui/index/render`;
+  if (keyHash) url += `/key/${keyHash}`;
+  return `${url}/`;
+}
+
+/**
+ * Query the product listing grid. `like` is Magento's own condition, so a SKU
+ * also returns every row whose SKU contains it (children, suffixed copies).
+ */
+async function queryGrid(
+  sku: string,
+  pageSize: number,
+): Promise<{ items: GridItem[]; error: string; status: number }> {
+  const formKey =
+    document.querySelector<HTMLInputElement>('input[name="form_key"]')?.value ??
+    '';
+  const qs = new URLSearchParams();
+  qs.append('namespace', 'product_listing');
+  qs.append('isAjax', 'true');
+  qs.append('form_key', formKey);
+  qs.append('filters[placeholder][]', 'true');
+  qs.append('filters[sku][value]', sku);
+  qs.append('filters[sku][condition_type]', 'like');
+  qs.append('paging[pageSize]', String(pageSize));
+  qs.append('paging[currentPage]', '1');
+
+  try {
+    const res = await fetch(`${gridBaseUrl()}?${qs.toString()}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        Accept: 'application/json',
+      },
+    });
+    const text = await res.text();
+    try {
+      const data = JSON.parse(text) as {
+        items?: GridItem[];
+        data?: { items?: GridItem[] };
+      };
+      return {
+        items: data.items ?? data.data?.items ?? [],
+        error: '',
+        status: res.status,
+      };
+    } catch {
+      return {
+        items: [],
+        error: `Grid returned non-JSON (status ${res.status})`,
+        status: res.status,
+      };
+    }
+  } catch (err) {
+    return {
+      items: [],
+      error: `Admin grid search failed: ${(err as Error).message}`,
+      status: 0,
+    };
+  }
+}
+
 /**
  * Read every assigned child (enabled or disabled) from the Configurations
  * matrix of the currently open product edit page.
@@ -107,87 +208,87 @@ export function readConfigurableChildren(productId: string): ConfigChildren {
   return { children, reason: '' };
 }
 
+/**
+ * Child rows as the grid reports them. No colour/size labels (the grid has no
+ * such columns), but the child SKU and its status - which is what a human
+ * searches for in Magento - are real.
+ */
+function childrenFromGrid(items: GridItem[], parentSku: string): ResolverChild[] {
+  const wanted = parentSku.trim().toUpperCase();
+  const out: ResolverChild[] = [];
+  for (const item of items) {
+    const sku = (item.sku ?? '').trim();
+    if (!sku || sku.toUpperCase() === wanted) continue;
+    const id = String(item.entity_id ?? item.id ?? '');
+    if (!id) continue;
+    out.push({
+      id,
+      sku,
+      color: '',
+      size: '',
+      backend: '',
+      enabled: statusEnabled(item.status),
+    });
+  }
+  return out;
+}
+
 /** Search the open admin tab's product grid via AJAX. */
 export async function handleSearchMagento(
   sku: string,
 ): Promise<SearchMagentoResponse> {
-  const keyHash = location.href.match(/\/key\/([a-f0-9]+)\//)?.[1] ?? '';
-  const formKey =
-    document.querySelector<HTMLInputElement>('input[name="form_key"]')?.value ??
-    '';
-  const adminPath = location.pathname.match(/^(\/[^/]+\/)/)?.[1] ?? '/';
-  let baseUrl = `${location.origin}${adminPath}mui/index/render`;
-  if (keyHash) baseUrl += `/key/${keyHash}`;
-  baseUrl += '/';
+  const wanted = sku.trim().toUpperCase();
+  const first = await queryGrid(sku, 20);
+  if (first.error && first.items.length === 0) {
+    return { found: false, error: first.error };
+  }
 
-  const qs = new URLSearchParams();
-  qs.append('namespace', 'product_listing');
-  qs.append('isAjax', 'true');
-  qs.append('form_key', formKey);
-  qs.append('filters[placeholder][]', 'true');
-  qs.append('filters[sku][value]', sku);
-  qs.append('filters[sku][condition_type]', 'like');
-  qs.append('paging[pageSize]', '20');
-  qs.append('paging[currentPage]', '1');
-
-  type GridItem = {
-    sku?: string;
-    entity_id?: string | number;
-    id?: string | number;
-  };
-  try {
-    const res = await fetch(`${baseUrl}?${qs.toString()}`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        Accept: 'application/json',
-      },
-    });
-    const text = await res.text();
-    let items: GridItem[] = [];
-    try {
-      const data = JSON.parse(text) as {
-        items?: GridItem[];
-        data?: { items?: GridItem[] };
-      };
-      items = data.items ?? data.data?.items ?? [];
-    } catch {
-      const m = text.match(/"entity_id"\s*:\s*"?(\d+)"?/);
-      if (m?.[1]) {
-        return {
-          found: true,
-          productId: m[1],
-          children: [],
-          childrenReason: 'grid returned non-JSON, children not read',
-        };
-      }
-      return {
-        found: false,
-        error: `Grid returned non-JSON (status ${res.status})`,
-      };
-    }
-    const match =
-      items.find(
-        (it) => (it.sku ?? '').toLowerCase() === sku.toLowerCase(),
-      ) ?? items[0];
-    const productId = match
-      ? String(match.entity_id ?? match.id ?? '')
-      : '';
-    if (productId) {
-      const config = readConfigurableChildren(productId);
-      return {
-        found: true,
-        productId,
-        children: config.children,
-        childrenReason: config.reason,
-      };
-    }
-    return { found: false, error: `SKU "${sku}" not found in the admin grid.` };
-  } catch (err) {
+  // The filter is `like`, so a search for M22480 also returns M224801 and the
+  // children named M22480-BLUE. Only an exact SKU is the product itself;
+  // falling back to items[0] silently resolved the wrong product.
+  const match = first.items.find(
+    (item) => (item.sku ?? '').trim().toUpperCase() === wanted,
+  );
+  const productId = match ? String(match.entity_id ?? match.id ?? '') : '';
+  if (!productId) {
+    const close = first.items
+      .map((item) => (item.sku ?? '').trim())
+      .filter(Boolean)
+      .slice(0, 6)
+      .join(', ');
     return {
       found: false,
-      error: `Admin grid search failed: ${(err as Error).message}`,
+      error: close
+        ? `SKU "${sku}" has no exact row in the admin grid; the like-filter returned: ${close}.`
+        : `SKU "${sku}" not found in the admin grid.`,
     };
   }
+
+  const config = readConfigurableChildren(productId);
+  let children = config.children;
+  let childrenReason = config.reason;
+
+  // The matrix is the only source with colour/size labels, but it needs the
+  // parent's own edit page open. Fall back to the grid so the child SKUs (and
+  // their status) still arrive from whatever admin page the operator is on.
+  if (children.length === 0) {
+    const wider = await queryGrid(sku, 100);
+    const derived = childrenFromGrid(wider.items, sku);
+    if (derived.length > 0) {
+      children = derived;
+      childrenReason =
+        'child rows read from the product grid by SKU (colour/size labels need the parent edit page open)';
+    } else if (wider.error) {
+      childrenReason = `${childrenReason}; grid fallback failed: ${wider.error}`;
+    }
+  }
+
+  return {
+    found: true,
+    productId,
+    sku: (match?.sku ?? sku).trim(),
+    status: statusLabel(match?.status),
+    children,
+    childrenReason,
+  };
 }

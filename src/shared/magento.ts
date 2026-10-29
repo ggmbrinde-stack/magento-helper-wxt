@@ -63,6 +63,8 @@ export function adminEditUrl(
 
 export interface MagentoRow {
   child: string;
+  /** Child SKU from the admin matrix (E7). '' when the admin never reported it. */
+  sku: string;
   color: string;
   size: string;
   url: string;
@@ -110,6 +112,7 @@ export function buildMagentoTable(
     if (sid) {
       const row: MagentoRow = {
         child: sid,
+        sku: '',
         color: '(simple)',
         size: '-',
         url: adminEditUrl(adminBase, sid),
@@ -152,6 +155,12 @@ export function buildMagentoTable(
   const sMap: Record<string, string> = {};
   for (const o of a142?.options ?? []) sMap[o.id] = o.label;
 
+  // E7: child SKUs come from the admin matrix, never invented from the id.
+  const skuById = new Map<string, string>();
+  for (const child of r.children_detail ?? []) {
+    if (child.sku) skuById.set(child.id, child.sku);
+  }
+
   const rows: MagentoRow[] = [];
   const groupOrder: string[] = [];
   const groups: Record<string, MagentoRow[]> = {};
@@ -171,6 +180,7 @@ export function buildMagentoTable(
     }
     const row: MagentoRow = {
       child: kid,
+      sku: skuById.get(kid) ?? '',
       color: clabel,
       size: slabel,
       url: adminEditUrl(adminBase, kid),

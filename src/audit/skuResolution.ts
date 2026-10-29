@@ -247,6 +247,45 @@ function adminBaseFromTab(tabUrl: string, fallback: string): string {
   return normalizeBase(base);
 }
 
+/**
+ * Put the helper into an admin tab that was open before the extension was
+ * (re)loaded. `tabs.sendMessage` cannot reach such a tab, which used to surface
+ * as "the helper content script is not loaded" after every reload - the tab has
+ * no listener until it is reloaded or the bundle is injected.
+ *
+ * The file list comes from the manifest, so a rebuilt output name cannot break
+ * it, and the content script's boot guard makes a repeat injection a no-op.
+ */
+async function ensureHelperContentScript(tabId: number): Promise<boolean> {
+  const files = [
+    ...new Set(
+      (chrome.runtime.getManifest().content_scripts ?? []).flatMap(
+        (script) => script.js ?? [],
+      ),
+    ),
+  ];
+  if (files.length === 0) return false;
+  try {
+    await chrome.scripting.executeScript({ target: { tabId }, files });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Send one message to a tab, injecting the helper once if it is missing. */
+async function sendToTab<T>(tabId: number, message: unknown): Promise<T> {
+  try {
+    return (await chrome.tabs.sendMessage(tabId, message)) as T;
+  } catch (first) {
+    if (!(await ensureHelperContentScript(tabId))) throw first;
+    // Give a freshly injected listener a moment to bind on a tab that is still
+    // finishing its own load, then retry exactly once.
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    return (await chrome.tabs.sendMessage(tabId, message)) as T;
+  }
+}
+
 async function tryAdminGrid(
   sku: string,
   fallbackBase: string,
@@ -267,13 +306,10 @@ async function tryAdminGrid(
   const request: SearchMagentoRequest = { type: 'SEARCH_MAGENTO', sku };
   let response: SearchMagentoResponse | undefined;
   try {
-    response = (await chrome.tabs.sendMessage(
-      adminTab.id,
-      request,
-    )) as SearchMagentoResponse;
-  } catch {
+    response = await sendToTab<SearchMagentoResponse>(adminTab.id, request);
+  } catch (err) {
     throw new Error(
-      'Admin tab found but the helper content script is not loaded. Reload the admin page.',
+      `Admin tab found but the helper could not be loaded into it (${errorMessage(err)}). Reload the admin page and resolve again.`,
     );
   }
   if (!response?.found || !response.productId) {
@@ -288,6 +324,7 @@ async function tryAdminGrid(
   return {
     productId: response.productId,
     backend: adminEditUrl(base, response.productId),
+    status: response.status ?? '',
     children,
     childrenReason: response.childrenReason,
   };
@@ -351,6 +388,13 @@ function partialResolverFromAdmin(
       'run Resolve again once the storefront page is reachable to get the full payload',
     ],
     children_detail: adminChildDetail(fallback.children),
+    magento_status: fallback.status
+      ? {
+          label: fallback.status,
+          source: 'admin-grid',
+          checked_at: new Date().toISOString(),
+        }
+      : undefined,
     supplier: {
       supplier: supplier.supplier,
       tier: supplier.tier,
@@ -502,8 +546,16 @@ export async function resolveSkuForDashboard(
   });
 
   const adminChildren = admin.ok ? admin.fallback.children : [];
+  const adminStatus = admin.ok ? (admin.fallback.status ?? '') : '';
   if (resolver) {
     const notices = [...(resolver.notices ?? [])];
+    // A storefront page exists, so a `Disabled` row is a contradiction worth
+    // naming (cache, store view, or a status edited after the page was built).
+    if (adminStatus === 'Disabled') {
+      notices.push(
+        'the admin grid reports this product as disabled although the storefront served a PDP - check the store view and the cache before trusting the page',
+      );
+    }
     if (adminChildren.length > 0) {
       const adminIds = new Set(adminChildren.map((child) => child.id));
       const storefrontIds = new Set(resolver.children);
@@ -539,6 +591,13 @@ export async function resolveSkuForDashboard(
         adminChildren.length > 0
           ? adminChildDetail(adminChildren)
           : resolver.children_detail,
+      magento_status: adminStatus
+        ? {
+            label: adminStatus,
+            source: 'admin-grid',
+            checked_at: new Date().toISOString(),
+          }
+        : resolver.magento_status,
       notices,
     };
   }

@@ -25,6 +25,7 @@ import { supplierFor } from '../shared/resolver';
 import {
   supplierLinkFor,
   type CatalogSource,
+  type SupplierLinkInfo,
   type SupplierName,
 } from './supplierLinks';
 
@@ -114,8 +115,12 @@ const NOT_FOUND_TITLE = /404|not found|no encontrado|non trouv|n\u00e3o encontra
 function isLive(outcome: FetchOutcome, source: CatalogSource): boolean {
   if (outcome.status !== 200) return false;
   if (!outcome.title || NOT_FOUND_TITLE.test(outcome.title)) return false;
+  // roly.eu renders `MODELS.undefined.NAME` for a reference it cannot resolve,
+  // behind a 200. A shell is not a product.
+  if (/MODELS\.undefined/i.test(outcome.title)) return false;
   if (source === 'guessed') {
-    return /|\s*Roly/i.test(outcome.title) && outcome.finalUrl.includes('/model_');
+    // `/|\s*Roly/` was an empty alternation: it matched every title.
+    return /\|\s*Roly\b/i.test(outcome.title) && outcome.finalUrl.includes('/model_');
   }
   return true;
 }
@@ -140,6 +145,208 @@ export interface AvailabilityOptions {
   priorMisses?: string[];
   fetchImpl?: typeof fetch;
   now?: Date;
+}
+
+// ---------------------------------------------------------------------------
+// ROLY: the published sitemap is the only server-side truth available
+// ---------------------------------------------------------------------------
+
+/** roly.es redirects to roly.eu; refs live at `/es/model_<REF>`. */
+export const ROLY_REF_BASE = 'https://roly.eu';
+const ROLY_SITEMAP_URL = 'https://roly.eu/sitemap_roly_es.xml';
+const ROLY_SITEMAP_KEY = 'mhx:roly:sitemap';
+const ROLY_SITEMAP_TTL = 7 * DAY;
+
+export interface RolySitemap {
+  fetchedAt: string;
+  /** Published refs without the `model_` prefix (`PO0395`, `CA1234`, …). */
+  refs: string[];
+}
+
+export function errorText(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+async function readStoredSitemap(): Promise<RolySitemap | null> {
+  try {
+    const stored = await chrome.storage.local.get([ROLY_SITEMAP_KEY]);
+    const value = stored[ROLY_SITEMAP_KEY] as RolySitemap | undefined;
+    if (!value || !Array.isArray(value.refs)) return null;
+    return value;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchRolySitemap(fetchImpl: typeof fetch): Promise<RolySitemap> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    const response = await fetchImpl(ROLY_SITEMAP_URL, {
+      redirect: 'follow',
+      signal: controller.signal,
+      headers: { accept: 'application/xml,text/xml' },
+    });
+    if (!response.ok) {
+      throw new Error(`sitemap fetch failed (status ${response.status})`);
+    }
+    const xml = await response.text();
+    const refs = [
+      ...new Set(
+        [...xml.matchAll(/model_([A-Za-z0-9]+)/g)]
+          .map((match) => (match[1] ?? '').toUpperCase())
+          .filter(Boolean),
+      ),
+    ].sort();
+    if (refs.length === 0) throw new Error('sitemap carried no model URLs');
+    return { fetchedAt: new Date().toISOString(), refs };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * The published ROLY model list, cached for a week.
+ *
+ * Needed because the site cannot answer the question: every `/es/model_<REF>`
+ * URL returns 200 with the reference echoed into the title, whether or not the
+ * product exists, and a nonexistent reference returns 200 too. The sitemap is
+ * the only server-side statement of what is actually published.
+ */
+export async function loadRolySitemap(
+  fetchImpl: typeof fetch = fetch,
+  maxAgeMs = ROLY_SITEMAP_TTL,
+): Promise<RolySitemap> {
+  const stored = await readStoredSitemap();
+  const at = stored ? Date.parse(stored.fetchedAt) : NaN;
+  if (stored && Number.isFinite(at) && Date.now() - at < maxAgeMs) return stored;
+  const fresh = await fetchRolySitemap(fetchImpl);
+  try {
+    await chrome.storage.local.set({ [ROLY_SITEMAP_KEY]: fresh });
+  } catch {
+    // A cache write failure costs one fetch, not a verdict.
+  }
+  return fresh;
+}
+
+/**
+ * Candidate ROLY references for a SKU.
+ *
+ * ROLY refs are `PO` + a zero-padded number; the trailing digit run of our SKU
+ * is the only hint there is. Every candidate is then *proved* against the
+ * sitemap, never assumed, and the review line says the mapping is a guess.
+ */
+export function rolyRefCandidates(sku: string): string[] {
+  const digits = /(\d+)\s*$/.exec(sku.trim().toUpperCase())?.[1] ?? '';
+  if (!digits) return [];
+  const out: string[] = [];
+  const add = (value: string): void => {
+    const ref = `PO${value}`;
+    if (!out.includes(ref)) out.push(ref);
+  };
+  add(digits);
+  if (digits.length > 4) add(digits.slice(-4));
+  if (digits.length < 4) add(digits.padStart(4, '0'));
+  return out;
+}
+
+/**
+ * A ROLY verdict that can actually be wrong.
+ *
+ * Confirmed URL (Notion / map): fetched once, and only a 404 or the site's own
+ * `MODELS.undefined` template contradicts it. Guessed: the reference must be
+ * published in the sitemap before the product is called available; otherwise
+ * the verdict is `unresolved` with the count and the refs that were tried.
+ */
+async function rolyAvailability(
+  sku: string,
+  link: SupplierLinkInfo,
+  base: AvailabilityCheck,
+  opts: AvailabilityOptions,
+): Promise<AvailabilityCheck> {
+  const anomalies: string[] = [];
+  const sitemap = await loadRolySitemap(opts.fetchImpl ?? fetch).catch(
+    (err: unknown) => {
+      anomalies.push(`ROLY sitemap unavailable: ${errorText(err)}`);
+      return null;
+    },
+  );
+  const published = new Set(sitemap?.refs ?? []);
+  const candidates = rolyRefCandidates(sku);
+  const ref = candidates.find((candidate) => published.has(candidate)) ?? '';
+
+  if (link.catalogSource === 'notion' || link.catalogSource === 'map') {
+    base.tried.push(link.catalog);
+    const outcome = await fetchCatalog(link.catalog, opts.fetchImpl);
+    if (outcome.status === 404) {
+      return {
+        ...base,
+        verdict: 'not-found',
+        review: [`the confirmed catalogue URL 404s: ${link.catalog}`],
+        anomalies,
+      };
+    }
+    if (outcome.status === 0 || /MODELS\.undefined/i.test(outcome.title)) {
+      return {
+        ...base,
+        verdict: 'unresolved',
+        review: [
+          `the confirmed URL did not render a product (${outcome.error || outcome.title || `status ${outcome.status}`}) - re-check it by hand`,
+        ],
+        anomalies,
+      };
+    }
+    return {
+      ...base,
+      verdict: 'available',
+      url: link.catalog,
+      urlSource: link.catalogSource,
+      title: outcome.title,
+      misses: [],
+      review: ['catalogue URL confirmed in the SKU Library and reachable'],
+      anomalies,
+    };
+  }
+
+  if (ref) {
+    return {
+      ...base,
+      verdict: 'available',
+      url: `${ROLY_REF_BASE}/es/model_${ref}`,
+      urlSource: 'guessed',
+      title: `model_${ref}`,
+      misses: [],
+      review: [
+        `reference ${ref} is published in the ROLY sitemap (${published.size} models)`,
+        'the SKU-to-reference match is a guess - confirm the page once and store the URL in the SKU Library',
+      ],
+      anomalies,
+    };
+  }
+
+  const tried = candidates.map((candidate) => `${ROLY_REF_BASE}/es/model_${candidate}`);
+  if (!sitemap) {
+    return {
+      ...base,
+      verdict: anomalies.length > 0 ? 'fetch-error' : 'unresolved',
+      tried,
+      review: ['the ROLY catalogue could not be read, so no verdict is drawn from it'],
+      anomalies,
+    };
+  }
+
+  return {
+    ...base,
+    verdict: 'unresolved',
+    tried,
+    review: [
+      `no reference for this SKU is published in the ROLY sitemap (${published.size} models, read ${sitemap.fetchedAt.slice(0, 10)})${
+        candidates.length > 0 ? `: tried ${candidates.join(', ')}` : ''
+      }`,
+      'ROLY answers 200 for any reference, so fetching the page cannot prove a product exists - add the confirmed URL to the SKU Library `Supplier Product` column',
+    ],
+    anomalies,
+  };
 }
 
 export async function checkSkuAvailability(
@@ -182,6 +389,11 @@ export async function checkSkuAvailability(
         `no catalogue URL known for ${supplier}: add the supplier product link to the SKU Library (Supplier Product column) - no URL pattern is guessed for this supplier`,
       ],
     };
+  }
+
+  // ROLY gets its own path: its product URLs cannot prove anything.
+  if (supplier === 'ROLY') {
+    return rolyAvailability(id, link, base, opts);
   }
 
   const candidates: { url: string; source: CatalogSource }[] = [

@@ -304,6 +304,14 @@ function ResolverResult({
             <span>Product type</span>
             <b>{r.product_type}</b>
           </li>
+          {r.magento_status?.label ? (
+            <li>
+              <span>Magento status</span>
+              <b class={r.magento_status.label === 'Disabled' ? 'bad' : 'ok'}>
+                {r.magento_status.label}
+              </b>
+            </li>
+          ) : null}
           <li>
             <span>Supplier</span>
             <b>{notion?.supplier || resolvedSupplier.supplier || supplierFor(r.sku)}</b>
@@ -572,6 +580,12 @@ function AdminFallbackResult({
         <li>
           <span>Product ID</span>
           <b class="db-mono">{fallback.productId}</b>
+        </li>
+        <li>
+          <span>Magento status</span>
+          <b class={fallback.status === 'Disabled' ? 'bad' : fallback.status ? 'ok' : undefined}>
+            {fallback.status || 'not reported by the grid'}
+          </b>
         </li>
       </ul>
       <ul class="db-links db-links--flush">

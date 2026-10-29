@@ -85,12 +85,26 @@ export interface ResolverCategories {
  * a lane module.
  */
 export interface ResolverSupplier {
-  supplier: 'ROLY' | 'TOPTEX' | 'ALLBEST';
+  supplier: 'ROLY' | 'TOPTEX' | 'ALLBEST' | 'MAKITO';
   tier: number;
   official: string;
   catalog: string;
   catalogSource: 'notion' | 'map' | 'guessed' | 'none';
   reviewFlags: string[];
+}
+
+/**
+ * Magento's own enable/disable state, read from the product grid.
+ *
+ * Never inferred from whether the storefront answered: a disabled product has
+ * no PDP at all, which is exactly the case where the status is the only useful
+ * fact about the SKU.
+ */
+export interface ResolverMagentoStatus {
+  /** `Enabled` / `Disabled`, or whatever Magento labelled the row. */
+  label: string;
+  source: 'admin-grid';
+  checked_at: string;
 }
 
 /**
@@ -153,6 +167,8 @@ export interface ResolverJson {
   categories?: ResolverCategories;
   /** Supplier attribution (D4). */
   supplier?: ResolverSupplier;
+  /** Enable/disable state as Magento reports it. */
+  magento_status?: ResolverMagentoStatus;
   /** Verdict attached at read time; never persisted, so it cannot go stale. */
   supplier_availability?: ResolverSupplierAvailability;
   /** The requested URL when the storefront redirected (E2). */
@@ -229,7 +245,8 @@ function isSupplierBlock(value: unknown): boolean {
     isRecord(value) &&
     (value.supplier === 'ROLY' ||
       value.supplier === 'TOPTEX' ||
-      value.supplier === 'ALLBEST') &&
+      value.supplier === 'ALLBEST' ||
+      value.supplier === 'MAKITO') &&
     typeof value.official === 'string' &&
     typeof value.catalog === 'string'
   );
@@ -273,6 +290,10 @@ export function isResolverJson(value: unknown): value is ResolverJson {
     candidate.anomalies.every((anomaly) => typeof anomaly === 'string') &&
     (candidate.categories === undefined || isCategories(candidate.categories)) &&
     (candidate.supplier === undefined || isSupplierBlock(candidate.supplier)) &&
+    (candidate.magento_status === undefined ||
+      (isRecord(candidate.magento_status) &&
+        typeof candidate.magento_status.label === 'string' &&
+        typeof candidate.magento_status.checked_at === 'string')) &&
     (candidate.supplier_availability === undefined ||
       isRecord(candidate.supplier_availability)) &&
     (candidate.notices === undefined || isStringArray(candidate.notices)) &&
@@ -284,11 +305,23 @@ export function isResolverJson(value: unknown): value is ResolverJson {
   );
 }
 
-/** Supplier grouping rule (SYSTEM.md): TT* -> TOPTEX, AB* -> ALLBEST, else ROLY. */
-export function supplierFor(sku: string): 'TOPTEX' | 'ALLBEST' | 'ROLY' {
+/**
+ * Supplier grouping rule (SYSTEM.md 1.7 + the Notion `SKU & Prefixes` table):
+ *
+ *   TT*            -> TOPTEX      (TT is the wrapper: TTK111 -> K111 Kariban)
+ *   AB*            -> ALLBEST     (internal, no public catalogue)
+ *   M/MK + 5 digit -> MAKITO      (the M/MK is OUR wrapper: M22480 -> 22480)
+ *   everything else-> ROLY
+ *
+ * `MO` is Midocean, not Makito, and is deliberately not matched.
+ */
+export function supplierFor(
+  sku: string,
+): 'TOPTEX' | 'ALLBEST' | 'ROLY' | 'MAKITO' {
   const s = sku.trim().toUpperCase();
   if (/^TT/.test(s)) return 'TOPTEX';
   if (/^AB/.test(s)) return 'ALLBEST';
+  if (/^M(?:K)?\d{5}$/.test(s)) return 'MAKITO';
   return 'ROLY';
 }
 

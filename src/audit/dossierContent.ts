@@ -92,6 +92,9 @@ export function buildDossierMarkdown(input: DossierInput): string {
   if (path.length > 0) {
     out.push(`Categories: ${path.join(' > ')}`);
   }
+  if (resolver.magento_status?.label) {
+    out.push(`Magento status: ${resolver.magento_status.label}`);
+  }
   if (resolver.redirected_to) {
     out.push(`Redirected from: ${resolver.redirected_to}`);
   }
@@ -154,12 +157,15 @@ export function buildDossierMarkdown(input: DossierInput): string {
       const g = groups[key] ?? [];
       out.push('');
       out.push(`### ${key} (${g.length})`);
-      out.push('| Child ID | Size | Admin URL |');
-      out.push('|---|---|---|');
+      // The child SKU is what a human quotes in a ticket or a supplier mail; the
+      // matrix's numeric id alone is unsearchable in the admin. Column order
+      // matches the existing SKU Library page tables (SKU first).
+      out.push('| SKU | Child ID | Size | Admin URL |');
+      out.push('|---|---|---|---|');
       let shown = 0;
       for (const r of g) {
         if (shown >= MAX_PER_GROUP) break;
-        out.push(`| ${r.child} | ${r.size} | ${r.url} |`);
+        out.push(`| ${r.sku || '-'} | ${r.child} | ${r.size} | ${r.url} |`);
         shown += 1;
       }
       if (g.length > MAX_PER_GROUP) {
