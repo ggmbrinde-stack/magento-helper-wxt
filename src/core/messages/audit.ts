@@ -203,6 +203,7 @@ export interface PushListingErrorsResponse {
 export interface SearchMagentoRequest {
   type: 'SEARCH_MAGENTO';
   sku: string;
+  childIds?: string[];
 }
 
 export interface SearchMagentoResponse {

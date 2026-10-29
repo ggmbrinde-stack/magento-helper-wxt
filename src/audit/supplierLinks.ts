@@ -19,6 +19,7 @@
 
 import { supplierFor } from '../shared/resolver';
 import { SUPPLIER_CATALOG } from './rules/supplierCatalog';
+import { ROLY_MODELS } from './rules/rolyModels';
 
 export type SupplierName = 'ROLY' | 'TOPTEX' | 'ALLBEST' | 'MAKITO';
 
@@ -79,14 +80,21 @@ export function guessCatalogUrl(sku: string, supplier: SupplierName): string {
   const s = sku.trim().toUpperCase();
   // 1. If the SKU already starts with a 2-letter ROLY prefix (PA, PO, CA, CH, SU, etc.)
   const exact = /^([A-Z]{2}\d{4,5})/.exec(s);
-  if (exact?.[1]) {
+  if (exact?.[1] && ROLY_MODELS.includes(exact[1])) {
     return `https://roly.eu/pt/model_${exact[1]}`;
   }
-  // 2. Trailing or embedded 4-5 digits
+  // 2. Trailing or embedded 4-5 digits (e.g. R0317C -> 0317)
   const m = /(\d{4,5})/.exec(s) ?? /(\d+)\s*$/.exec(s);
   const digits = m?.[1] ?? '';
   if (!digits) return '';
-  return `https://roly.eu/pt/model_PO${digits}`;
+  const padded = digits.length < 4 ? digits.padStart(4, '0') : digits;
+  const match = ROLY_MODELS.find(
+    (ref) => ref.endsWith(padded) || ref.endsWith(digits),
+  );
+  if (match) {
+    return `https://roly.eu/pt/model_${match}`;
+  }
+  return `https://roly.eu/pt/model_PO${padded}`;
 }
 
 export function supplierLinkFor(

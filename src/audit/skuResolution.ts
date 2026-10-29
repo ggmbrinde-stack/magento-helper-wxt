@@ -289,6 +289,7 @@ async function sendToTab<T>(tabId: number, message: unknown): Promise<T> {
 async function tryAdminGrid(
   sku: string,
   fallbackBase: string,
+  childIds?: string[],
 ): Promise<ResolveAdminFallback> {
   const allTabs = await chrome.tabs.query({});
   const adminTabs = allTabs.filter((t) =>
@@ -303,7 +304,7 @@ async function tryAdminGrid(
     );
   }
 
-  const request: SearchMagentoRequest = { type: 'SEARCH_MAGENTO', sku };
+  const request: SearchMagentoRequest = { type: 'SEARCH_MAGENTO', sku, childIds };
   let response: SearchMagentoResponse | undefined;
   try {
     response = await sendToTab<SearchMagentoResponse>(adminTab.id, request);
@@ -545,8 +546,28 @@ export async function resolveSkuForDashboard(
     supplierUrl: notion?.supplierLink,
   });
 
-  const adminChildren = admin.ok ? admin.fallback.children : [];
+  let adminChildren = admin.ok ? admin.fallback.children : [];
   const adminStatus = admin.ok ? (admin.fallback.status ?? '') : '';
+
+  // If the initial admin search did not return child SKUs (e.g. parent edit page
+  // was not open), but storefront resolution gave us child IDs, query the grid
+  // for those specific child IDs to pull their child SKUs.
+  if (
+    admin.ok &&
+    adminChildren.length === 0 &&
+    resolver?.children &&
+    resolver.children.length > 0
+  ) {
+    try {
+      const retry = await tryAdminGrid(sku, adminBase, resolver.children);
+      if (retry.children.length > 0) {
+        adminChildren = retry.children;
+      }
+    } catch {
+      // non-fatal
+    }
+  }
+
   if (resolver) {
     const notices = [...(resolver.notices ?? [])];
     // A storefront page exists, so a `Disabled` row is a contradiction worth
@@ -616,7 +637,7 @@ export async function resolveSkuForDashboard(
   }
   if (!source && notion) source = 'notion';
 
-  if (resolver && fresh) {
+  if (resolver && (fresh || adminChildren.length > 0)) {
     try {
       await cacheResolverJson(sku, resolver);
     } catch (err) {

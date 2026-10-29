@@ -151,7 +151,10 @@ export default defineContentScript({
         return false;
       }
       if (type === 'SEARCH_MAGENTO') {
-        void handleSearchMagento(String(message.sku ?? '')).then(sendResponse);
+        const req = message as { sku?: string; childIds?: string[] };
+        void handleSearchMagento(String(req.sku ?? ''), req.childIds).then(
+          sendResponse,
+        );
         return true;
       }
       if (type === 'ERROR_MARKUP') {

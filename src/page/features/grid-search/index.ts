@@ -115,6 +115,63 @@ async function queryGrid(
 }
 
 /**
+ * Query the product listing grid by numeric entity_id range.
+ * Magento's product listing entity_id column is a from/to range filter.
+ */
+async function queryGridByIds(
+  ids: string[],
+): Promise<{ items: GridItem[]; error: string; status: number }> {
+  if (ids.length === 0) return { items: [], error: '', status: 200 };
+  const numeric = ids
+    .map((id) => Number(id))
+    .filter((n) => Number.isFinite(n) && n > 0);
+  if (numeric.length === 0) return { items: [], error: '', status: 200 };
+  const min = Math.min(...numeric);
+  const max = Math.max(...numeric);
+  if (max - min > 500) return { items: [], error: 'Range too wide', status: 200 };
+
+  const formKey =
+    document.querySelector<HTMLInputElement>('input[name="form_key"]')?.value ??
+    '';
+  const qs = new URLSearchParams();
+  qs.append('namespace', 'product_listing');
+  qs.append('isAjax', 'true');
+  qs.append('form_key', formKey);
+  qs.append('filters[placeholder][]', 'true');
+  qs.append('filters[entity_id][from]', String(min));
+  qs.append('filters[entity_id][to]', String(max));
+  qs.append('paging[pageSize]', String(Math.max(100, numeric.length + 10)));
+  qs.append('paging[currentPage]', '1');
+
+  try {
+    const res = await fetch(`${gridBaseUrl()}?${qs.toString()}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        Accept: 'application/json',
+      },
+    });
+    const text = await res.text();
+    try {
+      const data = JSON.parse(text) as {
+        items?: GridItem[];
+        data?: { items?: GridItem[] };
+      };
+      return {
+        items: data.items ?? data.data?.items ?? [],
+        error: '',
+        status: res.status,
+      };
+    } catch {
+      return { items: [], error: '', status: res.status };
+    }
+  } catch (err) {
+    return { items: [], error: (err as Error).message, status: 0 };
+  }
+}
+
+/**
  * Read every assigned child (enabled or disabled) from the Configurations
  * matrix of the currently open product edit page.
  *
@@ -225,14 +282,20 @@ export function readConfigurableChildren(productId: string): ConfigChildren {
  * such columns), but the child SKU and its status - which is what a human
  * searches for in Magento - are real.
  */
-function childrenFromGrid(items: GridItem[], parentSku: string): ResolverChild[] {
+function childrenFromGrid(
+  items: GridItem[],
+  parentSku: string,
+  childIds?: string[],
+): ResolverChild[] {
   const wanted = parentSku.trim().toUpperCase();
+  const idSet = childIds && childIds.length > 0 ? new Set(childIds) : null;
   const out: ResolverChild[] = [];
   for (const item of items) {
     const sku = (item.sku ?? '').trim();
     if (!sku || sku.toUpperCase() === wanted) continue;
     const id = String(item.entity_id ?? item.id ?? '');
     if (!id) continue;
+    if (idSet && !idSet.has(id)) continue;
     out.push({
       id,
       sku,
@@ -248,6 +311,7 @@ function childrenFromGrid(items: GridItem[], parentSku: string): ResolverChild[]
 /** Search the open admin tab's product grid via AJAX. */
 export async function handleSearchMagento(
   sku: string,
+  childIds?: string[],
 ): Promise<SearchMagentoResponse> {
   const wanted = sku.trim().toUpperCase();
   const first = await queryGrid(sku, 20);
@@ -284,14 +348,35 @@ export async function handleSearchMagento(
   // parent's own edit page open. Fall back to the grid so the child SKUs (and
   // their status) still arrive from whatever admin page the operator is on.
   if (children.length === 0) {
-    const wider = await queryGrid(sku, 100);
-    const derived = childrenFromGrid(wider.items, sku);
-    if (derived.length > 0) {
-      children = derived;
-      childrenReason =
-        'child rows read from the product grid by SKU (colour/size labels need the parent edit page open)';
-    } else if (wider.error) {
-      childrenReason = `${childrenReason}; grid fallback failed: ${wider.error}`;
+    // 1. If childIds are known (e.g. from the storefront PDP jsonConfig), query by ID range
+    if (childIds && childIds.length > 0) {
+      const byIds = await queryGridByIds(childIds);
+      const derived = childrenFromGrid(byIds.items, sku, childIds);
+      if (derived.length > 0) {
+        children = derived;
+        childrenReason = 'child rows read from product grid by entity ID';
+      }
+    }
+
+    // 2. Query grid by candidate terms (exact SKU, stripped suffix, numeric core)
+    if (children.length === 0) {
+      const terms = [sku];
+      const stripped = sku.replace(/[-_]?[A-Za-z]+$/, '');
+      if (stripped && !terms.includes(stripped)) terms.push(stripped);
+      const numMatch = /(\d{4,})/.exec(sku)?.[1];
+      if (numMatch && !terms.includes(numMatch)) terms.push(numMatch);
+
+      for (const term of terms) {
+        const wider = await queryGrid(term, 100);
+        const derived = childrenFromGrid(wider.items, sku, childIds);
+        if (derived.length > 0) {
+          children = derived;
+          childrenReason = `child rows read from the product grid via "${term}"`;
+          break;
+        } else if (wider.error && !childrenReason) {
+          childrenReason = `grid search via "${term}" failed: ${wider.error}`;
+        }
+      }
     }
   }
 

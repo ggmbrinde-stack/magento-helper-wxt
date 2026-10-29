@@ -22,6 +22,7 @@
  */
 
 import { supplierFor } from '../shared/resolver';
+import { ROLY_MODELS } from './rules/rolyModels';
 import {
   supplierLinkFor,
   type CatalogSource,
@@ -250,11 +251,16 @@ export function rolyRefCandidates(sku: string): string[] {
     add(exact[0]);
   }
 
-  // 2. Extracted digits with standard ROLY model prefixes
+  // 2. Extracted digits matched against known published models
   const mDigits = /(\d{4,5})/.exec(s) ?? /(\d+)\s*$/.exec(s);
   const digits = mDigits?.[1] ?? '';
   if (digits) {
     const padded = digits.length < 4 ? digits.padStart(4, '0') : digits;
+    const model = ROLY_MODELS.find(
+      (ref) => ref.endsWith(padded) || ref.endsWith(digits),
+    );
+    if (model) add(model);
+
     const prefixes = ['PO', 'PA', 'CA', 'CH', 'SU', 'BE', 'FO'];
     for (const pfx of prefixes) {
       add(`${pfx}${padded}`);
