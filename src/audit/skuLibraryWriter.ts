@@ -51,8 +51,8 @@ import {
   SKU_LIBRARY_SUPPLIER_OPTIONS,
   SUBCATEGORY_OPTIONS,
   canonicalCategory,
+  canonicalSkuLibrarySupplier,
   canonicalSubcategory,
-  canonicalSupplier,
   isOption,
 } from '../shared/notion/contract';
 import type { MagentoBuild } from '../shared/magento';
@@ -236,7 +236,7 @@ export function libraryCellsFor(
       canonicalSubcategory(extra.subcategory) ??
       extra.subcategory?.trim() ??
       '',
-    supplier: canonicalSupplier(extra.supplier ?? ''),
+    supplier: canonicalSkuLibrarySupplier(extra.supplier ?? ''),
     supplierLink: extra.supplierLink?.trim() ?? '',
     supplierProduct: extra.supplierProduct?.trim() ?? '',
   };

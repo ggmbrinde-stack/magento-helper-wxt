@@ -47,6 +47,11 @@ const PATCH_PATH = /^\/v1\/pages\/[^/]+$/;
 // body is empty, may receive its dossier body in chunks. The writer checks the
 // body first; non-empty pages are never overwritten. Only that writer may use it.
 const BLOCK_CHILDREN_PATH = /^\/v1\/blocks\/[^/]+\/children$/;
+// Body repair: deleting individual blocks before re-appending a fresh dossier
+// body is only permitted in the SKU Library writer and only on block IDs
+// (never on a page or database). The writer gates this behind
+// NOTION_LIBRARY_UPDATES_ENABLED.
+const BLOCK_DELETE_PATH = /^\/v1\/blocks\/[^/]+$/;
 const UPDATE_HELPER = /\b(updatePage|updatePageProperties)\b/;
 
 function findProblems(relPath, text) {
@@ -72,6 +77,10 @@ function findProblems(relPath, text) {
       (PATCH_PATH.test(path) || BLOCK_CHILDREN_PATH.test(path)) &&
       patchFileAllowed
     ) {
+      continue;
+    }
+    // The allowed DELETE: body-repair block removal in the SKU Library writer.
+    if (method === 'DELETE' && BLOCK_DELETE_PATH.test(path) && patchFileAllowed) {
       continue;
     }
 
@@ -146,5 +155,5 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `Notion write-safety check passed: ${files} file(s) scanned; only the guarded SKU Library update and empty-body completion paths are permitted.`,
+  `Notion write-safety check passed: ${files} file(s) scanned; only the guarded SKU Library update, empty-body completion, and body-repair delete paths are permitted.`,
 );

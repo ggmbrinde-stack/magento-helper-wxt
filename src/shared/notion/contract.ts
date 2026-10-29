@@ -3,8 +3,9 @@
 // The extension must never invent a select value. These arrays mirror the live
 // Listing Errors and SKU Library databases. Keep them in sync deliberately:
 //  - Listing Errors and SKU Library use the same Category/Subcategory taxonomy.
-//  - ALLBEST is an internal supplier and is stored as "ALLBEST (interno)" in
-//    both databases; callers may still pass the short form.
+//  - ALLBEST is stored as "ALLBEST (interno)" in the Listing Errors DB, but as
+//    plain "ALLBEST" in the SKU Library. canonicalSupplier() targets Listing
+//    Errors; canonicalSkuLibrarySupplier() targets the SKU Library.
 
 export const CATEGORY_OPTIONS = [
   'Promotional Textile',
@@ -127,12 +128,24 @@ export const LISTING_ERROR_SUPPLIER_OPTIONS = [
   'JHK',
 ] as const;
 
+/**
+ * Supplier options in the SKU Library database.
+ * Note: ALLBEST is plain here (no "(interno)") — that suffix is only in
+ * Listing Errors. "Other - Unknown" uses a dash because Notion rejects slashes
+ * in select option names during schema import.
+ */
 export const SKU_LIBRARY_SUPPLIER_OPTIONS = [
+  'MAKITO',
   'ROLY',
-  'TOPTEX',
+  'MIDOCEAN',
+  "SOL'S",
+  'ALLBEST',
   'PF CONCEPT',
-  'GIVING',
-  'ALLBEST (interno)',
+  'TOPTEX',
+  'TEJOBRINDE',
+  'GIVING Europe',
+  'XD Connects',
+  'Other - Unknown',
 ] as const;
 
 export const LIBRARY_STATUS_OPTIONS = [
@@ -142,21 +155,33 @@ export const LIBRARY_STATUS_OPTIONS = [
   'Corrected',
 ] as const;
 
-const SUPPLIER_ALIASES: Record<string, string> = {
-  allbest: 'ALLBEST (interno)',
-};
-
 /**
- * Normalise a supplier name to the canonical option used by both databases.
- * Unknown values are returned trimmed so the writer's validation can report
- * them instead of silently inventing an option.
+ * Normalise a supplier name to the canonical option used by the Listing Errors
+ * database. Unknown values are returned trimmed so the writer's validation can
+ * report them instead of silently inventing an option.
+ *
+ * The Listing Errors DB uses "ALLBEST (interno)"; for the SKU Library use
+ * canonicalSkuLibrarySupplier() instead.
  */
 export function canonicalSupplier(value: string): string {
   const trimmed = (value ?? '').trim();
   if (!trimmed) return '';
-  const alias = SUPPLIER_ALIASES[trimmed.toLowerCase()];
-  if (alias) return alias;
+  // ALLBEST maps to the Listing Errors form.
+  if (trimmed.toLowerCase() === 'allbest') return 'ALLBEST (interno)';
   const direct = LISTING_ERROR_SUPPLIER_OPTIONS.find(
+    (option) => option.toLowerCase() === trimmed.toLowerCase(),
+  );
+  return direct ?? trimmed;
+}
+
+/**
+ * Normalise a supplier name to the canonical option used by the SKU Library
+ * database. ALLBEST is plain here (no "(interno)" suffix).
+ */
+export function canonicalSkuLibrarySupplier(value: string): string {
+  const trimmed = (value ?? '').trim();
+  if (!trimmed) return '';
+  const direct = SKU_LIBRARY_SUPPLIER_OPTIONS.find(
     (option) => option.toLowerCase() === trimmed.toLowerCase(),
   );
   return direct ?? trimmed;
