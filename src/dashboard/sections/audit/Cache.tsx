@@ -1,87 +1,80 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
-import { isResolverJson, type ResolverJson } from '../../../shared/resolver';
+import type { ResolverCacheResponse } from '../../../core/messages';
+import type { ResolverJson } from '../../../shared/resolver';
 
-interface CacheMaps {
-  current: Record<string, unknown>;
-  legacy: Record<string, unknown>;
+async function askCache(
+  action: 'list' | 'delete' | 'clear',
+  sku?: string,
+): Promise<ResolverCacheResponse> {
+  return (await browser.runtime.sendMessage({
+    type: 'RESOLVER_CACHE',
+    action,
+    sku,
+  })) as ResolverCacheResponse;
 }
 
-function asRecord(value: unknown): Record<string, unknown> {
-  return value && typeof value === 'object' && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
+/** F2: the age is the point of the column, so keep it relative and short. */
+function formatAge(days: number | undefined): string {
+  if (days === undefined) return '?';
+  if (days < 1) return `${Math.max(1, Math.round(days * 24))}h`;
+  if (days < 10) return `${days.toFixed(1)}d`;
+  return `${Math.round(days)}d`;
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} kB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 export function Cache() {
-  const [maps, setMaps] = useState<CacheMaps>({ current: {}, legacy: {} });
+  const [entries, setEntries] = useState<ResolverJson[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const load = (): void => {
-    void browser.storage.local
-      .get(['resolverMap', 'resolverMapV2'])
-      .then((data) => {
-        setMaps({
-          current: asRecord(data.resolverMap),
-          legacy: asRecord(data.resolverMapV2),
-        });
+    void askCache('list')
+      .then((res) => {
+        if (!res?.ok) {
+          setError(res?.error ?? 'Could not read the resolver cache.');
+          return;
+        }
+        setEntries(res.entries ?? []);
+        setError(null);
+        setLoaded(true);
+      })
+      .catch((err) => {
+        setError((err as Error).message);
         setLoaded(true);
       });
   };
 
   useEffect(load, []);
 
-  const persist = (next: CacheMaps): void => {
-    setMaps(next);
-    void browser.storage.local.set({
-      resolverMap: next.current,
-      resolverMapV2: next.legacy,
+  const remove = (sku: string): void => {
+    void askCache('delete', sku).then((res) => {
+      if (res?.ok) setEntries(res.entries ?? []);
+      else setError(res?.error ?? 'Delete failed.');
     });
   };
 
-  const resolvers = new Map<string, ResolverJson>();
-  for (const [key, value] of Object.entries(maps.legacy)) {
-    if (isResolverJson(value)) resolvers.set(value.sku.trim().toUpperCase(), value);
-  }
-  for (const value of Object.values(maps.current)) {
-    if (isResolverJson(value)) resolvers.set(value.sku.trim().toUpperCase(), value);
-  }
-  const entries = [...resolvers.values()].sort(
-    (a, b) =>
-      Date.parse(b.generated) - Date.parse(a.generated),
-  );
-
-  const remove = (sku: string): void => {
-    const normalizedSku = sku.trim().toUpperCase();
-    const next = { current: { ...maps.current }, legacy: { ...maps.legacy } };
-    for (const [key, value] of Object.entries(next.current)) {
-      if (
-        isResolverJson(value) &&
-        value.sku.trim().toUpperCase() === normalizedSku
-      ) {
-        delete next.current[key];
-      }
-    }
-    for (const [key, value] of Object.entries(next.legacy)) {
-      if (
-        isResolverJson(value) &&
-        value.sku.trim().toUpperCase() === normalizedSku
-      ) {
-        delete next.legacy[key];
-      }
-    }
-    persist(next);
-  };
-
   const clearAll = (): void => {
-    if (!Object.keys(maps.current).length && !Object.keys(maps.legacy).length) {
-      return;
-    }
-    if (window.confirm('Clear all cached SKUs?')) {
-      persist({ current: {}, legacy: {} });
-    }
+    if (entries.length === 0) return;
+    if (!window.confirm('Clear all cached SKUs?')) return;
+    void askCache('clear').then((res) => {
+      if (res?.ok) setEntries(res.entries ?? []);
+      else setError(res?.error ?? 'Clear failed.');
+    });
   };
+
+  // F5: the size is reported, because per-SKU keys make it a real number.
+  const bytes = entries.reduce(
+    (total, entry) => total + JSON.stringify(entry).length,
+    0,
+  );
+  const stale = entries.filter((entry) => entry.stale).length;
 
   if (!loaded) return <p class="db-empty">Loading cache…</p>;
 
@@ -91,6 +84,10 @@ export function Cache() {
         <h2>
           Resolver cache <span class="db-count">{entries.length}</span>
         </h2>
+        <span class="db-count">
+          {formatBytes(bytes)}
+          {stale > 0 ? ` · ${stale} stale` : ''}
+        </span>
         <div class="db-actions">
           <button type="button" class="db-btn" onClick={load}>
             Refresh
@@ -98,10 +95,7 @@ export function Cache() {
           <button
             type="button"
             class="db-btn db-btn--danger"
-            disabled={
-              !Object.keys(maps.current).length &&
-              !Object.keys(maps.legacy).length
-            }
+            disabled={entries.length === 0}
             onClick={clearAll}
           >
             Clear all
@@ -109,10 +103,11 @@ export function Cache() {
         </div>
       </div>
 
+      {error ? <div class="mhx-error">{error}</div> : null}
+
       {entries.length === 0 ? (
         <p class="db-empty">
-          No complete resolver results cached yet. Run Resolve SKU to populate
-          this cache.
+          No resolver results cached yet. Run Resolve SKU to populate this cache.
         </p>
       ) : (
         <table class="db-table">
@@ -121,24 +116,32 @@ export function Cache() {
               <th>SKU</th>
               <th>Product ID</th>
               <th>Children</th>
+              <th>Category</th>
               <th>Cached</th>
+              <th>Age</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {entries.map((resolver) => (
-              <tr key={resolver.sku}>
-                <td class="db-mono">{resolver.sku}</td>
+            {entries.map((entry) => (
+              <tr key={entry.sku}>
+                <td class="db-mono">{entry.sku}</td>
                 <td class="db-mono">
-                  {resolver.configurable_id ?? resolver.simple_product_id ?? '—'}
+                  {entry.configurable_id ?? entry.simple_product_id ?? '—'}
                 </td>
-                <td>{resolver.children.length}</td>
-                <td>{new Date(resolver.generated).toLocaleString()}</td>
+                <td>{entry.children.length}</td>
+                <td>{entry.categories?.path.join(' › ') || '—'}</td>
+                <td>{new Date(entry.generated).toLocaleString()}</td>
+                <td>
+                  <span class={entry.stale ? 'db-badge db-warn' : 'db-badge'}>
+                    {formatAge(entry.age_days)}
+                  </span>
+                </td>
                 <td class="db-row-actions">
                   <button
                     type="button"
                     class="db-btn db-btn--danger"
-                    onClick={() => remove(resolver.sku)}
+                    onClick={() => remove(entry.sku)}
                   >
                     Delete
                   </button>

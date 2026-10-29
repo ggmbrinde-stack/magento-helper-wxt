@@ -17,11 +17,24 @@ import {
   queryAllDatabase,
   queryDatabase,
 } from '../../../shared/notion/client';
-import { resolveSkuForDashboard } from '../../../audit';
+import {
+  checkSkuAvailability,
+  getCachedResolver,
+  readResolverCache,
+  deleteCachedResolver,
+  clearResolverCache,
+  loadAvailability,
+  saveAvailability,
+  resolveSkuForDashboard,
+} from '../../../audit';
 import { resolveSku, resolveSkuWithHtml } from '../../../shared/resolver';
 import { imageAuditForSku } from '../../../audit';
 import { textAuditForSku } from '../../../audit';
-import { buildPayloadsFromMarkdown, extractBreadcrumbs } from '../../../audit';
+import {
+  breadcrumbsFromCategories,
+  buildPayloadsFromMarkdown,
+  extractBreadcrumbs,
+} from '../../../audit';
 import {
   pushListingErrorPayloads,
 } from '../../../audit';
@@ -198,13 +211,14 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
   if (message?.type === 'RESOLVE_SKU') {
     const sku = String(message.sku ?? '').trim();
     const url = message.url ? String(message.url) : undefined;
+    const force = message.force === true;
     if (!sku) {
       sendResponse({ ok: false, error: 'SKU is required' });
       return true;
     }
     void (async () => {
       try {
-        sendResponse(await resolveSkuForDashboard(sku, url));
+        sendResponse(await resolveSkuForDashboard(sku, url, force));
       } catch (err) {
         sendResponse({ ok: false, error: (err as Error).message ?? 'Resolve failed' });
       }
@@ -273,6 +287,62 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
     return true;
   }
 
+  if (message?.type === 'CHECK_SUPPLIER') {
+    const sku = String(message.sku ?? '').trim().toUpperCase();
+    const force = message.force === true;
+    if (!sku) {
+      sendResponse({ ok: false, error: 'SKU is required' });
+      return true;
+    }
+    void (async () => {
+      try {
+        // The stored verdict is shown as-is unless the operator re-checks (D4).
+        if (!force) {
+          const cached = (await loadAvailability())[sku];
+          if (cached) {
+            sendResponse({ ok: true, check: cached });
+            return;
+          }
+        }
+        const check = await checkSkuAvailability(sku);
+        await saveAvailability([check]);
+        sendResponse({ ok: true, check });
+      } catch (err) {
+        sendResponse({
+          ok: false,
+          error: (err as Error).message ?? 'Supplier check failed',
+        });
+      }
+    })();
+    // Outer return keeps the message channel open for the async response.
+    return true;
+  }
+
+  if (message?.type === 'RESOLVER_CACHE') {
+    const action = String(message.action ?? 'list');
+    void (async () => {
+      try {
+        if (action === 'clear') {
+          await clearResolverCache();
+          sendResponse({ ok: true, entries: [] });
+          return;
+        }
+        if (action === 'delete') {
+          const sku = String(message.sku ?? '').trim();
+          if (sku) await deleteCachedResolver(sku);
+        }
+        sendResponse({ ok: true, entries: await readResolverCache() });
+      } catch (err) {
+        sendResponse({
+          ok: false,
+          error: (err as Error).message ?? 'Cache operation failed',
+        });
+      }
+    })();
+    // Outer return keeps the message channel open for the async response.
+    return true;
+  }
+
   if (message?.type === 'NOTION_HEALTH') {
     void (async () => {
       try {
@@ -302,8 +372,15 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
         let breadcrumbs = null;
         if (fetchBreadcrumbs) {
           try {
-            const { enHtml } = await resolveSkuWithHtml(sku);
-            breadcrumbs = extractBreadcrumbs(enHtml);
+            // C3: the resolver already stored the breadcrumb path, so a push
+            // costs no second storefront fetch when the SKU is cached.
+            const cached = await getCachedResolver(sku);
+            if (cached?.categories?.ok) {
+              breadcrumbs = breadcrumbsFromCategories(cached.categories);
+            } else {
+              const { enHtml } = await resolveSkuWithHtml(sku);
+              breadcrumbs = extractBreadcrumbs(enHtml);
+            }
           } catch {
             // breadcrumbs stay missing -> Category/Subcategory flagged, never invented
           }

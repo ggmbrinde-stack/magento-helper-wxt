@@ -5,7 +5,7 @@ import {
   DEFAULT_LISTING_ERRORS_DB,
   DEFAULT_SKU_LIBRARY_DB,
 } from '../../../shared/notion/client';
-import { isResolverJson } from '../../../shared/resolver';
+import type { ResolverCacheResponse } from '../../../core/messages';
 import { useSettings } from '../../shell/useSettings';
 
 function notionUrl(id: string): string {
@@ -16,22 +16,17 @@ export function Overview() {
   const { settings, loaded } = useSettings();
   const [cacheCount, setCacheCount] = useState<number | null>(null);
 
+  // F5: the count comes from the audit lane, which owns the storage layout.
   useEffect(() => {
-    void browser.storage.local
-      .get(['resolverMap', 'resolverMapV2'])
-      .then((data) => {
-        const resolverSkus = new Set<string>();
-        for (const cache of [data.resolverMap, data.resolverMapV2]) {
-          if (!cache || typeof cache !== 'object' || Array.isArray(cache)) {
-            continue;
-          }
-          for (const value of Object.values(cache as Record<string, unknown>)) {
-            if (isResolverJson(value)) {
-              resolverSkus.add(value.sku.trim().toUpperCase());
-            }
-          }
-        }
-        setCacheCount(resolverSkus.size);
+    void browser.runtime
+      .sendMessage({ type: 'RESOLVER_CACHE', action: 'list' })
+      .then((raw) => {
+        const res = raw as ResolverCacheResponse;
+        if (!res?.ok) return;
+        const skus = new Set(
+          (res.entries ?? []).map((entry) => entry.sku.trim().toUpperCase()),
+        );
+        setCacheCount(skus.size);
       });
   }, []);
 

@@ -17,6 +17,7 @@ import type { VariantSummary } from './variants';
 import type { ImageAuditResult } from './imageAudit';
 import type { ListingErrorPayload } from './payload';
 import type { SupplierLinkInfo } from './supplierLinks';
+import type { AvailabilityCheck } from './supplierAvailability';
 
 export interface DossierInput {
   sku: string;
@@ -27,6 +28,8 @@ export interface DossierInput {
   payloads: ListingErrorPayload[];
   /** Supplier tier + official URLs (supplier-links port). */
   supplier?: SupplierLinkInfo;
+  /** Last supplier availability verdict, when the sweep ran (D4). */
+  availability?: AvailabilityCheck;
   /** Notion row id keyed by payload title, collected during the push. */
   rowLinks?: Record<string, string>;
   /** Override "now" for deterministic tests. */
@@ -55,7 +58,8 @@ function rowUrl(id: string): string {
 }
 
 export function buildDossierMarkdown(input: DossierInput): string {
-  const { sku, resolver, magento, variants, imageAudit, payloads, supplier, rowLinks } = input;
+  const { sku, resolver, magento, variants, imageAudit, payloads, supplier, availability, rowLinks } =
+    input;
   const out: string[] = [];
 
   // --- Facts ---------------------------------------------------------------
@@ -84,12 +88,29 @@ export function buildDossierMarkdown(input: DossierInput): string {
     `Audit stats: dup groups ${dup.dup_groups} | order violations ${ord.violations} ` +
       `(${ord.children} children) | bg sampled ${bg.sampled}, off-white ${bg.offwhite}`,
   );
+  const path = resolver.categories?.path ?? [];
+  if (path.length > 0) {
+    out.push(`Categories: ${path.join(' > ')}`);
+  }
+  if (resolver.redirected_to) {
+    out.push(`Redirected from: ${resolver.redirected_to}`);
+  }
   if (supplier) {
+    const catalogLine = supplier.catalog
+      ? ` - ${supplier.catalog} (${supplier.catalogSource})`
+      : ' - catalogue URL unresolved';
     out.push(
       `Supplier: ${supplier.supplier} (Tier ${supplier.tier}) - ` +
         (supplier.official || 'interno, no public URL') +
-        (supplier.catalog ? ` - ${supplier.catalog}` : ''),
+        catalogLine,
     );
+    if (availability) {
+      out.push(
+        `Supplier availability: ${availability.verdict} (checked ${availability.checkedAt.slice(0, 10)}` +
+          `${availability.urlSource === 'guessed' ? ', URL guessed' : ''})`,
+      );
+      for (const note of availability.review) out.push(`  - ${note}`);
+    }
   }
   out.push('');
 

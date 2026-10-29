@@ -30,4 +30,5 @@ export * from './supplierAvailability';
 export * from './supplierLinks';
 export * from './textAudit';
 export * from './textFetch';
+export * from './variantLabels';
 export * from './variants';

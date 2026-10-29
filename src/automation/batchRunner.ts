@@ -30,14 +30,20 @@ import {
   type BatchStage,
 } from './batch';
 import { buildMagentoTable } from '../shared/magento';
-import { buildPayloadsFromMarkdown, extractBreadcrumbs } from '../audit';
-import { resolveSkuWithHtml, supplierFor } from '../shared/resolver';
+import {
+  breadcrumbsFromCategories,
+  buildPayloadsFromMarkdown,
+  extractBreadcrumbs,
+  resolveWithCache,
+} from '../audit';
+import { supplierFor } from '../shared/resolver';
 import { buildVariantSummary, renderVariantsBlock } from '../audit';
 import { imageAuditForSku } from '../audit';
 import { buildChildColorMap, type MediaSource } from '../audit';
 import { textAuditForSku } from '../audit';
 import { libraryCellsFor, missingLibraryFields } from '../audit';
 import { supplierLinkFor } from '../audit';
+import { loadAvailability } from '../audit';
 import { buildDossierMarkdown } from '../audit';
 import { setSkuDossier } from './batch';
 import {
@@ -158,7 +164,11 @@ async function runSku(
 ): Promise<SkuRunResult> {
   const t0 = Date.now();
   const tResolveStart = Date.now();
-  const { resolver, enHtml } = await resolveSkuWithHtml(sku, { signal });
+  // F6: one freshness rule. The batch and the Resolve SKU screen read the same
+  // per-SKU cache, so a batch cannot audit a different snapshot than the card.
+  const resolved = await resolveWithCache(sku, { signal });
+  const resolver = resolved.resolver;
+  const enHtml = resolved.enHtml;
   const stageResolve = Date.now() - tResolveStart;
   await onStage('variants');
 
@@ -191,9 +201,10 @@ async function runSku(
     (async () => {
       const s = Date.now();
       const r = await textAuditForSku(sku, {
-        url: resolver.frontend_url,
+        // A cache hit has no HTML: re-read the PDP for the text matrix.
+        url: enHtml ? undefined : resolver.frontend_url || undefined,
         langs: options.langs,
-        resolved: { resolver, enHtml },
+        ...(enHtml ? { resolved: { resolver, enHtml } } : {}),
         signal,
       });
       stageText = Date.now() - s;
@@ -207,7 +218,11 @@ async function runSku(
   );
 
   const tPayloadStart = Date.now();
-  const breadcrumbs = extractBreadcrumbs(enHtml);
+  const breadcrumbs = enHtml
+    ? extractBreadcrumbs(enHtml)
+    : resolver.categories?.ok
+      ? breadcrumbsFromCategories(resolver.categories)
+      : { l1: '', l2: '', l3: '', ok: false, error: 'no EN html (cached resolver)' };
 
   // textFetch folds fetch-level problems into review_flags; they are already
   // in `text.anomalies`, so only add what it did not report there.
@@ -258,6 +273,8 @@ async function runSku(
     imageAudit: images.audit,
     payloads,
     supplier: supplierLinkFor(sku),
+    // D4: only the stored verdict - the batch never blocks on a supplier fetch.
+    availability: (await loadAvailability())[sku] ?? undefined,
   });
   const reviewFlags =
     payloads.filter((p) => (p.review_flags ?? []).length > 0).length +

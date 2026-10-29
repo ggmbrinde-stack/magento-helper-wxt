@@ -566,6 +566,9 @@ export function mapSkuLibraryPage(page: unknown): Record<string, unknown> {
     frontend: extractUrl(p.Frontend),
     category: extractSelect(p.Category),
     subcategory: extractSelect(p.Subcategory),
+    // C4: the property may not exist yet; a missing one maps to '' and is
+    // never written, so the reader stays compatible either way.
+    subSubcategory: extractSelect(p['Sub-subcategory']),
     supplier: extractSelect(p.Supplier),
     supplierLink: extractUrl(p['Supplier Link']),
     supplierProduct: extractUrl(p['Supplier Product']),

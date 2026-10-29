@@ -14,7 +14,16 @@ export const SkuLibrarySchema = z.object({
   frontend: urlOrEmpty.default(''),
   category: z.string().default(''),
   subcategory: z.string().default(''),
+  /**
+   * L3 of the storefront breadcrumb (C4). Maps the SKU Library
+   * `Sub-subcategory` property when it exists; a missing property validates to
+   * '' and is never written, so the schema stays read-compatible either way.
+   */
+  subSubcategory: z.string().default(''),
   supplier: z.string().default(''),
+  /** Confirmed supplier site and product page (D1). */
+  supplierLink: urlOrEmpty.default(''),
+  supplierProduct: urlOrEmpty.default(''),
   colors: z.string().default(''),
   sizes: z.string().default(''),
   missingCombos: z.string().default(''),

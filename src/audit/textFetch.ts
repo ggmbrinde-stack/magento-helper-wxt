@@ -11,6 +11,7 @@
  */
 
 import { resolveSkuWithHtml, type ResolverJson } from '../shared/resolver';
+import { breadcrumbsFromCategories, extractBreadcrumbs } from './payload';
 import {
   TEXT_LANGS,
   auditText,
@@ -85,10 +86,19 @@ export async function textAuditForSku(
     }
   }
 
+  // C1/C2: the resolver parsed the breadcrumb path from jsonConfig already;
+  // scanning the HTML again is only the fallback for an older payload.
+  const crumbs = resolver.categories?.ok
+    ? breadcrumbsFromCategories(resolver.categories)
+    : extractBreadcrumbs(enHtml);
   const audit = auditText({
     sku: resolver.sku,
     byLang,
     langs: TEXT_LANGS.filter((lang) => wanted.has(lang)),
+    // B2 needs the category to know which spec concepts are required. The
+    // breadcrumbs come from the EN HTML we already hold (no extra fetch).
+    category: crumbs.l1,
+    subcategory: crumbs.l2,
   });
   if (anomalies.length > 0) {
     // The PowerShell script treats unreadable html as a review flag too.

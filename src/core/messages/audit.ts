@@ -17,6 +17,8 @@ import type { ImageAuditResult } from '../../audit';
 import type { TextAuditResult } from '../../audit';
 import type { NotionHealthReport } from '../../audit';
 import type { VariantTargets } from '../../audit';
+import type { AvailabilityCheck } from '../../audit';
+import type { SupplierLinkInfo } from '../../audit';
 
 /* ------------------------------------------------------------------------- */
 /* SKU data for the panel (SKU Library row + open errors, read-only)          */
@@ -59,7 +61,12 @@ export interface ResolverNotionMetadata {
   frontend: string;
   category?: string;
   subcategory?: string;
+  /** L3, when the SKU Library exposes a Sub-subcategory property (C4). */
+  subSubCategory?: string;
   supplier?: string;
+  /** Confirmed supplier site / product page (D1). */
+  supplierLink?: string;
+  supplierProduct?: string;
   status?: string;
 }
 
@@ -72,12 +79,32 @@ export interface ResolveAdminFallback {
   childrenReason?: string;
 }
 
+/**
+ * Storefront breadcrumb vs the SKU Library category row (C5). Both sides are
+ * reported so a mismatch is readable without opening either source.
+ */
+export interface CategoryCheck {
+  storefront: { l1: string; l2: string; l3: string; l4: string };
+  notion: { category: string; subcategory: string; subSubCategory: string };
+  mismatches: string[];
+}
+
+/** Another cached SKU that resolves to the same product (E3). */
+export interface CacheDuplicate {
+  sku: string;
+  frontend_url: string;
+  configurable_id: number | null;
+  reason: string;
+}
+
 /** Run the full resolver (search -> PDP -> parse) for one SKU. */
 export interface ResolveSkuRequest {
   type: 'RESOLVE_SKU';
   sku: string;
   /** Explicit bestofgifts.eu product URL (skips the catalogsearch step). */
   url?: string;
+  /** Bypass the cache and re-resolve (F1). */
+  force?: boolean;
 }
 
 export interface ResolveSkuResponse {
@@ -91,9 +118,48 @@ export interface ResolveSkuResponse {
   targets?: VariantTargets;
   /** Why the target matrix could not be built. */
   targetsError?: string;
+  /** Supplier attribution: tier, official site, catalogue link + provenance (D4). */
+  supplier?: SupplierLinkInfo;
+  /** Last stored supplier-availability verdict, when one was checked (D4). */
+  availability?: AvailabilityCheck | null;
+  /** Storefront breadcrumb vs SKU Library category (C5). */
+  categoryCheck?: CategoryCheck;
+  /** Other cached SKUs resolving to the same product (E3). */
+  duplicates?: CacheDuplicate[];
+  /** True when the payload came from the cache past its TTL (F1). */
+  stale?: boolean;
+  /** Age of the payload in days (F2). */
+  ageDays?: number | null;
   resolutionError?: string;
   error?: string;
   warning?: string;
+}
+
+/** Check one SKU against its supplier catalogue now (D2/D3). */
+export interface CheckSupplierRequest {
+  type: 'CHECK_SUPPLIER';
+  sku: string;
+  /** Ignore the cached verdict and fetch again. */
+  force?: boolean;
+}
+
+export interface CheckSupplierResponse {
+  ok: boolean;
+  check?: AvailabilityCheck;
+  error?: string;
+}
+
+/** Read or clear the per-SKU resolver cache (F5). */
+export interface ResolverCacheRequest {
+  type: 'RESOLVER_CACHE';
+  action: 'list' | 'delete' | 'clear';
+  sku?: string;
+}
+
+export interface ResolverCacheResponse {
+  ok: boolean;
+  entries?: import('../../shared/resolver').ResolverJson[];
+  error?: string;
 }
 
 /* ------------------------------------------------------------------------- */

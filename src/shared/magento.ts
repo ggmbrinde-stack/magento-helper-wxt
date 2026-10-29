@@ -93,7 +93,8 @@ export function buildMagentoTable(
   adminBase: string = DEFAULT_ADMIN_BASE,
 ): MagentoBuild {
   const anomalies: string[] = [];
-  const isSimple = r.product_type === 'simple';
+  // E5: any type without a colour x size matrix is a single-product table.
+  const isSimple = r.product_type !== 'configurable';
   const frontend = r.frontend_url;
 
   if (isSimple) {
@@ -143,8 +144,8 @@ export function buildMagentoTable(
   const idx = r.index;
 
   if (!conf) anomalies.push('configurable_id missing in resolver.json');
-  if (a93 === null) anomalies.push('attributes.93 (colors) missing in resolver.json');
-  if (a142 === null) anomalies.push('attributes.142 (sizes) missing in resolver.json');
+  if (!a93) anomalies.push('attributes.93 (colors) missing in resolver.json');
+  if (!a142) anomalies.push('attributes.142 (sizes) missing in resolver.json');
 
   const cMap: Record<string, string> = {};
   for (const o of a93?.options ?? []) cMap[o.id] = o.label;

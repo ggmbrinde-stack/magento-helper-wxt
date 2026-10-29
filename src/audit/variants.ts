@@ -18,8 +18,10 @@
 import {
   COLOR_ATTR_ID,
   SIZE_ATTR_ID,
+  type ProductType,
   type ResolverJson,
 } from '../shared/resolver';
+import { reviewVariantLabels, type LabelReview } from './variantLabels';
 
 export const VARIANTS_SCHEMA = 'bog-variants/1';
 
@@ -94,7 +96,10 @@ export interface VariantSummary {
   store: string;
   confId: string;
   simpleId: string;
+  /** True for every product type without a colour x size matrix (E5). */
   isSimple: boolean;
+  /** The type as detected from the PDP, not assumed to be configurable. */
+  productType: ProductType;
   frontend: string;
   colors: string[];
   sizes: string[];
@@ -123,6 +128,8 @@ export interface VariantSummary {
   targetsSource: string | null;
   /** Why a supplied target matrix could not be compared. */
   targetsNote: string | null;
+  /** Formatting / duplicate-spelling review of the published labels (E8). */
+  labelReview: LabelReview;
   familyOrder: string[];
   families: Record<string, string[]>;
   familiesCompact: string;
@@ -197,15 +204,20 @@ export function buildVariantSummary(
   const a142 = r.attributes['142'];
   const optCount = r.option_prices_count;
 
-  if (r.product_type === 'simple') {
+  if (r.product_type !== 'configurable') {
     let ssid = r.simple_product_id === null ? '' : String(r.simple_product_id);
     if (!ssid && kids.length > 0) ssid = kids[0] ?? '';
-    notes.push('simple product: single variant, no color/size matrix');
+    notes.push(
+      r.product_type === 'simple'
+        ? 'simple product: single variant, no color/size matrix'
+        : `${r.product_type} product: no colour x size matrix (only configurable products have one)`,
+    );
     return {
       store,
       confId: '',
       simpleId: ssid,
       isSimple: true,
+      productType: r.product_type,
       frontend,
       colors: [],
       sizes: [],
@@ -236,6 +248,12 @@ export function buildVariantSummary(
       extraVsTargetText: '',
       targetsSource: targets?.source ?? null,
       targetsNote: null,
+      labelReview: {
+        unformattedColors: [],
+        unformattedSizes: [],
+        nearDuplicates: [],
+        notes: [],
+      },
       familyOrder: [],
       families: {},
       familiesCompact: '',
@@ -244,8 +262,8 @@ export function buildVariantSummary(
     };
   }
 
-  if (a93 === null) anomalies.push('attributes.93 (colors) missing in resolver.json');
-  if (a142 === null) anomalies.push('attributes.142 (sizes) missing in resolver.json');
+  if (!a93) anomalies.push('attributes.93 (colors) missing in resolver.json');
+  if (!a142) anomalies.push('attributes.142 (sizes) missing in resolver.json');
 
   // Attribute option ORDER must be preserved (it drives the missing-combo order,
   // and the payload notes). A plain object would reorder integer-like option
@@ -372,11 +390,22 @@ export function buildVariantSummary(
     .map((f) => `${f}: ${(families[f] ?? []).join(', ')}`)
     .join('; ');
 
+  // E8: the labels themselves are audited, not just the grid they form.
+  const labelReview = reviewVariantLabels(colors, sizes);
+  notes.push(...labelReview.notes);
+  const extraAttrs = Object.keys(r.attributes).filter(
+    (code) => code !== COLOR_ATTR_ID && code !== SIZE_ATTR_ID,
+  );
+  if (extraAttrs.length > 0) {
+    notes.push(`extra super-attributes: ${extraAttrs.join(', ')} - outside this matrix`);
+  }
+
   return {
     store,
     confId: conf,
     simpleId: '',
     isSimple: false,
+    productType: r.product_type,
     frontend,
     colors,
     sizes,
@@ -407,6 +436,7 @@ export function buildVariantSummary(
     extraVsTargetText: groupMissingText(extraVsTarget),
     targetsSource: targets?.source ?? null,
     targetsNote,
+    labelReview,
     familyOrder,
     families,
     familiesCompact,
@@ -434,14 +464,16 @@ export function renderVariantsBlock(
   lines.push(`## Variants - ${stamp}`);
   lines.push('');
   if (v.isSimple) {
-    lines.push('- Colors: n/a (simple product - single variant)');
+    // E5: the label names the real type - a bundle is not a "simple product".
+    const kind = `${v.productType} product - no colour x size matrix`;
+    lines.push(`- Colors: n/a (${kind})`);
     lines.push('');
-    lines.push('- Sizes: n/a (simple product - single variant)');
-    lines.push('- Total: 1 (simple - single variant)');
-    lines.push('- Missing combos: none (simple product - single variant)');
+    lines.push(`- Sizes: n/a (${kind})`);
+    lines.push(`- Total: ${v.total} (${v.productType})`);
+    lines.push(`- Missing combos: none (${kind})`);
     lines.push(`- Frontend: ${v.frontend}`);
     lines.push(`- Magento simple: ${magentoUrl}`);
-    lines.push(`- Evidence: single variant; source evidence/${sku}/resolver.json`);
+    lines.push(`- Evidence: ${v.productType}; source evidence/${sku}/resolver.json`);
     for (const n of v.notes) lines.push(`- Note: ${n}`);
     lines.push('<!-- variants:end -->');
     return lines.join('\r\n');

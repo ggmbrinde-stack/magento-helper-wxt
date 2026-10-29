@@ -13,7 +13,7 @@
  * dedup continuity with existing rows is preserved.
  */
 
-import { supplierFor } from '../shared/resolver';
+import { supplierFor, type ResolverCategories } from '../shared/resolver';
 import {
   CATEGORY_OPTIONS,
   SUBCATEGORY_OPTIONS,
@@ -156,6 +156,22 @@ export interface Breadcrumbs {
   l3: string;
   ok: boolean;
   error: string;
+}
+
+/**
+ * Breadcrumbs from a resolver payload's stored path (C3). Push errors uses
+ * this instead of resolving the PDP a second time just to read the category.
+ */
+export function breadcrumbsFromCategories(
+  categories: ResolverCategories,
+): Breadcrumbs {
+  return {
+    l1: categories.l1,
+    l2: categories.l2,
+    l3: categories.l3,
+    ok: categories.ok && categories.path.length > 0,
+    error: categories.ok ? '' : 'no categories marker',
+  };
 }
 
 export interface PayloadBuild {

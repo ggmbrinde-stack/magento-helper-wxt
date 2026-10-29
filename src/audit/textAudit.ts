@@ -48,6 +48,13 @@ export interface PdpFields {
   html_lang: string;
   /** Insertion-ordered spec table (first header wins). */
   specs: Record<string, string>;
+  /**
+   * Raw inner HTML of each spec cell, keyed like `specs`. Only the technical
+   * information checks use it: `htmlToText` strips tags and trims, so the
+   * rendered value cannot reveal a literal `<br>`, a trailing space or a
+   * double-encoded entity.
+   */
+  specs_raw: Record<string, string>;
 }
 
 export type LangMap = Partial<Record<TextLang, PdpFields>>;
@@ -257,6 +264,7 @@ export function getPdpFields(html: string): PdpFields {
     jsonld_desc: '',
     html_lang: '',
     specs: {},
+    specs_raw: {},
   };
   f.name = getMetaContent(html, 'og:title');
   if (!f.name) {
@@ -295,8 +303,12 @@ export function getPdpFields(html: string): PdpFields {
     const body = m[1] ?? '';
     for (const row of body.matchAll(/<th[^>]*>([\s\S]*?)<\/th>\s*<td[^>]*>([\s\S]*?)<\/td>/gi)) {
       const k = htmlToText(row[1] ?? '');
-      const v = htmlToText(row[2] ?? '');
-      if (k && !Object.prototype.hasOwnProperty.call(f.specs, k)) f.specs[k] = v;
+      const raw = row[2] ?? '';
+      const v = htmlToText(raw);
+      if (k && !Object.prototype.hasOwnProperty.call(f.specs, k)) {
+        f.specs[k] = v;
+        f.specs_raw[k] = raw;
+      }
     }
   }
   return f;
@@ -554,14 +566,8 @@ export function getCompositionStructure(
 /* checks                                                                     */
 /* ------------------------------------------------------------------------- */
 
-const GENDER_KEY = /^(Gender|G[e\u00e9]nero|Genre)$/i;
-
 function genderSpec(specs: Record<string, string>): string {
-  let value = '';
-  for (const k of Object.keys(specs)) {
-    if (GENDER_KEY.test(k)) value = specs[k] ?? '';
-  }
-  return value;
+  return specValue(specs, 'gender');
 }
 
 function conceptFor(
@@ -578,6 +584,630 @@ function conceptFor(
   return alias ? alias.concept : null;
 }
 
+/* ------------------------------------------------------------------------- */
+/* technical information (spec table) audit - B1..B8                          */
+/* ------------------------------------------------------------------------- */
+
+/**
+ * Language-independent spec concepts. The storefront renders the *attribute
+ * label* (translated per store view), not the Magento attribute code, so the
+ * only way to compare EN/ES/FR rows is an alias map (B7). Labels observed on
+ * live PDPs are all listed here; an unknown label simply takes no part in the
+ * cross-language checks, which is safer than guessing a translation.
+ */
+export type SpecConcept =
+  | 'sku'
+  | 'internal_ref'
+  | 'brand'
+  | 'composition'
+  | 'grammage'
+  | 'dimensions'
+  | 'box_dimensions'
+  | 'gender'
+  | 'weight'
+  | 'material'
+  | 'country'
+  | 'capacity'
+  | 'capacity_mah'
+  | 'capacity_gb'
+  | 'height'
+  | 'width'
+  | 'length'
+  | 'diameter'
+  | 'volume'
+  | 'battery_count'
+  | 'certifications'
+  | 'packaging'
+  | 'oeko_tex'
+  | 'other_information';
+
+const SPEC_LABELS: { concept: SpecConcept; labels: string[] }[] = [
+  { concept: 'sku', labels: ['SKU'] },
+  {
+    concept: 'internal_ref',
+    labels: [
+      'Internal Ref.',
+      'Internal Ref',
+      'Internal Reference',
+      'Ref. Interna',
+      'Referencia Interna',
+      'Referência Interna',
+      'Réf. Interne',
+      'Ref. Interne',
+    ],
+  },
+  { concept: 'brand', labels: ['Brand', 'Marca', 'Marque'] },
+  {
+    concept: 'composition',
+    labels: ['Composition', 'Composición', 'Composicion', 'Composição', 'Composicao'],
+  },
+  { concept: 'grammage', labels: ['Grammage', 'Gramaje', 'Gramagem', 'GSM'] },
+  {
+    concept: 'dimensions',
+    labels: ['Dimensions', 'Dimensiones', 'Dimensões', 'Dimensoes', 'Dimensión'],
+  },
+  {
+    concept: 'box_dimensions',
+    labels: [
+      'Box Dimensions',
+      'Box Dimension',
+      'Dimensiones de la caja',
+      'Dimensions de la boîte',
+      'Dimensions de la boite',
+      'Dimensões da caixa',
+      'Dimensoes da caixa',
+    ],
+  },
+  { concept: 'gender', labels: ['Gender', 'Género', 'Genero', 'Genre', 'Sexo', 'Sexe'] },
+  { concept: 'weight', labels: ['Weight', 'Peso', 'Poids'] },
+  { concept: 'material', labels: ['Material', 'Matériau', 'Main Material', 'Material Principal'] },
+  {
+    concept: 'country',
+    labels: [
+      'Country',
+      'País',
+      'Pais',
+      'Pays',
+      'Country of Origin',
+      'País de origen',
+      'Pays d\u2019origine',
+    ],
+  },
+  { concept: 'capacity', labels: ['Capacity', 'Capacidad', 'Capacité', 'Capacidade'] },
+  { concept: 'capacity_mah', labels: ['Capacity Mah', 'Capacidad Mah', 'Capacité Mah'] },
+  { concept: 'capacity_gb', labels: ['Capacity GB', 'Capacidad GB', 'Capacité GB'] },
+  { concept: 'height', labels: ['Height', 'Altura', 'Hauteur'] },
+  { concept: 'width', labels: ['Width', 'Ancho', 'Largeur', 'Largura'] },
+  { concept: 'length', labels: ['Length', 'Longitud', 'Longueur', 'Comprimento'] },
+  { concept: 'diameter', labels: ['Diameter', 'Diámetro', 'Diametro', 'Diamètre'] },
+  { concept: 'volume', labels: ['Volume', 'Volumen'] },
+  {
+    concept: 'battery_count',
+    labels: [
+      'Number of Batteries',
+      'Número de pilas',
+      'Numero de pilas',
+      'Nombre de piles',
+      'Número de baterias',
+    ],
+  },
+  {
+    concept: 'certifications',
+    labels: ['Certifications', 'Certificaciones', 'Certificações', 'Certificacoes'],
+  },
+  {
+    concept: 'packaging',
+    labels: [
+      'Packaging Type',
+      'Tipo de embalaje',
+      'Type d\u2019emballage',
+      "Type d'emballage",
+      'Tipo de embalagem',
+    ],
+  },
+  { concept: 'oeko_tex', labels: ['Oeko-Tex', 'Oeko Tex'] },
+  {
+    concept: 'other_information',
+    labels: [
+      'Other Information',
+      'Información adicional',
+      'Informacion adicional',
+      'Informations complémentaires',
+      'Informations complementaires',
+      'Outras informações',
+      'Outras informacoes',
+    ],
+  },
+];
+
+/** Fold a spec label: case, accents, periods and spacing are not significant. */
+function foldSpecLabel(value: string): string {
+  return removeDiacritics(value.toLowerCase())
+    .replace(/\u00a0/g, ' ')
+    .replace(/\./g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const SPEC_CONCEPT_BY_LABEL = new Map<string, SpecConcept>();
+for (const { concept, labels } of SPEC_LABELS) {
+  for (const label of labels) SPEC_CONCEPT_BY_LABEL.set(foldSpecLabel(label), concept);
+}
+
+/** Canonical concept for a rendered label, or null when the label is unknown. */
+export function specConcept(label: string): SpecConcept | null {
+  return SPEC_CONCEPT_BY_LABEL.get(foldSpecLabel(label)) ?? null;
+}
+
+/** First key (insertion order) whose label maps to `concept`. */
+export function specKeyFor(
+  specs: Record<string, string>,
+  concept: SpecConcept,
+): string | null {
+  for (const key of Object.keys(specs)) {
+    if (specConcept(key) === concept) return key;
+  }
+  return null;
+}
+
+/** First value whose label maps to `concept` (B7 replacement for name lists). */
+export function specValue(
+  specs: Record<string, string>,
+  concept: SpecConcept,
+): string {
+  const key = specKeyFor(specs, concept);
+  return key === null ? '' : (specs[key] ?? '');
+}
+
+type SpecFamily = 'apparel' | 'headwear' | 'bags' | 'drinkware' | 'hard';
+
+const APPAREL_L2 =
+  /t-?shirt|polo|sweatshirt|hoodie|jacket|vest|pant|short|trouser|underwear|track ?suit|dress|skirt|apron|lab coat|shirt|legging|pyjama|pajama|bathrobe|tunic|overall|coverall|jersey|kits?\b|sets?\b/;
+const TEXTILE_L1 = /textile|sweatshirt|hoodie|zip hoodie|made4you/;
+const HARD_L1 =
+  /technology|writing and office|diy and auto|house and wine|personal|outdoors and events|children|other/;
+
+/** Category family used to decide which spec concepts are required (B2). */
+export function specFamily(category: string, subcategory: string): SpecFamily | null {
+  const l1 = foldSpecLabel(category);
+  const l2 = foldSpecLabel(subcategory);
+  if (/cap|hat|beanie|visor|snood|headband|beret/.test(l2)) return 'headwear';
+  if (/bag|backpack|trolley|pouch|suitcase/.test(l2) || /^bags and backpacks$/.test(l1)) {
+    return 'bags';
+  }
+  if (/mug|cup|bottle|tumbler|glass|teapot|kettle|thermos|flask/.test(l2)) {
+    return 'drinkware';
+  }
+  if (TEXTILE_L1.test(l1)) {
+    return APPAREL_L2.test(l2) || l2 === '' ? 'apparel' : null;
+  }
+  if (HARD_L1.test(l1)) return 'hard';
+  return null;
+}
+
+const FAMILY_REQUIREMENTS: Record<
+  SpecFamily,
+  {
+    label: string;
+    concepts: SpecConcept[];
+    /** At least one material description: Composition or Material. */
+    materialOrComposition?: boolean;
+    /** Grammage row, or a g/m2 / gsm / g/pc token in the material description. */
+    grammage?: boolean;
+  }
+> = {
+  apparel: {
+    label: 'apparel',
+    concepts: ['brand', 'gender'],
+    materialOrComposition: true,
+    grammage: true,
+  },
+  headwear: { label: 'headwear', concepts: ['dimensions'], materialOrComposition: true },
+  bags: { label: 'bags', concepts: ['brand', 'dimensions'], materialOrComposition: true },
+  drinkware: { label: 'drinkware', concepts: ['weight'], materialOrComposition: true },
+  hard: { label: 'hard goods', concepts: ['dimensions'], materialOrComposition: true },
+};
+
+const GRAMMAGE_TOKEN = /\d+(?:[.,]\d+)?\s*(?:g\s*\/\s*(?:m\s*(?:²|2)|pc|ud|piece)|gsm)/i;
+
+function isEmptySpecValue(value: string): boolean {
+  const v = value.trim();
+  return v === '' || /^(?:-|—|n\/?a|n\.a\.|none|null)$/i.test(v);
+}
+
+function numbersIn(value: string): number[] {
+  return [...value.matchAll(/\d+(?:[.,]\d+)?/g)]
+    .map((m) => Number((m[0] ?? '').replace(',', '.')))
+    .filter((n) => Number.isFinite(n))
+    .sort((a, b) => a - b);
+}
+
+function grammageNumbers(value: string): number[] {
+  return [...value.matchAll(/(\d+(?:[.,]\d+)?)\s*g\s*\/\s*(?:m\s*(?:²|2)|pc|ud|piece)/gi)]
+    .map((m) => Number((m[1] ?? '').replace(',', '.')))
+    .filter((n) => Number.isFinite(n))
+    .sort((a, b) => a - b);
+}
+
+function sameNumbers(a: number[], b: number[]): boolean {
+  return (
+    a.length === b.length &&
+    a.every((value, i) => Math.abs(value - (b[i] ?? 0)) < 0.001)
+  );
+}
+
+function isKnownFibre(term: string, rows: CompositionRuleRow[]): boolean {
+  const folded = removeDiacritics(term.toLowerCase());
+  if (!folded) return true;
+  const langs: RuleLang[] = ['pt', 'es', 'fr', 'en'];
+  for (const row of rows) {
+    for (const lc of langs) {
+      const fold = String(row.fold[lc] ?? '');
+      if (fold && testTermHit(folded, fold)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Technical information checks, run on the parsed spec tables:
+ *
+ *  B1 table missing / zero rows
+ *  B2 required concepts per category family (see FAMILY_REQUIREMENTS)
+ *  B3 rows with empty values
+ *  B4 EN concepts absent from ES / FR
+ *  B5 numeric disagreement across languages (dimensions, grammage, weight, …)
+ *  B6 composition sanity (sum to 100, known fibres, recycled claim direction)
+ *  B7 label canonicalisation (concept map) + duplicate concepts
+ *  B8 leftover markup (entities, literal tags, brackets, trailing spaces)
+ *
+ * Composition structure (descending order, missing separators, part labels) is
+ * deliberately left to `getCompositionStructure`, and the Dimensions-bracket /
+ * bare-gram checks stay in `getTextChecks`; this helper does not repeat them.
+ */
+export function getSpecTableChecks(
+  sku: string,
+  byLang: LangMap,
+  requested: TextLang[] = TEXT_LANGS,
+  category = '',
+  subcategory = '',
+  compositionRules: CompositionRules | null = COMPOSITION_RULES,
+): TextCheckResult {
+  const findings: TextFinding[] = [];
+  const flags: string[] = [];
+  const en = byLang.EN;
+  if (!en) return { findings, flags };
+
+  const enKeys = Object.keys(en.specs);
+  const where = [category, subcategory].filter(Boolean).join(' > ');
+
+  // ---- B1: table missing / zero rows --------------------------------------
+  if (enKeys.length === 0) {
+    findings.push({
+      sku,
+      field: 'Technical information',
+      finding: 'EN Technical Information table is missing or empty',
+      notes: `EN PDP has no product-attribute-specs-table rows${where ? ` (${where})` : ''} | Fix: human - fill the Technical Information attributes in Magento`,
+      priority_hint: '',
+    });
+    flags.push('spec-table-missing');
+    return { findings, flags };
+  }
+
+  // ---- B2: required concepts per category family --------------------------
+  const family = specFamily(category, subcategory);
+  if (family) {
+    const req = FAMILY_REQUIREMENTS[family];
+    const nonEmpty = (concept: SpecConcept): boolean =>
+      !isEmptySpecValue(specValue(en.specs, concept));
+    for (const concept of req.concepts) {
+      if (nonEmpty(concept)) continue;
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `EN Technical Information is missing ${concept}`,
+        notes: `EN spec table${where ? ` (${where})` : ''} has no ${concept} row | Fix: human - add ${concept} from the supplier spec (required for ${req.label})`,
+        priority_hint: '',
+      });
+      flags.push(`spec-required-missing-${concept}`);
+    }
+    if (req.materialOrComposition) {
+      const material = specValue(en.specs, 'material');
+      const composition = specValue(en.specs, 'composition');
+      if (isEmptySpecValue(material) && isEmptySpecValue(composition)) {
+        findings.push({
+          sku,
+          field: 'Technical information',
+          finding: 'EN Technical Information is missing Composition or Material',
+          notes: `EN spec table${where ? ` (${where})` : ''} has neither Composition nor Material | Fix: human - add the material description from the supplier spec (required for ${req.label})`,
+          priority_hint: '',
+        });
+        flags.push('spec-required-missing-composition');
+      }
+    }
+    if (req.grammage) {
+      const grammage = specValue(en.specs, 'grammage');
+      const materialText = [specValue(en.specs, 'composition'), specValue(en.specs, 'material')]
+        .filter(Boolean)
+        .join(' ');
+      if (isEmptySpecValue(grammage) && !GRAMMAGE_TOKEN.test(materialText)) {
+        findings.push({
+          sku,
+          field: 'Technical information',
+          finding: 'EN Technical Information is missing Grammage',
+          notes: `EN spec table${where ? ` (${where})` : ''} has no Grammage row and no g/m2 token in Composition/Material | Fix: human - add the grammage from the supplier spec (required for ${req.label})`,
+          priority_hint: '',
+        });
+        flags.push('spec-required-missing-grammage');
+      }
+    }
+  } else if (where) {
+    flags.push(`spec-required-policy-missing: ${where}`);
+  }
+
+  // ---- B3: empty values ---------------------------------------------------
+  for (const lang of TEXT_LANGS) {
+    const o = byLang[lang];
+    if (!o) continue;
+    for (const [key, value] of Object.entries(o.specs)) {
+      if (!isEmptySpecValue(value)) continue;
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `${lang} Technical Information row "${key}" is empty`,
+        notes: `${lang} spec "${key}" has no value on the PDP | Fix: human - fill the attribute or remove the row in Magento`,
+        priority_hint: '',
+      });
+      flags.push(`spec-empty-${lang.toLowerCase()}`);
+    }
+  }
+
+  // ---- B4: concept coverage across languages ------------------------------
+  const enConcepts = new Map<SpecConcept, { key: string; value: string }>();
+  for (const key of enKeys) {
+    const concept = specConcept(key);
+    if (!concept || enConcepts.has(concept)) continue;
+    enConcepts.set(concept, { key, value: en.specs[key] ?? '' });
+  }
+  for (const lang of ['ES', 'FR'] as const) {
+    if (!requested.includes(lang)) continue;
+    const o = byLang[lang];
+    if (!o) continue;
+    if (Object.keys(o.specs).length === 0) {
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `${lang} Technical Information table is missing or empty`,
+        notes: `EN has ${enKeys.length} spec rows but ${lang} has none | Fix: human - translate the Technical Information attributes in Magento`,
+        priority_hint: '',
+      });
+      flags.push(`spec-table-missing-${lang.toLowerCase()}`);
+      continue;
+    }
+    for (const [concept, meta] of enConcepts) {
+      if (isEmptySpecValue(meta.value)) continue;
+      if (specKeyFor(o.specs, concept) !== null) continue;
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `${lang} Technical Information is missing "${meta.key}"`,
+        notes: `EN has "${meta.key}" = "${meta.value}" but ${lang} has no ${concept} row (labels matched by concept) | Fix: human - add the ${lang} attribute row in Magento`,
+        priority_hint: '',
+      });
+      flags.push(`spec-missing-${lang.toLowerCase()}-${concept}`);
+    }
+  }
+
+  // ---- B5: numbers agree across languages ---------------------------------
+  const numericConcepts: SpecConcept[] = [
+    'dimensions',
+    'box_dimensions',
+    'grammage',
+    'weight',
+    'capacity',
+    'height',
+    'width',
+    'length',
+    'diameter',
+    'volume',
+  ];
+  for (const concept of numericConcepts) {
+    const enValue = specValue(en.specs, concept);
+    const enNumbers = numbersIn(enValue);
+    if (enNumbers.length === 0) continue;
+    for (const lang of ['ES', 'FR'] as const) {
+      if (!requested.includes(lang)) continue;
+      const o = byLang[lang];
+      if (!o) continue;
+      const value = specValue(o.specs, concept);
+      if (!value) continue;
+      const numbers = numbersIn(value);
+      if (numbers.length === 0 || sameNumbers(enNumbers, numbers)) continue;
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `${lang} ${concept} numbers disagree with EN`,
+        notes: `EN ${concept} "${enValue}" (${enNumbers.join(', ')}) vs ${lang} "${value}" (${numbers.join(', ')}) | Fix: human - make the ${lang} value match the supplier spec`,
+        priority_hint: '',
+      });
+      flags.push(`spec-numbers-disagree-${lang.toLowerCase()}-${concept}`);
+    }
+  }
+  // Grammage inside the composition cell (e.g. "100% recycled polyester, 100 g/m2").
+  {
+    const enGrammage = grammageNumbers(specValue(en.specs, 'composition'));
+    if (enGrammage.length > 0) {
+      for (const lang of ['ES', 'FR'] as const) {
+        if (!requested.includes(lang)) continue;
+        const o = byLang[lang];
+        if (!o) continue;
+        const value = specValue(o.specs, 'composition');
+        if (!value) continue;
+        const numbers = grammageNumbers(value);
+        if (numbers.length === 0 || sameNumbers(enGrammage, numbers)) continue;
+        findings.push({
+          sku,
+          field: 'Composition',
+          finding: `${lang} Composition grammage disagrees with EN`,
+          notes: `EN composition grammage (${enGrammage.join(', ')} g) vs ${lang} (${numbers.join(', ')}) in "${value}" | Fix: human - make the ${lang} grammage match the supplier spec`,
+          priority_hint: '',
+        });
+        flags.push(`spec-numbers-disagree-${lang.toLowerCase()}-grammage`);
+      }
+    }
+  }
+
+  // ---- B6: composition sanity --------------------------------------------
+  for (const lang of TEXT_LANGS) {
+    const o = byLang[lang];
+    if (!o) continue;
+    const comp = specValue(o.specs, 'composition');
+    if (!comp) continue;
+
+    // Sum per "|" part. Parentheticals are excluded: "100% cotton (50% recycled)"
+    // is one fibre with a claim, not two fibres that must add up.
+    for (const part of comp.split('|')) {
+      const cleaned = part
+        .replace(/\([^)]*\)/g, ' ')
+        .replace(/\d+(?:[.,]\d+)?\s*g\s*\/\s*(?:m\s*(?:²|2)|pc|ud|piece)/gi, ' ');
+      const percentages = [...cleaned.matchAll(/(\d+(?:[.,]\d+)?)\s*%/g)].map((m) =>
+        Number((m[1] ?? '').replace(',', '.')),
+      );
+      if (percentages.length === 0) continue;
+      const sum = percentages.reduce((a, b) => a + b, 0);
+      if (Math.abs(sum - 100) <= 0.5) continue;
+      findings.push({
+        sku,
+        field: 'Composition',
+        finding: `${lang} Composition percentages sum to ${sum}, not 100`,
+        notes: `${lang} Composition segment "${part.trim()}" lists ${percentages.join(' + ')}% = ${sum}% | Fix: human - correct the percentages against the supplier spec (EU Reg 1007/2011)`,
+        priority_hint: '',
+      });
+      flags.push(`composition-sum-${lang.toLowerCase()}`);
+    }
+
+    // Fibre words must come from the materials rules file.
+    if (compositionRules?.rows?.length) {
+      for (const m of comp.matchAll(/(\d+(?:[.,]\d+)?)\s*%\s*([^,;/|\d]+)/g)) {
+        const term = (m[2] ?? '').trim();
+        if (!term || isKnownFibre(term, compositionRules.rows)) continue;
+        findings.push({
+          sku,
+          field: 'Composition',
+          finding: `${lang} Composition fibre "${term}" is not in the materials rules`,
+          notes: `${lang} Composition: "${comp}" names "${term}" after ${m[1] ?? '?'}% | Fix: human - use a term from the New Materials Page, or add the fibre to the rules`,
+          priority_hint: '',
+        });
+        flags.push(`composition-unknown-fibre-${lang.toLowerCase()}`);
+      }
+    }
+  }
+
+  // Recycled claim must agree in both directions (the omission direction keeps
+  // its original wording and flag so existing Notion rows stay deduplicated).
+  {
+    const compEn = specValue(en.specs, 'composition');
+    if (compEn) {
+      const storyEn = removeDiacritics(
+        `${en.name} ${en.long_desc_raw} ${en.long_desc}`.toLowerCase(),
+      );
+      const compLow = removeDiacritics(compEn.toLowerCase());
+      const storyRecycled = storyEn.includes('recycl');
+      const compRecycled = compLow.includes('recycl');
+      if (storyRecycled && !compRecycled) {
+        findings.push({
+          sku,
+          field: 'Composition',
+          finding: 'Composition omits "recycled" present in name/details',
+          notes: `EN Composition: "${compEn}" omits recycled although name/details say recycled // Fix: human - confirm against the supplier spec, then add "recycled" to the composition cell`,
+          priority_hint: '',
+        });
+        flags.push('composition-omits-recycled');
+      } else if (compRecycled && !storyRecycled) {
+        findings.push({
+          sku,
+          field: 'Composition',
+          finding: 'Composition claims "recycled" absent from name/details',
+          notes: `EN Composition: "${compEn}" says recycled but the name and descriptions do not | Fix: human - confirm the recycled claim and mention it in the description (or remove it from the composition)`,
+          priority_hint: '',
+        });
+        flags.push('composition-extra-recycled');
+      }
+    }
+  }
+
+  // ---- B7: duplicate concepts ---------------------------------------------
+  for (const lang of TEXT_LANGS) {
+    const o = byLang[lang];
+    if (!o) continue;
+    const seen = new Map<SpecConcept, string[]>();
+    for (const key of Object.keys(o.specs)) {
+      const concept = specConcept(key);
+      if (!concept) continue;
+      const keys = seen.get(concept) ?? [];
+      keys.push(key);
+      seen.set(concept, keys);
+    }
+    for (const [concept, keys] of seen) {
+      if (keys.length < 2) continue;
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `${lang} Technical Information repeats the ${concept} concept`,
+        notes: `${lang} has ${keys.map((k) => `"${k}"`).join(' and ')} mapping to ${concept} | Fix: human - keep one row per concept in Magento (labels differ per language)`,
+        priority_hint: '',
+      });
+      flags.push(`spec-duplicate-${lang.toLowerCase()}-${concept}`);
+    }
+  }
+
+  // ---- B8: leftover markup ------------------------------------------------
+  for (const lang of TEXT_LANGS) {
+    const o = byLang[lang];
+    if (!o) continue;
+    for (const key of Object.keys(o.specs)) {
+      const value = o.specs[key] ?? '';
+      const raw = o.specs_raw?.[key] ?? '';
+      const lastLine = (raw.split(/\r?\n/).pop() ?? '');
+      const issues: string[] = [];
+      if (/\S[ \t]+$/.test(lastLine)) issues.push('trailing space');
+      if (/&nbsp;/i.test(raw) || /\u00a0/.test(value)) issues.push('non-breaking space');
+      if (/&amp;(?:[a-z][a-z0-9]+|#\d+|#x[0-9a-f]+);/i.test(raw)) {
+        issues.push('double-encoded entity');
+      }
+      if (/<[a-z/][^>]*>/i.test(value)) issues.push('literal HTML tag');
+      if (
+        /&(?!amp;|quot;|apos;|lt;|gt;|#39;)(?:[a-z][a-z0-9]+|#\d+|#x[0-9a-f]+);/i.test(value)
+      ) {
+        issues.push('entity in value');
+      }
+      if (specConcept(key) !== 'dimensions' && /[[\]]/.test(value)) issues.push('brackets');
+      if (issues.length === 0) continue;
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `${lang} Technical Information "${key}" has leftover markup`,
+        notes: `${lang} value "${value}" contains: ${issues.join(', ')} | Fix: human - clean the attribute text in Magento`,
+        priority_hint: '',
+      });
+      flags.push(`spec-markup-${lang.toLowerCase()}`);
+    }
+    for (const key of Object.keys(o.specs)) {
+      if (!/<[a-z/][^>]*>/i.test(key) && !/&(?:[a-z][a-z0-9]+|#\d+);/i.test(key)) continue;
+      findings.push({
+        sku,
+        field: 'Technical information',
+        finding: `${lang} Technical Information label "${key}" has leftover markup`,
+        notes: `${lang} attribute label "${key}" contains markup/entities | Fix: human - clean the attribute label in Magento`,
+        priority_hint: '',
+      });
+      flags.push(`spec-markup-${lang.toLowerCase()}-label`);
+    }
+  }
+
+  return { findings, flags };
+}
+
 export function getTextChecks(
   sku: string,
   byLang: LangMap,
@@ -585,6 +1215,10 @@ export function getTextChecks(
   compositionRules: CompositionRules | null = COMPOSITION_RULES,
   /** Languages the caller asked for; an unrequested page is not "missing". */
   requested: TextLang[] = TEXT_LANGS,
+  /** L1 breadcrumb (storefront category); selects the B2 required set. */
+  category = '',
+  /** L2 breadcrumb (storefront subcategory). */
+  subcategory = '',
 ): TextCheckResult {
   const findings: TextFinding[] = [];
   const flags: string[] = [];
@@ -876,7 +1510,7 @@ export function getTextChecks(
   for (const lang of TEXT_LANGS) {
     const o = byLang[lang];
     if (!o) continue;
-    const comp = getSpecValue(o.specs, ['Composition', 'Composicion', 'Composition ']);
+    const comp = specValue(o.specs, 'composition');
     if (!comp) continue;
     const low = removeDiacritics(comp.toLowerCase());
     for (const sf of getCompositionStructure(sku, lang, comp)) {
@@ -985,7 +1619,7 @@ export function getTextChecks(
     }
   }
 
-  const displayBrand = getSpecValue(en.specs, ['Brand', 'Marca', 'Marque']);
+  const displayBrand = specValue(en.specs, 'brand');
   const jdBrand = en.jsonld_brand;
   if (displayBrand && jdBrand && displayBrand.toLowerCase() !== jdBrand.toLowerCase()) {
     findings.push({
@@ -1016,26 +1650,6 @@ export function getTextChecks(
     }
   }
 
-  const compEn = getSpecValue(en.specs, ['Composition', 'Composicion', 'Composition ']);
-  if (compEn) {
-    const storyEn = removeDiacritics(
-      `${en.name} ${en.long_desc_raw} ${en.long_desc}`.toLowerCase(),
-    );
-    if (
-      storyEn.includes('recycl') &&
-      !removeDiacritics(compEn.toLowerCase()).includes('recycl')
-    ) {
-      findings.push({
-        sku,
-        field: 'Composition',
-        finding: 'Composition omits "recycled" present in name/details',
-        notes: `EN Composition: "${compEn}" omits recycled although name/details say recycled // Fix: human - confirm against the supplier spec, then add "recycled" to the composition cell`,
-        priority_hint: '',
-      });
-      flags.push('composition-omits-recycled');
-    }
-  }
-
   for (const k of Object.keys(en.specs)) {
     if (/^(Dimensions|Dimensiones|Dimens[o\u00f5]es)$/i.test(k)) {
       const v = en.specs[k] ?? '';
@@ -1062,6 +1676,18 @@ export function getTextChecks(
       }
     }
   }
+
+  // ---- technical information (spec table) - B1..B8 ------------------------
+  const specChecks = getSpecTableChecks(
+    sku,
+    byLang,
+    requested,
+    category,
+    subcategory,
+    compositionRules,
+  );
+  findings.push(...specChecks.findings);
+  flags.push(...specChecks.flags);
 
   return { findings, flags };
 }
@@ -1134,6 +1760,10 @@ export interface TextAuditInput {
   compositionRules?: CompositionRules | null;
   /** Languages the caller asked for (default: every language present). */
   langs?: TextLang[];
+  /** EN breadcrumb L1 (storefront category) - selects the B2 required set. */
+  category?: string;
+  /** EN breadcrumb L2 (storefront subcategory). */
+  subcategory?: string;
 }
 
 /** Run the checks for one SKU (the extracted PDP fields are the evidence). */
@@ -1185,6 +1815,8 @@ export function auditText(input: TextAuditInput): TextAuditResult {
     input.genderRules,
     input.compositionRules,
     requested,
+    input.category ?? '',
+    input.subcategory ?? '',
   );
   reviewFlags.push(...chk.flags);
 
