@@ -552,6 +552,7 @@ function partialResolverFromAdmin(
   sku: string,
   fallback: ResolveAdminFallback,
   supplier: SupplierLinkInfo,
+  reason?: string,
 ): ResolverJson {
   const parsedId = Number.parseInt(fallback.productId, 10);
   const children = fallback.children.map((child) => child.id);
@@ -587,10 +588,16 @@ function partialResolverFromAdmin(
     hreflang: {},
     store_urls: {},
     snapshots: {},
-    anomalies: ['storefront resolution failed - payload built from the admin matrix only'],
+    anomalies: [
+      reason
+        ? `storefront resolution failed (${reason}) - payload built from the admin matrix only`
+        : 'storefront resolution failed - payload built from the admin matrix only',
+    ],
     notices: [
       'variants, images and text are unavailable in an admin-only payload',
-      'run Resolve again once the storefront page is reachable to get the full payload',
+      reason
+        ? 'the storefront failure above is why: fix reachability or the URL, then run Resolve again for the full payload'
+        : 'run Resolve again once the storefront page is reachable to get the full payload',
     ],
     children_detail: adminChildDetail(fallback.children),
     magento_status: fallback.status
@@ -738,7 +745,31 @@ export async function resolveSkuForDashboard(
       fresh = true;
     } catch (err) {
       resolverFailure = errorMessage(err);
-      if (err instanceof SkuMismatchError) storefrontMismatch = err;
+      const foreignUrl =
+        err instanceof SkuMismatchError ||
+        (url && /not present on .*wrong slug/i.test(resolverFailure));
+      // A supplied URL is an optimisation, not an instruction. When it names a
+      // different product the storefront guard rejects it; searching once more
+      // without the override keeps a stale URL from turning a perfectly
+      // resolvable SKU into an admin-only payload.
+      if (url && foreignUrl) {
+        try {
+          const retried = await resolveSkuWithHtml(sku, {});
+          resolver = retried.resolver;
+          enHtml = retried.enHtml;
+          source = 'storefront';
+          fresh = true;
+          resolverFailure = undefined;
+          warnings.push(
+            `The supplied Product URL does not belong to ${sku} - resolved by search instead.`,
+          );
+        } catch (retryErr) {
+          resolverFailure = errorMessage(retryErr);
+          if (retryErr instanceof SkuMismatchError) storefrontMismatch = retryErr;
+        }
+      } else if (err instanceof SkuMismatchError) {
+        storefrontMismatch = err;
+      }
     }
   }
 
@@ -956,18 +987,15 @@ export async function resolveSkuForDashboard(
       childrenReason,
     };
     adminFallback = fallback;
-    resolver = partialResolverFromAdmin(sku, fallback, supplier);
     // R9: say why the storefront step had nothing, as a fact rather than an
-    // error - this is the normal state of a disabled product.
-    if (storefrontMismatch) {
-      resolver = {
-        ...resolver,
-        notices: [
-          ...(resolver.notices ?? []),
-          storefrontMismatch.message,
-        ],
-      };
-    }
+    // error - this is the normal state of a disabled product, and a stale URL
+    // is a different fact that the operator can fix.
+    resolver = partialResolverFromAdmin(
+      sku,
+      fallback,
+      supplier,
+      storefrontMismatch?.message || resolverFailure,
+    );
     source = 'admin';
     warnings.push(
       'Admin fallback only: variants, images and text cannot be checked from the admin matrix.',

@@ -5,7 +5,7 @@ import type { AuditImagesResponse } from '../../../core/messages';
 import type { ImageAuditResult } from '../../../audit';
 import { StageHost } from '../../shell/StageHost';
 import type { Stage } from '../../shell/stage';
-import { ALL_LANGS, useWorkspace } from '../../shell/workspace';
+import { ALL_LANGS, activeUrl, useWorkspace } from '../../shell/workspace';
 
 function Summary({ audit }: { audit: ImageAuditResult }) {
   const { duplicates: dup, order, background: bg } = audit.checks;
@@ -172,7 +172,7 @@ export function ImageAudit() {
       (await browser.runtime.sendMessage({
         type: 'AUDIT_IMAGES',
         sku: ws.sku.trim(),
-        url: ws.url.trim() || undefined,
+        url: activeUrl(ws),
         langs: ws.langs,
         hashImages: ws.hashImages,
         background: ws.background,
@@ -196,7 +196,9 @@ export function ImageAudit() {
             type="text"
             value={ws.url}
             placeholder="https://bestofgifts.eu/…"
-            onInput={(e) => setWs({ url: e.currentTarget.value })}
+            onInput={(e) =>
+              setWs({ url: e.currentTarget.value, urlFor: ws.sku.trim() })
+            }
           />
         </label>
         <div class="db-checks">

@@ -18,7 +18,7 @@ import { supplierFor } from '../../../shared/resolver';
 import { buildVariantSummary } from '../../../audit';
 import { buildMagentoTable } from '../../../shared/magento';
 import { categoryCode } from '../../../page/features/category-tree/categoryIndex';
-import { useWorkspace } from '../../shell/workspace';
+import { activeUrl, useWorkspace } from '../../shell/workspace';
 
 function LinkRow({ label, url }: { label: string; url: string }) {
   if (!url) return null;
@@ -820,8 +820,21 @@ export function Resolver({
   const [ws, setWs] = useWorkspace();
   const sku = ws.sku;
   const url = ws.url;
-  const setSku = (value: string): void => setWs({ sku: value });
-  const setUrl = (value: string): void => setWs({ url: value });
+  const setSku = (value: string): void => {
+    // A URL names one product. Editing the SKU away from the SKU the URL was
+    // resolved for drops the URL, so the next resolve searches instead of
+    // fetching someone else's page.
+    if (
+      ws.url &&
+      ws.urlFor &&
+      value.trim().toUpperCase() !== ws.urlFor.trim().toUpperCase()
+    ) {
+      setWs({ sku: value, url: '', urlFor: '' });
+      return;
+    }
+    setWs({ sku: value });
+  };
+  const setUrl = (value: string): void => setWs({ url: value, urlFor: ws.sku.trim() });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResolveSkuResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -860,7 +873,7 @@ export function Resolver({
       const response = (await browser.runtime.sendMessage({
         type: 'RESOLVE_SKU',
         sku: trimmed,
-        url: url.trim() || undefined,
+        url: activeUrl(ws),
         force,
       })) as ResolveSkuResponse;
       if (response?.ok) {
@@ -872,7 +885,12 @@ export function Resolver({
         // should read. The frontend URL is carried too: it skips catalogsearch.
         const resolved = response.resolver;
         const canonical = resolved?.sku || trimmed;
-        setWs({ sku: canonical, url: resolved?.frontend_url || url });
+        const frontend = resolved?.frontend_url || '';
+        setWs({
+          sku: canonical,
+          url: frontend || url,
+          urlFor: frontend ? canonical : ws.urlFor,
+        });
         if (response.resolutionError) {
           setWarning(
             [response.warning, `Storefront resolver failed: ${response.resolutionError}`]

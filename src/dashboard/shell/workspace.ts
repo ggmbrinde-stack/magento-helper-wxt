@@ -19,6 +19,8 @@ export const ALL_LANGS = ['EN', 'ES', 'FR'] as const;
 export interface Workspace {
   sku: string;
   url: string;
+  /** SKU the URL was typed/derived for; a URL never applies to another SKU. */
+  urlFor: string;
   langs: string[];
   hashImages: boolean;
   background: boolean;
@@ -29,6 +31,7 @@ const STORAGE_KEY = 'mhx:dashboard:workspace';
 const DEFAULTS: Workspace = {
   sku: '',
   url: '',
+  urlFor: '',
   langs: [...ALL_LANGS],
   hashImages: false,
   background: true,
@@ -59,11 +62,29 @@ export function workspace(): Workspace {
   return state;
 }
 
+/**
+ * The URL to send as the resolver's `url` override, or undefined.
+ *
+ * A URL belongs to one SKU. Sending yesterday's SKU's URL for today's SKU made
+ * the storefront step fail its own SKU guard and report "storefront resolution
+ * failed" for a product that has a perfectly good PDP - so an override that does
+ * not match the current SKU is dropped rather than trusted.
+ */
+export function activeUrl(ws: Workspace = state): string | undefined {
+  const url = ws.url.trim();
+  if (!url) return undefined;
+  const belongs = ws.urlFor.trim().toUpperCase();
+  const sku = ws.sku.trim().toUpperCase();
+  if (belongs && sku && belongs !== sku) return undefined;
+  return url;
+}
+
 export function setWorkspace(patch: Partial<Workspace>): void {
   const next = { ...state, ...patch };
   if (
     next.sku === state.sku &&
     next.url === state.url &&
+    next.urlFor === state.urlFor &&
     sameLangSet(next.langs, state.langs) &&
     next.hashImages === state.hashImages &&
     next.background === state.background

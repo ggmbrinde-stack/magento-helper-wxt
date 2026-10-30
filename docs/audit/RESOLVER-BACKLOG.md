@@ -131,3 +131,8 @@ instead of a red resolver error. `src/shared/resolver.ts`,
   verdict is stored.
 - Child labels for disabled SKUs (R1), status read date (R7) and the wasted
   storefront PDP fetch (R9) — see **Resolved** above.
+- Stale/foreign Product URL on a resolve no longer turns a resolvable SKU into
+  an admin-only payload: the override is dropped when it does not match the
+  current SKU, the backend retries by search, and the partial payload names the
+  storefront failure it actually hit. `src/dashboard/shell/workspace.ts`,
+  `src/dashboard/sections/audit/Resolver.tsx`, `src/audit/skuResolution.ts`.

@@ -5,7 +5,7 @@ import type { AuditTextResponse } from '../../../core/messages';
 import type { TextAuditResult } from '../../../audit';
 import { StageHost } from '../../shell/StageHost';
 import type { Stage } from '../../shell/stage';
-import { ALL_LANGS, useWorkspace } from '../../shell/workspace';
+import { ALL_LANGS, activeUrl, useWorkspace } from '../../shell/workspace';
 
 function Summary({ audit }: { audit: TextAuditResult }) {
   const specs = audit.matrix?.specs.length ?? 0;
@@ -219,7 +219,7 @@ export function TextAudit() {
       (await browser.runtime.sendMessage({
         type: 'AUDIT_TEXT',
         sku: ws.sku.trim(),
-        url: ws.url.trim() || undefined,
+        url: activeUrl(ws),
         langs: ws.langs,
       })) as AuditTextResponse,
     Controls: () => (
@@ -241,7 +241,9 @@ export function TextAudit() {
             type="text"
             value={ws.url}
             placeholder="https://bestofgifts.eu/…"
-            onInput={(e) => setWs({ url: e.currentTarget.value })}
+            onInput={(e) =>
+              setWs({ url: e.currentTarget.value, urlFor: ws.sku.trim() })
+            }
           />
         </label>
         <div class="db-checks">
