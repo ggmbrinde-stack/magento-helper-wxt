@@ -818,16 +818,10 @@ export function Resolver({
   // The SKU is the subject of the whole dashboard, so it lives in the shared
   // workspace: resolve once, then Image/Text audit already have it.
   const [ws, setWs] = useWorkspace();
-  const [sku, setSkuState] = useState(ws.sku);
-  const [url, setUrlState] = useState(ws.url);
-  const setSku = (value: string): void => {
-    setSkuState(value);
-    setWs({ sku: value });
-  };
-  const setUrl = (value: string): void => {
-    setUrlState(value);
-    setWs({ url: value });
-  };
+  const sku = ws.sku;
+  const url = ws.url;
+  const setSku = (value: string): void => setWs({ sku: value });
+  const setUrl = (value: string): void => setWs({ url: value });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResolveSkuResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -878,8 +872,6 @@ export function Resolver({
         // should read. The frontend URL is carried too: it skips catalogsearch.
         const resolved = response.resolver;
         const canonical = resolved?.sku || trimmed;
-        setSkuState(canonical);
-        setUrlState(resolved?.frontend_url || url);
         setWs({ sku: canonical, url: resolved?.frontend_url || url });
         if (response.resolutionError) {
           setWarning(
