@@ -39,7 +39,7 @@ export const SUPPLIER_TABLE: Record<SupplierName, SupplierRow> = {
   // makito.pt redirects to the ePages shop on makito.es, which is kept as the
   // alternate. All three answer 403 to automated clients, so no product-URL
   // pattern is claimed - only site search works.
-  MAKITO: { tier: 1, official: 'https://makito.eu', alt: 'https://makito.es' },
+  MAKITO: { tier: 1, official: 'https://www.makito.eu', alt: 'https://makito.es' },
 };
 
 /** Where a catalogue URL came from. `guessed` is always disclosed as such. */

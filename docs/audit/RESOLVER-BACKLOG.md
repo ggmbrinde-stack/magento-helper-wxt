@@ -1,0 +1,119 @@
+# Resolver backlog — open work
+
+Last updated: 2026-10-30. Companion to `records/HANDOFF-EXTENSION.md` §6 (which
+covers the whole extension); this file is scoped to **Resolve SKU**.
+
+## Where the resolver stands
+
+**Enabled SKU (storefront reachable)** — complete. Storefront payload, child
+SKUs with colour/size labels, variant matrix incl. missing combinations,
+categories with Notion codes, Magento links for all store scopes, supplier link
+and availability verdict.
+
+**Disabled SKU (no storefront page)** — works, but partial by nature. Parent id
+is found via the grid, status is read from the grid row or the edit page's
+`#status`, children come from the `Parent SKU` column (status-blind, so disabled
+children are included). The payload is `partial: true`, `verified: false`, and is
+never cached. Variants, images and text cannot be audited because there is no
+storefront payload to audit.
+
+## How the admin side works (do not regress this)
+
+- The grid endpoint is **`POST`** to
+  `/admin_<front>/mui/index/render/key/<hash>/?isAjax=true`, parameters in the
+  form body. A `GET` with query params is silently ignored by the controller.
+- The URL secret key is **per route** and cannot be computed (server-side salt).
+  It is scraped from the page (`mui/index/render/key/<hash>/`) and cached per
+  origin + admin frontname. The address-bar key belongs to the page's own route
+  and is rejected by the grid controller.
+- Children are read by `filters[parent_sku]=<parent sku>`. A full page back
+  (200 rows) means the filter was ignored — treat as no answer.
+- When nothing else answers, a **background tab** is opened and walked to the
+  parent's edit page, then closed. The operator's own tab is never navigated.
+
+## Open items
+
+Ordered by value per hour. Each names the file that owns the fix.
+
+### R1 — Colour/size labels for disabled SKUs
+
+The `parent_sku` query returns no colour/size columns, so a disabled SKU's child
+table shows SKUs and status only, and no variant matrix can be built.
+
+Fix: after a successful `parent_sku` read, open the parent's edit page (the
+machinery exists, `readMatrixTab`) and merge labels onto the rows by child id.
+`src/audit/skuResolution.ts`, `src/page/features/grid-search/index.ts`.
+
+### R2 — Supplier catalogue URLs per SKU
+
+MAKITO's product slugs are the product name, not the SKU
+(`https://www.makito.eu/es/cable-cargador-soporte-zynix.html`), so no URL is
+derivable; TOPTEX has no proven pattern either. Both stay `unresolved` until
+`Supplier Product` is filled in Notion or an entry is added to
+`src/audit/rules/supplierCatalog.ts` (one is seeded: `M22477`).
+
+Until then the card shows a site-search link built from the SKU, marked as a
+search, never as a catalogue product.
+
+### R3 — Category comparison across languages
+
+Breadcrumbs are read from the **EN** page. If SKU Library rows are filled in PT,
+C5 (`buildCategoryCheck`) flags every product as a mismatch. Decide the mapping
+and normalise the rows before enabling the check in batches.
+`src/audit/skuResolution.ts`.
+
+### R4 — `Sub-Subcategory` population
+
+The property exists and is read, but rows are empty, so L3 is never compared
+(both sides must be non-empty for a mismatch to be reported). Needs a population
+pass, not a code change.
+
+### R5 — Technical Information audit (B1–B8)
+
+`getPdpFields` already parses `product-attribute-specs-table` and
+`buildTextMatrix` lays the languages side by side. What is missing is the
+per-attribute decision: which keys are required per category, which values are
+mechanically checkable (grammage digits, composition summing to 100, dimensions),
+and which are language noise. Decide as a table first.
+`src/audit/textAudit.ts`, `docs/audit/AUDIT-FULL-RUN.md`.
+
+### R6 — Sweep cadence for `discontinued-candidate`
+
+The verdict needs two 404s at least 7 days apart. Nothing schedules that. Decide:
+alarm, weekly job, or explicit action only.
+`src/audit/supplierAvailability.ts`.
+
+### R7 — Status cache staleness
+
+`magento_status` is stored inside the cached payload with `RESOLVER_TTL_DAYS = 14`,
+so a product disabled today can still read `Enabled` from a two-week-old cache.
+Either stop caching status or display it as "as of <date>" next to the badge.
+`src/shared/resolver.ts`, `src/dashboard/sections/audit/Resolver.tsx`.
+
+### R8 — Admin tab churn
+
+Each resolve that needs admin data opens a background tab and closes it, and a
+configurable that needs labels pays a second page load. Reusing one long-lived
+tab for the session would remove both. `src/audit/skuResolution.ts`.
+
+### R9 — Storefront search wasted on disabled SKUs
+
+For a disabled SKU the catalogsearch step returns a *neighbouring* product and
+the SKU guard correctly rejects it (e.g. `M22477` → `bone-carbum-m22417`). That
+costs a fetch and an error message before the admin path runs. Detecting "search
+returned a different SKU" should short-circuit straight to the admin path.
+`src/shared/resolver.ts`.
+
+## Fixed recently (context, do not re-report)
+
+- Grid query was `GET` with REST-style filter params → nothing was ever filtered.
+- Address-bar secret key reused for the grid route → `invalid Secret Key`.
+- `roly.eu` missing from host permissions → every ROLY check was `fetch-error`.
+- MAKITO availability attempted despite a permanent 403 → now `unresolved` with
+  a pointer to the catalogue link.
+- Partial payload built from the first admin pass (always empty) → children lost.
+- Simple products labelled `configurable` and given no Magento link of their own.
+- Tone badges rendered as plain text: CSS matched `data-tone`, components pass
+  `db-ok` / `db-warn` / `db-bad` classes.
+- Availability required a manual click; it now runs after a resolve when no
+  verdict is stored.

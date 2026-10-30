@@ -419,6 +419,20 @@ export async function checkSkuAvailability(
     return rolyAvailability(id, link, base, opts);
   }
 
+  // MAKITO's shop answers 403 to every automated request (verified on
+  // makito.eu, www.makito.eu and makito.es, browser user-agent included).
+  // Reporting "check failed" every time says nothing about the product, so the
+  // verdict stays unresolved and points at the link instead.
+  if (supplier === 'MAKITO') {
+    return {
+      ...base,
+      verdict: 'unresolved',
+      review: [
+        'MAKITO blocks automated clients (403), so availability cannot be checked here - open the catalogue link',
+      ],
+    };
+  }
+
   const candidates: { url: string; source: CatalogSource }[] = [
     { url: link.catalog, source: link.catalogSource },
   ];

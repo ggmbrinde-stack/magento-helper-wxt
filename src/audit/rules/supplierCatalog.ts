@@ -14,4 +14,8 @@
  * catalogue page as proof of availability is exactly the false positive this
  * map exists to remove.
  */
-export const SUPPLIER_CATALOG: Record<string, string> = {};
+export const SUPPLIER_CATALOG: Record<string, string> = {
+  // Confirmed by the operator (2026-10-30). MAKITO's product slugs are the
+  // product name, not the SKU, so no URL can be derived - it has to be stored.
+  M22477: 'https://www.makito.eu/es/cable-cargador-soporte-zynix.html',
+};
