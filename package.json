@@ -15,6 +15,7 @@
     "check:ui": "node scripts/check-ui.mjs",
     "check:lanes": "node scripts/check-lanes.mjs",
     "check:notion": "node scripts/check-notion-readonly.mjs",
+    "test:supplier": "npx esbuild src/audit/__tests__/supplier.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/supplier-test.mjs --log-level=warning && node --test .output/supplier-test.mjs",
     "index:build": "node scripts/build-category-index.mjs"
   },
   "dependencies": {

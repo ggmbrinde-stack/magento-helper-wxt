@@ -302,10 +302,16 @@ async function rolyAvailability(
     base.tried.push(link.catalog);
     const outcome = await fetchCatalog(link.catalog, opts.fetchImpl);
     if (outcome.status === 404) {
+      const misses = [...new Set([...base.misses, base.checkedAt])].sort().slice(-10);
+      const escalated = missesEscalate(misses, (opts.now ?? new Date()).getTime());
+      const review = escalated
+        ? [`404 on ${misses.length} checks spanning at least ${MISS_GAP_DAYS} days - review the product before marking it discontinued`]
+        : [`the confirmed catalogue URL 404s: ${link.catalog}`];
       return {
         ...base,
-        verdict: 'not-found',
-        review: [`the confirmed catalogue URL 404s: ${link.catalog}`],
+        verdict: escalated ? 'discontinued-candidate' : 'not-found',
+        misses,
+        review,
         anomalies,
       };
     }
@@ -535,7 +541,7 @@ export async function loadAvailability(): Promise<AvailabilityMap> {
   }
 }
 
-function isFresh(check: AvailabilityCheck, now: number): boolean {
+export function isFresh(check: AvailabilityCheck, now: number): boolean {
   const at = Date.parse(check.checkedAt);
   if (!Number.isFinite(at)) return false;
   const ttl =
@@ -558,6 +564,7 @@ export async function runAvailabilitySweep(
   skus: string[],
   options: {
     force?: boolean;
+    fetchImpl?: typeof fetch;
     onProgress?: (sku: string, index: number, total: number) => void;
   } = {},
 ): Promise<AvailabilityCheck[]> {
@@ -576,6 +583,7 @@ export async function runAvailabilitySweep(
     try {
       check = await checkSkuAvailability(sku, {
         priorMisses: cached?.misses ?? [],
+        fetchImpl: options.fetchImpl,
       });
     } catch (err) {
       check = {

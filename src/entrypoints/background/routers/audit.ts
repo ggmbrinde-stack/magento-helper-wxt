@@ -297,14 +297,14 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
     void (async () => {
       try {
         // The stored verdict is shown as-is unless the operator re-checks (D4).
-        if (!force) {
-          const cached = (await loadAvailability())[sku];
-          if (cached) {
-            sendResponse({ ok: true, check: cached });
-            return;
-          }
+        const cached = (await loadAvailability())[sku];
+        if (!force && cached) {
+          sendResponse({ ok: true, check: cached });
+          return;
         }
-        const check = await checkSkuAvailability(sku);
+        const check = await checkSkuAvailability(sku, {
+          priorMisses: cached?.misses ?? [],
+        });
         await saveAvailability([check]);
         sendResponse({ ok: true, check });
       } catch (err) {

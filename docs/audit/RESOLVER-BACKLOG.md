@@ -136,3 +136,8 @@ instead of a red resolver error. `src/shared/resolver.ts`,
   current SKU, the backend retries by search, and the partial payload names the
   storefront failure it actually hit. `src/dashboard/shell/workspace.ts`,
   `src/dashboard/sections/audit/Resolver.tsx`, `src/audit/skuResolution.ts`.
+- Supplier availability: ROLY confirmed-URL 404s now record miss history and can
+  escalate to `discontinued-candidate`; re-checks preserve prior misses; sweep
+  forwards the injected fetch. Deterministic tests in
+  `src/audit/__tests__/supplier.test.ts` (23 cases) cover attribution, links,
+  verdicts, and cache freshness.
