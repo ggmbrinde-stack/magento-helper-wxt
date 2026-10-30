@@ -79,6 +79,8 @@ export interface ResolveAdminFallback {
    * has no storefront page at all. Empty when the column was not returned.
    */
   status?: string;
+  /** Magento `type_id` when the grid reported it (`simple`, `configurable`, …). */
+  productType?: string;
   /** Every assigned child, including disabled ones (the admin matrix is status-blind). */
   children: ResolverChild[];
   /** Why `children` is empty, when it is. */
@@ -203,7 +205,20 @@ export interface PushListingErrorsResponse {
 export interface SearchMagentoRequest {
   type: 'SEARCH_MAGENTO';
   sku: string;
+  /** Child entity ids already known from the storefront payload. */
   childIds?: string[];
+  /**
+   * The configurable parent's entity id. When the open tab is that product's
+   * edit page, the Configurations matrix is read directly - it is status-blind
+   * (so disabled children appear) and needs no admin grid query.
+   */
+  parentId?: string;
+  /**
+   * Allow the reader to expand a collapsed Configurations section. Only set when
+   * the extension opened (and will close) the tab itself - never on the
+   * operator's own tab.
+   */
+  expand?: boolean;
 }
 
 export interface SearchMagentoResponse {
@@ -215,6 +230,8 @@ export interface SearchMagentoResponse {
   children?: ResolverChild[];
   /** Why `children` is empty, when it is (collapsed section, no edit page, …). */
   childrenReason?: string;
+  /** Magento `type_id` for the row, e.g. `simple` or `configurable`. */
+  productType?: string;
   error?: string;
 }
 

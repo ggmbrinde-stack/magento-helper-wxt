@@ -151,10 +151,18 @@ export default defineContentScript({
         return false;
       }
       if (type === 'SEARCH_MAGENTO') {
-        const req = message as { sku?: string; childIds?: string[] };
-        void handleSearchMagento(String(req.sku ?? ''), req.childIds).then(
-          sendResponse,
-        );
+        const req = message as {
+          sku?: string;
+          childIds?: string[];
+          parentId?: string;
+          expand?: boolean;
+        };
+        void handleSearchMagento(
+          String(req.sku ?? ''),
+          req.childIds,
+          req.parentId,
+          Boolean(req.expand),
+        ).then(sendResponse);
         return true;
       }
       if (type === 'ERROR_MARKUP') {

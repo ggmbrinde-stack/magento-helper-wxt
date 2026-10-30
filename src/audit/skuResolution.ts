@@ -13,11 +13,13 @@ import {
 } from '../shared/notion/client';
 import { SkuLibrarySchema, validateRows } from '../shared/schemas';
 import {
+  PRODUCT_TYPES,
   RESOLVER_SCHEMA,
   RESOLVER_TTL_DAYS,
   isResolverJson,
   normalizeUrl,
   resolveSkuWithHtml,
+  type ProductType,
   type ResolverChildDetail,
   type ResolverJson,
 } from '../shared/resolver';
@@ -286,46 +288,237 @@ async function sendToTab<T>(tabId: number, message: unknown): Promise<T> {
   }
 }
 
+/** Resolve once the tab finishes loading (or has already finished). */
+function waitForTabLoad(tabId: number, timeoutMs = 20_000): Promise<void> {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const finish = (err?: Error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      chrome.tabs.onUpdated.removeListener(onUpdated);
+      chrome.tabs.onRemoved.removeListener(onRemoved);
+      if (err) reject(err);
+      else resolve();
+    };
+    const timer = setTimeout(
+      () => finish(new Error('timed out waiting for the admin grid page')),
+      timeoutMs,
+    );
+    const onUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
+      if (id === tabId && info.status === 'complete') finish();
+    };
+    const onRemoved = (id: number) => {
+      if (id === tabId) finish(new Error('the admin tab was closed'));
+    };
+    chrome.tabs.onUpdated.addListener(onUpdated);
+    chrome.tabs.onRemoved.addListener(onRemoved);
+    void chrome.tabs
+      .get(tabId)
+      .then((tab) => {
+        if (tab.status === 'complete') finish();
+      })
+      .catch(() => finish(new Error('the admin tab is gone')));
+  });
+}
+
+/**
+ * Wait until the tab is on the expected URL and finished loading.
+ *
+ * Polling rather than `onUpdated`: after `tabs.update` the previous page can
+ * still report `complete`, so a listener would resolve against the old load.
+ */
+async function waitForTabUrl(
+  tabId: number,
+  expected: string,
+  timeoutMs = 20_000,
+): Promise<void> {
+  const wanted = expected.replace(/\/+$/, '').toLowerCase();
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const tab = await chrome.tabs.get(tabId).catch(() => null);
+    if (!tab) throw new Error('the admin tab was closed');
+    const url = (tab.url ?? tab.pendingUrl ?? '').toLowerCase();
+    if (tab.status === 'complete' && url.includes(wanted)) return;
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+  throw new Error('the admin page did not finish loading');
+}
+
+/**
+ * Read the Configurations matrix for `productId` in a tab we control.
+ *
+ * Reuses `reuseTabId` when that tab is one this function's caller opened;
+ * otherwise it opens its own background tab. The operator's own tab is never
+ * navigated - and that matters, because the commonest case is an already-open
+ * Products grid, which has no matrix to read.
+ */
+async function readMatrixTab(
+  base: string,
+  productId: string,
+  request: SearchMagentoRequest,
+  reuseTabId: number,
+): Promise<SearchMagentoResponse | null> {
+  const editUrl = adminEditUrl(base, productId);
+  let tabId = reuseTabId;
+  const borrowed = tabId === 0;
+  if (borrowed) {
+    const tab = await chrome.tabs.create({ url: editUrl, active: false });
+    tabId = tab.id ?? 0;
+    if (!tabId) return null;
+  } else {
+    await chrome.tabs.update(tabId, { url: editUrl });
+  }
+  try {
+    await waitForTabUrl(tabId, editUrl);
+    return await sendToTab<SearchMagentoResponse>(tabId, {
+      ...request,
+      parentId: productId,
+      expand: true,
+    });
+  } catch {
+    return null;
+  } finally {
+    if (borrowed) await chrome.tabs.remove(tabId).catch(() => undefined);
+  }
+}
+
+/** Product id out of a stored admin edit URL (`.../edit/id/<id>/...`). */
+function backendProductId(url: string): string {
+  return url.match(/\/catalog\/product\/edit\/id\/(\d+)/)?.[1] ?? '';
+}
+
 async function tryAdminGrid(
   sku: string,
   fallbackBase: string,
   childIds?: string[],
+  parentId?: string,
 ): Promise<ResolveAdminFallback> {
   const allTabs = await chrome.tabs.query({});
   const adminTabs = allTabs.filter((t) =>
     /^https:\/\/bestofgifts/.test(t.url ?? ''),
   );
-  const adminTab =
-    adminTabs.find((t) => (t.url ?? '').includes('/catalog/product')) ??
-    adminTabs.find((t) => (t.url ?? '').includes('admin'));
-  if (!adminTab?.id) {
+  // Only a product page carries what we need. A dashboard tab also matches
+  // "admin" but has no Configurations matrix and no grid key, so picking it was
+  // why the reader reported "no admin grid key on this page" while a perfectly
+  // good grid was open in another tab.
+  const adminTab = adminTabs.find((t) =>
+    (t.url ?? '').includes('/catalog/product'),
+  );
+  let tabId = adminTab?.id ?? 0;
+  let tabUrl = adminTab?.url ?? '';
+
+  // No usable admin tab: open the product grid quietly in the background. The
+  // grid page is what carries the route's secret key and the AJAX endpoint, so
+  // this makes the resolver work without the operator pre-opening anything. The
+  // tab is closed again once the answer is read.
+  let openedTabId = 0;
+  if (!tabId) {
+    const base = normalizeBase(fallbackBase) || DEFAULT_ADMIN_BASE;
+    // The parent's own edit page needs no secret key and no AJAX: the browser
+    // navigates, Magento adds the key itself, and the Configurations matrix is
+    // already in the DOM. The product grid is only the fallback when the parent
+    // id is unknown (e.g. the storefront could not be resolved).
+    const target = parentId
+      ? adminEditUrl(base, parentId)
+      : `${base}/catalog/product/index/`;
+    let created: chrome.tabs.Tab;
+    try {
+      created = await chrome.tabs.create({ url: target, active: false });
+    } catch (err) {
+      throw new Error(
+        `Could not open a Magento admin tab (${errorMessage(err)}); the admin grid is unreachable.`,
+      );
+    }
+    const id = created.id ?? 0;
+    if (!id) throw new Error('Could not open a Magento admin tab.');
+    openedTabId = id;
+    try {
+      await waitForTabLoad(id);
+    } catch (err) {
+      await chrome.tabs.remove(id).catch(() => undefined);
+      throw new Error(
+        `The Magento admin page did not load (${errorMessage(err)}); sign in to the admin, then resolve again.`,
+      );
+    }
+    tabId = id;
+    tabUrl = created.url ?? created.pendingUrl ?? '';
+  }
+
+  const base = openedTabId
+    ? normalizeBase(fallbackBase)
+    : adminBaseFromTab(tabUrl, fallbackBase);
+
+  const request: SearchMagentoRequest = {
+    type: 'SEARCH_MAGENTO',
+    sku,
+    childIds,
+    parentId,
+    // Only the tab this function opened may be interacted with.
+    expand: openedTabId !== 0,
+  };
+  let response: SearchMagentoResponse | undefined;
+  try {
+    response = await sendToTab<SearchMagentoResponse>(tabId, request);
+  } catch (err) {
+    if (openedTabId) await chrome.tabs.remove(openedTabId).catch(() => undefined);
     throw new Error(
-      'No Magento admin tab is open; admin-grid fallback is unavailable.',
+      `The helper could not run in the Magento admin tab (${errorMessage(err)}). Sign in to the admin, then resolve again.`,
     );
   }
 
-  const request: SearchMagentoRequest = { type: 'SEARCH_MAGENTO', sku, childIds };
-  let response: SearchMagentoResponse | undefined;
-  try {
-    response = await sendToTab<SearchMagentoResponse>(adminTab.id, request);
-  } catch (err) {
-    throw new Error(
-      `Admin tab found but the helper could not be loaded into it (${errorMessage(err)}). Reload the admin page and resolve again.`,
+  // The grid can name the parent, but it has no Configurations matrix - and a
+  // disabled SKU has no storefront page and no SKU Library row, so this is the
+  // only place left to ask. When the tab is ours, walk it to the parent's edit
+  // page and read the matrix: every child, enabled or disabled, with labels.
+  // A simple product has no matrix to walk to; only a configurable (or an
+  // unreported type) is worth the second page load.
+  if (
+    response?.found &&
+    (response.children?.length ?? 0) === 0 &&
+    response.productId &&
+    response.productType !== 'simple'
+  ) {
+    const second = await readMatrixTab(
+      base,
+      response.productId,
+      request,
+      openedTabId,
     );
+    if (second?.found) {
+      // Adopt the matrix answer either way: an empty one carries the *reason*
+      // it was empty, which is more use than the grid page's reason ("open the
+      // parent product edit page") when the problem is elsewhere.
+      const gained = (second.children?.length ?? 0) > 0;
+      response = {
+        ...second,
+        productId: second.productId || response.productId,
+        status: second.status || response.status,
+        children: gained ? second.children : response.children,
+        childrenReason: gained ? second.childrenReason : (second.childrenReason || response.childrenReason),
+      };
+    }
   }
-  if (!response?.found || !response.productId) {
+
+  // The parent row is optional: when the parent is stored under a different SKU
+  // than the storefront code (R0317C vs R0317), the grid still answers the
+  // child-id query, and that is the part the SKU Library needs.
+  if (!response?.found) {
+    if (openedTabId) await chrome.tabs.remove(openedTabId).catch(() => undefined);
     throw new Error(response?.error ?? 'SKU not found in the Magento admin grid.');
   }
 
-  const base = adminBaseFromTab(adminTab.url ?? '', fallbackBase);
+  if (openedTabId) await chrome.tabs.remove(openedTabId).catch(() => undefined);
   const children: ResolverChild[] = (response.children ?? []).map((child) => ({
     ...child,
     backend: child.backend || adminEditUrl(base, child.id),
   }));
+  const parentEntityId = response.productId ?? '';
   return {
-    productId: response.productId,
-    backend: adminEditUrl(base, response.productId),
+    productId: parentEntityId,
+    backend: parentEntityId ? adminEditUrl(base, parentEntityId) : '',
     status: response.status ?? '',
+    productType: response.productType ?? '',
     children,
     childrenReason: response.childrenReason,
   };
@@ -361,6 +554,14 @@ function partialResolverFromAdmin(
 ): ResolverJson {
   const parsedId = Number.parseInt(fallback.productId, 10);
   const children = fallback.children.map((child) => child.id);
+  // A simple product has no children by design; calling it "configurable" made
+  // the payload claim a matrix that does not exist, and the Magento link table
+  // then looked for children instead of linking the product itself.
+  const productType: ProductType = (PRODUCT_TYPES as readonly string[]).includes(
+    fallback.productType ?? '',
+  )
+    ? (fallback.productType as ProductType)
+    : 'configurable';
   return {
     schema: RESOLVER_SCHEMA,
     sku,
@@ -371,9 +572,11 @@ function partialResolverFromAdmin(
     source: 'admin',
     frontend_url: '',
     slug: null,
-    product_type: 'configurable',
-    configurable_id: Number.isFinite(parsedId) ? parsedId : null,
-    simple_product_id: null,
+    product_type: productType,
+    configurable_id:
+      productType === 'configurable' && Number.isFinite(parsedId) ? parsedId : null,
+    simple_product_id:
+      productType === 'simple' && Number.isFinite(parsedId) ? parsedId : null,
     attributes: {},
     attribute_option_counts: {},
     index: {},
@@ -548,24 +751,78 @@ export async function resolveSkuForDashboard(
 
   let adminChildren = admin.ok ? admin.fallback.children : [];
   const adminStatus = admin.ok ? (admin.fallback.status ?? '') : '';
+  // Why the child SKUs are (or are not) here. The admin attempt above runs in
+  // parallel with the storefront fetch, so on its own it can only ever match the
+  // parent's own SKU - the child list is the second pass below.
+  let childrenReason = admin.ok
+    ? (admin.fallback.childrenReason ?? '')
+    : errorMessage(admin.error);
 
-  // If the initial admin search did not return child SKUs (e.g. parent edit page
-  // was not open), but storefront resolution gave us child IDs, query the grid
-  // for those specific child IDs to pull their child SKUs.
-  if (
-    admin.ok &&
-    adminChildren.length === 0 &&
-    resolver?.children &&
-    resolver.children.length > 0
-  ) {
-    try {
-      const retry = await tryAdminGrid(sku, adminBase, resolver.children);
-      if (retry.children.length > 0) {
-        adminChildren = retry.children;
+  // The storefront payload already names every child id. Ask the grid for
+  // exactly those rows: this is the only path that carries the child SKUs when
+  // the parent's edit page is not the tab the helper runs in. It is not gated on
+  // the first attempt succeeding - a grid that missed the parent still answers
+  // an entity-id range query.
+  // The parent id decides which page the second pass can open without a secret
+  // key: the storefront knows it, and for a SKU the storefront cannot serve at
+  // all (disabled) the SKU Library's Backend URL still carries it. This is why
+  // the pass also runs when the storefront returned no child ids.
+  const configurableId = resolver?.configurable_id;
+  const parentEntityId =
+    configurableId === null || configurableId === undefined
+      ? backendProductId(notion?.backend ?? '')
+      : String(configurableId);
+
+  // What the second pass learned, kept even when the first pass failed: for a
+  // disabled SKU this is the only source of the parent id and its status.
+  let retryParentId = '';
+  let retryStatus = '';
+
+  // The first pass often already knows the parent id (it matched the grid row)
+  // even though it could not read children there. Gating the second pass on the
+  // storefront id alone meant that answer was never followed up: a disabled SKU
+  // has no storefront page and no SKU Library row, so nothing triggered it.
+  const knownParentId =
+    parentEntityId || (admin.ok ? (admin.fallback.productId ?? '') : '');
+
+  if (adminChildren.length === 0) {
+    const ids = resolver?.children ?? [];
+    if (ids.length > 0 || knownParentId) {
+      try {
+        const retry = await tryAdminGrid(
+          sku,
+          adminBase,
+          ids,
+          knownParentId || undefined,
+        );
+        retryParentId = retry.productId || '';
+        retryStatus = retry.status || '';
+        if (retry.children.length > 0) {
+          adminChildren = retry.children;
+          childrenReason = retry.childrenReason || '';
+        } else {
+          childrenReason =
+            retry.childrenReason || 'the admin grid returned no child rows';
+        }
+      } catch (err) {
+        childrenReason = errorMessage(err);
       }
-    } catch {
-      // non-fatal
+    } else {
+      childrenReason =
+        childrenReason ||
+        'no parent id is known for this SKU yet - resolve it once with the storefront reachable, or store its Backend URL in the SKU Library';
     }
+  }
+  // A resolved payload without child SKUs is worth flagging even when the
+  // storefront failed - but only for a product type that has children at all.
+  // A simple/bundle product legitimately has none, and warning about it turned
+  // a correct result into an error message.
+  const expectsChildren =
+    !resolver || resolver.product_type === 'configurable';
+  if (adminChildren.length === 0 && expectsChildren) {
+    warnings.push(
+      `Child SKUs unavailable: ${childrenReason || 'no child rows came back from the admin grid'}.`,
+    );
   }
 
   if (resolver) {
@@ -612,6 +869,7 @@ export async function resolveSkuForDashboard(
         adminChildren.length > 0
           ? adminChildDetail(adminChildren)
           : resolver.children_detail,
+
       magento_status: adminStatus
         ? {
             label: adminStatus,
@@ -623,10 +881,29 @@ export async function resolveSkuForDashboard(
     };
   }
 
+  // A disabled SKU is served by this branch: the storefront has no page for it,
+  // so the partial payload *is* the result. It must be built from the merged
+  // children, not from `admin.fallback` - that is the first pass, which runs
+  // before any child id exists and therefore always looks empty. Reading it was
+  // why the children read on the second pass were thrown away.
   let adminFallback: ResolveAdminFallback | undefined;
-  if (!resolver && admin.ok) {
-    adminFallback = admin.fallback;
-    resolver = partialResolverFromAdmin(sku, admin.fallback, supplier);
+  const fallbackParentId =
+    (admin.ok ? admin.fallback.productId : '') ||
+    retryParentId ||
+    parentEntityId;
+  if (!resolver && (adminChildren.length > 0 || fallbackParentId)) {
+    const fallback: ResolveAdminFallback = {
+      productId: fallbackParentId,
+      backend: fallbackParentId ? adminEditUrl(adminBase, fallbackParentId) : '',
+      status:
+        (admin.ok ? (admin.fallback.status ?? '') : '') ||
+        retryStatus ||
+        (adminChildren.some((child) => child.enabled === false) ? 'Disabled' : ''),
+      children: adminChildren,
+      childrenReason,
+    };
+    adminFallback = fallback;
+    resolver = partialResolverFromAdmin(sku, fallback, supplier);
     source = 'admin';
     warnings.push(
       'Admin fallback only: variants, images and text cannot be checked from the admin matrix.',
@@ -660,16 +937,24 @@ export async function resolveSkuForDashboard(
     };
   }
 
-  // Target matrix: every assigned child from the admin, enabled or not.
+  // Target matrix: every assigned child the admin reported, enabled or not.
+  // `adminChildren` is the merged list (first attempt + the second pass), so it
+  // is the one to use - reading `admin.fallback.children` alone meant the matrix
+  // was reported unavailable even when all 15 children had just been read.
+  // Colour labels only exist on the Configurations-matrix path; without them a
+  // "target" would be a list of ids, so the message stays instead of inventing.
+  const targetRows = adminChildren.filter((child) => child.color !== '');
   const targets =
-    admin.ok && admin.fallback.children.length > 0
-      ? variantTargetsFromRows(admin.fallback.children, 'admin-config')
+    targetRows.length > 0
+      ? variantTargetsFromRows(targetRows, 'admin-config')
       : undefined;
   const targetsError = targets
     ? undefined
-    : admin.ok
-      ? admin.fallback.childrenReason || 'admin returned no child rows'
-      : admin.error;
+    : adminChildren.length > 0
+      ? 'the admin rows carried no colour labels - open the parent product edit page to read every child'
+      : admin.ok
+        ? admin.fallback.childrenReason || 'admin returned no child rows'
+        : admin.error;
 
   const categoryCheck = resolver ? buildCategoryCheck(resolver, notion) : undefined;
   const duplicates = resolver ? await findDuplicates(resolver) : [];

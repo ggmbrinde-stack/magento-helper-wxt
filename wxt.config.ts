@@ -28,7 +28,15 @@ export default defineConfig({
       'https://bestofgifts.fr/*',
       'https://bestofgifts-pt-qa.toogas.net/*',
       'https://bestofgifts.pt/*',
+      // ROLY is read from roly.eu (sitemap + /model_<REF> pages). Only roly.es
+      // was granted, so every catalogue check failed with "Failed to fetch".
+      'https://roly.eu/*',
+      'https://www.roly.eu/*',
+      'https://roly.es/*',
       'https://www.roly.es/*',
+      'https://roly.pt/*',
+      'https://www.roly.pt/*',
+      'https://rolymalta.com/*',
       // Model bridge presets (OpenAI-compatible backends). Local servers are
       // covered by the localhost entries above; anything else is requested at
       // runtime from Model bridge settings (optional_host_permissions).

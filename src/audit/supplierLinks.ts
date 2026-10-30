@@ -35,10 +35,11 @@ export const SUPPLIER_TABLE: Record<SupplierName, SupplierRow> = {
   TOPTEX: { tier: 10, official: 'https://toptex.eu', alt: '' },
   // ALLBEST is an internal supplier: no public site exists.
   ALLBEST: { tier: 6, official: '', alt: '' },
-  // Makito's shop is reachable from makito.pt, which redirects to the ePages
-  // shop on makito.es (the host blocks unaudited clients, so nothing beyond the
-  // official entry is claimed here).
-  MAKITO: { tier: 1, official: 'https://makito.es', alt: '' },
+  // Makito: makito.eu is the canonical domain (the user's own reference);
+  // makito.pt redirects to the ePages shop on makito.es, which is kept as the
+  // alternate. All three answer 403 to automated clients, so no product-URL
+  // pattern is claimed - only site search works.
+  MAKITO: { tier: 1, official: 'https://makito.eu', alt: 'https://makito.es' },
 };
 
 /** Where a catalogue URL came from. `guessed` is always disclosed as such. */
@@ -54,6 +55,14 @@ export interface SupplierLinkInfo {
   /** Best catalogue URL we have; '' when none is known. */
   catalog: string;
   catalogSource: CatalogSource;
+  /**
+   * A search for this SKU on the supplier's own site.
+   *
+   * The SKU *is* the supplier's reference (M22477, R0317), so a search always
+   * leads somewhere even when no product-URL pattern is known. It is a search,
+   * not a product page, so it never claims to be `catalog`.
+   */
+  searchUrl: string;
   /** Pattern-derived candidate, kept even when a better URL wins. */
   guessed: string;
   /** True when the supplier publishes no public catalogue (ALLBEST). */
@@ -66,6 +75,23 @@ export interface SupplierLinkInput {
   catalogUrl?: string;
   /** SKU Library `Supplier Link` column (official site override). */
   supplierUrl?: string;
+}
+
+/**
+ * Site-restricted search URL for a SKU.
+ *
+ * MAKITO's shop exposes no derivable product path (eBlocks blocks unaudited
+ * clients), so the supplier reference can only be searched. Building this from
+ * the official host keeps it honest: nothing is invented about the product.
+ */
+function supplierSearchUrl(official: string, sku: string): string {
+  if (!official) return '';
+  try {
+    const host = new URL(official).hostname.replace(/^www\./, '');
+    return `https://www.google.com/search?q=${encodeURIComponent(`site:${host} ${sku}`)}`;
+  } catch {
+    return '';
+  }
 }
 
 /**
@@ -145,6 +171,7 @@ export function supplierLinkFor(
     alt: row.alt,
     catalog,
     catalogSource,
+    searchUrl: internalOnly ? '' : supplierSearchUrl(row.official, id),
     guessed,
     internalOnly,
     reviewFlags,

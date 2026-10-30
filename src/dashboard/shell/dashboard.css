@@ -470,6 +470,26 @@ body {
   box-shadow: inset 0 0 0 1px var(--mhx-bad);
 }
 
+/* The sections pass tone as a class (`db-badge db-ok`), not as `data-tone`, so
+   none of the rules above ever applied: the badge rendered as bare text with no
+   background. Keep both spellings working. */
+.db-badge.db-ok {
+  background: var(--mhx-ok-bg);
+  color: var(--mhx-ok);
+  box-shadow: inset 0 0 0 1px var(--mhx-ok-border);
+}
+
+.db-badge.db-warn {
+  background: var(--mhx-bad-bg);
+  color: var(--mhx-bad);
+}
+
+.db-badge.db-bad {
+  background: var(--mhx-bad-bg);
+  color: var(--mhx-bad);
+  box-shadow: inset 0 0 0 1px var(--mhx-bad-border);
+}
+
 .db-warn {
   color: var(--mhx-bad);
 }

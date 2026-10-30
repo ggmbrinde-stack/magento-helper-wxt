@@ -63,10 +63,24 @@ const CATALOG_SOURCE_LABEL: Record<SupplierLinkInfo['catalogSource'], string> = 
 const AVAILABILITY_CLASS: Record<AvailabilityCheck['verdict'], string> = {
   available: 'db-badge db-ok',
   'discontinued-candidate': 'db-badge db-bad',
-  'not-found': 'db-badge db-warn',
+  'not-found': 'db-badge db-bad',
   unresolved: 'db-badge db-warn',
   'internal-only': 'db-badge',
   'fetch-error': 'db-badge db-warn',
+};
+
+/**
+ * The verdict in the operator's words. The stored enum (`not-found`,
+ * `fetch-error`, …) is an implementation detail - the badge has to answer the
+ * one question: is this SKU still on the supplier's site?
+ */
+const AVAILABILITY_LABEL: Record<AvailabilityCheck['verdict'], string> = {
+  available: 'Available on supplier site',
+  'discontinued-candidate': 'Possibly discontinued',
+  'not-found': 'Not on supplier site',
+  unresolved: 'Availability unresolved',
+  'internal-only': 'Internal supplier',
+  'fetch-error': 'Supplier check failed',
 };
 
 function SupplierCard({
@@ -88,10 +102,21 @@ function SupplierCard({
           {supplier.supplier} · tier {supplier.tier}
         </span>
         {availability ? (
-          <span class={AVAILABILITY_CLASS[availability.verdict]}>
-            {availability.verdict}
+          <span
+            class={AVAILABILITY_CLASS[availability.verdict]}
+            title={
+              availability.url
+                ? `${availability.verdict} — ${availability.url}`
+                : availability.verdict
+            }
+          >
+            {AVAILABILITY_LABEL[availability.verdict]}
           </span>
-        ) : null}
+        ) : (
+          <span class="db-badge" title="no supplier check has run for this SKU yet">
+            Not checked yet
+          </span>
+        )}
         <div class="db-actions">
           <button type="button" class="db-btn" disabled={busy} onClick={onCheck}>
             {busy ? 'Checking…' : availability ? 'Re-check' : 'Check availability'}
@@ -105,8 +130,14 @@ function SupplierCard({
         </li>
         <li>
           <span>Catalogue product</span>
-          <b>{supplier.catalog || '—'}</b>
+          <b>{supplier.catalog || 'not derivable from the SKU'}</b>
         </li>
+        {!supplier.catalog && supplier.searchUrl ? (
+          <li>
+            <span>Find by SKU</span>
+            <b>search the supplier site for {supplier.sku}</b>
+          </li>
+        ) : null}
         <li>
           <span>Catalogue source</span>
           <b class={supplier.catalogSource === 'guessed' ? 'bad' : undefined}>
@@ -124,6 +155,9 @@ function SupplierCard({
         <LinkRow label="Official" url={supplier.official} />
         <LinkRow label="Alternate" url={supplier.alt} />
         <LinkRow label="Catalogue" url={supplier.catalog} />
+        {!supplier.catalog ? (
+          <LinkRow label="Search supplier site" url={supplier.searchUrl} />
+        ) : null}
         {availability?.url && !urlsEqual(availability.url, supplier.catalog) ? (
           <LinkRow label="Checked page" url={availability.url} />
         ) : null}
@@ -299,7 +333,11 @@ function ResolverResult({
   // A partial (admin-only) payload has no attributes or index: rendering the
   // matrix would invent an empty one (F7).
   const v = r.partial ? null : buildVariantSummary(r, targets);
-  const m = r.partial ? null : buildMagentoTable(r, adminBase);
+  // Built even for a partial payload: a simple product's only Magento link is
+  // the table's single row, and even an empty matrix still needs the parent's
+  // store-view links. Its anomalies describe missing storefront data, which a
+  // partial payload is expected not to have, so they are suppressed below.
+  const m = buildMagentoTable(r, adminBase);
   const childSku = new Map(
     (r.children_detail ?? []).map((child) => [child.id, child.sku] as const),
   );
@@ -319,14 +357,29 @@ function ResolverResult({
           <h2>
             Resolver <span class="db-mono">{r.sku}</span>
           </h2>
-          {source ? <span class="db-badge">{source}</span> : null}
+          {/* "admin" next to "admin only" said the same thing twice. */}
+          {source && !(r.partial && source === 'admin') ? (
+            <span class="db-badge">{source}</span>
+          ) : null}
           {r.partial ? <span class="db-badge db-warn">admin only</span> : null}
-          <span class={r.verified ? 'db-badge db-ok' : 'db-badge db-warn'}>
-            {r.verified ? 'verified' : `${r.anomalies.length} anomalies`}
-          </span>
-          <span class={stale ? 'db-badge db-warn' : 'db-badge'}>
-            {formatAge(ageDays)} old
-          </span>
+          {r.verified ? (
+            <span class="db-badge db-ok">verified</span>
+          ) : r.anomalies.length > 0 ? (
+            <span class="db-badge db-warn">
+              {r.anomalies.length} anomaly{r.anomalies.length === 1 ? '' : 's'}
+            </span>
+          ) : null}
+          {/* An admin-only payload is never cached, so "— old" was describing
+              an age that does not exist. */}
+          {ageDays !== null && ageDays !== undefined ? (
+            <span class={stale ? 'db-badge db-warn' : 'db-badge'}>
+              {formatAge(ageDays)} old
+            </span>
+          ) : (
+            <span class="db-badge" title="a partial payload is never cached">
+              live
+            </span>
+          )}
         </div>
         <ul class="db-kv">
           <li>
@@ -352,10 +405,10 @@ function ResolverResult({
             </b>
           </li>
           <li>
-            <span>Children / optionPrices</span>
-            <b>
-              {r.child_count} / {r.option_prices_count}
-            </b>
+            {/* optionPrices only exists on a storefront payload; showing
+                "1 / 0" read as a failure rather than "not available here". */}
+            <span>{r.partial ? 'Children (admin)' : 'Children / optionPrices'}</span>
+            <b>{r.partial ? r.child_count : `${r.child_count} / ${r.option_prices_count}`}</b>
           </li>
           <li>
             <span>Source</span>
@@ -540,6 +593,7 @@ function ResolverResult({
         <section class="db-card db-wide">
           <div class="db-card-head">
             <h2>Magento links</h2>
+            <span class="db-badge db-mono">parent {r.sku}</span>
             <span class="db-count">{m.urlCount} child URLs</span>
           </div>
           <div class="db-scopes">
@@ -553,7 +607,7 @@ function ResolverResult({
             <thead>
               <tr>
                 <th>Child ID</th>
-                <th>SKU</th>
+                <th>Child SKU</th>
                 <th>Colour</th>
                 <th>Size</th>
                 <th>Admin</th>
@@ -577,7 +631,7 @@ function ResolverResult({
               )}
             </tbody>
           </table>
-          {m.anomalies.length > 0 ? (
+          {!r.partial && m.anomalies.length > 0 ? (
             <ul class="db-flags db-flags--warn">
               {m.anomalies.map((a) => (
                 <li key={a}>{a}</li>
@@ -597,37 +651,38 @@ function AdminFallbackResult({
   fallback: ResolveAdminFallback;
   sku: string;
 }) {
+  // The grid has no colour/size columns, so when children came from it the two
+  // columns were a wall of "-". Show them only when they carry something.
+  const hasLabels = fallback.children.some(
+    (child) => child.color || child.size,
+  );
   return (
     <section class="db-card db-wide">
       <div class="db-card-head">
         <h2>
-          Magento admin result <span class="db-mono">{sku}</span>
+          Children <span class="db-mono">{sku}</span>
         </h2>
-        <span class="db-badge db-warn">storefront resolver unavailable</span>
+        <span class="db-count">{fallback.children.length}</span>
+        {fallback.status ? (
+          <span class={fallback.status === 'Disabled' ? 'db-badge db-bad' : 'db-badge db-ok'}>
+            {fallback.status}
+          </span>
+        ) : null}
       </div>
-      <ul class="db-kv">
-        <li>
-          <span>Product ID</span>
-          <b class="db-mono">{fallback.productId}</b>
-        </li>
-        <li>
-          <span>Magento status</span>
-          <b class={fallback.status === 'Disabled' ? 'bad' : fallback.status ? 'ok' : undefined}>
-            {fallback.status || 'not reported by the grid'}
-          </b>
-        </li>
-      </ul>
-      <ul class="db-links db-links--flush">
-        <LinkRow label="Backend" url={fallback.backend} />
-      </ul>
+      {!hasLabels && fallback.children.length > 0 ? (
+        <p class="db-empty">
+          Read from the product grid, which carries no colour/size columns. Open
+          the parent product edit page to get labels.
+        </p>
+      ) : null}
       {fallback.children.length ? (
         <table class="db-table">
           <thead>
             <tr>
               <th>Child ID</th>
-              <th>SKU</th>
-              <th>Colour</th>
-              <th>Size</th>
+              <th>Child SKU</th>
+              {hasLabels ? <th>Colour</th> : null}
+              {hasLabels ? <th>Size</th> : null}
               <th>Status</th>
               <th>Admin</th>
             </tr>
@@ -637,8 +692,8 @@ function AdminFallbackResult({
               <tr key={child.id}>
                 <td class="db-mono">{child.id}</td>
                 <td class="db-mono">{child.sku || '-'}</td>
-                <td>{child.color || '-'}</td>
-                <td>{child.size || '-'}</td>
+                {hasLabels ? <td>{child.color || '-'}</td> : null}
+                {hasLabels ? <td>{child.size || '-'}</td> : null}
                 <td>
                   {child.enabled === undefined
                     ? '-'
@@ -765,6 +820,12 @@ export function Resolver() {
               .join(' '),
           );
         }
+        // Checking availability is part of resolving, not a second chore: run it
+        // when no verdict is stored yet. A stored one is shown as-is and the
+        // Re-check button is what overrides it.
+        if (!response.availability && response.resolver?.sku) {
+          void checkSupplier(response.resolver.sku, false);
+        }
       } else {
         setError(response?.error ?? 'Resolve failed.');
       }
@@ -775,15 +836,18 @@ export function Resolver() {
     }
   };
 
-  const checkSupplier = async (): Promise<void> => {
-    const target = result?.resolver?.sku ?? sku.trim();
+  const checkSupplier = async (
+    targetSku: string,
+    force: boolean,
+  ): Promise<void> => {
+    const target = targetSku || result?.resolver?.sku || sku.trim();
     if (!target) return;
     setSupplierBusy(true);
     try {
       const response = (await browser.runtime.sendMessage({
         type: 'CHECK_SUPPLIER',
         sku: target,
-        force: true,
+        force,
       })) as CheckSupplierResponse;
       if (response?.ok && response.check) {
         setAvailability(response.check);
@@ -864,10 +928,12 @@ export function Resolver() {
           supplier={result.supplier}
           availability={availability}
           supplierBusy={supplierBusy}
-          onCheckSupplier={() => void checkSupplier()}
+          onCheckSupplier={() =>
+            void checkSupplier(result?.resolver?.sku ?? sku.trim(), true)
+          }
         />
       ) : null}
-      {result?.adminFallback ? (
+      {result?.adminFallback && result.adminFallback.children.length > 0 ? (
         <AdminFallbackResult fallback={result.adminFallback} sku={sku.trim()} />
       ) : null}
       {result && !result.resolver && !result.adminFallback && result.notion ? (

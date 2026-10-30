@@ -117,7 +117,8 @@ export function buildMagentoTable(
     if (sid) {
       const row: MagentoRow = {
         child: sid,
-        sku: '',
+        // A simple product's own SKU is the row's SKU; nothing is derived.
+        sku: r.sku ?? '',
         color: '(simple)',
         size: '-',
         url: adminEditUrl(adminBase, sid),

@@ -141,7 +141,9 @@ export function buildDossierMarkdown(input: DossierInput): string {
   // --- Child links grouped by colour -------------------------------------
   const rows: MagentoRow[] = magento.rows ?? [];
   if (rows.length > 0) {
-    out.push('## Child links (All scope; append /store/2|4|5 for EN|ES/FR)');
+    out.push(
+      `## Child links (parent SKU ${sku}; All scope; append /store/2|4|5 for EN|ES/FR)`,
+    );
     out.push('');
     const groups: Record<string, MagentoRow[]> = {};
     const order: string[] = [];
@@ -159,8 +161,10 @@ export function buildDossierMarkdown(input: DossierInput): string {
       out.push(`### ${key} (${g.length})`);
       // The child SKU is what a human quotes in a ticket or a supplier mail; the
       // matrix's numeric id alone is unsearchable in the admin. Column order
-      // matches the existing SKU Library page tables (SKU first).
-      out.push('| SKU | Child ID | Size | Admin URL |');
+      // matches the existing SKU Library page tables (SKU first). The column is
+      // named "Child SKU" on purpose: the parent's SKU (row title, and the
+      // heading above) is a different value and must not be mistaken for it.
+      out.push('| Child SKU | Child ID | Size | Admin URL |');
       out.push('|---|---|---|---|');
       let shown = 0;
       for (const r of g) {

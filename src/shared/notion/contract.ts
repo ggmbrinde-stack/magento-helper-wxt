@@ -3,9 +3,9 @@
 // The extension must never invent a select value. These arrays mirror the live
 // Listing Errors and SKU Library databases. Keep them in sync deliberately:
 //  - Listing Errors and SKU Library use the same Category/Subcategory taxonomy.
-//  - ALLBEST is stored as "ALLBEST (interno)" in the Listing Errors DB, but as
-//    plain "ALLBEST" in the SKU Library. canonicalSupplier() targets Listing
-//    Errors; canonicalSkuLibrarySupplier() targets the SKU Library.
+//  - ALLBEST is stored as "ALLBEST" in both the Listing Errors DB and the SKU
+//    Library. canonicalSupplier() targets Listing Errors;
+//    canonicalSkuLibrarySupplier() targets the SKU Library.
 
 export const CATEGORY_OPTIONS = [
   'Promotional Textile',
@@ -114,7 +114,7 @@ export const LISTING_ERROR_SUPPLIER_OPTIONS = [
   'STAMINA',
   'MIDOCEAN',
   "SOL'S",
-  'ALLBEST (interno)',
+  'ALLBEST',
   'PAUL STRICKER',
   'TEJOBRINDE',
   'PF CONCEPT',
@@ -130,8 +130,7 @@ export const LISTING_ERROR_SUPPLIER_OPTIONS = [
 
 /**
  * Supplier options in the SKU Library database.
- * Note: ALLBEST is plain here (no "(interno)") — that suffix is only in
- * Listing Errors. "Other - Unknown" uses a dash because Notion rejects slashes
+ * Note: "Other - Unknown" uses a dash because Notion rejects slashes
  * in select option names during schema import.
  */
 export const SKU_LIBRARY_SUPPLIER_OPTIONS = [
@@ -159,15 +158,10 @@ export const LIBRARY_STATUS_OPTIONS = [
  * Normalise a supplier name to the canonical option used by the Listing Errors
  * database. Unknown values are returned trimmed so the writer's validation can
  * report them instead of silently inventing an option.
- *
- * The Listing Errors DB uses "ALLBEST (interno)"; for the SKU Library use
- * canonicalSkuLibrarySupplier() instead.
  */
 export function canonicalSupplier(value: string): string {
   const trimmed = (value ?? '').trim();
   if (!trimmed) return '';
-  // ALLBEST maps to the Listing Errors form.
-  if (trimmed.toLowerCase() === 'allbest') return 'ALLBEST (interno)';
   const direct = LISTING_ERROR_SUPPLIER_OPTIONS.find(
     (option) => option.toLowerCase() === trimmed.toLowerCase(),
   );
