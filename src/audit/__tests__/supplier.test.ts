@@ -62,6 +62,7 @@ test('supplierFor: known prefixes', () => {
   assert.equal(supplierFor('AB1234'), 'ALLBEST');
   assert.equal(supplierFor('M22477'), 'MAKITO');
   assert.equal(supplierFor('MK22477'), 'MAKITO');
+  assert.equal(supplierFor('M4624'), 'MAKITO');
   assert.equal(supplierFor('R0317C'), 'ROLY');
 });
 

@@ -319,6 +319,10 @@ export function supplierFor(
   sku: string,
 ): 'TOPTEX' | 'ALLBEST' | 'ROLY' | 'MAKITO' {
   const s = sku.trim().toUpperCase();
+  // Evidence-backed exception: M4624 is a Makito product (confirmed catalogue
+  // link supplied by the operator), even though it does not carry the 5-digit
+  // Makito reference shape.
+  if (s === 'M4624') return 'MAKITO';
   if (/^TT/.test(s)) return 'TOPTEX';
   if (/^AB/.test(s)) return 'ALLBEST';
   if (/^M(?:K)?\d{5}$/.test(s)) return 'MAKITO';
