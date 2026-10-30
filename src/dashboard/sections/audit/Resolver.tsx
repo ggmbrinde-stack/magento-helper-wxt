@@ -18,6 +18,7 @@ import { supplierFor } from '../../../shared/resolver';
 import { buildVariantSummary } from '../../../audit';
 import { buildMagentoTable } from '../../../shared/magento';
 import { categoryCode } from '../../../page/features/category-tree/categoryIndex';
+import { useWorkspace } from '../../shell/workspace';
 
 function LinkRow({ label, url }: { label: string; url: string }) {
   if (!url) return null;
@@ -808,9 +809,25 @@ function NotionOnlyResult({
   );
 }
 
-export function Resolver() {
-  const [sku, setSku] = useState('');
-  const [url, setUrl] = useState('');
+export function Resolver({
+  onOpen,
+}: {
+  /** Jump to a stage that already reads the shared workspace SKU. */
+  onOpen?: (section: string) => void;
+} = {}) {
+  // The SKU is the subject of the whole dashboard, so it lives in the shared
+  // workspace: resolve once, then Image/Text audit already have it.
+  const [ws, setWs] = useWorkspace();
+  const [sku, setSkuState] = useState(ws.sku);
+  const [url, setUrlState] = useState(ws.url);
+  const setSku = (value: string): void => {
+    setSkuState(value);
+    setWs({ sku: value });
+  };
+  const setUrl = (value: string): void => {
+    setUrlState(value);
+    setWs({ url: value });
+  };
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResolveSkuResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -856,6 +873,14 @@ export function Resolver() {
         setResult(response);
         setAvailability(response.availability ?? null);
         setWarning(response.warning ?? null);
+        // The workspace holds the subject of the whole dashboard, so the SKU a
+        // resolve actually proved (not the string typed) is what the next stage
+        // should read. The frontend URL is carried too: it skips catalogsearch.
+        const resolved = response.resolver;
+        const canonical = resolved?.sku || trimmed;
+        setSkuState(canonical);
+        setUrlState(resolved?.frontend_url || url);
+        setWs({ sku: canonical, url: resolved?.frontend_url || url });
         if (response.resolutionError) {
           setWarning(
             [response.warning, `Storefront resolver failed: ${response.resolutionError}`]
@@ -951,6 +976,28 @@ export function Resolver() {
           >
             Refresh
           </button>
+          {/* The stages read the same workspace SKU, so there is no copy-paste
+              between resolving and auditing. */}
+          {onOpen && result?.resolver ? (
+            <>
+              <button
+                type="button"
+                class="db-btn"
+                title="Image audit for this SKU"
+                onClick={() => onOpen('images')}
+              >
+                Open image audit
+              </button>
+              <button
+                type="button"
+                class="db-btn"
+                title="Text audit for this SKU"
+                onClick={() => onOpen('text')}
+              >
+                Open text audit
+              </button>
+            </>
+          ) : null}
         </div>
       </section>
 

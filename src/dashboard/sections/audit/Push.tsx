@@ -3,6 +3,7 @@ import { useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
 import type { PushListingErrorsResponse } from '../../../core/messages';
 import type { ListingErrorPayload } from '../../../audit';
+import { useWorkspace } from '../../shell/workspace';
 
 function PayloadTable({ payloads }: { payloads: ListingErrorPayload[] }) {
   if (payloads.length === 0) {
@@ -94,7 +95,11 @@ function PushReportView({ report }: { report: NonNullable<PushListingErrorsRespo
 }
 
 export function Push() {
-  const [sku, setSku] = useState('');
+  // Same subject as every other stage: the SKU resolved on the workspace is the
+  // SKU whose dossier is being pushed.
+  const [ws, setWs] = useWorkspace();
+  const sku = ws.sku;
+  const setSku = (value: string): void => setWs({ sku: value });
   const [content, setContent] = useState('');
   const [fetchBreadcrumbs, setFetchBreadcrumbs] = useState(true);
   const [confirm, setConfirm] = useState(false);

@@ -3,8 +3,9 @@ import { useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
 import type { AuditTextResponse } from '../../../core/messages';
 import type { TextAuditResult } from '../../../audit';
-
-const ALL_LANGS = ['EN', 'ES', 'FR'];
+import { StageHost } from '../../shell/StageHost';
+import type { Stage } from '../../shell/stage';
+import { ALL_LANGS, useWorkspace } from '../../shell/workspace';
 
 function Summary({ audit }: { audit: TextAuditResult }) {
   const specs = audit.matrix?.specs.length ?? 0;
@@ -71,48 +72,134 @@ function Matrix({ audit }: { audit: TextAuditResult }) {
   );
 }
 
+function TextResult({
+  result,
+  copied,
+  onCopy,
+}: {
+  result: AuditTextResponse;
+  copied: boolean;
+  onCopy: () => void;
+}) {
+  const audit = result.audit;
+  if (!audit) return null;
+  const dirty =
+    audit.findings.length > 0 || audit.review_flags.length > 0 || !audit.ok;
+  return (
+    <>
+      <section class="db-card db-wide">
+        <div class="db-card-head">
+          <h2>
+            Checks <span class="db-mono">{audit.sku}</span>
+          </h2>
+          <span class={dirty ? 'db-badge db-warn' : 'db-badge db-ok'}>
+            {audit.findings.length} findings · {audit.review_flags.length} flags
+          </span>
+        </div>
+        <Summary audit={audit} />
+        {audit.verdict === 'blocked' ? (
+          <p class="db-empty">Blocked — no EN baseline was extracted.</p>
+        ) : null}
+      </section>
+
+      <section class="db-card db-wide">
+        <div class="db-card-head">
+          <h2>Findings</h2>
+          <span class="db-count">{audit.findings.length}</span>
+        </div>
+        {audit.findings.length === 0 ? (
+          <p class="db-empty">No mechanical findings.</p>
+        ) : (
+          <table class="db-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Finding</th>
+                <th>Notes</th>
+                <th>Priority hint</th>
+              </tr>
+            </thead>
+            <tbody>
+              {audit.findings.map((f, i) => (
+                <tr key={`${f.field}|${f.finding}|${i}`}>
+                  <td>{f.field}</td>
+                  <td>{f.finding}</td>
+                  <td class="db-notes">{f.notes}</td>
+                  <td>{f.priority_hint || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      {audit.review_flags.length > 0 ? (
+        <section class="db-card db-wide">
+          <div class="db-card-head">
+            <h2>Review flags</h2>
+            <span class="db-count">{audit.review_flags.length}</span>
+          </div>
+          <ul class="db-flags db-flags--warn">
+            {audit.review_flags.map((flag, i) => (
+              <li key={`${flag}|${i}`}>{flag}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {result.mdBlock ? (
+        <section class="db-card db-wide">
+          <div class="db-card-head">
+            <h2>Dossier block</h2>
+            <button type="button" class="db-btn" onClick={onCopy}>
+              {copied ? 'Copied' : 'Copy block'}
+            </button>
+          </div>
+          <textarea class="db-textarea" rows={6} readOnly value={result.mdBlock} />
+          <p class="db-empty">
+            Paste into Push errors (SKU + dossier markdown) to build Listing Errors payloads.
+          </p>
+        </section>
+      ) : null}
+
+      {result.anomalies && result.anomalies.length > 0 ? (
+        <section class="db-card db-wide">
+          <div class="db-card-head">
+            <h2>Fetch anomalies</h2>
+            <span class="db-count">{result.anomalies.length}</span>
+          </div>
+          <ul class="db-flags db-flags--warn">
+            {result.anomalies.map((a) => (
+              <li key={a}>{a}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <Matrix audit={audit} />
+    </>
+  );
+}
+
 export function TextAudit() {
-  const [sku, setSku] = useState('');
-  const [url, setUrl] = useState('');
-  const [langs, setLangs] = useState<string[]>([...ALL_LANGS]);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<AuditTextResponse | null>(null);
+  const [ws, setWs] = useWorkspace();
   const [copied, setCopied] = useState(false);
 
   const toggleLang = (lang: string): void => {
+    // EN is the baseline every other language is compared against, so it is not
+    // a choice.
     if (lang === 'EN') return;
-    setLangs((current) =>
-      current.includes(lang)
-        ? current.filter((l) => l !== lang)
-        : [...current, lang].sort(),
-    );
+    setWs({
+      langs: ws.langs.includes(lang)
+        ? ws.langs.filter((l) => l !== lang)
+        : [...ws.langs, lang].sort(),
+    });
   };
 
-  const run = async (): Promise<void> => {
-    const trimmed = sku.trim();
-    if (!trimmed) return;
-    setLoading(true);
-    setResult(null);
-    setCopied(false);
+  const copyBlock = async (block?: string): Promise<void> => {
+    if (!block) return;
     try {
-      const response = (await browser.runtime.sendMessage({
-        type: 'AUDIT_TEXT',
-        sku: trimmed,
-        url: url.trim() || undefined,
-        langs,
-      })) as AuditTextResponse;
-      setResult(response ?? { ok: false, error: 'No response.' });
-    } catch (err) {
-      setResult({ ok: false, error: (err as Error).message });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const copyBlock = async (): Promise<void> => {
-    if (!result?.mdBlock) return;
-    try {
-      await navigator.clipboard.writeText(result.mdBlock);
+      await navigator.clipboard.writeText(block);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     } catch {
@@ -120,33 +207,31 @@ export function TextAudit() {
     }
   };
 
-  const audit = result?.audit;
-  const dirty =
-    !!audit && (audit.findings.length > 0 || audit.review_flags.length > 0 || !audit.ok);
-
-  return (
-    <>
-      <section class="db-card db-wide">
-        <div class="db-card-head">
-          <h2>Text audit</h2>
-          <span class="db-badge">mechanical checks only</span>
-        </div>
-        <p class="db-note">
-          Reads the live EN/ES/FR PDPs (title, og:description, details, spec table and
-          JSON-LD). Produces candidates only — translation quality and the correct wording stay
-          with the auditor.
-        </p>
+  const stage: Stage<AuditTextResponse> = {
+    id: 'text',
+    title: 'Text audit',
+    badge: 'mechanical checks only',
+    hint: 'Reads the live EN/ES/FR PDPs (title, og:description, details, spec table and JSON-LD). Produces candidates only — translation quality and the correct wording stay with the auditor.',
+    blocked: !ws.sku.trim() ? 'enter a SKU to run this step' : undefined,
+    errorOf: (result) =>
+      result.ok ? undefined : (result.error ?? 'Text audit failed.'),
+    run: async () =>
+      (await browser.runtime.sendMessage({
+        type: 'AUDIT_TEXT',
+        sku: ws.sku.trim(),
+        url: ws.url.trim() || undefined,
+        langs: ws.langs,
+      })) as AuditTextResponse,
+    Controls: () => (
+      <>
         <label class="db-field">
           <span>SKU</span>
           <em>e.g. R0304, TTKP230, TTFL9293</em>
           <input
             type="text"
-            value={sku}
+            value={ws.sku}
             placeholder="Paste SKU…"
-            onInput={(e) => setSku(e.currentTarget.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') void run();
-            }}
+            onInput={(e) => setWs({ sku: e.currentTarget.value })}
           />
         </label>
         <label class="db-field">
@@ -154,9 +239,9 @@ export function TextAudit() {
           <em>Skips the catalogsearch step when the slug is known</em>
           <input
             type="text"
-            value={url}
+            value={ws.url}
             placeholder="https://bestofgifts.eu/…"
-            onInput={(e) => setUrl(e.currentTarget.value)}
+            onInput={(e) => setWs({ url: e.currentTarget.value })}
           />
         </label>
         <div class="db-checks">
@@ -164,7 +249,7 @@ export function TextAudit() {
             <label class="db-check" key={lang}>
               <input
                 type="checkbox"
-                checked={langs.includes(lang)}
+                checked={ws.langs.includes(lang)}
                 disabled={lang === 'EN'}
                 onChange={() => toggleLang(lang)}
               />
@@ -172,114 +257,16 @@ export function TextAudit() {
             </label>
           ))}
         </div>
-        <div class="db-actions">
-          <button
-            type="button"
-            class="db-btn db-btn--primary"
-            disabled={loading || !sku.trim()}
-            onClick={() => void run()}
-          >
-            {loading ? 'Auditing…' : 'Run text audit'}
-          </button>
-        </div>
-      </section>
+      </>
+    ),
+    View: ({ result }) => (
+      <TextResult
+        result={result}
+        copied={copied}
+        onCopy={() => void copyBlock(result.mdBlock)}
+      />
+    ),
+  };
 
-      {result?.error ? <div class="mhx-error">{result.error}</div> : null}
-
-      {audit ? (
-        <>
-          <section class="db-card db-wide">
-            <div class="db-card-head">
-              <h2>
-                Checks <span class="db-mono">{audit.sku}</span>
-              </h2>
-              <span class={dirty ? 'db-badge db-warn' : 'db-badge db-ok'}>
-                {audit.findings.length} findings · {audit.review_flags.length} flags
-              </span>
-            </div>
-            <Summary audit={audit} />
-            {audit.verdict === 'blocked' ? (
-              <p class="db-empty">Blocked — no EN baseline was extracted.</p>
-            ) : null}
-          </section>
-
-          <section class="db-card db-wide">
-            <div class="db-card-head">
-              <h2>Findings</h2>
-              <span class="db-count">{audit.findings.length}</span>
-            </div>
-            {audit.findings.length === 0 ? (
-              <p class="db-empty">No mechanical findings.</p>
-            ) : (
-              <table class="db-table">
-                <thead>
-                  <tr>
-                    <th>Field</th>
-                    <th>Finding</th>
-                    <th>Notes</th>
-                    <th>Priority hint</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {audit.findings.map((f, i) => (
-                    <tr key={`${f.field}|${f.finding}|${i}`}>
-                      <td>{f.field}</td>
-                      <td>{f.finding}</td>
-                      <td class="db-notes">{f.notes}</td>
-                      <td>{f.priority_hint || '—'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </section>
-
-          {audit.review_flags.length > 0 ? (
-            <section class="db-card db-wide">
-              <div class="db-card-head">
-                <h2>Review flags</h2>
-                <span class="db-count">{audit.review_flags.length}</span>
-              </div>
-              <ul class="db-flags db-flags--warn">
-                {audit.review_flags.map((flag, i) => (
-                  <li key={`${flag}|${i}`}>{flag}</li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          {result?.mdBlock ? (
-            <section class="db-card db-wide">
-              <div class="db-card-head">
-                <h2>Dossier block</h2>
-                <button type="button" class="db-btn" onClick={() => void copyBlock()}>
-                  {copied ? 'Copied' : 'Copy block'}
-                </button>
-              </div>
-              <textarea class="db-textarea" rows={6} readOnly value={result.mdBlock} />
-              <p class="db-empty">
-                Paste into Push errors (SKU + dossier markdown) to build Listing Errors payloads.
-              </p>
-            </section>
-          ) : null}
-
-          {result?.anomalies && result.anomalies.length > 0 ? (
-            <section class="db-card db-wide">
-              <div class="db-card-head">
-                <h2>Fetch anomalies</h2>
-                <span class="db-count">{result.anomalies.length}</span>
-              </div>
-              <ul class="db-flags db-flags--warn">
-                {result.anomalies.map((a) => (
-                  <li key={a}>{a}</li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          <Matrix audit={audit} />
-        </>
-      ) : null}
-    </>
-  );
+  return <StageHost stages={[stage]} />;
 }

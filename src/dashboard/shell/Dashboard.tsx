@@ -1,5 +1,5 @@
-import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { h, Fragment } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 // Sections are grouped by the lane that owns them: an audit screen and an
 // automation screen never sit in the same folder, so two agents can work on
 // them without touching one file. `ui/` is the extension's own surfaces.
@@ -33,21 +33,79 @@ interface SectionDef {
   hint: string;
 }
 
-const SECTIONS: SectionDef[] = [
-  { id: 'overview', label: 'Overview', hint: 'Status & quick links' },
-  { id: 'batch', label: 'Run audit', hint: 'Paste SKUs, run the full pipeline' },
-  { id: 'resolver', label: 'Resolve SKU', hint: 'Product data, variants & Magento links' },
-  { id: 'images', label: 'Image audit', hint: 'Duplicates, order, background' },
-  { id: 'text', label: 'Text audit', hint: 'Translation, composition, specs' },
-  { id: 'push', label: 'Push errors', hint: 'Payloads → Notion (create-only)' },
-  { id: 'notion', label: 'Notion health', hint: 'Token, databases, read-back' },
-  { id: 'bridge', label: 'Model bridge', hint: 'Local/remote vision endpoint' },
-  { id: 'settings', label: 'Settings', hint: 'Theme, token & admin config' },
-  { id: 'cache', label: 'Resolver Cache', hint: 'Cached SKUs' },
+/**
+ * Nav groups follow the work, not the file tree: the subject (a SKU), the
+ * audit steps that read it, the catalogue behind it, then the extension's own
+ * plumbing. Ten flat items hid that order.
+ */
+const NAV: { group: string; items: SectionDef[] }[] = [
+  {
+    group: 'Workspace',
+    items: [
+      { id: 'overview', label: 'Overview', hint: 'Status & quick links' },
+      { id: 'batch', label: 'Run audit', hint: 'Run the full pipeline as steps' },
+      { id: 'resolver', label: 'Resolve SKU', hint: 'Product data, variants & Magento links' },
+    ],
+  },
+  {
+    group: 'Stages',
+    items: [
+      { id: 'images', label: 'Image audit', hint: 'Duplicates, order, background' },
+      { id: 'text', label: 'Text audit', hint: 'Translation, composition, specs' },
+      { id: 'push', label: 'Push errors', hint: 'Payloads → Notion (create-only)' },
+    ],
+  },
+  {
+    group: 'Catalogue',
+    items: [
+      { id: 'notion', label: 'Notion health', hint: 'Token, databases, read-back' },
+      { id: 'cache', label: 'Resolver cache', hint: 'Cached SKUs' },
+    ],
+  },
+  {
+    group: 'Extension',
+    items: [
+      { id: 'bridge', label: 'Model bridge', hint: 'Local/remote vision endpoint' },
+      { id: 'settings', label: 'Settings', hint: 'Theme, token & admin config' },
+    ],
+  },
 ];
 
+const SECTIONS = NAV.flatMap((group) => group.items);
+
+const DEFAULT_SECTION: SectionId = 'overview';
+
+function sectionFromHash(): SectionId {
+  const raw = window.location.hash.replace(/^#\/?/, '').trim();
+  return (SECTIONS.find((s) => s.id === raw)?.id ?? DEFAULT_SECTION) as SectionId;
+}
+
+/**
+ * Hash routing, because a screen has to be addressable: reloading keeps it and
+ * "open the text audit for M22477" can be a link instead of four instructions.
+ * `history.replaceState` keeps the back button meaningful rather than filling it
+ * with one entry per tab click.
+ */
+function useHashSection(): [SectionId, (id: SectionId) => void] {
+  const [section, setSection] = useState<SectionId>(sectionFromHash);
+
+  useEffect(() => {
+    const onHash = (): void => setSection(sectionFromHash());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  const go = (id: SectionId): void => {
+    if (window.location.hash !== `#/${id}`) {
+      window.history.replaceState(null, '', `#/${id}`);
+    }
+    setSection(id);
+  };
+  return [section, go];
+}
+
 export function Dashboard() {
-  const [section, setSection] = useState<SectionId>('overview');
+  const [section, setSection] = useHashSection();
   const current = SECTIONS.find((s) => s.id === section);
 
   return (
@@ -61,16 +119,22 @@ export function Dashboard() {
           </div>
         </div>
         <nav class="db-nav">
-          {SECTIONS.map((item) => (
-            <button
-              type="button"
-              key={item.id}
-              class={section === item.id ? 'db-nav-item active' : 'db-nav-item'}
-              onClick={() => setSection(item.id)}
-            >
-              <span class="db-nav-label">{item.label}</span>
-              <span class="db-nav-hint">{item.hint}</span>
-            </button>
+          {NAV.map((group) => (
+            <div class="db-nav-group" key={group.group}>
+              <span class="db-nav-group-label">{group.group}</span>
+              {group.items.map((item) => (
+                <button
+                  type="button"
+                  key={item.id}
+                  class={section === item.id ? 'db-nav-item active' : 'db-nav-item'}
+                  aria-current={section === item.id ? 'page' : undefined}
+                  onClick={() => setSection(item.id)}
+                >
+                  <span class="db-nav-label">{item.label}</span>
+                  <span class="db-nav-hint">{item.hint}</span>
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
         <div class="db-side-foot">
@@ -86,7 +150,7 @@ export function Dashboard() {
         <div class="db-body">
           {section === 'overview' ? <Overview /> : null}
           {section === 'batch' ? <Batch /> : null}
-          {section === 'resolver' ? <Resolver /> : null}
+          {section === 'resolver' ? <Resolver onOpen={(id) => setSection(id as SectionId)} /> : null}
           {section === 'images' ? <ImageAudit /> : null}
           {section === 'text' ? <TextAudit /> : null}
           {section === 'push' ? <Push /> : null}

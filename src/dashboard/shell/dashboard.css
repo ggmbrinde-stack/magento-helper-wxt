@@ -822,3 +822,73 @@ body {
   border-radius: 8px;
   margin: 10px 0;
 }
+
+/* --- stages -------------------------------------------------------------
+   The stepper is only chrome: the same card is rendered whether one stage is
+   shown (a standalone tab) or the whole chain (Run audit). */
+.db-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.db-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid var(--db-border);
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.db-stage b {
+  font-weight: 600;
+}
+
+.db-stage small {
+  color: var(--db-muted);
+}
+
+.db-stage-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mhx-border-2);
+}
+
+.db-stage--done .db-stage-dot {
+  background: var(--mhx-ok);
+}
+
+.db-stage--running .db-stage-dot {
+  background: var(--mhx-warn-border);
+}
+
+.db-stage--failed .db-stage-dot {
+  background: var(--mhx-bad);
+}
+
+.db-stage--skipped b {
+  color: var(--db-muted);
+}
+
+/* --- nav groups ---------------------------------------------------------- */
+.db-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.db-nav-group-label {
+  padding: 4px 10px 2px;
+  color: var(--db-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
