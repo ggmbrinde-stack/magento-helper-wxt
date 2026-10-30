@@ -721,6 +721,73 @@ export interface ProductCandidate {
 }
 
 /**
+ * R9: the storefront answered with a product that is not this SKU.
+ *
+ * A disabled product has no PDP, and Magento's search replies with the nearest
+ * live siblings instead. That is not a resolver failure - it is the signal that
+ * the admin path is the only source - so it gets its own type and callers can
+ * report it as a fact rather than an error.
+ */
+export class SkuMismatchError extends Error {
+  readonly expected: string;
+  readonly actual: string;
+  readonly url: string;
+  readonly candidates: string[];
+
+  constructor(args: {
+    expected: string;
+    actual?: string;
+    url: string;
+    candidates?: string[];
+    source?: string;
+  }) {
+    const candidates = args.candidates ?? [];
+    const listed = candidates.slice(0, 6).join(', ');
+    super(
+      args.actual
+        ? `SKU mismatch: ${args.url} states SKU "${args.actual}"${
+            args.source ? ` (${args.source})` : ''
+          }, expected ${args.expected}`
+        : `${args.expected} has no storefront page - the search returned ${
+            listed || 'no product'
+          }${candidates.length > 6 ? ` (+${candidates.length - 6} more)` : ''} instead`,
+    );
+    this.name = 'SkuMismatchError';
+    this.expected = args.expected;
+    this.actual = args.actual ?? '';
+    this.url = args.url;
+    this.candidates = candidates;
+  }
+}
+
+export interface SearchCard {
+  sku: string;
+  url: AbsoluteEuUrl;
+}
+
+/**
+ * (SKU, product URL) pairs from a catalogsearch results page.
+ *
+ * Every card prints its own SKU beside its product link, so "does this SKU have
+ * a storefront page at all?" can be answered from the search response alone -
+ * no PDP fetch, no misleading mismatch two requests later.
+ */
+export function searchCards(html: string, base: string = STORE_BASE): SearchCard[] {
+  const out: SearchCard[] = [];
+  const seen = new Set<string>();
+  const re =
+    /<span[^>]*class="[^"]*product-sku[^"]*"[^>]*>([^<]*)<\/span>[\s\S]{0,800}?<a[^>]*product-item-link[^>]*href="([^"]+)"/g;
+  for (const m of html.matchAll(re)) {
+    const sku = (m[1] ?? '').trim();
+    const abs = toAbsoluteEuUrl(m[2] ?? '', base);
+    if (!sku || !abs || seen.has(sku.toUpperCase())) continue;
+    seen.add(sku.toUpperCase());
+    out.push({ sku, url: abs });
+  }
+  return out;
+}
+
+/**
  * Pick the product link from a search page. Priority: product card containing
  * the SKU token > first product card > any single-segment link with the token
  * > a sole candidate.
@@ -1157,6 +1224,28 @@ export async function resolveSkuWithHtml(
       }
     }
     if (!resolvedUrl) {
+      // R9: an exact SKU on a result card is authoritative - it is the card the
+      // storefront indexed for this product, whatever its slug looks like.
+      const cards = searchCards(searchHtml, base);
+      const exact = cards.find(
+        (card) => card.sku.toUpperCase() === sku,
+      );
+      if (exact) {
+        resolvedUrl = exact.url.url;
+        slug = exact.url.path;
+        source = 'search-card-sku';
+      } else if (cards.length > 0 && cards.every((card) => card.sku)) {
+        // Every card named its SKU and none of them is ours: the product is not
+        // published on the storefront (disabled). Stop here instead of fetching
+        // a neighbour's PDP and reporting a mismatch two requests later.
+        throw new SkuMismatchError({
+          expected: sku,
+          url: searchUrl,
+          candidates: cards.map((card) => card.sku),
+        });
+      }
+    }
+    if (!resolvedUrl) {
       const sel = selectProductCandidate(searchHtml, sku, base);
       if (!sel.pick) {
         const hint = [...sel.cards, ...sel.all]
@@ -1190,11 +1279,14 @@ export async function resolveSkuWithHtml(
   const cfg = readJsonConfig(enHtml);
   const pageSku = readPageSku(enHtml, cfg);
   if (!skuMatchesPage(enHtml, sku, pageSku)) {
-    throw new Error(
-      pageSku
-        ? `SKU mismatch: ${resolvedUrl} states SKU "${pageSku.sku}" (${pageSku.source}), expected ${sku}`
-        : `SKU ${sku} not present on ${resolvedUrl} - wrong slug?`,
-    );
+    throw pageSku
+      ? new SkuMismatchError({
+          expected: sku,
+          actual: pageSku.sku,
+          url: resolvedUrl,
+          source: pageSku.source,
+        })
+      : new Error(`SKU ${sku} not present on ${resolvedUrl} - wrong slug?`);
   }
 
   const hreflang = getHreflangMap(enHtml);

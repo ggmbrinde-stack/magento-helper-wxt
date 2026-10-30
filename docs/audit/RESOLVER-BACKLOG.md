@@ -13,7 +13,8 @@ and availability verdict.
 **Disabled SKU (no storefront page)** — works, but partial by nature. Parent id
 is found via the grid, status is read from the grid row or the edit page's
 `#status`, children come from the `Parent SKU` column (status-blind, so disabled
-children are included). The payload is `partial: true`, `verified: false`, and is
+children are included), and their colour/size labels are merged in from the
+parent's edit page. The payload is `partial: true`, `verified: false`, and is
 never cached. Variants, images and text cannot be audited because there is no
 storefront payload to audit.
 
@@ -34,15 +35,6 @@ storefront payload to audit.
 ## Open items
 
 Ordered by value per hour. Each names the file that owns the fix.
-
-### R1 — Colour/size labels for disabled SKUs
-
-The `parent_sku` query returns no colour/size columns, so a disabled SKU's child
-table shows SKUs and status only, and no variant matrix can be built.
-
-Fix: after a successful `parent_sku` read, open the parent's edit page (the
-machinery exists, `readMatrixTab`) and merge labels onto the rows by child id.
-`src/audit/skuResolution.ts`, `src/page/features/grid-search/index.ts`.
 
 ### R2 — Supplier catalogue URLs per SKU
 
@@ -96,13 +88,33 @@ Each resolve that needs admin data opens a background tab and closes it, and a
 configurable that needs labels pays a second page load. Reusing one long-lived
 tab for the session would remove both. `src/audit/skuResolution.ts`.
 
-### R9 — Storefront search wasted on disabled SKUs
+## Resolved
 
-For a disabled SKU the catalogsearch step returns a *neighbouring* product and
-the SKU guard correctly rejects it (e.g. `M22477` → `bone-carbum-m22417`). That
-costs a fetch and an error message before the admin path runs. Detecting "search
-returned a different SKU" should short-circuit straight to the admin path.
-`src/shared/resolver.ts`.
+### R1 — Colour/size labels for disabled SKUs (done 2026-10-30)
+
+The `parent_sku` query returns no colour/size columns. The admin-only path now
+reads the parent's edit page once (`readMatrixTab`, own background tab) and merges
+colour/size/status onto the grid rows by child id, so a disabled SKU finally has a
+variant matrix. Enabled resolves are untouched: they already hold storefront
+labels and do not pay the extra page load.
+`src/audit/skuResolution.ts`.
+
+### R7 — Status cache staleness (done 2026-10-30)
+
+`magento_status.checked_at` is now printed beside the badge ("Enabled · as of
+30/10 11:42"), so a verdict restored from a 14-day-old cache cannot read as
+current. `src/dashboard/sections/audit/Resolver.tsx`.
+
+### R9 — Storefront search wasted on disabled SKUs (done 2026-10-30)
+
+The catalogsearch result page prints each card's SKU. `searchCards()` reads those
+pairs, so a request whose SKU is absent from every card throws `SkuMismatchError`
+**before** any PDP fetch (one request, ~180 ms instead of two plus a mismatch).
+An exact card SKU is now authoritative even when the slug does not contain it
+(`R0317C` → `carla-r0317-c`). When the admin path then answers, the mismatch is
+reported as a notice ("M22477 has no storefront page - the search returned …")
+instead of a red resolver error. `src/shared/resolver.ts`,
+`src/audit/skuResolution.ts`.
 
 ## Fixed recently (context, do not re-report)
 
@@ -117,3 +129,5 @@ returned a different SKU" should short-circuit straight to the admin path.
   `db-ok` / `db-warn` / `db-bad` classes.
 - Availability required a manual click; it now runs after a resolve when no
   verdict is stored.
+- Child labels for disabled SKUs (R1), status read date (R7) and the wasted
+  storefront PDP fetch (R9) — see **Resolved** above.

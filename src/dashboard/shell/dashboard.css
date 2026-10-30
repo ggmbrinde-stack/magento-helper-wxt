@@ -264,6 +264,20 @@ body {
   color: var(--mhx-bad);
 }
 
+/* A value plus its provenance (e.g. "Enabled · as of 30/10 11:42"), kept
+   together on the right so the timestamp does not drift to the far edge. */
+.db-kv-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.db-kv-value small {
+  color: var(--db-muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
 .db-links {
   display: flex;
   flex-direction: column;
@@ -532,6 +546,37 @@ body {
 }
 
 .db-flags--warn {
+  color: var(--mhx-bad);
+}
+
+/* A warning is not an error: amber, dismissible, and it never replaces the
+   result card it sits above. */
+.db-warning {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--mhx-warn-border);
+  background: var(--mhx-warn-bg);
+  color: var(--mhx-ink-2);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.db-warning-x {
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--mhx-muted-2);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.db-warning-x:hover {
   color: var(--mhx-bad);
 }
 

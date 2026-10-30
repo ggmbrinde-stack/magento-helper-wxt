@@ -16,6 +16,7 @@ import {
   PRODUCT_TYPES,
   RESOLVER_SCHEMA,
   RESOLVER_TTL_DAYS,
+  SkuMismatchError,
   isResolverJson,
   normalizeUrl,
   resolveSkuWithHtml,
@@ -709,6 +710,9 @@ export async function resolveSkuForDashboard(
   let enHtml: string | null = null;
   let source: ResolveSkuResponse['source'];
   let resolverFailure: string | undefined;
+  // R9: kept apart from `resolverFailure` so the admin path can report it as a
+  // fact ("no storefront page") instead of an error when it answers.
+  let storefrontMismatch: SkuMismatchError | undefined;
   let fresh = false;
 
   if (!url && !force) {
@@ -734,6 +738,7 @@ export async function resolveSkuForDashboard(
       fresh = true;
     } catch (err) {
       resolverFailure = errorMessage(err);
+      if (err instanceof SkuMismatchError) storefrontMismatch = err;
     }
   }
 
@@ -813,6 +818,54 @@ export async function resolveSkuForDashboard(
         'no parent id is known for this SKU yet - resolve it once with the storefront reachable, or store its Backend URL in the SKU Library';
     }
   }
+  // R1: children read by `Parent SKU` carry no colour/size labels, so a disabled
+  // SKU had SKUs and statuses but no variant matrix. The parent's edit page has
+  // the labels and needs no secret key, so read it once and merge by child id.
+  // Admin-only path only: an enabled resolve already holds storefront labels and
+  // must not pay an extra page load for them.
+  const unlabelledAdmin =
+    adminChildren.length > 0 &&
+    adminChildren.every((child) => !child.color && !child.size);
+  if (!resolver && unlabelledAdmin) {
+    const labelParentId =
+      (admin.ok ? (admin.fallback.productId ?? '') : '') ||
+      retryParentId ||
+      parentEntityId;
+    const labelType = admin.ok ? (admin.fallback.productType ?? '') : '';
+    if (labelParentId && labelType !== 'simple') {
+      const matrix = await readMatrixTab(
+        adminBase,
+        labelParentId,
+        { type: 'SEARCH_MAGENTO', sku, parentId: labelParentId, expand: true },
+        0,
+      );
+      const byId = new Map(
+        (matrix?.children ?? []).map((child) => [child.id, child] as const),
+      );
+      if (byId.size > 0) {
+        let merged = 0;
+        adminChildren = adminChildren.map((child) => {
+          const match = byId.get(child.id);
+          if (!match) return child;
+          merged += 1;
+          return {
+            ...child,
+            sku: child.sku || match.sku,
+            color: match.color || child.color,
+            size: match.size || child.size,
+            enabled: match.enabled ?? child.enabled,
+            backend: child.backend || match.backend,
+          };
+        });
+        if (merged > 0) {
+          childrenReason = `${
+            childrenReason || 'child rows came from the product grid'
+          }; colour/size labels merged from the parent's edit page`;
+        }
+      }
+    }
+  }
+
   // A resolved payload without child SKUs is worth flagging even when the
   // storefront failed - but only for a product type that has children at all.
   // A simple/bundle product legitimately has none, and warning about it turned
@@ -904,6 +957,17 @@ export async function resolveSkuForDashboard(
     };
     adminFallback = fallback;
     resolver = partialResolverFromAdmin(sku, fallback, supplier);
+    // R9: say why the storefront step had nothing, as a fact rather than an
+    // error - this is the normal state of a disabled product.
+    if (storefrontMismatch) {
+      resolver = {
+        ...resolver,
+        notices: [
+          ...(resolver.notices ?? []),
+          storefrontMismatch.message,
+        ],
+      };
+    }
     source = 'admin';
     warnings.push(
       'Admin fallback only: variants, images and text cannot be checked from the admin matrix.',
@@ -951,7 +1015,7 @@ export async function resolveSkuForDashboard(
   const targetsError = targets
     ? undefined
     : adminChildren.length > 0
-      ? 'the admin rows carried no colour labels - open the parent product edit page to read every child'
+      ? 'the admin rows carried no colour labels - the parent edit page could not be read'
       : admin.ok
         ? admin.fallback.childrenReason || 'admin returned no child rows'
         : admin.error;
@@ -996,7 +1060,8 @@ export async function resolveSkuForDashboard(
     duplicates,
     stale: resolver?.stale,
     ageDays: resolver?.age_days ?? null,
-    resolutionError: resolverFailure,
+    resolutionError:
+      storefrontMismatch && resolver ? undefined : resolverFailure,
     warning: warnings.filter(Boolean).join(' ') || undefined,
   };
 }

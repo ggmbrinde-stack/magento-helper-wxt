@@ -53,6 +53,17 @@ function formatAge(days: number | null | undefined): string {
   return `${Math.round(days)}d`;
 }
 
+/** R7: a cached status is a point in time, so it says when it was read. */
+function formatCheckedAt(iso: string | undefined): string {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return `as of ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  })}`;
+}
+
 const CATALOG_SOURCE_LABEL: Record<SupplierLinkInfo['catalogSource'], string> = {
   notion: 'confirmed in the SKU Library',
   map: 'confirmed in the supplier map',
@@ -341,6 +352,15 @@ function ResolverResult({
   const childSku = new Map(
     (r.children_detail ?? []).map((child) => [child.id, child.sku] as const),
   );
+  // Disabled children never appear on the storefront, so the admin status is the
+  // only place their Enabled/Disabled state is visible. Show the column when the
+  // payload actually carries it rather than a wall of "-".
+  const childStatus = new Map(
+    (r.children_detail ?? [])
+      .filter((child) => child.enabled !== undefined)
+      .map((child) => [child.id, child.enabled === false ? 'disabled' : 'enabled'] as const),
+  );
+  const showStatus = childStatus.size > 0;
   // Older cache entries carry no supplier block; the rule is deterministic, so
   // recompute it instead of showing an empty card.
   const resolvedSupplier =
@@ -389,9 +409,20 @@ function ResolverResult({
           {r.magento_status?.label ? (
             <li>
               <span>Magento status</span>
-              <b class={r.magento_status.label === 'Disabled' ? 'bad' : 'ok'}>
-                {r.magento_status.label}
-              </b>
+              <span class="db-kv-value">
+                <b class={r.magento_status.label === 'Disabled' ? 'bad' : 'ok'}>
+                  {r.magento_status.label}
+                </b>
+                {/* R7: Enabled/Disabled is point-in-time; a cached payload can be
+                    two weeks old, so the read date travels with the verdict. */}
+                {r.magento_status.checked_at ? (
+                  <small
+                    title="read from the Magento admin when this result was resolved"
+                  >
+                    {formatCheckedAt(r.magento_status.checked_at)}
+                  </small>
+                ) : null}
+              </span>
             </li>
           ) : null}
           <li>
@@ -610,6 +641,7 @@ function ResolverResult({
                 <th>Child SKU</th>
                 <th>Colour</th>
                 <th>Size</th>
+                {showStatus ? <th>Status</th> : null}
                 <th>Admin</th>
               </tr>
             </thead>
@@ -621,6 +653,17 @@ function ResolverResult({
                     <td class="db-mono">{childSku.get(row.child) || '—'}</td>
                     <td>{row.color}</td>
                     <td>{row.size}</td>
+                    {showStatus ? (
+                      <td>
+                        {childStatus.get(row.child) === 'disabled' ? (
+                          <span class="db-badge db-bad">disabled</span>
+                        ) : childStatus.get(row.child) === 'enabled' ? (
+                          <span class="db-badge db-ok">enabled</span>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                    ) : null}
                     <td>
                       <a href={row.url} target="_blank" rel="noreferrer noopener">
                         edit
@@ -671,8 +714,8 @@ function AdminFallbackResult({
       </div>
       {!hasLabels && fallback.children.length > 0 ? (
         <p class="db-empty">
-          Read from the product grid, which carries no colour/size columns. Open
-          the parent product edit page to get labels.
+          The product grid carries no colour/size columns and the parent's edit
+          page could not be read, so these children have no labels.
         </p>
       ) : null}
       {fallback.children.length ? (
@@ -911,8 +954,26 @@ export function Resolver() {
         </div>
       </section>
 
-      {error ? <div class="mhx-error">{error}</div> : null}
-      {warning ? <div class="mhx-error">{warning}</div> : null}
+      {error ? (
+        <div class="mhx-error" role="alert">
+          {error}
+        </div>
+      ) : null}
+      {/* A warning is not a failure: the resolve answered, this is a caveat
+          about what it could not check. Red text made the two indistinguishable. */}
+      {warning ? (
+        <div class="db-warning" role="status">
+          <span>{warning}</span>
+          <button
+            type="button"
+            class="db-warning-x"
+            aria-label="Dismiss warning"
+            onClick={() => setWarning(null)}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
       {result?.resolver ? (
         <ResolverResult
           r={result.resolver}
