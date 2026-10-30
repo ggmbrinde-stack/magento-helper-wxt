@@ -5,18 +5,22 @@ covers the whole extension); this file is scoped to **Resolve SKU**.
 
 ## Where the resolver stands
 
-**Enabled SKU (storefront reachable)** — complete. Storefront payload, child
-SKUs with colour/size labels, variant matrix incl. missing combinations,
-categories with Notion codes, Magento links for all store scopes, supplier link
-and availability verdict.
+**Enabled SKU (storefront reachable)** — the full resolver path is available:
+storefront payload, child SKUs with colour/size labels, variant matrix incl.
+missing combinations, categories with Notion codes, Magento links for all store
+scopes, and supplier attribution. Supplier availability is a separate verdict
+attached to the result; it can legitimately be `unresolved` (for example, when
+a supplier blocks automated requests or the catalogue URL is unconfirmed).
 
 **Disabled SKU (no storefront page)** — works, but partial by nature. Parent id
 is found via the grid, status is read from the grid row or the edit page's
 `#status`, children come from the `Parent SKU` column (status-blind, so disabled
 children are included), and their colour/size labels are merged in from the
-parent's edit page. The payload is `partial: true`, `verified: false`, and is
-never cached. Variants, images and text cannot be audited because there is no
-storefront payload to audit.
+parent's edit page. This gives an **admin-derived child/label matrix**, not a
+storefront-verified variant matrix. The payload is `partial: true`,
+`verified: false`, and is never cached. Because there is no storefront payload,
+the normal storefront-based variant, image, and text audits cannot run; do not
+present the admin labels as proof of storefront availability or completeness.
 
 ## How the admin side works (do not regress this)
 
@@ -75,13 +79,6 @@ The verdict needs two 404s at least 7 days apart. Nothing schedules that. Decide
 alarm, weekly job, or explicit action only.
 `src/audit/supplierAvailability.ts`.
 
-### R7 — Status cache staleness
-
-`magento_status` is stored inside the cached payload with `RESOLVER_TTL_DAYS = 14`,
-so a product disabled today can still read `Enabled` from a two-week-old cache.
-Either stop caching status or display it as "as of <date>" next to the badge.
-`src/shared/resolver.ts`, `src/dashboard/sections/audit/Resolver.tsx`.
-
 ### R8 — Admin tab churn
 
 Each resolve that needs admin data opens a background tab and closes it, and a
@@ -94,16 +91,19 @@ tab for the session would remove both. `src/audit/skuResolution.ts`.
 
 The `parent_sku` query returns no colour/size columns. The admin-only path now
 reads the parent's edit page once (`readMatrixTab`, own background tab) and merges
-colour/size/status onto the grid rows by child id, so a disabled SKU finally has a
-variant matrix. Enabled resolves are untouched: they already hold storefront
-labels and do not pay the extra page load.
+colour/size/status onto the grid rows by child id, so a disabled SKU has an
+admin-derived child/label matrix. This is not a storefront-verified variant
+matrix and cannot support the normal storefront-based variant, image, or text
+audits. Enabled resolves are untouched: they already hold storefront labels and
+do not pay the extra page load.
 `src/audit/skuResolution.ts`.
 
-### R7 — Status cache staleness (done 2026-10-30)
+### R7 — Status cache staleness (resolved 2026-10-30)
 
 `magento_status.checked_at` is now printed beside the badge ("Enabled · as of
-30/10 11:42"), so a verdict restored from a 14-day-old cache cannot read as
-current. `src/dashboard/sections/audit/Resolver.tsx`.
+30/10 11:42"), so a verdict restored from a 14-day-old cache is visibly dated.
+The value may still be stale; use **Refresh** to fetch current Magento data.
+`src/dashboard/sections/audit/Resolver.tsx`.
 
 ### R9 — Storefront search wasted on disabled SKUs (done 2026-10-30)
 
