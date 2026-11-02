@@ -84,10 +84,44 @@ export function renderTierPricesButtons(): void {
   addButton('Textil', TEXTIL_BANDS);
   addButton('Outros artigos', OUTROS_BANDS);
 
+  // Delete all button
+  const deleteAllBtn = document.createElement('button');
+  deleteAllBtn.type = 'button';
+  deleteAllBtn.className = 'mhx-tier-prices-btn mhx-tier-prices-btn--delete';
+  deleteAllBtn.textContent = 'Delete all';
+  deleteAllBtn.style.cssText = `
+    padding: 6px 14px;
+    border: 1px solid var(--mhx-border, #e4e7eb);
+    border-radius: 4px;
+    cursor: pointer;
+    font: 13px/1.4 system-ui, "Segoe UI", Arial, sans-serif;
+    background: var(--mhx-surface, #fff);
+    color: var(--mhx-ink);
+  `;
+  deleteAllBtn.title = 'Remove all tier price rows';
+  deleteAllBtn.addEventListener('click', () => {
+    void deleteAllTierPrices(table);
+  });
+  btnWrap.appendChild(deleteAllBtn);
+
   const tableSectionEl = table.parentElement ?? document.body;
   if (tableSectionEl) {
     tableSectionEl.insertBefore(btnWrap, tableSectionEl.firstChild);
   }
+}
+
+function findDeleteControl(row: HTMLTableRowElement): HTMLElement | null {
+  const candidates = row.querySelectorAll<HTMLElement>(
+    'button.action-delete, a.action-delete, [data-action="remove"], .action-delete, button[title*="delete" i], button[title*="remove" i], a[title*="delete" i], a[title*="remove" i], [class*="delete"], [class*="remove"]'
+  );
+  for (const c of candidates) {
+    if (c.tagName === 'BUTTON' || c.tagName === 'A' || c.getAttribute('role') === 'button') return c;
+  }
+  for (const el of row.querySelectorAll<HTMLElement>('*')) {
+    const label = (el.getAttribute('aria-label') || el.getAttribute('title') || el.textContent || '').trim().toLowerCase();
+    if (label.includes('delete') || label.includes('remove')) return el;
+  }
+  return null;
 }
 
 function readQty(row: HTMLTableRowElement): number {
@@ -105,7 +139,6 @@ function readQty(row: HTMLTableRowElement): number {
 }
 
 function setPrice(row: HTMLTableRowElement, discount: number): void {
-  // Switch value type to "percent" first (Magento swaps the price input).
   const selects = row.querySelectorAll<HTMLSelectElement>('select');
   for (const select of selects) {
     if (/value_type/i.test(select.name) || /value_type/i.test(select.id)) {
@@ -118,7 +151,6 @@ function setPrice(row: HTMLTableRowElement, discount: number): void {
       }
     }
   }
-  // Set the percentage value after Magento renders the right input.
   const setPct = () => {
     const inputs = row.querySelectorAll<HTMLInputElement>('input');
     for (const input of inputs) {
@@ -135,13 +167,6 @@ function setPrice(row: HTMLTableRowElement, discount: number): void {
     setTimeout(setPct, 50);
     setTimeout(setPct, 200);
   }
-  // Also try fixed-price input as fallback (in case percent input never appears).
-  const inputs = row.querySelectorAll<HTMLInputElement>('input');
-  for (const input of inputs) {
-    if (/^tier_price\[\d+\]\[price\]$/i.test(input.name)) {
-      // Only set if value_type is fixed; skip here since we use percent.
-    }
-  }
 }
 
 function setQty(row: HTMLTableRowElement, qty: number): void {
@@ -155,12 +180,107 @@ function setQty(row: HTMLTableRowElement, qty: number): void {
   }
 }
 
+export async function deleteAllTierPrices(table: HTMLElement): Promise<void> {
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  const findDeleteControl = (row: HTMLTableRowElement): HTMLElement | null => {
+    const candidates = row.querySelectorAll<HTMLElement>(
+      'button.action-delete, a.action-delete, [data-action="remove"], .action-delete, button[title*="delete" i], button[title*="remove" i], a[title*="delete" i], a[title*="remove" i], [class*="delete"], [class*="remove"]'
+    );
+    for (const c of candidates) {
+      if (c.tagName === 'BUTTON' || c.tagName === 'A' || c.getAttribute('role') === 'button') return c;
+    }
+    for (const el of row.querySelectorAll<HTMLElement>('*')) {
+      const label = (el.getAttribute('aria-label') || el.getAttribute('title') || el.textContent || '').trim().toLowerCase();
+      if (label.includes('delete') || label.includes('remove')) return el;
+    }
+    return null;
+  };
+
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  let deleteControlsFound = false;
+  for (const row of rows) {
+    const ctrl = findDeleteControl(row);
+    if (ctrl) {
+      deleteControlsFound = true;
+      ctrl.click();
+    }
+  }
+
+  if (!deleteControlsFound) {
+    // Fallback: clear all input values.
+    for (const row of rows) {
+      const inputs = row.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
+      for (const el of inputs) {
+        if (el instanceof HTMLInputElement) {
+          el.value = '';
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (el instanceof HTMLSelectElement && el.options.length) {
+          el.selectedIndex = 0;
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    }
+  } else {
+    await new Promise<void>((resolve) => {
+      const start = Date.now();
+      const check = () => {
+        if (tbody.querySelectorAll('tr').length === 0) resolve();
+        else if (Date.now() - start < 1000) setTimeout(check, 50);
+        else resolve();
+      };
+      setTimeout(check, 50);
+    });
+  }
+}
 export async function fillTierPrices(
   table: HTMLElement,
   bands: readonly TierBand[]
 ): Promise<void> {
   const tbody = table.querySelector('tbody');
   if (!tbody) return;
+
+  // --- Clean existing rows first so switching Textil <-> Outros doesn't leave stale rows ---
+  const rowsBefore = Array.from(tbody.querySelectorAll('tr'));
+  let deleteControlsFound = false;
+  for (const row of rowsBefore) {
+    const ctrl = findDeleteControl(row);
+    if (ctrl) {
+      deleteControlsFound = true;
+      ctrl.click();
+    }
+  }
+
+  if (deleteControlsFound) {
+    await new Promise<void>((resolve) => {
+      const start = Date.now();
+      const check = () => {
+        if (tbody.querySelectorAll('tr').length === 0) resolve();
+        else if (Date.now() - start < 1000) setTimeout(check, 50);
+        else resolve();
+      };
+      setTimeout(check, 50);
+    });
+  } else {
+    // No delete control found: clear all input values in existing rows.
+    for (const row of Array.from(tbody.querySelectorAll('tr'))) {
+      const inputs = row.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
+      for (const el of inputs) {
+        if (el instanceof HTMLInputElement) {
+          el.value = '';
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (el instanceof HTMLSelectElement) {
+          if (el.options.length) {
+            el.selectedIndex = 0;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+      }
+    }
+  }
 
   // Update existing rows whose quantity matches a band.
   for (const row of Array.from(tbody.querySelectorAll('tr'))) {
@@ -178,7 +298,6 @@ export async function fillTierPrices(
     (band) => !Array.from(tbody.querySelectorAll('tr')).some((row) => readQty(row) === band.from)
   );
 
-  // Add missing bands one at a time so Magento renders each row before filling.
   for (const band of missingBands) {
     if (!addButton) break;
     const beforeCount = tbody.querySelectorAll('tr').length;
