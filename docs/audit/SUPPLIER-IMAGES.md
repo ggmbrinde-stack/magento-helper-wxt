@@ -113,9 +113,12 @@ when no confirmed link exists — asks the shop:
    `REF:` without our prefix.
 2. Open `www.makito.eu/es/catalogsearch/result/?q=22482` in a background tab.
    The shop redirects a single hit straight to the product page.
-3. Read the product block's printed reference and accept the page only if it
-   matches. A wrong product would mean images saved under the wrong SKU, so an
-   ambiguous answer is reported as no match rather than guessed.
+3. Read the product block's printed reference (`Ref: 22498`) from a **parsed
+document** and accept the page only if it matches. Slicing the HTML by the
+first `product-info-main` marker does not work: the marker appears in the head
+and the printed reference sits a megabyte further down. A wrong product would
+mean images saved under the wrong SKU, so an ambiguous answer is reported as
+no match rather than guessed.
 4. Store the match as this SKU's catalogue link (`supplierUrlOverrides`), so the
    dossier, the availability check and the image download all use it from then
    on.

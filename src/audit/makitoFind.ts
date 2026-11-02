@@ -7,11 +7,15 @@ import { isMakitoUrl, waitForTabLoad } from './makitoImages';
  * The shop cannot be searched by our SKU (`M22482` and `M22473` return nothing)
  * and Magento's GraphQL endpoint answers 403 behind Akamai. What does work is
  * the shop's own reference: its search redirects a single hit straight to the
- * product page, and every product page prints its reference (`REF: 22482`).
+ * product page, and every product page prints its reference (`Ref: 22498`).
  *
  * So the lookup is: strip the `M`, search the reference, and only accept the
  * page that prints that exact reference back. A wrong product is worse than no
  * product here - the images would be saved under the wrong SKU.
+ *
+ * The reference is read from a parsed document, not from a slice of the HTML:
+ * the product block is only the first occurrence of the markup, and the printed
+ * reference sits a megabyte further down the page.
  */
 
 const MAKITO_ORIGIN = 'https://www.makito.eu';
@@ -39,12 +43,34 @@ const PRODUCT_PATH = /^\/es\/[a-z0-9-]+\.html$/i;
  */
 async function matchReference(reference: string): Promise<string | null> {
   const refOf = (html: string): string | null => {
-    // Read the product block only: related-product tiles print their own
-    // reference further down the page.
-    const start = html.indexOf('product-info-main');
-    const region = start > -1 ? html.slice(start, start + 8000) : html;
-    const match = /(?:referencia|reference|ref)\s*[:.]?\s*(\d{3,})/i.exec(region);
-    return match?.[1] ?? null;
+    const probe = (text: string): string | null => {
+      const match = /(?:ref(?:erencia|erence)?)\s*[:.]?\s*(\d{3,})/i.exec(text);
+      return match?.[1] ?? null;
+    };
+
+    try {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      doc.querySelectorAll('script,style,noscript').forEach((node) => node.remove());
+      // The product block only, in falling order of precision: its info column
+      // prints `Ref: 22498`, its SKU label repeats it, and the add-to-cart form
+      // carries it as `data-product-sku`. Related tiles are never read - they
+      // print their own reference and would be a wrong page to accept.
+      const sources = [
+        doc.querySelector('.product-info-main'),
+        doc.querySelector('.product-info-main .sku .value') ?? doc.querySelector('.sku .value'),
+        doc.querySelector('[itemprop="sku"]'),
+      ];
+      for (const source of sources) {
+        const found = source ? probe(source.textContent ?? '') : null;
+        if (found) return found;
+      }
+      const attribute = doc.querySelector('form[data-product-sku]')?.getAttribute('data-product-sku');
+      return attribute && /^\d{3,}$/.test(attribute) ? attribute : null;
+    } catch {
+      // No parser in this context: fall back to the SKU label in the markup.
+      const match = /class="[^"]*\bsku\b[^"]*"[^>]*>[\s\S]{0,120}?(\d{3,})/i.exec(html);
+      return match?.[1] ?? null;
+    }
   };
 
   const read = async (url: string): Promise<string> => {
@@ -72,7 +98,7 @@ async function matchReference(reference: string): Promise<string | null> {
     .map((anchor) => anchor.href)
     .filter((href) => ['https:', ''].includes(new URL(href).protocol) && isProduct(href));
 
-  for (const link of [...new Set(links)].slice(0, 8)) {
+  for (const link of [...new Set(links)].slice(0, 12)) {
     if (refOf(await read(link)) === reference) return link;
   }
 

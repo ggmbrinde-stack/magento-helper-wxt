@@ -82,20 +82,23 @@ export interface SupplierLinkInput {
 /**
  * Site-restricted search URL for a SKU.
  *
- * MAKITO's shop exposes no derivable product path (eBlocks blocks unaudited
- * clients), so the supplier reference can only be searched. Building this from
+ * MAKITO's shop exposes no derivable product path, so the supplier reference
+ * can only be searched. Building this from
  * the official host keeps it honest: nothing is invented about the product.
  */
 function supplierSearchUrl(official: string, sku: string): string {
   if (!official) return '';
   try {
     const host = new URL(official).hostname.replace(/^www\./, '');
-    // Makito's shop is PrestaShop, so it has its own search controller - the
-    // operator lands on the supplier's results instead of a Google page that
-    // has to be read and clicked through. Other suppliers keep the site: query
-    // because no search route has been verified for them.
+    // Makito's Magento shop has its own search route - the operator lands on
+    // the supplier's results instead of a Google page that has to be read and
+    // clicked through. It searches its own reference, not our SKU: `?q=M22482`
+    // finds nothing while `?q=22482` redirects straight to the product. Other
+    // suppliers keep the site: query because no search route is verified.
     if (host === 'makito.eu') {
-      return `https://www.makito.eu/es/index.php?controller=search&s=${encodeURIComponent(sku)}`;
+      const reference = sku.trim().toUpperCase().replace(/[^0-9]/g, '');
+      const query = reference.length >= 3 ? reference : sku;
+      return `https://www.makito.eu/es/catalogsearch/result/?q=${encodeURIComponent(query)}`;
     }
     return `https://www.google.com/search?q=${encodeURIComponent(`site:${host} ${sku}`)}`;
   } catch {

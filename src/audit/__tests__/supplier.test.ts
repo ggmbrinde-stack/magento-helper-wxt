@@ -375,3 +375,12 @@ test('Makito search goes to the shop itself, not to Google', () => {
   assert.match(info.searchUrl, /^https:\/\/www\.makito\.eu\//);
   assert.equal(info.searchUrl.includes('google'), false);
 });
+
+test('Makito search uses the shop reference, which is what it can find', () => {
+  // `?q=M22482` returns nothing on the shop; the bare reference redirects to
+  // the product page.
+  assert.equal(
+    supplierLinkFor('M22482').searchUrl,
+    'https://www.makito.eu/es/catalogsearch/result/?q=22482',
+  );
+});
