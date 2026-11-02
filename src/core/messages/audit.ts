@@ -10,7 +10,7 @@
  */
 
 import type { ListingError, SkuLibrary } from '../../shared/schemas';
-import type { ResolverJson } from '../../shared/resolver';
+import type { ResolverJson, ResolverMagentoFacts } from '../../shared/resolver';
 import type { ListingErrorPayload } from '../../audit';
 import type { ListingPreflight, PushReport } from '../../audit';
 import type { ImageAuditResult } from '../../audit';
@@ -86,6 +86,8 @@ export interface ResolveAdminFallback {
   children: ResolverChild[];
   /** Why `children` is empty, when it is. */
   childrenReason?: string;
+  /** PP + category facts from the product edit page, when it was read. */
+  magentoFacts?: ResolverMagentoFacts;
 }
 
 /**
@@ -315,6 +317,12 @@ export interface SearchMagentoRequest {
    * operator's own tab.
    */
   expand?: boolean;
+  /**
+   * Read PP (Attribute Set) and the checked categories from the edit page.
+   * The Categories tab is activated only when `expand` is true, so the
+   * operator's own tab is never navigated.
+   */
+  readFacts?: boolean;
 }
 
 export interface SearchMagentoResponse {
@@ -328,6 +336,8 @@ export interface SearchMagentoResponse {
   childrenReason?: string;
   /** Magento `type_id` for the row, e.g. `simple` or `configurable`. */
   productType?: string;
+  /** PP (from the Attribute Set) and checked categories, when the edit page was read. */
+  magentoFacts?: ResolverMagentoFacts;
   error?: string;
 }
 

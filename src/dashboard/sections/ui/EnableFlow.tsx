@@ -333,8 +333,9 @@ export function EnableFlow({
 
       {!report ? (
         <p class="db-empty-state">
-          Enter the disabled SKU and load its checklist. PP and category data
-          come from Notion and are compared with the Magento product.
+          Enter the disabled SKU and load its checklist. PP comes from the
+          Magento Attribute Set and the Notion tracker; categories are compared
+          on both sides.
         </p>
       ) : (
         <>

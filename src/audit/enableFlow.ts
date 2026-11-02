@@ -28,6 +28,7 @@ import type {
   ProductType,
   ResolverCategories,
   ResolverChildDetail,
+  ResolverMagentoFacts,
 } from '../shared/resolver';
 import type { ResolverNotionMetadata } from '../core/messages';
 
@@ -339,6 +340,8 @@ export interface EnableFlowInput {
     children?: string[];
     children_detail?: ResolverChildDetail[];
     categories?: ResolverCategories;
+    /** PP + categories read from the Magento product edit page. */
+    magento_facts?: ResolverMagentoFacts;
     configurable_id?: number | null;
     simple_product_id?: number | null;
     magento_status?: { label: string };
@@ -397,6 +400,16 @@ function fix(
   return { label, href, open };
 }
 
+/** PP codes compare by number: `0957` and `957` are the same profile. */
+function samePpCode(a: string, b: string): boolean {
+  const left = Number.parseInt((a ?? '').replace(/\D+/g, ''), 10);
+  const right = Number.parseInt((b ?? '').replace(/\D+/g, ''), 10);
+  if (!Number.isFinite(left) || !Number.isFinite(right)) {
+    return (a ?? '').trim().toLowerCase() === (b ?? '').trim().toLowerCase();
+  }
+  return left === right;
+}
+
 /**
  * Build the checklist from already-read facts. Pure: no network, no storage.
  */
@@ -421,52 +434,162 @@ export function buildEnableFlow(input: EnableFlowInput): EnableFlowReport {
 
   /* 1. PPs ---------------------------------------------------------------- */
   const pp = input.pp ?? null;
+  const magento = resolver?.magento_facts ?? null;
+  const magentoPp = (magento?.ppCode ?? '').trim();
+  const magentoPpRead = Boolean(magento);
+  const notionPp =
+    pp?.found && !/not applicable/i.test(pp.status) ? (pp.ppCode ?? '').trim() : '';
+  const attributeSetNote = magento?.attributeSet
+    ? `Magento Attribute Set: ${magento.attributeSet}`
+    : '';
+
   if (input.ppError) {
     push(
       'pp',
       'PP assigned',
       'manual',
-      `The Notion PP tracker could not be read: ${input.ppError}`,
-      ['Confirm the PP in Magento and in the PP & Category Assignment database.'],
+      magentoPp
+        ? `Magento PP ${magentoPp}, but the Notion tracker could not be read: ${input.ppError}`
+        : `The Notion PP tracker could not be read: ${input.ppError}`,
+      [
+        ...(attributeSetNote ? [attributeSetNote] : []),
+        'Confirm the PP in Magento and in the PP & Category Assignment database.',
+      ],
       fix('Open PP tracker', PP_ASSIGNMENT_URL),
     );
+  } else if (pp?.found && /not applicable/i.test(pp.status)) {
+    if (magentoPp) {
+      push(
+        'pp',
+        'PP assigned',
+        'missing',
+        `Notion says "Not Applicable", but Magento carries PP ${magentoPp}.`,
+        [attributeSetNote].filter(Boolean),
+        fix('Open the Notion row', pp.url),
+      );
+    } else {
+      push(
+        'pp',
+        'PP assigned',
+        'na',
+        'Not applicable: Notion marks this SKU as "Not Applicable".',
+      );
+    }
   } else if (!pp?.found) {
+    if (magentoPp) {
+      push(
+        'pp',
+        'PP assigned',
+        'pass',
+        `PP ${magentoPp} read from the Magento Attribute Set (no Notion row).`,
+        [
+          ...(attributeSetNote ? [attributeSetNote] : []),
+          'Create the Notion row when convenient; Magento already has the PP.',
+        ],
+        fix('Open PP tracker', PP_ASSIGNMENT_URL),
+      );
+    } else if (magentoPpRead) {
+      push(
+        'pp',
+        'PP assigned',
+        'missing',
+        `No PP in Magento or Notion: the Attribute Set carries no PP code and there is no row for ${sku}.`,
+        [
+          ...(attributeSetNote ? [attributeSetNote] : []),
+          'Assign a PP Attribute Set in Magento and create the Notion row.',
+        ],
+        fix('Open the product', editUrl),
+      );
+    } else {
+      push(
+        'pp',
+        'PP assigned',
+        'missing',
+        `No row for ${sku} in the Notion PP & Category Assignment database, and the Magento Attribute Set was not read.`,
+        ['Create the row, assign the PP and the category path.'],
+        fix('Open PP tracker', PP_ASSIGNMENT_URL),
+      );
+    }
+  } else if (!notionPp) {
     push(
       'pp',
       'PP assigned',
       'missing',
-      `No row for ${sku} in the Notion PP & Category Assignment database.`,
-      ['Create the row, assign the PP and the category path.'],
-      fix('Open PP tracker', PP_ASSIGNMENT_URL),
-    );
-  } else if (/not applicable/i.test(pp.status)) {
-    push(
-      'pp',
-      'PP assigned',
-      'na',
-      'Not applicable: Notion marks this SKU as "Not Applicable".',
-    );
-  } else if (!pp.ppCode.trim()) {
-    push(
-      'pp',
-      'PP assigned',
-      'missing',
-      `The Notion row exists but PP Code is empty (Status: ${pp.status || '—'}).`,
-      [`Assignment: ${pp.assignment || sku}`],
+      magentoPp
+        ? `The Notion row has no PP Code, but Magento carries PP ${magentoPp}.`
+        : magentoPpRead
+          ? `No PP Code in Notion and no PP in the Magento Attribute Set (Status: ${pp.status || '—'}).`
+          : `The Notion row exists but PP Code is empty (Status: ${pp.status || '—'}).`,
+      [
+        ...(attributeSetNote ? [attributeSetNote] : []),
+        `Assignment: ${pp.assignment || sku}`,
+      ],
       fix('Open the Notion row', pp.url),
     );
-  } else {
+  } else if (magentoPp && samePpCode(notionPp, magentoPp)) {
     push(
       'pp',
       'PP assigned',
       'pass',
-      `PP ${pp.ppCode} (Notion Status: ${pp.status || '—'}).`,
+      `PP ${magentoPp} (Magento and Notion agree).`,
+      [
+        ...(attributeSetNote ? [attributeSetNote] : []),
+        `Notion Status: ${pp.status || '—'}`,
+      ],
+    );
+  } else if (magentoPp) {
+    push(
+      'pp',
+      'PP assigned',
+      'missing',
+      `PP mismatch: Notion ${notionPp} vs Magento ${magentoPp}.`,
+      [
+        ...(attributeSetNote ? [attributeSetNote] : []),
+        'Neither side wins silently; correct the wrong one before enabling.',
+      ],
+      fix('Open the product', editUrl),
+    );
+  } else if (magentoPpRead) {
+    push(
+      'pp',
+      'PP assigned',
+      'missing',
+      `Notion has PP ${notionPp}, but the Magento Attribute Set carries no PP code.`,
+      [attributeSetNote].filter(Boolean),
+      fix('Open the product', editUrl),
+    );
+  } else {
+    // Notion has the PP, but this run could not read the Magento side.
+    push(
+      'pp',
+      'PP assigned',
+      'manual',
+      `Notion PP ${notionPp}; the Magento Attribute Set was not read.`,
+      [
+        `Notion Status: ${pp.status || '—'}`,
+        'Open the product edit page in Magento and confirm the PP Attribute Set.',
+      ],
+      fix('Open the product', editUrl),
     );
   }
 
   /* 2. Categories --------------------------------------------------------- */
   const notionNames = pp ? [...pp.categories, ...pp.subSubCategories] : [];
-  const magentoPath = resolver?.categories?.ok ? resolver.categories.path : [];
+  const magentoPaths = resolver?.magento_facts?.categoryPaths?.length
+    ? resolver.magento_facts.categoryPaths
+    : resolver?.categories?.ok && resolver.categories.path.length > 0
+      ? [resolver.categories.path]
+      : [];
+  const magentoPath = magentoPaths[0] ?? [];
+  const categoriesRead =
+    Boolean(resolver?.magento_facts?.categoryRead) ||
+    Boolean(resolver?.categories?.ok);
+  const categoryReason =
+    resolver?.magento_facts?.categoryReason ??
+    (resolver?.magento_facts?.categoryRead
+      ? 'no category is checked'
+      : 'Magento did not return a breadcrumb.');
+
   if (input.ppError) {
     push(
       'category',
@@ -477,35 +600,76 @@ export function buildEnableFlow(input: EnableFlowInput): EnableFlowReport {
       fix('Open the product', editUrl),
     );
   } else if (!pp?.found) {
-    push(
-      'category',
-      'Categories assigned',
-      'missing',
-      'No Notion row, so there is no assigned category to compare with Magento.',
-      magentoPath.length ? [`Magento: ${magentoPath.join(' › ')}`] : [],
-      fix('Open PP tracker', PP_ASSIGNMENT_URL),
-    );
+    if (magentoPath.length > 0) {
+      push(
+        'category',
+        'Categories assigned',
+        'pass',
+        `Magento: ${magentoPath.join(' › ')} (no Notion row).`,
+        [
+          'Create the Notion row when convenient; Magento already has the category.',
+        ],
+        fix('Open PP tracker', PP_ASSIGNMENT_URL),
+      );
+    } else if (categoriesRead) {
+      push(
+        'category',
+        'Categories assigned',
+        'missing',
+        `No categories in Magento (${categoryReason}), and no row for ${sku} in Notion.`,
+        [],
+        fix('Open the product', editUrl),
+      );
+    } else {
+      push(
+        'category',
+        'Categories assigned',
+        'missing',
+        'No Notion row, so there is no assigned category to compare with Magento.',
+        ['The Magento category tree was not read in this run.'],
+        fix('Open PP tracker', PP_ASSIGNMENT_URL),
+      );
+    }
   } else if (notionNames.length === 0) {
     push(
       'category',
       'Categories assigned',
       'missing',
-      'The Notion row has no Category / Subcategory assigned.',
-      magentoPath.length ? [`Magento: ${magentoPath.join(' › ')}`] : [],
+      categoriesRead && magentoPath.length === 0
+        ? 'No category in Notion or Magento.'
+        : 'The Notion row has no Category / Subcategory assigned.',
+      [
+        ...(magentoPath.length ? [`Magento: ${magentoPath.join(' › ')}`] : []),
+        ...(categoriesRead && magentoPath.length === 0
+          ? ['Magento has no category checked.']
+          : []),
+      ],
       fix('Open the Notion row', pp.url),
     );
   } else if (magentoPath.length === 0) {
-    push(
-      'category',
-      'Categories assigned',
-      'manual',
-      'Magento did not return a breadcrumb (disabled product or admin-only payload).',
-      [`Notion: ${notionNames.join(' › ')}`],
-      fix('Open the product', editUrl),
-    );
+    if (categoriesRead) {
+      push(
+        'category',
+        'Categories assigned',
+        'missing',
+        `Magento has no category checked (${categoryReason}).`,
+        [`Notion: ${notionNames.join(' › ')}`],
+        fix('Open the product', editUrl),
+      );
+    } else {
+      push(
+        'category',
+        'Categories assigned',
+        'manual',
+        `The Magento category tree could not be read (${categoryReason}).`,
+        [`Notion: ${notionNames.join(' › ')}`],
+        fix('Open the product', editUrl),
+      );
+    }
   } else {
     const mismatch = input.categoryCheck?.mismatches ?? [];
-    const unmatched = unmatchedCategories(notionNames, magentoPath);
+    // Compare against every checked path: a product can sit in several.
+    const unmatched = unmatchedCategories(notionNames, magentoPaths.flat());
     if (mismatch.length > 0 || unmatched.length > 0) {
       push(
         'category',
@@ -768,7 +932,12 @@ export function buildEnableFlow(input: EnableFlowInput): EnableFlowReport {
       productType: resolver?.product_type ?? '—',
       children: childCount,
       supplier: resolver?.supplier?.supplier ?? input.notion?.supplier ?? '—',
-      ppCode: pp?.found && !/not applicable/i.test(pp.status) ? pp.ppCode || '—' : '—',
+      ppCode:
+        magentoPp && notionPp
+          ? samePpCode(magentoPp, notionPp)
+            ? magentoPp
+            : `${magentoPp} (Magento) / ${notionPp} (Notion)`
+          : magentoPp || notionPp || '—',
       categoryPath: magentoPath.join(' › ') || notionNames.join(' › ') || '—',
       availability: input.availability?.verdict ?? 'not checked',
     },

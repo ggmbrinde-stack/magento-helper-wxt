@@ -76,7 +76,29 @@ export interface ResolverCategories {
   path: string[];
   urls: string[];
   ids: string[];
-  source: 'jsonConfig' | 'document' | 'none';
+  source: 'jsonConfig' | 'document' | 'admin' | 'none';
+}
+
+/**
+ * PP and category facts read from the Magento product edit page.
+ *
+ * PP is not a standalone field: the Attribute Set name carries it
+ * (`AS>PP0957_CONJ ESCRITA...`). Categories come from the checked nodes of the
+ * Categories tab, which the reader may activate on a tab it owns.
+ */
+export interface ResolverMagentoFacts {
+  /** Attribute Set display name, e.g. `AS>PP0957_CONJ ESCRITA...`. */
+  attributeSet: string;
+  /** PP code parsed from the Attribute Set name (`0957`), or empty. */
+  ppCode: string;
+  /** Checked category paths, root first; deepest first. */
+  categoryPaths: string[][];
+  /** True when the category tree was present and read (even if empty). */
+  categoryRead: boolean;
+  /** Why the category tree could not be read, when it could not. */
+  categoryReason?: string;
+  /** When the edit page was read. */
+  readAt: string;
 }
 
 /**
@@ -165,6 +187,8 @@ export interface ResolverJson {
   cached?: boolean;
   /** Breadcrumb path L1..L4 (C1/C2); absent on payloads cached before it. */
   categories?: ResolverCategories;
+  /** PP + category facts read from the Magento product edit page. */
+  magento_facts?: ResolverMagentoFacts;
   /** Supplier attribution (D4). */
   supplier?: ResolverSupplier;
   /** Enable/disable state as Magento reports it. */

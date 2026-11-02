@@ -41,6 +41,13 @@ const resolverComplete = {
     ids: [],
     source: 'document' as const,
   },
+  magento_facts: {
+    attributeSet: 'AS>PP0323_CANETAS PLÁSTICO',
+    ppCode: '323',
+    categoryPaths: [['Escrita e Escritório', 'Canetas', 'Canetas de Plástico']],
+    categoryRead: true,
+    readAt: '2026-11-02T00:00:00.000Z',
+  },
   configurable_id: 364009,
   simple_product_id: null,
   magento_status: { label: 'Disabled' },
@@ -86,9 +93,27 @@ test('a fully readable SKU passes every automatic check', () => {
   assert.match(report.adminUrl, /catalog\/product\/edit\/id\/364009/);
 });
 
-test('a SKU with no Notion row is missing both PP and category', () => {
+test('a SKU with no Notion row still passes on the Magento PP and categories', () => {
   const report = buildEnableFlow(
     baseInput({ pp: { ...ppComplete, found: false, ppCode: '', categories: [] } }),
+  );
+  assert.equal(checkOf(report, 'pp').status, 'pass');
+  assert.match(checkOf(report, 'pp').detail, /PP 323.*Magento Attribute Set/);
+  assert.equal(checkOf(report, 'category').status, 'pass');
+  assert.match(checkOf(report, 'category').detail, /Magento: Escrita e Escritório/);
+  assert.equal(report.summary.ppCode, '323');
+});
+
+test('a SKU with neither a Notion row nor readable Magento facts is missing both', () => {
+  const report = buildEnableFlow(
+    baseInput({
+      pp: { ...ppComplete, found: false, ppCode: '', categories: [] },
+      resolver: {
+        ...resolverComplete,
+        categories: { ...resolverComplete.categories, ok: false, path: [] },
+        magento_facts: undefined,
+      },
+    }),
   );
   assert.equal(checkOf(report, 'pp').status, 'missing');
   assert.match(checkOf(report, 'pp').detail, /No row for M22498/);
@@ -96,10 +121,69 @@ test('a SKU with no Notion row is missing both PP and category', () => {
   assert.match(checkOf(report, 'category').detail, /No Notion row/);
 });
 
+test('a PP mismatch between Notion and Magento blocks the SKU', () => {
+  const report = buildEnableFlow(
+    baseInput({
+      pp: { ...ppComplete, ppCode: '452' },
+    }),
+  );
+  const pp = checkOf(report, 'pp');
+  assert.equal(pp.status, 'missing');
+  assert.match(pp.detail, /Notion 452 vs Magento 323/);
+  assert.equal(report.summary.ppCode, '323 (Magento) / 452 (Notion)');
+});
+
+test('leading zeros are not a PP mismatch', () => {
+  const report = buildEnableFlow(
+    baseInput({
+      resolver: {
+        ...resolverComplete,
+        magento_facts: { ...resolverComplete.magento_facts, ppCode: '0323' },
+      },
+    }),
+  );
+  assert.equal(checkOf(report, 'pp').status, 'pass');
+  assert.equal(report.summary.ppCode, '0323');
+});
+
+test('Magento read but empty is missing, not manual', () => {
+  const report = buildEnableFlow(
+    baseInput({
+      pp: { ...ppComplete, ppCode: '', categories: [], subSubCategories: [] },
+      resolver: {
+        ...resolverComplete,
+        categories: { ...resolverComplete.categories, ok: false, path: [] },
+        magento_facts: {
+          ...resolverComplete.magento_facts,
+          ppCode: '',
+          attributeSet: 'AS>TÊXTIL',
+          categoryPaths: [],
+          categoryRead: true,
+        },
+      },
+    }),
+  );
+  assert.equal(checkOf(report, 'pp').status, 'missing');
+  assert.match(checkOf(report, 'pp').detail, /no PP in the Magento Attribute Set/);
+  assert.equal(checkOf(report, 'category').status, 'missing');
+  assert.match(checkOf(report, 'category').detail, /No category in Notion or Magento/);
+});
+
 test('PP Not Applicable is a pass-through, not a blocker', () => {
   const report = buildEnableFlow(
     baseInput({
       pp: { ...ppComplete, status: 'Not Applicable', ppCode: '' },
+      resolver: {
+        ...resolverComplete,
+        categories: { ...resolverComplete.categories, ok: false, path: [] },
+        magento_facts: {
+          ...resolverComplete.magento_facts,
+          attributeSet: 'AS>TÊXTIL',
+          ppCode: '',
+          categoryPaths: [],
+          categoryRead: true,
+        },
+      },
     }),
   );
   assert.equal(checkOf(report, 'pp').status, 'na');
@@ -137,6 +221,7 @@ test('an unreadable Magento breadcrumb is manual with the Notion path shown', ()
           ok: false,
           path: [],
         },
+        magento_facts: undefined,
       },
     }),
   );

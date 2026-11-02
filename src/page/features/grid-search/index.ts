@@ -5,6 +5,7 @@ import type {
   SearchMagentoResponse,
 } from '../../../core/messages';
 import { findConfigSection, isCollapsed } from '../../shared/config-section';
+import { readProductFacts } from './productFacts';
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -246,6 +247,16 @@ function readPageStatus(): string {
   const text = (el.options[el.selectedIndex]?.text ?? '').trim();
   if (!text) return '';
   return /disab|inactiv|desactiv/i.test(text) ? 'Disabled' : 'Enabled';
+}
+
+/** The product edit page's own `type_id`, without trusting a default. */
+function readPageType(): string {
+  const input = document.querySelector<HTMLInputElement>(
+    'input[name="product[type_id]"], input[name="type"], [data-form-part="product_form"][name*="type_id"]',
+  );
+  const value = (input?.value ?? '').toLowerCase().trim();
+  if (value.includes('config')) return 'configurable';
+  return value;
 }
 
 /** The admin form key lives in the DOM input, or on `window.FORM_KEY`. */
@@ -586,6 +597,7 @@ export async function handleSearchMagento(
   childIds?: string[],
   parentId?: string,
   expand = false,
+  readFacts = false,
 ): Promise<SearchMagentoResponse> {
   // The parent's own edit page is the best possible source: the Configurations
   // matrix lists every assigned child whether enabled or disabled, with labels,
@@ -594,7 +606,13 @@ export async function handleSearchMagento(
     const open = location.pathname.match(/\/catalog\/product\/edit\/id\/(\d+)/);
     if (open && open[1] === parentId) {
       const matrix = await readConfigurableChildren(parentId, expand);
-      if (matrix.children.length > 0) {
+      // PP and categories are not in the matrix, but they are on the same page.
+      // Reading them here means a disabled SKU gets real Magento values instead
+      // of a Notion-only guess.
+      const facts = readFacts
+        ? await readProductFacts({ activateCategoryTab: expand })
+        : null;
+      if (matrix.children.length > 0 || facts) {
         return {
           found: true,
           productId: parentId,
@@ -602,10 +620,10 @@ export async function handleSearchMagento(
           // The edit page knows the parent's own status; the grid is not the
           // only witness, and for a disabled SKU this is the only one we get.
           status: readPageStatus(),
-          // A Configurations matrix exists only on a configurable product.
-          productType: 'configurable',
+          productType: readPageType() || (matrix.children.length > 0 ? 'configurable' : ''),
           children: matrix.children,
-          childrenReason: '',
+          childrenReason: matrix.children.length > 0 ? '' : matrix.reason,
+          magentoFacts: facts ?? undefined,
         };
       }
     }

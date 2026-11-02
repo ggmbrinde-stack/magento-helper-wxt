@@ -21,8 +21,10 @@ import {
   normalizeUrl,
   resolveSkuWithHtml,
   type ProductType,
+  type ResolverCategories,
   type ResolverChildDetail,
   type ResolverJson,
+  type ResolverMagentoFacts,
 } from '../shared/resolver';
 import { adminEditUrl, DEFAULT_ADMIN_BASE, normalizeAdminBase } from '../shared/magento';
 import { variantTargetsFromRows } from './variants';
@@ -458,6 +460,9 @@ async function tryAdminGrid(
     parentId,
     // Only the tab this function opened may be interacted with.
     expand: openedTabId !== 0,
+    // PP (Attribute Set) and categories come from the edit page. Cheap on a
+    // grid page (nothing matches) and required for a disabled SKU.
+    readFacts: true,
   };
   let response: SearchMagentoResponse | undefined;
   try {
@@ -498,6 +503,7 @@ async function tryAdminGrid(
         status: second.status || response.status,
         children: gained ? second.children : response.children,
         childrenReason: gained ? second.childrenReason : (second.childrenReason || response.childrenReason),
+        magentoFacts: second.magentoFacts ?? response.magentoFacts,
       };
     }
   }
@@ -523,6 +529,7 @@ async function tryAdminGrid(
     productType: response.productType ?? '',
     children,
     childrenReason: response.childrenReason,
+    magentoFacts: response.magentoFacts,
   };
 }
 
@@ -543,6 +550,28 @@ function adminChildDetail(children: ResolverChild[]): ResolverChildDetail[] {
     enabled: child.enabled,
     source: 'admin',
   }));
+}
+
+/**
+ * Checked category paths -> the single-path `ResolverCategories` shape the rest
+ * of the payload already uses. The deepest path wins (the product's real home).
+ */
+function categoriesFromFacts(
+  facts: ResolverMagentoFacts | undefined,
+): ResolverCategories | undefined {
+  const path = facts?.categoryPaths[0] ?? [];
+  if (path.length === 0) return undefined;
+  return {
+    ok: true,
+    l1: path[0] ?? '',
+    l2: path[1] ?? '',
+    l3: path[2] ?? '',
+    l4: path[3] ?? '',
+    path,
+    urls: [],
+    ids: [],
+    source: 'admin',
+  };
 }
 
 /**
@@ -616,6 +645,10 @@ function partialResolverFromAdmin(
       catalogSource: supplier.catalogSource,
       reviewFlags: supplier.reviewFlags,
     },
+    // Read from the product edit page: the disabled SKU has no storefront
+    // breadcrumb, so this is the only real Magento category path we get.
+    categories: categoriesFromFacts(fallback.magentoFacts),
+    magento_facts: fallback.magentoFacts,
     partial: true,
   };
 }
@@ -722,6 +755,7 @@ export async function resolveSkuForDashboard(
   skuRaw: string,
   url?: string,
   force = false,
+  readAdminFacts = false,
 ): Promise<ResolveSkuResponse> {
   const sku = normalizeSku(skuRaw);
   if (!sku) return { ok: false, error: 'SKU is required.' };
@@ -811,6 +845,12 @@ export async function resolveSkuForDashboard(
 
   let adminChildren = admin.ok ? admin.fallback.children : [];
   const adminStatus = admin.ok ? (admin.fallback.status ?? '') : '';
+  // PP + categories read from the edit page. The first pass can supply them when
+  // the tab already sat on the product's edit page; the retry/matrix passes and
+  // the explicit facts pass below fill them otherwise.
+  let magentoFacts: ResolverMagentoFacts | undefined = admin.ok
+    ? admin.fallback.magentoFacts
+    : undefined;
   // Why the child SKUs are (or are not) here. The admin attempt above runs in
   // parallel with the storefront fetch, so on its own it can only ever match the
   // parent's own SKU - the child list is the second pass below.
@@ -857,6 +897,7 @@ export async function resolveSkuForDashboard(
         );
         retryParentId = retry.productId || '';
         retryStatus = retry.status || '';
+        if (retry.magentoFacts) magentoFacts = retry.magentoFacts;
         if (retry.children.length > 0) {
           adminChildren = retry.children;
           childrenReason = retry.childrenReason || '';
@@ -891,9 +932,10 @@ export async function resolveSkuForDashboard(
       const matrix = await readMatrixTab(
         adminBase,
         labelParentId,
-        { type: 'SEARCH_MAGENTO', sku, parentId: labelParentId, expand: true },
+        { type: 'SEARCH_MAGENTO', sku, parentId: labelParentId, expand: true, readFacts: true },
         0,
       );
+      if (matrix?.magentoFacts) magentoFacts = matrix.magentoFacts;
       const byId = new Map(
         (matrix?.children ?? []).map((child) => [child.id, child] as const),
       );
@@ -917,6 +959,36 @@ export async function resolveSkuForDashboard(
             childrenReason || 'child rows came from the product grid'
           }; colour/size labels merged from the parent's edit page`;
         }
+      }
+    }
+  }
+
+  // PP/category facts are the point of the Enable flow: a disabled SKU has no
+  // storefront breadcrumb, so without this pass the card could only show the
+  // Notion row - and report "missing" for a product that already has both.
+  // The pass runs on its own tab so it may open the Categories tab (read-only).
+  if (readAdminFacts && (!magentoFacts || !magentoFacts.categoryRead)) {
+    const factsParentId = knownParentId || retryParentId || parentEntityId;
+    if (factsParentId) {
+      const factsTab = await readMatrixTab(
+        adminBase,
+        factsParentId,
+        {
+          type: 'SEARCH_MAGENTO',
+          sku,
+          parentId: factsParentId,
+          expand: true,
+          readFacts: true,
+        },
+        0,
+      );
+      if (factsTab?.magentoFacts) magentoFacts = factsTab.magentoFacts;
+      if (
+        adminChildren.length === 0 &&
+        (factsTab?.children?.length ?? 0) > 0
+      ) {
+        adminChildren = factsTab?.children ?? [];
+        childrenReason = factsTab?.childrenReason || '';
       }
     }
   }
@@ -964,6 +1036,11 @@ export async function resolveSkuForDashboard(
     }
     resolver = {
       ...resolver,
+      // Admin PP/category facts are the Magento side of the Enable checklist.
+      magento_facts: magentoFacts ?? resolver.magento_facts,
+      // The storefront breadcrumb wins when it exists; otherwise the admin's
+      // checked category tree is still a real Magento path.
+      categories: resolver.categories ?? categoriesFromFacts(magentoFacts),
       supplier: {
         supplier: supplier.supplier,
         tier: supplier.tier,
@@ -1009,6 +1086,7 @@ export async function resolveSkuForDashboard(
         (adminChildren.some((child) => child.enabled === false) ? 'Disabled' : ''),
       children: adminChildren,
       childrenReason,
+      magentoFacts,
     };
     adminFallback = fallback;
     // R9: say why the storefront step had nothing, as a fact rather than an

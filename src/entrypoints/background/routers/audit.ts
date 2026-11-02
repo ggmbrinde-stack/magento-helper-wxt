@@ -244,7 +244,7 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
     }
     void (async () => {
       try {
-        const resolution = await resolveSkuForDashboard(sku, undefined, force);
+        const resolution = await resolveSkuForDashboard(sku, undefined, force, true);
         const target = resolution.resolver?.sku || sku;
         let pp;
         let ppError: string | undefined;

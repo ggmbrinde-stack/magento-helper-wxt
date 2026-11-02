@@ -156,12 +156,14 @@ export default defineContentScript({
           childIds?: string[];
           parentId?: string;
           expand?: boolean;
+          readFacts?: boolean;
         };
         void handleSearchMagento(
           String(req.sku ?? ''),
           req.childIds,
           req.parentId,
           Boolean(req.expand),
+          Boolean(req.readFacts),
         ).then(sendResponse);
         return true;
       }
