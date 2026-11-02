@@ -27,6 +27,7 @@ import {
   saveAvailability,
   resolveSkuForDashboard,
   downloadMakitoCarouselImages,
+  collectMakitoGallery,
   saveSupplierOverride,
   clearSupplierOverride,
   supplierInfoForSku,
@@ -350,7 +351,15 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
       sendResponse({ ok: false, error: 'A Makito SKU and confirmed product URL are required.' });
       return true;
     }
-    void downloadMakitoCarouselImages(sku, catalogUrl)
+    const work =
+      message.mode === 'files'
+        ? collectMakitoGallery(sku, catalogUrl, { withBytes: true }).then((gallery) => ({
+            total: gallery.total,
+            folder: gallery.folder,
+            files: gallery.files.map((file) => ({ name: file.name, base64: file.base64 ?? '' })),
+          }))
+        : downloadMakitoCarouselImages(sku, catalogUrl);
+    void work
       .then((result) => sendResponse({ ok: true, ...result }))
       .catch((err) =>
         sendResponse({

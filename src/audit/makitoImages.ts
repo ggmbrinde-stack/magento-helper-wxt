@@ -12,9 +12,11 @@ const MAKITO_HOSTS = new Set([
 /** How long a single image may take before it is reported as unfinished. */
 const DOWNLOAD_TIMEOUT_MS = 90_000;
 
-/** How long to keep looking for gallery images after the tab says "complete". */
-const GALLERY_ATTEMPTS = 8;
-const GALLERY_RETRY_MS = 750;
+/** Poll budget while the gallery builds itself. */
+const GALLERY_ATTEMPTS = 12;
+const GALLERY_RETRY_MS = 450;
+/** Stop once the URL set has not grown for this many consecutive polls. */
+const GALLERY_SETTLE_POLLS = 3;
 
 export function isMakitoUrl(value: string): boolean {
   try {
@@ -26,18 +28,32 @@ export function isMakitoUrl(value: string): boolean {
 }
 
 /**
- * PrestaShop (and most carts) serve one photo under several image types, e.g.
- * `/312-large_default/name.jpg` and `/312-home_default/name.jpg`. They are the
- * same picture at different sizes, so the type token is dropped from the
- * de-duplication key - otherwise a six-photo gallery downloads as eighteen
- * files, three of them identical.
+ * Magento serves every image through a resized derivative:
+ *
+ *   /media/catalog/product/cache/<32-hex>/2/2/22482-W.jpg
+ *   /media/catalog/product/2/2/22482-W.jpg            <- the original
+ *
+ * The same photo appears once per size and once per cache hash, so comparing
+ * URLs verbatim turns a ten-photo gallery into fourteen downloads of four
+ * photos at four sizes. Stripping the cache segment gives the one canonical URL
+ * for both de-duplication and the download itself.
  */
+export const MAGENTO_CACHE = /\/cache\/[0-9a-f]{8,}\//i;
+
+export function stripMagentoCache(url: string): string {
+  return url.replace(MAGENTO_CACHE, '/');
+}
+
+/** Only real product media: excludes CMS banners, labels and payment icons. */
+const PRODUCT_MEDIA = /\/media\/catalog\/product\//i;
+
+/** PrestaShop-style size tokens (`-large_default`), for the other shops. */
 const IMAGE_TYPE_TOKEN =
   /-(thickbox|large|medium|small|home|cart|category|modal|by_size)_default(?=[./]|$)/i;
 
 /**
  * Turn whatever the page handed back into a stable, de-duplicated list of
- * HTTPS image URLs, keeping the first (largest) variant of each photo.
+ * HTTPS image URLs, keeping the first variant of each photo.
  */
 export function galleryImageSources(raw: string[], base?: string): string[] {
   const seen = new Set<string>();
@@ -53,10 +69,14 @@ export function galleryImageSources(raw: string[], base?: string): string[] {
     }
     if (url.protocol !== 'https:') continue;
 
-    const key = `${url.hostname.toLowerCase()}${url.pathname.replace(IMAGE_TYPE_TOKEN, '')}`.toLowerCase();
+    // The Magento cache segment is dropped from the URL itself: the remaining
+    // path is the original file. A PrestaShop size token is only dropped from
+    // the key, because that URL would not resolve.
+    const servedPath = stripMagentoCache(url.pathname);
+    const key = `${url.hostname.toLowerCase()}${servedPath.replace(IMAGE_TYPE_TOKEN, '')}`.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(url.href);
+    out.push(`${url.origin}${servedPath}${url.search}`);
   }
 
   return out;
@@ -72,7 +92,7 @@ export function galleryImageSources(raw: string[], base?: string): string[] {
 export function makitoImageFilename(url: string, index: number, sku: string): string {
   const pathName = (() => {
     try {
-      return new URL(url).pathname.split('/').pop() ?? '';
+      return stripMagentoCache(new URL(url).pathname).split('/').pop() ?? '';
     } catch {
       return '';
     }
@@ -104,94 +124,94 @@ export function makitoImageFilename(url: string, index: number, sku: string): st
 }
 
 /*
- * Everything below this line runs inside the supplier tab via
+ * Everything below runs inside the supplier tab via
  * chrome.scripting.executeScript, so each function must be self-contained: no
  * imports, no closures over module scope.
  */
 
-/** Force lazy-loaded gallery images to resolve their real source. */
-function primeGalleryImages(): void {
-  const images = Array.from(document.querySelectorAll('img'));
-  for (const image of images) {
-    image.loading = 'eager';
-    const lazy =
-      image.getAttribute('data-src') ??
-      image.getAttribute('data-lazy-src') ??
-      image.getAttribute('data-original');
-    if (lazy && !image.src) image.src = lazy;
-  }
-  // Many themes only populate the gallery once the container has been on
-  // screen; a background tab still lays out, so this is enough to trigger it.
-  window.scrollTo(0, document.body.scrollHeight);
-}
+/** Collect the gallery image URLs currently in the DOM (originals). */
+function readGalleryUrls(): string[] {
+  const roots = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      [
+        // Magento 2: the placeholder holds the main image while Fotorama builds,
+        // then Fotorama itself holds every frame and thumbnail.
+        '.product.media',
+        '.gallery-placeholder',
+        '[data-gallery-role]',
+        '.fotorama',
+        // PrestaShop and generic themes.
+        '.product-images',
+        '#product-images',
+        '[class*="product-gallery" i]',
+        '[class*="image-gallery" i]',
+        '[id*="gallery" i]',
+      ].join(','),
+    ),
+  );
+  if (roots.length === 0) roots.push(document.querySelector('main') ?? document.body);
 
-/** Collect the product-gallery image candidates from the live page. */
-function readProductGalleryImages(): string[] {
-  const gallerySelector = [
-    // PrestaShop (the platform makito.eu uses): cover, thumbs, quick view.
-    '[data-image-large-src]',
-    '[data-image-medium-src]',
-    '.js-qv-product-cover',
-    '.product-cover',
-    '.js-thumb',
-    '.product-images',
-    '#product-images',
-    // Generic gallery markup.
-    '[data-gallery-role]',
-    '[data-qa*="gallery" i]',
-    '[class*="product-gallery" i]',
-    '[class*="product-images" i]',
-    '[class*="image-gallery" i]',
-    '[id*="gallery" i]',
-    '[class*="thumbnails" i]',
-  ].join(',');
-
-  const galleries = Array.from(document.querySelectorAll<HTMLElement>(gallerySelector));
-  const roots = galleries.length
-    ? galleries
-    : [document.querySelector<HTMLElement>('main') ?? document.body];
   const found: string[] = [];
+  const push = (value: string | null | undefined, renderedWidth = 0): void => {
+    if (!value) return;
+    let url: URL;
+    try {
+      url = new URL(value, document.baseURI);
+    } catch {
+      return;
+    }
+    if (url.protocol !== 'https:') return;
+
+    const cached = /\/cache\/[0-9a-f]{8,}\//i.test(url.pathname);
+    // A direct original rendered tiny really is a tiny file (Magento stores
+    // 90px `<sku>_250.gif` previews next to the photos). A cached derivative is
+    // full size no matter how small its <img> renders, so it always counts.
+    if (!cached && renderedWidth > 0 && renderedWidth < 200) return;
+
+    // One entry per photo: the same file appears at every cache size.
+    const path = url.pathname.replace(/\/cache\/[0-9a-f]{8,}\//i, '/');
+    if (!/\/media\/catalog\/product\//i.test(path) && /\/media\//i.test(path)) return;
+    if (!found.includes(path)) found.push(path);
+  };
 
   for (const root of roots) {
     for (const image of Array.from(root.querySelectorAll('img'))) {
-      const box = image.getBoundingClientRect();
-      // A zero-size image is a hidden placeholder, not gallery content. Lazy
-      // images that have not loaded yet still report their layout box.
-      if (Math.max(image.naturalWidth, image.width, box.width) < 80) continue;
-
-      const anchor = image.closest('a');
-      const candidates = [
-        image.getAttribute('data-image-large-src'),
-        image.getAttribute('data-zoom-image'),
-        image.getAttribute('data-zoom-src'),
-        image.getAttribute('data-full-image'),
-        image.getAttribute('data-large-image'),
-        anchor?.href,
-        image.currentSrc,
-        ...(image
-          .getAttribute('srcset')
-          ?.split(',')
-          .map((entry) => entry.trim().split(/\s+/)[0] ?? '') ?? []),
-        image.getAttribute('data-src'),
-        image.src,
-      ];
-
-      const source = candidates.find((candidate) => {
-        if (!candidate) return false;
-        try {
-          return new URL(candidate, document.baseURI).protocol === 'https:';
-        } catch {
-          return false;
+      push(image.getAttribute('data-image-large-src'), image.naturalWidth);
+      push(image.getAttribute('data-zoom-image'), image.naturalWidth);
+      push(image.getAttribute('data-src'), image.naturalWidth);
+      push(image.currentSrc || image.src, image.naturalWidth);
+      const srcset = image.getAttribute('srcset');
+      if (srcset) {
+        for (const entry of srcset.split(',')) {
+          push(entry.trim().split(/\s+/)[0], image.naturalWidth);
         }
-      });
-      if (!source) continue;
-
-      const absolute = new URL(source, document.baseURI).href;
-      if (!found.includes(absolute)) found.push(absolute);
+      }
+      const anchor = image.closest('a');
+      if (anchor?.href) push(anchor.href, image.naturalWidth);
     }
   }
 
-  return found;
+  return found.map((path) => `https://${location.hostname}${path}`);
+}
+
+/** Fetch one gallery image in the page and return it as base64. */
+async function fetchImageBase64(
+  urls: string[],
+): Promise<{ name: string; base64: string }[]> {
+  const out: { name: string; base64: string }[] = [];
+  for (const url of urls) {
+    const response = await fetch(url, { credentials: 'include' });
+    if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
+    const buffer = await response.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+    }
+    out.push({ name: url, base64: btoa(binary) });
+  }
+  return out;
 }
 
 function waitForTabLoad(tabId: number, timeoutMs = 30_000): Promise<void> {
@@ -253,7 +273,6 @@ function waitForDownload(
       }
     };
     chrome.downloads.onChanged.addListener(onChanged);
-    // The download may already have settled before the listener was attached.
     void chrome.downloads
       .search({ id })
       .then(([item]) => {
@@ -266,50 +285,54 @@ function waitForDownload(
   });
 }
 
+/**
+ * Poll until the gallery stops growing.
+ *
+ * Magento renders one placeholder image first and builds the carousel a moment
+ * later, so "the first poll that returned anything" is one photo - the bug that
+ * saved a single image. Waiting for the set to settle yields the whole gallery.
+ */
 async function readGallery(tabId: number): Promise<string[]> {
+  let best: string[] = [];
+  let stablePolls = 0;
+
   for (let attempt = 0; attempt < GALLERY_ATTEMPTS; attempt += 1) {
-    if (attempt === 1) {
-      await chrome.scripting
-        .executeScript({ target: { tabId }, func: primeGalleryImages })
-        .catch(() => undefined);
-    }
     const [injection] = await chrome.scripting.executeScript({
       target: { tabId },
-      func: readProductGalleryImages,
+      func: readGalleryUrls,
     });
-    const images = galleryImageSources(
+    const urls = galleryImageSources(
       Array.isArray(injection?.result) ? (injection.result as string[]) : [],
     );
-    if (images.length > 0) return images;
+    if (urls.length > best.length) {
+      best = urls;
+      stablePolls = 0;
+    } else if (best.length > 0) {
+      stablePolls += 1;
+      if (stablePolls >= GALLERY_SETTLE_POLLS) return best;
+    }
     await new Promise((resolve) => setTimeout(resolve, GALLERY_RETRY_MS));
   }
-  return [];
+
+  return best;
 }
 
-export interface MakitoImageDownload {
-  /** Downloads Chrome accepted. */
-  started: number;
-  /** Downloads that reached the disk. */
-  saved: number;
-  /** Gallery photos found on the page. */
+export interface MakitoImageFile {
+  name: string;
+  /** Original supplier URL, kept for the report and the Downloads fallback. */
+  url: string;
+  /** Filled when the caller asked for bytes (writing to the evidence folder). */
+  base64?: string;
+}
+
+export interface MakitoGallery {
+  /** Gallery photos found on the page, in carousel order. */
   total: number;
-  /** Path under Downloads/. */
   folder: string;
-  failures: { url: string; error: string }[];
+  files: MakitoImageFile[];
 }
 
-/**
- * Read the product gallery from a confirmed Makito URL in a real browser tab
- * (their shop answers 403 to every automated request, so a plain fetch cannot
- * see the page) and save each photo under `Downloads/Makito/<SKU>/`.
- *
- * The tab is always closed, including on failure, and it is never activated:
- * an operator can keep working while the gallery is collected.
- */
-export async function downloadMakitoCarouselImages(
-  skuValue: string,
-  catalogUrl: string,
-): Promise<MakitoImageDownload> {
+function guard(skuValue: string, catalogUrl: string): string {
   const sku = skuValue.trim().toUpperCase();
   if (!sku || supplierFor(sku) !== 'MAKITO') {
     throw new Error('This image downloader only supports Makito product SKUs.');
@@ -317,49 +340,109 @@ export async function downloadMakitoCarouselImages(
   if (!isMakitoUrl(catalogUrl)) {
     throw new Error('A confirmed HTTPS Makito product URL is required.');
   }
+  return sku;
+}
+
+/**
+ * Open the confirmed Makito product page in an inactive tab, read the whole
+ * gallery, and (optionally) fetch the image bytes there.
+ *
+ * The page is read in a real tab because Makito answers 403 to automated
+ * requests; the bytes are fetched from inside that page for the same reason, so
+ * the download carries the page's own cookies and referrer.
+ */
+export async function collectMakitoGallery(
+  skuValue: string,
+  catalogUrl: string,
+  options: { withBytes?: boolean } = {},
+): Promise<MakitoGallery> {
+  const sku = guard(skuValue, catalogUrl);
 
   const tab = await chrome.tabs.create({ url: catalogUrl, active: false });
   const tabId = tab.id;
   if (tabId === undefined) throw new Error('Could not open a Makito product tab.');
 
-  let images: string[];
   try {
     await waitForTabLoad(tabId);
     const currentTab = await chrome.tabs.get(tabId);
     if (!isMakitoUrl(currentTab.url ?? '')) {
       throw new Error('The Makito product page redirected outside the approved supplier domains.');
     }
-    images = await readGallery(tabId);
-    if (images.length === 0) {
+
+    const urls = await readGallery(tabId);
+    if (urls.length === 0) {
       throw new Error(
         'No product-gallery images were found. Makito may have blocked the page, or the URL may not be a product page.',
       );
     }
+
+    const files: MakitoImageFile[] = urls.map((url, index) => ({
+      url,
+      name: makitoImageFilename(url, index, sku),
+    }));
+
+    if (options.withBytes) {
+      const [injection] = await chrome.scripting.executeScript({
+        target: { tabId },
+        func: fetchImageBase64,
+        args: [urls],
+      });
+      const fetched = injection?.result;
+      if (!Array.isArray(fetched) || fetched.length !== urls.length) {
+        throw new Error('The supplier page refused to hand over the image data.');
+      }
+      for (const [index, file] of files.entries()) {
+        file.base64 = (fetched[index] as { base64: string }).base64;
+      }
+    }
+
+    return { total: files.length, folder: `Makito/${sku}`, files };
   } finally {
     await chrome.tabs.remove(tabId).catch(() => undefined);
   }
+}
 
+export interface MakitoImageDownload {
+  started: number;
+  saved: number;
+  total: number;
+  folder: string;
+  failures: { url: string; error: string }[];
+}
+
+/**
+ * Downloads fallback: save into `Downloads/Makito/<SKU>/` when no evidence
+ * folder has been picked. Chrome's download request is a separate request that
+ * the shop may refuse, so every file is checked after it settles.
+ */
+export async function downloadMakitoCarouselImages(
+  skuValue: string,
+  catalogUrl: string,
+): Promise<MakitoImageDownload> {
+  const gallery = await collectMakitoGallery(skuValue, catalogUrl);
+  const sku = skuValue.trim().toUpperCase();
   const folder = `Makito/${sku}`;
   const started: { url: string; id: number }[] = [];
   const failures: { url: string; error: string }[] = [];
 
-  for (const [index, url] of images.entries()) {
+  for (const file of gallery.files) {
     try {
       const id = await chrome.downloads.download({
-        url,
-        filename: `${folder}/${makitoImageFilename(url, index, sku)}`,
+        url: file.url,
+        filename: `${folder}/${file.name}`,
         conflictAction: 'uniquify',
         saveAs: false,
       });
-      started.push({ url, id });
+      started.push({ url: file.url, id });
     } catch (error) {
-      failures.push({ url, error: error instanceof Error ? error.message : String(error) });
+      failures.push({ url: file.url, error: error instanceof Error ? error.message : String(error) });
     }
   }
 
   if (started.length === 0) {
-    const first = failures[0]?.error ?? 'unknown error';
-    throw new Error(`The browser did not start any image downloads (${first}).`);
+    throw new Error(
+      `The browser did not start any image downloads (${failures[0]?.error ?? 'unknown error'}).`,
+    );
   }
 
   const settled = await Promise.all(
@@ -372,7 +455,7 @@ export async function downloadMakitoCarouselImages(
   return {
     started: started.length,
     saved: settled.filter((item) => item.ok).length,
-    total: images.length,
+    total: gallery.total,
     folder,
     failures,
   };

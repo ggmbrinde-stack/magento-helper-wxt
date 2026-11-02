@@ -181,6 +181,12 @@ export interface DownloadMakitoImagesRequest {
   type: 'DOWNLOAD_MAKITO_IMAGES';
   sku: string;
   catalogUrl: string;
+  /**
+   * `downloads` lets Chrome save under Downloads/Makito/<SKU>.
+   * `files` returns the image data so the dashboard can write it into the
+   * picked evidence folder instead.
+   */
+  mode?: 'downloads' | 'files';
 }
 
 export interface DownloadMakitoImagesResponse {
@@ -193,6 +199,8 @@ export interface DownloadMakitoImagesResponse {
   total?: number;
   folder?: string;
   failures?: { url: string; error: string }[];
+  /** Present for `mode: 'files'`. */
+  files?: { name: string; base64: string }[];
   error?: string;
 }
 

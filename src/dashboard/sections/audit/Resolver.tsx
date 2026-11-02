@@ -12,6 +12,7 @@ import type {
 } from '../../../core/messages';
 import type { AvailabilityCheck } from '../../../audit';
 import type { SupplierLinkInfo } from '../../../audit';
+import { ensureWritePermission, evidenceRoot, writeEvidenceFile } from '../../../audit';
 import { supplierLinkFor } from '../../../audit';
 import type { ResolverJson } from '../../../shared/resolver';
 import type { VariantTargets } from '../../../audit';
@@ -64,6 +65,14 @@ function formatCheckedAt(iso: string | undefined): string {
     hour: '2-digit',
     minute: '2-digit',
   })}`;
+}
+
+/** Decode the base64 the worker returns into bytes the folder writer accepts. */
+function base64Bytes(value: string): ArrayBuffer {
+  const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
 }
 
 const CATALOG_SOURCE_LABEL: Record<SupplierLinkInfo['catalogSource'], string> = {
@@ -1112,6 +1121,37 @@ export function Resolver({
     setImageDownloadBusy(true);
     setImageDownloadMessage(null);
     try {
+      // The picked evidence root is the operator's image-corrections folder, so
+      // the gallery belongs inside the SKU it will be used to fix. Ask for
+      // permission before any network work, while the click is still a gesture.
+      const root = await evidenceRoot();
+      const canWrite = root ? await ensureWritePermission(root).catch(() => false) : false;
+
+      if (root && canWrite) {
+        const response = (await browser.runtime.sendMessage({
+          type: 'DOWNLOAD_MAKITO_IMAGES',
+          sku: targetSku,
+          catalogUrl: supplierInfo.catalog,
+          mode: 'files',
+        })) as DownloadMakitoImagesResponse;
+        if (!response?.ok || !response.files?.length) {
+          setImageDownloadMessage(response?.error ?? 'Makito image download failed.');
+          return;
+        }
+        const parts = [supplierFor(targetSku), targetSku.toUpperCase(), 'images'];
+        let written = 0;
+        for (const file of response.files) {
+          await writeEvidenceFile(root, parts, file.name, base64Bytes(file.base64));
+          written += 1;
+        }
+        setImageDownloadMessage(
+          `Saved ${written} of ${response.total ?? written} ${written === 1 ? 'image' : 'images'} to ${root.name}/${parts.join('/')}.`,
+        );
+        return;
+      }
+
+      // No folder chosen (or no permission): Chrome can only write under
+      // Downloads, so say where the files go rather than failing the click.
       const response = (await browser.runtime.sendMessage({
         type: 'DOWNLOAD_MAKITO_IMAGES',
         sku: targetSku,
@@ -1130,7 +1170,7 @@ export function Resolver({
         ? ` ${failed} failed (${response.failures?.[0]?.error ?? 'unknown error'}).`
         : '';
       setImageDownloadMessage(
-        `Saved ${saved} of ${total} ${total === 1 ? 'image' : 'images'} to Downloads/${response.folder}.${detail}`,
+        `Saved ${saved} of ${total} ${total === 1 ? 'image' : 'images'} to Downloads/${response.folder} (pick the image corrections folder in Run audit to save there instead).${detail}`,
       );
     } catch (err) {
       setImageDownloadMessage((err as Error).message);

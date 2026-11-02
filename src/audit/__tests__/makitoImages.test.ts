@@ -206,3 +206,27 @@ test('abandons the tab when the page has no gallery', async () => {
   );
   assert.equal(fake.removedTabs, 1);
 });
+
+test('galleryImageSources collapses Magento cache variants to the original file', () => {
+  const found = galleryImageSources([
+    'https://www.makito.eu/media/catalog/product/cache/a6cdd0282c0697af0ca09bbb5198c058/2/2/22482-W.jpg',
+    'https://www.makito.eu/media/catalog/product/cache/9780710a4712efb301092e8c5fb583b9/2/2/22482-W.jpg',
+    'https://www.makito.eu/media/catalog/product/2/2/22482-d1.jpg',
+  ]);
+  // One entry per photo, and the URL is the original - not a resized cache copy.
+  assert.deepEqual(found, [
+    'https://www.makito.eu/media/catalog/product/2/2/22482-W.jpg',
+    'https://www.makito.eu/media/catalog/product/2/2/22482-d1.jpg',
+  ]);
+});
+
+test('makitoImageFilename names the original, not the cache path', () => {
+  assert.equal(
+    makitoImageFilename(
+      'https://www.makito.eu/media/catalog/product/cache/a6cdd0282c0697af0ca09bbb5198c058/2/2/22482-W.jpg',
+      0,
+      'M22482',
+    ),
+    '01-M22482-22482-W.jpg',
+  );
+});
