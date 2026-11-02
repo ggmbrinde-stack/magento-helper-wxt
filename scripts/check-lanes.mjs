@@ -56,7 +56,8 @@ const ENTRYPOINT_DIR = 'src/entrypoints/';
  * build); it is a harness, not dead product code.
  */
 const DEAD_ALLOW = new Set(['src/ui/smoke-test.ts', 'src/audit/__tests__/supplier.test.ts',
-  'src/audit/__tests__/makitoImages.test.ts',]);
+  'src/audit/__tests__/makitoImages.test.ts',
+  'src/audit/__tests__/enableFlow.test.ts',]);
 
 const EXTENSIONS = ['', '.ts', '.tsx', '/index.ts', '/index.tsx'];
 

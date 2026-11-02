@@ -15,6 +15,7 @@
 
 export * from './coverageCheck';
 export * from './dossierContent';
+export * from './enableFlow';
 export * from './evidence/diagnose';
 export * from './evidence/export';
 export * from './evidence/folder';

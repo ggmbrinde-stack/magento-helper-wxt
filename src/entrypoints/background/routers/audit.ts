@@ -33,6 +33,7 @@ import {
   saveSupplierOverride,
   clearSupplierOverride,
   supplierInfoForSku,
+  loadPpAssignment,
 } from '../../../audit';
 import { resolveSku, resolveSkuWithHtml } from '../../../shared/resolver';
 import { imageAuditForSku } from '../../../audit';
@@ -228,6 +229,36 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
         sendResponse(await resolveSkuForDashboard(sku, url, force));
       } catch (err) {
         sendResponse({ ok: false, error: (err as Error).message ?? 'Resolve failed' });
+      }
+    })();
+    // Outer return keeps the message channel open for the async response.
+    return true;
+  }
+
+  if (message?.type === 'LOAD_ENABLE_FLOW') {
+    const sku = String(message.sku ?? '').trim();
+    const force = message.force === true;
+    if (!sku) {
+      sendResponse({ ok: false, error: 'SKU is required' });
+      return true;
+    }
+    void (async () => {
+      try {
+        const resolution = await resolveSkuForDashboard(sku, undefined, force);
+        const target = resolution.resolver?.sku || sku;
+        let pp;
+        let ppError: string | undefined;
+        try {
+          pp = await loadPpAssignment(target);
+        } catch (err) {
+          ppError = (err as Error).message ?? 'Notion read failed';
+        }
+        sendResponse({ ok: resolution.ok, resolution, pp, ppError });
+      } catch (err) {
+        sendResponse({
+          ok: false,
+          error: (err as Error).message ?? 'Enable flow load failed',
+        });
       }
     })();
     // Outer return keeps the message channel open for the async response.

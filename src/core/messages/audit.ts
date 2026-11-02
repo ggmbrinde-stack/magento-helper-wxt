@@ -19,6 +19,7 @@ import type { NotionHealthReport } from '../../audit';
 import type { VariantTargets } from '../../audit';
 import type { AvailabilityCheck } from '../../audit';
 import type { SupplierLinkInfo } from '../../audit';
+import type { PpAssignment } from '../../audit';
 
 /* ------------------------------------------------------------------------- */
 /* SKU data for the panel (SKU Library row + open errors, read-only)          */
@@ -154,6 +155,29 @@ export interface CheckSupplierRequest {
 export interface CheckSupplierResponse {
   ok: boolean;
   check?: AvailabilityCheck;
+  error?: string;
+}
+
+/**
+ * Load everything the Disable -> Enable checklist reads, in one round trip.
+ *
+ * Read-only: the resolver may open a background admin tab, and the PP tracker
+ * is queried, but nothing is written to Magento or Notion.
+ */
+export interface LoadEnableFlowRequest {
+  type: 'LOAD_ENABLE_FLOW';
+  sku: string;
+  /** Ignore a fresh resolver cache entry and read the product again. */
+  force?: boolean;
+}
+
+export interface LoadEnableFlowResponse {
+  ok: boolean;
+  resolution?: ResolveSkuResponse;
+  /** The SKU's row in `SKU - PP & Category Assignment`, when it exists. */
+  pp?: PpAssignment;
+  /** Why the PP tracker could not be read (token missing, no access, …). */
+  ppError?: string;
   error?: string;
 }
 

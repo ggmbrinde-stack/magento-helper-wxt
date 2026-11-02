@@ -11,6 +11,7 @@ import { Resolver } from '../sections/audit/Resolver';
 import { TextAudit } from '../sections/audit/TextAudit';
 import { Batch } from '../sections/automation/Batch';
 import { ModelBridge } from '../sections/automation/ModelBridge';
+import { EnableFlow } from '../sections/ui/EnableFlow';
 import { Overview } from '../sections/ui/Overview';
 import { Settings } from '../sections/ui/Settings';
 
@@ -21,6 +22,7 @@ export type SectionId =
   | 'auditHome'
   | 'batch'
   | 'resolver'
+  | 'enable'
   | 'images'
   | 'text'
   | 'push'
@@ -45,6 +47,7 @@ const NAV: { group: string; items: SectionDef[] }[] = [
       { id: 'overview', label: 'Overview', hint: 'Status & quick links' },
       { id: 'batch', label: 'Run audit', hint: 'Run the full pipeline as steps' },
       { id: 'resolver', label: 'Resolve SKU', hint: 'Product data, variants & Magento links' },
+      { id: 'enable', label: 'Enable flow', hint: 'Disabled SKU → sale ready' },
     ],
   },
   {
@@ -151,6 +154,7 @@ export function Dashboard() {
           {section === 'overview' ? <Overview /> : null}
           {section === 'batch' ? <Batch /> : null}
           {section === 'resolver' ? <Resolver onOpen={(id) => setSection(id as SectionId)} /> : null}
+          {section === 'enable' ? <EnableFlow onOpen={(id) => setSection(id as SectionId)} /> : null}
           {section === 'images' ? <ImageAudit /> : null}
           {section === 'text' ? <TextAudit /> : null}
           {section === 'push' ? <Push /> : null}
