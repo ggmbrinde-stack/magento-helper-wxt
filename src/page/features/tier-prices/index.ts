@@ -44,8 +44,22 @@ export function findTierPricesTable(): HTMLElement | null {
   return null;
 }
 
+function findDeleteControl(row: HTMLTableRowElement): HTMLElement | null {
+  const candidates = row.querySelectorAll<HTMLElement>(
+    'button.action-delete, [data-action="remove_row"], [data-action="remove"], .action-delete, [class*="delete"], [class*="remove"]'
+  );
+  for (const c of candidates) {
+    if (c.tagName === 'BUTTON' || c.tagName === 'A' || c.getAttribute('role') === 'button') return c;
+  }
+  for (const el of row.querySelectorAll<HTMLElement>('*')) {
+    const label = (el.getAttribute('aria-label') || el.getAttribute('title') || el.textContent || '').trim().toLowerCase();
+    if (label.includes('delete') || label.includes('remove')) return el;
+  }
+  return null;
+}
+
 /**
- * Add the "Textil" and "Outros artigos" buttons to the tier prices page.
+ * Add the "Textil", "Outros artigos" and "Delete all" buttons to the tier prices page.
  */
 export function renderTierPricesButtons(): void {
   if (!isTierPricesPage(location.href)) return;
@@ -60,7 +74,7 @@ export function renderTierPricesButtons(): void {
   btnWrap.style.cssText =
     'margin-bottom: 8px; display: flex; gap: 8px; flex-wrap: wrap;';
 
-  const addButton = (label: string, bands: readonly TierBand[]) => {
+  const makeBtn = (label: string, onClick: () => void, title: string) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'mhx-tier-prices-btn mhx-tier-prices-btn--fill';
@@ -74,54 +88,19 @@ export function renderTierPricesButtons(): void {
       background: var(--mhx-surface, #fff);
       color: var(--mhx-ink);
     `;
-    btn.title = `Fill with ${label} tier prices from Notion`;
-    btn.addEventListener('click', () => {
-      void fillTierPrices(table, bands);
-    });
+    btn.title = title;
+    btn.addEventListener('click', onClick);
     btnWrap.appendChild(btn);
   };
 
-  addButton('Textil', TEXTIL_BANDS);
-  addButton('Outros artigos', OUTROS_BANDS);
-
-  // Delete all button
-  const deleteAllBtn = document.createElement('button');
-  deleteAllBtn.type = 'button';
-  deleteAllBtn.className = 'mhx-tier-prices-btn mhx-tier-prices-btn--delete';
-  deleteAllBtn.textContent = 'Delete all';
-  deleteAllBtn.style.cssText = `
-    padding: 6px 14px;
-    border: 1px solid var(--mhx-border, #e4e7eb);
-    border-radius: 4px;
-    cursor: pointer;
-    font: 13px/1.4 system-ui, "Segoe UI", Arial, sans-serif;
-    background: var(--mhx-surface, #fff);
-    color: var(--mhx-ink);
-  `;
-  deleteAllBtn.title = 'Remove all tier price rows';
-  deleteAllBtn.addEventListener('click', () => {
-    void deleteAllTierPrices(table);
-  });
-  btnWrap.appendChild(deleteAllBtn);
+  makeBtn('Textil', () => { void fillTierPrices(table, TEXTIL_BANDS); }, 'Fill with Textil tier prices from Notion');
+  makeBtn('Outros artigos', () => { void fillTierPrices(table, OUTROS_BANDS); }, 'Fill with Outros artigos tier prices from Notion');
+  makeBtn('Delete all', () => { void deleteAllTierPrices(table); }, 'Remove all tier price rows');
 
   const tableSectionEl = table.parentElement ?? document.body;
   if (tableSectionEl) {
     tableSectionEl.insertBefore(btnWrap, tableSectionEl.firstChild);
   }
-}
-
-function findDeleteControl(row: HTMLTableRowElement): HTMLElement | null {
-  const candidates = row.querySelectorAll<HTMLElement>(
-    'button.action-delete, a.action-delete, [data-action="remove"], .action-delete, button[title*="delete" i], button[title*="remove" i], a[title*="delete" i], a[title*="remove" i], [class*="delete"], [class*="remove"]'
-  );
-  for (const c of candidates) {
-    if (c.tagName === 'BUTTON' || c.tagName === 'A' || c.getAttribute('role') === 'button') return c;
-  }
-  for (const el of row.querySelectorAll<HTMLElement>('*')) {
-    const label = (el.getAttribute('aria-label') || el.getAttribute('title') || el.textContent || '').trim().toLowerCase();
-    if (label.includes('delete') || label.includes('remove')) return el;
-  }
-  return null;
 }
 
 function readQty(row: HTMLTableRowElement): number {
@@ -151,7 +130,7 @@ function setPrice(row: HTMLTableRowElement, discount: number): void {
       }
     }
   }
-  const setPct = () => {
+  const setPct = (): boolean => {
     const inputs = row.querySelectorAll<HTMLInputElement>('input');
     for (const input of inputs) {
       if (/percentage_value/i.test(input.name) || /percentage_value/i.test(input.id)) {
@@ -164,8 +143,7 @@ function setPrice(row: HTMLTableRowElement, discount: number): void {
     return false;
   };
   if (!setPct()) {
-    setTimeout(setPct, 50);
-    setTimeout(setPct, 200);
+    setTimeout(() => { if (!setPct()) setTimeout(setPct, 300); }, 100);
   }
 }
 
@@ -184,20 +162,6 @@ export async function deleteAllTierPrices(table: HTMLElement): Promise<void> {
   const tbody = table.querySelector('tbody');
   if (!tbody) return;
 
-  const findDeleteControl = (row: HTMLTableRowElement): HTMLElement | null => {
-    const candidates = row.querySelectorAll<HTMLElement>(
-      'button.action-delete, a.action-delete, [data-action="remove"], .action-delete, button[title*="delete" i], button[title*="remove" i], a[title*="delete" i], a[title*="remove" i], [class*="delete"], [class*="remove"]'
-    );
-    for (const c of candidates) {
-      if (c.tagName === 'BUTTON' || c.tagName === 'A' || c.getAttribute('role') === 'button') return c;
-    }
-    for (const el of row.querySelectorAll<HTMLElement>('*')) {
-      const label = (el.getAttribute('aria-label') || el.getAttribute('title') || el.textContent || '').trim().toLowerCase();
-      if (label.includes('delete') || label.includes('remove')) return el;
-    }
-    return null;
-  };
-
   const rows = Array.from(tbody.querySelectorAll('tr'));
   let deleteControlsFound = false;
   for (const row of rows) {
@@ -208,8 +172,17 @@ export async function deleteAllTierPrices(table: HTMLElement): Promise<void> {
     }
   }
 
-  if (!deleteControlsFound) {
-    // Fallback: clear all input values.
+  if (deleteControlsFound) {
+    await new Promise<void>((resolve) => {
+      const start = Date.now();
+      const check = () => {
+        if (tbody.querySelectorAll('tr').length === 0) resolve();
+        else if (Date.now() - start < 1000) setTimeout(check, 50);
+        else resolve();
+      };
+      setTimeout(check, 50);
+    });
+  } else {
     for (const row of rows) {
       const inputs = row.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
       for (const el of inputs) {
@@ -223,18 +196,9 @@ export async function deleteAllTierPrices(table: HTMLElement): Promise<void> {
         }
       }
     }
-  } else {
-    await new Promise<void>((resolve) => {
-      const start = Date.now();
-      const check = () => {
-        if (tbody.querySelectorAll('tr').length === 0) resolve();
-        else if (Date.now() - start < 1000) setTimeout(check, 50);
-        else resolve();
-      };
-      setTimeout(check, 50);
-    });
   }
 }
+
 export async function fillTierPrices(
   table: HTMLElement,
   bands: readonly TierBand[]
@@ -242,7 +206,7 @@ export async function fillTierPrices(
   const tbody = table.querySelector('tbody');
   if (!tbody) return;
 
-  // --- Clean existing rows first so switching Textil <-> Outros doesn't leave stale rows ---
+  // --- Clean existing rows first ---
   const rowsBefore = Array.from(tbody.querySelectorAll('tr'));
   let deleteControlsFound = false;
   for (const row of rowsBefore) {
@@ -264,7 +228,6 @@ export async function fillTierPrices(
       setTimeout(check, 50);
     });
   } else {
-    // No delete control found: clear all input values in existing rows.
     for (const row of Array.from(tbody.querySelectorAll('tr'))) {
       const inputs = row.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
       for (const el of inputs) {
@@ -272,54 +235,55 @@ export async function fillTierPrices(
           el.value = '';
           el.dispatchEvent(new Event('change', { bubbles: true }));
           el.dispatchEvent(new Event('input', { bubbles: true }));
-        } else if (el instanceof HTMLSelectElement) {
-          if (el.options.length) {
-            el.selectedIndex = 0;
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-          }
+        } else if (el instanceof HTMLSelectElement && el.options.length) {
+          el.selectedIndex = 0;
+          el.dispatchEvent(new Event('change', { bubbles: true }));
         }
       }
     }
   }
 
-  // Update existing rows whose quantity matches a band.
-  for (const row of Array.from(tbody.querySelectorAll('tr'))) {
-    const qty = readQty(row);
-    if (Number.isNaN(qty)) continue;
-    const band = bands.find((b) => b.from === qty);
-    if (band) setPrice(row, band.discount);
-  }
+  // --- Fill bands ---
+  const existingRows = Array.from(tbody.querySelectorAll('tr'));
+  let rowIndex = 0;
 
-  const addButton = Array.from(document.querySelectorAll<HTMLButtonElement>('button')).find(
-    (btn) => /^\s*add\s*$/i.test((btn.textContent ?? '').trim()),
-  );
+  for (const band of bands) {
+    let targetRow: HTMLTableRowElement | null = null;
+    for (let i = rowIndex; i < existingRows.length; i++) {
+      const candidateRow = existingRows[i];
+      if (!candidateRow) continue;
+      if (Number.isNaN(readQty(candidateRow))) {
+        targetRow = candidateRow;
+        rowIndex = i + 1;
+        break;
+      }
+    }
 
-  const missingBands = bands.filter(
-    (band) => !Array.from(tbody.querySelectorAll('tr')).some((row) => readQty(row) === band.from)
-  );
-
-  for (const band of missingBands) {
-    if (!addButton) break;
-    const beforeCount = tbody.querySelectorAll('tr').length;
-    addButton.click();
-    await new Promise<void>((resolve) => {
-      const start = Date.now();
-      const check = () => {
-        if (tbody.querySelectorAll('tr').length > beforeCount) {
-          resolve();
-        } else if (Date.now() - start < 1000) {
-          setTimeout(check, 50);
-        } else {
-          resolve();
-        }
-      };
-      setTimeout(check, 50);
-    });
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    const last = rows[rows.length - 1];
-    if (last) {
-      setQty(last, band.from);
-      setPrice(last, band.discount);
+    if (targetRow) {
+      setQty(targetRow, band.from);
+      setPrice(targetRow, band.discount);
+    } else {
+      const addButton = Array.from(document.querySelectorAll<HTMLButtonElement>('button')).find(
+        (btn) => /^\s*add\s*$/i.test((btn.textContent ?? '').trim()),
+      );
+      if (!addButton) continue;
+      const beforeCount = tbody.querySelectorAll('tr').length;
+      addButton.click();
+      await new Promise<void>((resolve) => {
+        const start = Date.now();
+        const check = () => {
+          if (tbody.querySelectorAll('tr').length > beforeCount) resolve();
+          else if (Date.now() - start < 1000) setTimeout(check, 50);
+          else resolve();
+        };
+        setTimeout(check, 50);
+      });
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const last = rows.length > 0 ? rows[rows.length - 1] : null;
+      if (last) {
+        setQty(last, band.from);
+        setPrice(last, band.discount);
+      }
     }
   }
 }
