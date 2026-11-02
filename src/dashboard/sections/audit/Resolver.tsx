@@ -1206,7 +1206,7 @@ export function Resolver({
           setImageDownloadMessage(response?.error ?? 'Makito image download failed.');
           return;
         }
-        const parts = [supplierFor(targetSku), targetSku.toUpperCase(), 'images'];
+        const parts = [supplierFor(targetSku), targetSku.toUpperCase()];
         let written = 0;
         for (const file of response.files) {
           await writeEvidenceFile(root, parts, file.name, base64Bytes(file.base64));

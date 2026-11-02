@@ -15,14 +15,18 @@ background tab, reads the product gallery, and saves every photo into the
 it belongs to:
 
 ```
-<evidence root>/MAKITO/<SKU>/images/01-<SKU>-<image-name>.<ext>
-<evidence root>/MAKITO/<SKU>/images/02-<SKU>-<image-name>.<ext>
+<evidence root>/MAKITO/<SKU>/01-<SKU>-<image-name>.<ext>
+<evidence root>/MAKITO/<SKU>/02-<SKU>-<image-name>.<ext>
 ```
 
-That is the same `<root>/<SUPPLIER>/<SKU>` convention the audit itself uses, and
-`images` is already in `HIDDEN` in `mirrorManifest.ts`, so verification and the
-tidy step ignore the folder: downloading a gallery never changes what the audit
-thinks of a SKU.
+They sit directly in the SKU folder, next to the rest of its evidence — the same
+`<root>/<SUPPLIER>/<SKU>` convention the audit itself uses, with no extra level
+to click through.
+
+Note that `scanSkuImages` in `mirrorManifest.ts` also reads raster files from the
+flat SKU folder, so these gallery photos are reported as `extra` images by the
+mirror drift check for that SKU. A folder named `images` is in `HIDDEN` there;
+the loose files are not.
 
 The index is zero padded so a folder sorts in gallery order, and the SKU is in
 every filename so images cannot be mixed up once they leave the supplier folder.
@@ -132,7 +136,7 @@ gets searched.
 The card reports what reached the disk, not what was queued:
 
 ```
-Saved 10 of 10 images to Corrections/MAKITO/M22482/images.
+Saved 10 of 10 images to Corrections/MAKITO/M22482.
 Saved 6 of 8 images to Downloads/Makito/M22477. 2 failed (FORBIDDEN).
 ```
 
