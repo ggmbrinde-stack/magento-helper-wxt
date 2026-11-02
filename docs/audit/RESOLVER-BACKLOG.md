@@ -45,8 +45,10 @@ Ordered by value per hour. Each names the file that owns the fix.
 MAKITO's product slugs are the product name, not the SKU
 (`https://www.makito.eu/es/cable-cargador-soporte-zynix.html`), so no URL is
 derivable; TOPTEX has no proven pattern either. Both stay `unresolved` until
-`Supplier Product` is filled in Notion or an entry is added to
-`src/audit/rules/supplierCatalog.ts` (one is seeded: `M22477`).
+`Supplier Product` is filled in Notion, an entry is added to
+`src/audit/rules/supplierCatalog.ts`, or the link is pasted into the field on
+the supplier card (stored per SKU in `supplierUrlOverrides`). Seeded so far:
+`M22477`, `M22482`, `M4624`.
 
 Until then the card shows a site-search link built from the SKU, marked as a
 search, never as a catalogue product.

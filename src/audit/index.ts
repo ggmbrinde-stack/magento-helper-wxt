@@ -29,6 +29,7 @@ export * from './skuResolution';
 export * from './statusReport';
 export * from './supplierAvailability';
 export * from './supplierLinks';
+export * from './supplierOverrides';
 export * from './textAudit';
 export * from './textFetch';
 export * from './variantLabels';

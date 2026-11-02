@@ -157,6 +157,25 @@ export interface CheckSupplierResponse {
   error?: string;
 }
 
+/** Store or forget the supplier product link the operator pasted for a SKU. */
+export interface SetSupplierUrlRequest {
+  type: 'SET_SUPPLIER_URL';
+  sku: string;
+  url: string;
+}
+
+export interface ClearSupplierUrlRequest {
+  type: 'CLEAR_SUPPLIER_URL';
+  sku: string;
+}
+
+export interface SupplierUrlResponse {
+  ok: boolean;
+  /** The supplier card as it stands after the change. */
+  supplier?: SupplierLinkInfo;
+  error?: string;
+}
+
 /** Download the visible product-gallery images from a confirmed Makito URL. */
 export interface DownloadMakitoImagesRequest {
   type: 'DOWNLOAD_MAKITO_IMAGES';

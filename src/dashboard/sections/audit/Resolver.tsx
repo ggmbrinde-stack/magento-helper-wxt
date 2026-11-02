@@ -67,6 +67,7 @@ function formatCheckedAt(iso: string | undefined): string {
 }
 
 const CATALOG_SOURCE_LABEL: Record<SupplierLinkInfo['catalogSource'], string> = {
+  manual: 'pasted here',
   notion: 'confirmed in the SKU Library',
   map: 'confirmed in the supplier map',
   guessed: 'guessed from the SKU digits',
@@ -104,6 +105,12 @@ function SupplierCard({
   downloadBusy,
   downloadMessage,
   onDownloadMakitoImages,
+  linkDraft,
+  linkBusy,
+  linkError,
+  onLinkDraft,
+  onSaveLink,
+  onClearLink,
 }: {
   supplier: SupplierLinkInfo;
   availability: AvailabilityCheck | null;
@@ -112,6 +119,12 @@ function SupplierCard({
   downloadBusy: boolean;
   downloadMessage: string | null;
   onDownloadMakitoImages: () => void;
+  linkDraft: string;
+  linkBusy: boolean;
+  linkError: string | null;
+  onLinkDraft: (value: string) => void;
+  onSaveLink: () => void;
+  onClearLink: () => void;
 }) {
   return (
     <section class="db-card db-wide">
@@ -170,6 +183,49 @@ function SupplierCard({
         <p class="db-muted" role="status">
           {downloadMessage}
         </p>
+      ) : null}
+      {!supplier.internalOnly ? (
+        <div class="db-field">
+          <span>Supplier product link</span>
+          <em>
+            {supplier.catalogSource === 'manual'
+              ? 'pasted by you - used for the dossier link and the image download'
+              : 'Paste the product page when no URL is known for this SKU'}
+          </em>
+          <div class="db-link-row">
+            <input
+              type="text"
+              value={linkDraft}
+              placeholder={
+                supplier.supplier === 'MAKITO'
+                  ? 'https://www.makito.eu/es/<product>.html'
+                  : 'https://…'
+              }
+              onInput={(e) => onLinkDraft(e.currentTarget.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') onSaveLink();
+              }}
+            />
+            <button
+              type="button"
+              class="db-btn"
+              disabled={linkBusy || !linkDraft.trim()}
+              onClick={onSaveLink}
+            >
+              {linkBusy ? 'Saving…' : 'Save link'}
+            </button>
+            {supplier.catalogSource === 'manual' ? (
+              <button type="button" class="db-btn" disabled={linkBusy} onClick={onClearLink}>
+                Clear
+              </button>
+            ) : null}
+          </div>
+          {linkError ? (
+            <p class="db-muted" role="alert">
+              {linkError}
+            </p>
+          ) : null}
+        </div>
       ) : null}
       <ul class="db-kv">
         <li>
@@ -365,6 +421,12 @@ function ResolverResult({
   imageDownloadBusy,
   imageDownloadMessage,
   onDownloadMakitoImages,
+  linkDraft,
+  linkBusy,
+  linkError,
+  onLinkDraft,
+  onSaveLink,
+  onClearLink,
 }: {
   r: ResolverJson;
   notion?: ResolverNotionMetadata;
@@ -383,6 +445,12 @@ function ResolverResult({
   imageDownloadBusy: boolean;
   imageDownloadMessage: string | null;
   onDownloadMakitoImages: () => void;
+  linkDraft: string;
+  linkBusy: boolean;
+  linkError: string | null;
+  onLinkDraft: (value: string) => void;
+  onSaveLink: () => void;
+  onClearLink: () => void;
 }) {
   // A partial (admin-only) payload has no attributes or index: rendering the
   // matrix would invent an empty one (F7).
@@ -559,6 +627,12 @@ function ResolverResult({
           downloadBusy={imageDownloadBusy}
           downloadMessage={imageDownloadMessage}
           onDownloadMakitoImages={onDownloadMakitoImages}
+          linkDraft={linkDraft}
+          linkBusy={linkBusy}
+          linkError={linkError}
+          onLinkDraft={onLinkDraft}
+          onSaveLink={onSaveLink}
+          onClearLink={onClearLink}
         />
       ) : null}
 
@@ -888,6 +962,9 @@ export function Resolver({
   const [supplierBusy, setSupplierBusy] = useState(false);
   const [imageDownloadBusy, setImageDownloadBusy] = useState(false);
   const [imageDownloadMessage, setImageDownloadMessage] = useState<string | null>(null);
+  const [linkDraft, setLinkDraft] = useState('');
+  const [linkBusy, setLinkBusy] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
@@ -983,6 +1060,35 @@ export function Resolver({
       setWarning((err as Error).message);
     } finally {
       setSupplierBusy(false);
+    }
+  };
+
+  /**
+   * Store or forget a pasted supplier link. The worker answers with the whole
+   * supplier card, so the download button, the catalogue line and the dossier
+   * all follow without resolving again.
+   */
+  const changeSupplierLink = async (action: 'set' | 'clear'): Promise<void> => {
+    const targetSku = result?.resolver?.sku ?? sku.trim();
+    if (!targetSku) return;
+    setLinkBusy(true);
+    setLinkError(null);
+    try {
+      const response = (await browser.runtime.sendMessage({
+        type: action === 'set' ? 'SET_SUPPLIER_URL' : 'CLEAR_SUPPLIER_URL',
+        sku: targetSku,
+        url: action === 'set' ? linkDraft : undefined,
+      })) as { ok: boolean; supplier?: SupplierLinkInfo; error?: string };
+      if (!response?.ok || !response.supplier) {
+        setLinkError(response?.error ?? 'Could not store the link.');
+        return;
+      }
+      setResult((prev) => (prev ? { ...prev, supplier: response.supplier } : prev));
+      if (action === 'set') setLinkDraft('');
+    } catch (err) {
+      setLinkError((err as Error).message);
+    } finally {
+      setLinkBusy(false);
     }
   };
 
@@ -1146,6 +1252,12 @@ export function Resolver({
             void checkSupplier(result?.resolver?.sku ?? sku.trim(), true)
           }
           onDownloadMakitoImages={() => void downloadMakitoImages()}
+          linkDraft={linkDraft}
+          linkBusy={linkBusy}
+          linkError={linkError}
+          onLinkDraft={setLinkDraft}
+          onSaveLink={() => void changeSupplierLink('set')}
+          onClearLink={() => void changeSupplierLink('clear')}
         />
       ) : null}
       {result?.adminFallback && result.adminFallback.children.length > 0 ? (

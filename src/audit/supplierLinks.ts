@@ -43,7 +43,7 @@ export const SUPPLIER_TABLE: Record<SupplierName, SupplierRow> = {
 };
 
 /** Where a catalogue URL came from. `guessed` is always disclosed as such. */
-export type CatalogSource = 'notion' | 'map' | 'guessed' | 'none';
+export type CatalogSource = 'manual' | 'notion' | 'map' | 'guessed' | 'none';
 
 export interface SupplierLinkInfo {
   sku: string;
@@ -73,6 +73,8 @@ export interface SupplierLinkInfo {
 export interface SupplierLinkInput {
   /** SKU Library `Supplier Product` column, when the row has one. */
   catalogUrl?: string;
+  /** URL the operator pasted into the dashboard for this SKU. */
+  overrideUrl?: string;
   /** SKU Library `Supplier Link` column (official site override). */
   supplierUrl?: string;
 }
@@ -88,6 +90,13 @@ function supplierSearchUrl(official: string, sku: string): string {
   if (!official) return '';
   try {
     const host = new URL(official).hostname.replace(/^www\./, '');
+    // Makito's shop is PrestaShop, so it has its own search controller - the
+    // operator lands on the supplier's results instead of a Google page that
+    // has to be read and clicked through. Other suppliers keep the site: query
+    // because no search route has been verified for them.
+    if (host === 'makito.eu') {
+      return `https://www.makito.eu/es/index.php?controller=search&s=${encodeURIComponent(sku)}`;
+    }
     return `https://www.google.com/search?q=${encodeURIComponent(`site:${host} ${sku}`)}`;
   } catch {
     return '';
@@ -133,11 +142,17 @@ export function supplierLinkFor(
   const guessed = guessCatalogUrl(id, supplier);
   const internalOnly = supplier === 'ALLBEST';
 
+  // Precedence: a link the operator pasted wins, because it is the most recent
+  // human confirmation and it exists precisely when the other sources failed.
+  const fromOverride = (input.overrideUrl ?? '').trim();
   const fromNotion = (input.catalogUrl ?? '').trim();
   const fromMap = (SUPPLIER_CATALOG[id] ?? '').trim();
   let catalog = '';
   let catalogSource: CatalogSource = 'none';
-  if (fromNotion) {
+  if (fromOverride) {
+    catalog = fromOverride;
+    catalogSource = 'manual';
+  } else if (fromNotion) {
     catalog = fromNotion;
     catalogSource = 'notion';
   } else if (fromMap) {
@@ -156,6 +171,8 @@ export function supplierLinkFor(
     reviewFlags.push('catalog-url-missing');
   } else if (catalogSource === 'guessed') {
     reviewFlags.push('catalog-url-guessed');
+  } else if (catalogSource === 'manual') {
+    reviewFlags.push('catalog-url-pasted');
   }
   // MAKITO is attributed from the SKU prefix alone (the Notion `SKU & Prefixes`
   // rule); no catalogue URL pattern has been proven for it.
@@ -191,7 +208,9 @@ export function supplierBlock(info: SupplierLinkInfo, now = new Date()): string 
     const label =
       info.catalogSource === 'guessed'
         ? 'guessed from the SKU digits - verify once'
-        : `confirmed via ${info.catalogSource}`;
+        : info.catalogSource === 'manual'
+          ? 'pasted by the operator'
+          : `confirmed via ${info.catalogSource}`;
     lines.push(`- Catalog product page: ${info.catalog} (${label})`);
   } else {
     lines.push(

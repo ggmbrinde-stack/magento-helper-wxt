@@ -27,6 +27,7 @@ import {
 import { adminEditUrl, DEFAULT_ADMIN_BASE, normalizeAdminBase } from '../shared/magento';
 import { variantTargetsFromRows } from './variants';
 import { supplierLinkFor, type SupplierLinkInfo } from './supplierLinks';
+import { getSupplierOverride } from './supplierOverrides';
 import { loadAvailability, type AvailabilityCheck } from './supplierAvailability';
 import type {
   CacheDuplicate,
@@ -695,6 +696,28 @@ async function findDuplicates(resolver: ResolverJson): Promise<CacheDuplicate[]>
 // Orchestrator
 // ---------------------------------------------------------------------------
 
+/**
+ * The supplier card for a SKU, read from the storefront-independent sources.
+ *
+ * Used after the operator pastes or clears a link so the card updates without
+ * resolving the product again - a resolve would open an admin tab just to
+ * re-read what is already known.
+ */
+export async function supplierInfoForSku(skuRaw: string): Promise<SupplierLinkInfo> {
+  const sku = normalizeSku(skuRaw);
+  if (!sku) return supplierLinkFor(skuRaw);
+  const settings = await loadSettings();
+  const [overrideUrl, enrichment] = await Promise.all([
+    getSupplierOverride(sku),
+    notionEnrichment(sku, settings).catch(() => ({}) as { metadata?: ResolverNotionMetadata }),
+  ]);
+  return supplierLinkFor(sku, {
+    overrideUrl,
+    catalogUrl: enrichment.metadata?.supplierProduct,
+    supplierUrl: enrichment.metadata?.supplierLink,
+  });
+}
+
 export async function resolveSkuForDashboard(
   skuRaw: string,
   url?: string,
@@ -778,9 +801,10 @@ export async function resolveSkuForDashboard(
   if (enrichment.warning) warnings.push(enrichment.warning);
   const notion = enrichment.metadata;
 
-  // D1/D4: confirmed URL (Notion) > rules map > ROLY guess, and the payload
-  // says which one it used.
+  // D4: a link the operator pasted wins, then the confirmed URL (Notion), the
+  // rules map and finally a ROLY guess - the payload says which one it used.
   const supplier = supplierLinkFor(sku, {
+    overrideUrl: await getSupplierOverride(sku),
     catalogUrl: notion?.supplierProduct,
     supplierUrl: notion?.supplierLink,
   });

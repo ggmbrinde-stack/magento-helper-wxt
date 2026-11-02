@@ -38,10 +38,21 @@ Consequences worth knowing:
 ## Preconditions
 
 The button is enabled only when the SKU is Makito **and** a confirmed catalogue
-URL exists — from the SKU Library `Supplier Product` column (Notion) or
-`src/audit/rules/supplierCatalog.ts`. A guessed URL (or none, e.g. `M22532`
-today) leaves it disabled with an explanation, because a site-search page has no
-gallery to scrape.
+URL exists. A site-search page has no gallery to scrape, so it never counts.
+
+Three sources, highest precedence first:
+
+1. **A link pasted in the dashboard** — the *Supplier product link* field on the
+   supplier card. Stored per SKU in `chrome.storage.local`
+   (`supplierUrlOverrides`), so it survives a reload and applies to the dossier
+   and the download from then on. `Clear` forgets it.
+2. **SKU Library `Supplier Product`** (Notion).
+3. **`src/audit/rules/supplierCatalog.ts`** — seeded defaults.
+
+Nothing is stored until it passes validation in `checkSupplierUrl`: HTTPS, on
+one of *that supplier's* official/alt hosts, not the home page, and not a search
+results page. The rejection names the reason, e.g. *"That link is on roly.eu;
+MAKITO product pages are on makito.eu or makito.es."*
 
 The backend re-validates: the SKU must resolve to MAKITO, the URL must be HTTPS
 on an approved Makito host, and the tab's final URL must still be on one of
@@ -57,6 +68,14 @@ those hosts — a redirect elsewhere aborts before anything is downloaded.
    icons.
 4. Collapse `-large_default` / `-home_default` / `-thickbox_default` variants of
    the same photo, keeping the first (largest). One photo, one file.
+
+## When the link is unknown
+
+The supplier card shows *Catalogue source: no URL known* plus a **Find by SKU**
+link. For Makito that link now goes to the shop's own PrestaShop search
+(`/es/index.php?controller=search&s=<SKU>`) instead of a Google `site:` query.
+Open the product the search returns, copy its address, and paste it into the
+field on the card.
 
 ## Report
 

@@ -27,6 +27,9 @@ import {
   saveAvailability,
   resolveSkuForDashboard,
   downloadMakitoCarouselImages,
+  saveSupplierOverride,
+  clearSupplierOverride,
+  supplierInfoForSku,
 } from '../../../audit';
 import { resolveSku, resolveSkuWithHtml } from '../../../shared/resolver';
 import { imageAuditForSku } from '../../../audit';
@@ -316,6 +319,27 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
       }
     })();
     // Outer return keeps the message channel open for the async response.
+    return true;
+  }
+
+  if (message?.type === 'SET_SUPPLIER_URL' || message?.type === 'CLEAR_SUPPLIER_URL') {
+    const sku = String(message.sku ?? '').trim().toUpperCase();
+    if (!sku) {
+      sendResponse({ ok: false, error: 'Resolve a SKU first.' });
+      return true;
+    }
+    void (async () => {
+      try {
+        if (message.type === 'SET_SUPPLIER_URL') {
+          await saveSupplierOverride(sku, String(message.url ?? ''));
+        } else {
+          await clearSupplierOverride(sku);
+        }
+        sendResponse({ ok: true, supplier: await supplierInfoForSku(sku) });
+      } catch (err) {
+        sendResponse({ ok: false, error: (err as Error).message ?? 'Could not store the link.' });
+      }
+    })();
     return true;
   }
 

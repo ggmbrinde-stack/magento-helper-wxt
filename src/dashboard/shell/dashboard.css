@@ -349,6 +349,19 @@ body {
   margin-top: 4px;
 }
 
+/* Input + buttons on one line: `.db-field input` is 100% wide, so the row
+   allows it to shrink instead of pushing the buttons out of the card. */
+.db-link-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-link-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .db-status {
   font-size: 12px;
   color: var(--db-accent-dark);

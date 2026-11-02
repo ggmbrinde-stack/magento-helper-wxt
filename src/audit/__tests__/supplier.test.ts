@@ -16,6 +16,12 @@ import {
   runAvailabilitySweep,
   type AvailabilityCheck,
 } from '../supplierAvailability';
+import {
+  checkSupplierUrl,
+  saveSupplierOverride,
+  getSupplierOverride,
+  clearSupplierOverride,
+} from '../supplierOverrides';
 
 // In-memory chrome.storage.local for the sitemap + availability cache.
 const memStore = new Map<string, unknown>();
@@ -306,3 +312,66 @@ test('runAvailabilitySweep: force re-runs', async () => {
   delete SUPPLIER_CATALOG['TT1234'];
 });
 
+
+// --- operator-pasted links -------------------------------------------------
+
+test('a pasted link wins over Notion and the rules map', () => {
+  const pasted = 'https://www.makito.eu/es/pasted-product.html';
+  const info = supplierLinkFor('M22482', {
+    overrideUrl: pasted,
+    catalogUrl: 'https://www.makito.eu/es/from-notion.html',
+  });
+  assert.equal(info.catalog, pasted);
+  assert.equal(info.catalogSource, 'manual');
+  assert.deepEqual(info.reviewFlags.includes('catalog-url-missing'), false);
+  assert.deepEqual(info.reviewFlags.includes('catalog-url-pasted'), true);
+});
+
+test('checkSupplierUrl accepts a real Makito product page and drops the fragment', () => {
+  const check = checkSupplierUrl(
+    'M22482',
+    'https://www.makito.eu/es/adorno-navidad-kyper.html#reviews',
+  );
+  assert.equal(check.error, undefined);
+  assert.equal(check.url, 'https://www.makito.eu/es/adorno-navidad-kyper.html');
+});
+
+test('checkSupplierUrl rejects the links that look plausible but cannot be used', () => {
+  // Plain http.
+  assert.match(checkSupplierUrl('M22482', 'http://www.makito.eu/es/x.html').error ?? '', /https/);
+  // Another supplier's site.
+  assert.match(checkSupplierUrl('M22482', 'https://www.roly.eu/pt/x.html').error ?? '', /makito/);
+  // The home page.
+  assert.match(checkSupplierUrl('M22482', 'https://www.makito.eu/').error ?? '', /home page/);
+  // A search page, which has no gallery to download.
+  assert.match(
+    checkSupplierUrl('M22482', 'https://www.makito.eu/es/index.php?controller=search&s=M22482')
+      .error ?? '',
+    /search results/,
+  );
+  // Internal suppliers have no public catalogue at all.
+  assert.match(checkSupplierUrl('AB1234', 'https://www.allbest.pt/x.html').error ?? '', /internal/);
+});
+
+test('a pasted link is stored per SKU and can be cleared', async () => {
+  await saveSupplierOverride('m22482', 'https://www.makito.eu/es/adorno-navidad-kyper.html');
+  assert.equal(
+    await getSupplierOverride('M22482'),
+    'https://www.makito.eu/es/adorno-navidad-kyper.html',
+  );
+  await clearSupplierOverride('M22482');
+  assert.equal(await getSupplierOverride('M22482'), '');
+});
+
+test('a pasted link must pass validation before it is stored', async () => {
+  await assert.rejects(
+    () => saveSupplierOverride('M22482', 'https://www.makito.eu/'),
+    /home page/,
+  );
+});
+
+test('Makito search goes to the shop itself, not to Google', () => {
+  const info = supplierLinkFor('M22482');
+  assert.match(info.searchUrl, /^https:\/\/www\.makito\.eu\//);
+  assert.equal(info.searchUrl.includes('google'), false);
+});

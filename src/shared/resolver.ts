@@ -89,7 +89,7 @@ export interface ResolverSupplier {
   tier: number;
   official: string;
   catalog: string;
-  catalogSource: 'notion' | 'map' | 'guessed' | 'none';
+  catalogSource: 'manual' | 'notion' | 'map' | 'guessed' | 'none';
   reviewFlags: string[];
 }
 
