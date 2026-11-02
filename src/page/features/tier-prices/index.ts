@@ -93,21 +93,22 @@ export function renderTierPricesButtons(): void {
 function readQty(row: HTMLTableRowElement): number {
   const inputs = row.querySelectorAll<HTMLInputElement>('input');
   for (const input of inputs) {
-    if (/qty|quantity/i.test(input.name) || /qty|quantity/i.test(input.id) || /qty|quantity/i.test(input.placeholder)) {
+    if (/price_qty/i.test(input.name) || /qty|quantity/i.test(input.name) || /qty|quantity/i.test(input.id)) {
       const n = parseInt(input.value, 10);
       if (!Number.isNaN(n)) return n;
     }
   }
   const cells = row.querySelectorAll('td');
-  const qtyText = cells[3]?.textContent?.trim() ?? '';
+  const qtyText = cells[2]?.textContent?.trim() ?? '';
   const n = parseInt(qtyText, 10);
   return Number.isNaN(n) ? NaN : n;
 }
 
 function setPrice(row: HTMLTableRowElement, discount: number): void {
+  // Switch value type to "percent" first (Magento swaps the price input).
   const selects = row.querySelectorAll<HTMLSelectElement>('select');
   for (const select of selects) {
-    if (/price/i.test(select.name) || /price/i.test(select.id)) {
+    if (/value_type/i.test(select.name) || /value_type/i.test(select.id)) {
       for (const option of select.options) {
         if (/percent/i.test(option.text) || /percent/i.test(option.value)) {
           select.value = option.value;
@@ -117,22 +118,28 @@ function setPrice(row: HTMLTableRowElement, discount: number): void {
       }
     }
   }
+  // Set the percentage value after Magento renders the right input.
+  const setPct = () => {
+    const inputs = row.querySelectorAll<HTMLInputElement>('input');
+    for (const input of inputs) {
+      if (/percentage_value/i.test(input.name) || /percentage_value/i.test(input.id)) {
+        input.value = String(discount);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        return true;
+      }
+    }
+    return false;
+  };
+  if (!setPct()) {
+    setTimeout(setPct, 50);
+    setTimeout(setPct, 200);
+  }
+  // Also try fixed-price input as fallback (in case percent input never appears).
   const inputs = row.querySelectorAll<HTMLInputElement>('input');
   for (const input of inputs) {
-    if (/price/i.test(input.name) || /price/i.test(input.id) || /price/i.test(input.placeholder)) {
-      input.value = String(discount);
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-  }
-  const cells = row.querySelectorAll('td');
-  const priceCell = cells[4] as HTMLElement | undefined;
-  if (priceCell && priceCell.querySelectorAll('input, select').length === 0) {
-    const text = priceCell.textContent ?? '';
-    if (/percent/i.test(text)) {
-      priceCell.textContent = text.replace(/[\d.]+/, String(discount));
-    } else {
-      priceCell.textContent = `Percent ${discount}`;
+    if (/^tier_price\[\d+\]\[price\]$/i.test(input.name)) {
+      // Only set if value_type is fixed; skip here since we use percent.
     }
   }
 }
@@ -140,7 +147,7 @@ function setPrice(row: HTMLTableRowElement, discount: number): void {
 function setQty(row: HTMLTableRowElement, qty: number): void {
   const inputs = row.querySelectorAll<HTMLInputElement>('input');
   for (const input of inputs) {
-    if (/qty|quantity/i.test(input.name) || /qty|quantity/i.test(input.id) || /qty|quantity/i.test(input.placeholder)) {
+    if (/price_qty/i.test(input.name) || /qty|quantity/i.test(input.name) || /qty|quantity/i.test(input.id)) {
       input.value = String(qty);
       input.dispatchEvent(new Event('change', { bubbles: true }));
       input.dispatchEvent(new Event('input', { bubbles: true }));
