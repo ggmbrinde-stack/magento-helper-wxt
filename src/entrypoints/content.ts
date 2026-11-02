@@ -34,6 +34,7 @@ import { handleApplyField } from '../page/features/form-fill';
 import { handleSearchMagento } from '../page/features/grid-search';
 import { addOptionsCompanion } from '../page/features/options-companion';
 import { enhanceOptionsItems } from '../page/features/options-items';
+import { renderTierPricesButtons, findTierPricesTable } from '../page/features/tier-prices';
 import { mhxVisTest } from '../page/features/vis-test';
 
 /**
@@ -58,6 +59,9 @@ function scan(): void {
     }
   };
 
+  // First, so a later step throwing cannot cost the operator their dropdowns.
+  safe('selects', enhanceAdminSelects);
+  safe('tierPrices', renderTierPricesButtons);
   // The page-feature styles are not injected from here: they are part of the
   // toolkit sheet (src/ui/toolkit.css), which ensureUi() puts on the page in
   // main() before the first scan. Features only pass classes.
