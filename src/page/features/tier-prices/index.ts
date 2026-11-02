@@ -162,28 +162,29 @@ export async function deleteAllTierPrices(table: HTMLElement): Promise<void> {
   const tbody = table.querySelector('tbody');
   if (!tbody) return;
 
-  const rows = Array.from(tbody.querySelectorAll('tr'));
-  let deleteControlsFound = false;
-  for (const row of rows) {
-    const ctrl = findDeleteControl(row);
-    if (ctrl) {
-      deleteControlsFound = true;
-      ctrl.click();
-    }
-  }
-
-  if (deleteControlsFound) {
+  // Delete rows one at a time: Magento re-renders the list after each delete,
+  // so clicking them all synchronously only removes the first one.
+  while (tbody.querySelectorAll('tr').length > 0) {
+    const firstRow = tbody.querySelector('tr');
+    if (!firstRow) break;
+    const ctrl = findDeleteControl(firstRow as HTMLTableRowElement);
+    if (!ctrl) break;
+    const beforeCount = tbody.querySelectorAll('tr').length;
+    ctrl.click();
     await new Promise<void>((resolve) => {
       const start = Date.now();
       const check = () => {
-        if (tbody.querySelectorAll('tr').length === 0) resolve();
+        if (tbody.querySelectorAll('tr').length < beforeCount) resolve();
         else if (Date.now() - start < 1000) setTimeout(check, 50);
         else resolve();
       };
       setTimeout(check, 50);
     });
-  } else {
-    for (const row of rows) {
+  }
+
+  // If no delete controls were found, fall back to clearing all input values.
+  if (tbody.querySelectorAll('tr').length > 0) {
+    for (const row of Array.from(tbody.querySelectorAll('tr'))) {
       const inputs = row.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
       for (const el of inputs) {
         if (el instanceof HTMLInputElement) {
@@ -206,28 +207,27 @@ export async function fillTierPrices(
   const tbody = table.querySelector('tbody');
   if (!tbody) return;
 
-  // --- Clean existing rows first ---
-  const rowsBefore = Array.from(tbody.querySelectorAll('tr'));
-  let deleteControlsFound = false;
-  for (const row of rowsBefore) {
-    const ctrl = findDeleteControl(row);
-    if (ctrl) {
-      deleteControlsFound = true;
-      ctrl.click();
-    }
-  }
-
-  if (deleteControlsFound) {
+  // --- Clean existing rows first (delete one at a time) ---
+  while (tbody.querySelectorAll('tr').length > 0) {
+    const firstRow = tbody.querySelector('tr');
+    if (!firstRow) break;
+    const ctrl = findDeleteControl(firstRow as HTMLTableRowElement);
+    if (!ctrl) break;
+    const beforeCount = tbody.querySelectorAll('tr').length;
+    ctrl.click();
     await new Promise<void>((resolve) => {
       const start = Date.now();
       const check = () => {
-        if (tbody.querySelectorAll('tr').length === 0) resolve();
+        if (tbody.querySelectorAll('tr').length < beforeCount) resolve();
         else if (Date.now() - start < 1000) setTimeout(check, 50);
         else resolve();
       };
       setTimeout(check, 50);
     });
-  } else {
+  }
+
+  // If no delete controls were found, clear all input values in existing rows.
+  if (tbody.querySelectorAll('tr').length > 0) {
     for (const row of Array.from(tbody.querySelectorAll('tr'))) {
       const inputs = row.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select');
       for (const el of inputs) {
