@@ -28,6 +28,8 @@ import {
   resolveSkuForDashboard,
   downloadMakitoCarouselImages,
   collectMakitoGallery,
+  findMakitoProductUrl,
+  makitoReference,
   saveSupplierOverride,
   clearSupplierOverride,
   supplierInfoForSku,
@@ -344,6 +346,41 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
     return true;
   }
 
+  if (message?.type === 'FIND_MAKITO_URL') {
+    const sku = String(message.sku ?? '').trim().toUpperCase();
+    if (!sku) {
+      sendResponse({ ok: false, error: 'Resolve a SKU first.' });
+      return true;
+    }
+    void (async () => {
+      try {
+        const match = await findMakitoProductUrl(sku);
+        if (!match) {
+          sendResponse({
+            ok: false,
+            notFound: true,
+            error: `The Makito site has no product page printing reference ${makitoReference(sku) ?? sku}.`,
+          });
+          return;
+        }
+        // Store it: the operator asked for the link, not for one download.
+        await saveSupplierOverride(sku, match.url);
+        sendResponse({
+          ok: true,
+          url: match.url,
+          reference: match.reference,
+          supplier: await supplierInfoForSku(sku),
+        });
+      } catch (err) {
+        sendResponse({
+          ok: false,
+          error: (err as Error).message ?? 'Could not search the Makito site.',
+        });
+      }
+    })();
+    return true;
+  }
+
   if (message?.type === 'DOWNLOAD_MAKITO_IMAGES') {
     const sku = String(message.sku ?? '').trim().toUpperCase();
     const catalogUrl = String(message.catalogUrl ?? '').trim();
@@ -355,6 +392,7 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
       message.mode === 'files'
         ? collectMakitoGallery(sku, catalogUrl, { withBytes: true }).then((gallery) => ({
             total: gallery.total,
+            skipped: gallery.skipped,
             folder: gallery.folder,
             files: gallery.files.map((file) => ({ name: file.name, base64: file.base64 ?? '' })),
           }))

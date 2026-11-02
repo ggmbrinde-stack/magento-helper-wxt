@@ -176,6 +176,29 @@ export interface SupplierUrlResponse {
   error?: string;
 }
 
+/**
+ * Ask the shop which product page carries this SKU's reference.
+ *
+ * `M22482` is our SKU; the shop searches and prints `22482`. A match is stored
+ * as the catalogue link, so the dossier and the image download both use it.
+ */
+export interface FindMakitoUrlRequest {
+  type: 'FIND_MAKITO_URL';
+  sku: string;
+}
+
+export interface FindMakitoUrlResponse {
+  ok: boolean;
+  /** The product page, already stored as this SKU's catalogue link. */
+  url?: string;
+  reference?: string;
+  /** The shop answered, but no product page prints this reference. */
+  notFound?: boolean;
+  /** The supplier card after the lookup. */
+  supplier?: SupplierLinkInfo;
+  error?: string;
+}
+
 /** Download the visible product-gallery images from a confirmed Makito URL. */
 export interface DownloadMakitoImagesRequest {
   type: 'DOWNLOAD_MAKITO_IMAGES';
@@ -201,6 +224,8 @@ export interface DownloadMakitoImagesResponse {
   failures?: { url: string; error: string }[];
   /** Present for `mode: 'files'`. */
   files?: { name: string; base64: string }[];
+  /** Gallery candidates dropped as thumbnails or unreadable. */
+  skipped?: number;
   error?: string;
 }
 

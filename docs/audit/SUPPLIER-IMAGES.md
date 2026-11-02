@@ -77,42 +77,52 @@ those hosts — a redirect elsewhere aborts before anything is downloaded.
 
 ## How the gallery is read
 
-The gallery is Magento's **Fotorama** widget inside `.product.media`. It is
-built after first paint, so reading it once is what used to return a single
-image: the only `<img>` present at that moment is the placeholder.
+The gallery is Magento's **Fotorama** widget, but the *rendered* carousel is not
+where it is read from. The download tab is opened in the background, where the
+widget does not necessarily build, and the only `<img>` present before it does
+is the placeholder — which is why a single image kept arriving even after the
+first polling rewrite. The widget's data is stable, server-side truth:
 
-1. Prime lazy images once.
-2. Poll every 450 ms, up to 12 times, and keep the **largest** set seen. Stop
-   only after the count has been stable for 3 consecutive polls, so the growing
-   gallery is never truncated by an early return. A page with no gallery gives
-   up after the full poll budget and reports it.
-3. Read roots in order: `.product.media`, `.gallery-placeholder`,
-   `[data-gallery-role]`, `.fotorama`. From each `<img>` take
-   `data-image-large-src`, `data-zoom-image`, `data-src`, `src`/`currentSrc`,
-   every `srcset` entry, and the wrapping `<a href>`.
+1. Fetch the page's own HTML from inside the tab (`fetch(location.href)`), so
+   the request carries the shop's cookies.
+2. Unescape it (Magento writes `https:\/\/…` and `\"data\":` inside the
+   `text/x-magento-init` script) and bracket-match the gallery's `data` array.
+   Only that array is read, so related products further down the page do not
+   leak into the gallery.
+3. Fall back to a DOM scan (`.product.media`, `.gallery-placeholder`,
+   `[data-gallery-role]`, `.fotorama`) for themes that render server-side.
 4. Keep only `/media/catalog/product/` URLs — this drops `/media/amasty/...`
    label/badge images, which are not photos of the product.
 5. Strip Magento's `/cache/<32-hex>/` segment. Every size is a separate cache
-   hash of the same original, so stripping it both collapses the duplicates and
-   gives the full-resolution file (`22482-W.jpg`, not a 88 px resized copy).
-6. Drop a *direct* original that renders smaller than 200 px. Magento stores
-   `<sku>_250.gif` 90×90 previews next to the photos, and a direct URL renders
-   at the file's real size. A cached derivative is full size however small its
-   thumbnail renders, so those always count.
+   hash of the same original, so this both collapses duplicates and gives the
+   full-resolution file (`22482-W.jpg`, not an 88 px resized copy).
+6. Fetch each remaining image **inside the page**, measure it with
+   `createImageBitmap`, and drop anything under 200 px wide. Size is the only
+   reliable signal: the gallery JSON also lists a 90×90 `<sku>_250.gif`
+   thumbnail, which is not a photo.
 
-For `M22482` the live page yields **10 photos** (1080×1080) and no preview gif.
+For `M22482` the live page yields **10 photos** at 1080 px from 11 candidates.
 
-## When the link is unknown
+## Finding the link automatically
 
-The supplier card shows *Catalogue source: no URL known* plus a **Find by SKU**
-link. Makito cannot be searched by our SKU: `M22482` and `M22473` return no
-results on `/es/catalogsearch/result/?q=`, and Magento's `/graphql` is behind
-Akamai (`403 Access Denied`). The page also shows the reference without the `M`
-prefix (`REF: 22482`).
+Pasting a link still works, but it is no longer required. **Find product page**
+on the supplier card — and the download button, which runs the lookup first
+when no confirmed link exists — asks the shop:
 
-So the link is not discoverable automatically today. Open the product by hand,
-copy its address, and paste it into the field on the card; it then applies to
-that SKU permanently.
+1. Our SKU `M22482` is the shop's reference `22482`; the product page prints
+   `REF:` without our prefix.
+2. Open `www.makito.eu/es/catalogsearch/result/?q=22482` in a background tab.
+   The shop redirects a single hit straight to the product page.
+3. Read the product block's printed reference and accept the page only if it
+   matches. A wrong product would mean images saved under the wrong SKU, so an
+   ambiguous answer is reported as no match rather than guessed.
+4. Store the match as this SKU's catalogue link (`supplierUrlOverrides`), so the
+   dossier, the availability check and the image download all use it from then
+   on.
+
+Searching for the whole SKU (`M22482`) finds nothing, and Magento's `/graphql`
+answers `403` behind Akamai — which is why the reference, not the SKU, is what
+gets searched.
 
 ## Report
 
@@ -136,7 +146,8 @@ all — the catalogue URLs are still unresolved there.
 
 ## Tests
 
-`npm run test:makito` — 13 deterministic tests over the stubbed
+`npm run test:makito` — 21 deterministic tests over the stubbed
 tabs/scripting/downloads APIs: host validation, Magento cache-variant
-de-duplication, thumbnail filtering, filename shape, refused and interrupted
-downloads, off-domain redirect, and an empty gallery. No browser needed.
+de-duplication, thumbnail filtering by measured size, filename shape, refused
+and interrupted downloads, off-domain redirect, an empty gallery, and the
+reference-based product lookup. No browser needed.

@@ -21,6 +21,7 @@ export * from './evidence/folder';
 export * from './imageAudit';
 export * from './imageFetch';
 export * from './listingWriter';
+export * from './makitoFind';
 export * from './makitoImages';
 export * from './notionHealth';
 export * from './payload';

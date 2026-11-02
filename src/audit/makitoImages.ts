@@ -12,11 +12,18 @@ const MAKITO_HOSTS = new Set([
 /** How long a single image may take before it is reported as unfinished. */
 const DOWNLOAD_TIMEOUT_MS = 90_000;
 
-/** Poll budget while the gallery builds itself. */
-const GALLERY_ATTEMPTS = 12;
-const GALLERY_RETRY_MS = 450;
-/** Stop once the URL set has not grown for this many consecutive polls. */
-const GALLERY_SETTLE_POLLS = 3;
+/** Poll budget while the page HTML is being served. */
+const GALLERY_ATTEMPTS = 4;
+const GALLERY_RETRY_MS = 700;
+
+/**
+ * Smallest real product photo, in pixels.
+ *
+ * Magento keeps a 90x90 `<sku>_250.gif` thumbnail next to the photos and lists
+ * it in the gallery JSON, so the size has to be measured or it ends up saved as
+ * if it were a photo.
+ */
+const MIN_PHOTO_PX = 200;
 
 export function isMakitoUrl(value: string): boolean {
   try {
@@ -129,8 +136,92 @@ export function makitoImageFilename(url: string, index: number, sku: string): st
  * imports, no closures over module scope.
  */
 
-/** Collect the gallery image URLs currently in the DOM (originals). */
-function readGalleryUrls(): string[] {
+/**
+ * Read the gallery out of the page's own HTML.
+ *
+ * Magento ships the whole gallery as JSON inside a `text/x-magento-init`
+ * script, so the server response already contains every frame. Reading the
+ * rendered carousel instead is unreliable: the download tab is opened in the
+ * background, where the Fotorama widget does not necessarily build, and the
+ * only image present before it does is the placeholder - exactly the "one image
+ * instead of ten" failure. The DOM scan below stays as a fallback for themes
+ * that render their gallery server-side.
+ */
+async function readGalleryUrls(): Promise<string[]> {
+  const absolute = (value: string): string | null => {
+    try {
+      const url = new URL(value, location.href);
+      return url.protocol === 'https:' ? url.href : null;
+    } catch {
+      return null;
+    }
+  };
+
+  /** Pull the gallery's `data` array out of the unescaped init script. */
+  const fromGalleryJson = (source: string): string[] => {
+    // The init script escapes slashes (`https:\/\/…`) and quotes (`\"data\"`).
+    const flat = source.replace(/\\\//g, '/').replace(/\\u002f/gi, '/');
+    const key = flat.indexOf('data-gallery-role=gallery-placeholder');
+    if (key < 0) return [];
+
+    const opener = /\\{0,3}"data\\{0,3}"\s*:\s*\[/g;
+    opener.lastIndex = key;
+    const hit = opener.exec(flat);
+    if (!hit) return [];
+
+    // Bracket-match the array so only this product's frames are read - the rest
+    // of the page has related products with their own images.
+    const start = hit.index + hit[0].length - 1;
+    let depth = 0;
+    let end = -1;
+    let inString = false;
+    let escaped = false;
+    for (let i = start; i < flat.length; i += 1) {
+      const char = flat[i];
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (char === '\\') {
+        escaped = true;
+        continue;
+      }
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
+      if (inString) continue;
+      if (char === '[') depth += 1;
+      else if (char === ']') {
+        depth -= 1;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
+    }
+    if (end < 0) return [];
+
+    const region = flat.slice(start, end + 1);
+    const urls = region.match(/https:\/\/[^"'\s\\]+?\.(?:jpe?g|png|gif|webp|avif)/gi) ?? [];
+    return urls.map((url) => absolute(url)).filter((url): url is string => Boolean(url));
+  };
+
+  try {
+    const response = await fetch(location.href, { credentials: 'include' });
+    if (response.ok) {
+      const fromHtml = fromGalleryJson(await response.text());
+      if (fromHtml.length > 0) return fromHtml;
+    }
+  } catch {
+    // Fall through to the DOM: a blocked refetch still leaves a rendered page.
+  }
+
+  return readGalleryFromDom();
+}
+
+/** Fallback: collect the gallery image URLs currently in the DOM. */
+function readGalleryFromDom(): string[] {
   const roots = Array.from(
     document.querySelectorAll<HTMLElement>(
       [
@@ -194,27 +285,63 @@ function readGalleryUrls(): string[] {
   return found.map((path) => `https://${location.hostname}${path}`);
 }
 
-/** Fetch one gallery image in the page and return it as base64. */
-async function fetchImageBase64(
+/**
+ * Fetch every gallery image inside the page and measure it.
+ *
+ * The bytes are fetched here for two reasons: the shop refuses requests that do
+ * not come from the product page, and the real pixel size is the only reliable
+ * way to tell a photo from Magento's thumbnail preview.
+ */
+async function readImages(
   urls: string[],
-): Promise<{ name: string; base64: string }[]> {
-  const out: { name: string; base64: string }[] = [];
+  wantBytes: boolean,
+): Promise<{ url: string; width: number; height: number; base64?: string; error?: string }[]> {
+  const out: { url: string; width: number; height: number; base64?: string; error?: string }[] = [];
+
   for (const url of urls) {
-    const response = await fetch(url, { credentials: 'include' });
-    if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
-    const buffer = await response.arrayBuffer();
-    const bytes = new Uint8Array(buffer);
-    let binary = '';
-    const chunk = 0x8000;
-    for (let i = 0; i < bytes.length; i += chunk) {
-      binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+    try {
+      const response = await fetch(url, { credentials: 'include' });
+      if (!response.ok) {
+        out.push({ url, width: 0, height: 0, error: `HTTP ${response.status}` });
+        continue;
+      }
+      const blob = await response.blob();
+      let width = 0;
+      let height = 0;
+      try {
+        const bitmap = await createImageBitmap(blob);
+        width = bitmap.width;
+        height = bitmap.height;
+        bitmap.close();
+      } catch {
+        // An unusual format still downloads; it just cannot be measured.
+      }
+
+      let base64: string | undefined;
+      if (wantBytes) {
+        const bytes = new Uint8Array(await blob.arrayBuffer());
+        let binary = '';
+        const chunk = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunk) {
+          binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+        }
+        base64 = btoa(binary);
+      }
+      out.push({ url, width, height, base64 });
+    } catch (error) {
+      out.push({
+        url,
+        width: 0,
+        height: 0,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
-    out.push({ name: url, base64: btoa(binary) });
   }
+
   return out;
 }
 
-function waitForTabLoad(tabId: number, timeoutMs = 30_000): Promise<void> {
+export function waitForTabLoad(tabId: number, timeoutMs = 30_000): Promise<void> {
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (error?: Error): void => {
@@ -294,7 +421,6 @@ function waitForDownload(
  */
 async function readGallery(tabId: number): Promise<string[]> {
   let best: string[] = [];
-  let stablePolls = 0;
 
   for (let attempt = 0; attempt < GALLERY_ATTEMPTS; attempt += 1) {
     const [injection] = await chrome.scripting.executeScript({
@@ -304,13 +430,10 @@ async function readGallery(tabId: number): Promise<string[]> {
     const urls = galleryImageSources(
       Array.isArray(injection?.result) ? (injection.result as string[]) : [],
     );
-    if (urls.length > best.length) {
-      best = urls;
-      stablePolls = 0;
-    } else if (best.length > 0) {
-      stablePolls += 1;
-      if (stablePolls >= GALLERY_SETTLE_POLLS) return best;
-    }
+    if (urls.length > best.length) best = urls;
+    // The HTML is complete on the first good read; retries only cover a
+    // transient block or a page still streaming its response.
+    if (best.length > 0) return best;
     await new Promise((resolve) => setTimeout(resolve, GALLERY_RETRY_MS));
   }
 
@@ -321,6 +444,8 @@ export interface MakitoImageFile {
   name: string;
   /** Original supplier URL, kept for the report and the Downloads fallback. */
   url: string;
+  width: number;
+  height: number;
   /** Filled when the caller asked for bytes (writing to the evidence folder). */
   base64?: string;
 }
@@ -328,6 +453,8 @@ export interface MakitoImageFile {
 export interface MakitoGallery {
   /** Gallery photos found on the page, in carousel order. */
   total: number;
+  /** Candidates dropped for being thumbnails or unreadable. */
+  skipped: number;
   folder: string;
   files: MakitoImageFile[];
 }
@@ -376,27 +503,45 @@ export async function collectMakitoGallery(
       );
     }
 
-    const files: MakitoImageFile[] = urls.map((url, index) => ({
-      url,
-      name: makitoImageFilename(url, index, sku),
-    }));
+    const [injection] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: readImages,
+      args: [urls, Boolean(options.withBytes)],
+    });
+    const measured = Array.isArray(injection?.result)
+      ? (injection.result as {
+          url: string;
+          width: number;
+          height: number;
+          base64?: string;
+          error?: string;
+        }[])
+      : [];
 
-    if (options.withBytes) {
-      const [injection] = await chrome.scripting.executeScript({
-        target: { tabId },
-        func: fetchImageBase64,
-        args: [urls],
-      });
-      const fetched = injection?.result;
-      if (!Array.isArray(fetched) || fetched.length !== urls.length) {
-        throw new Error('The supplier page refused to hand over the image data.');
-      }
-      for (const [index, file] of files.entries()) {
-        file.base64 = (fetched[index] as { base64: string }).base64;
-      }
+    const readable = measured.filter((image) => !image.error);
+    if (readable.length === 0) {
+      throw new Error(
+        `The supplier page refused to hand over the image data (${measured[0]?.error ?? 'unknown error'}).`,
+      );
     }
 
-    return { total: files.length, folder: `Makito/${sku}`, files };
+    // A 90px preview is not a product photo, and it is only recognisable by its
+    // measured size.
+    const photos = readable.filter((image) => image.width === 0 || image.width >= MIN_PHOTO_PX);
+    if (photos.length === 0) {
+      throw new Error('Only thumbnail-sized images were found - is that a product page?');
+    }
+
+    const files: MakitoImageFile[] = photos.map((image, index) => ({
+      url: image.url,
+      width: image.width,
+      height: image.height,
+      base64: image.base64,
+      name: makitoImageFilename(image.url, index, sku),
+    }));
+
+    const skipped = measured.length - photos.length;
+    return { total: files.length, skipped, folder: `Makito/${sku}`, files };
   } finally {
     await chrome.tabs.remove(tabId).catch(() => undefined);
   }

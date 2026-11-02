@@ -6,6 +6,7 @@ import type {
   CategoryCheck,
   CheckSupplierResponse,
   DownloadMakitoImagesResponse,
+  FindMakitoUrlResponse,
   ResolveAdminFallback,
   ResolveSkuResponse,
   ResolverNotionMetadata,
@@ -114,6 +115,8 @@ function SupplierCard({
   downloadBusy,
   downloadMessage,
   onDownloadMakitoImages,
+  findBusy,
+  onFindProduct,
   linkDraft,
   linkBusy,
   linkError,
@@ -128,6 +131,8 @@ function SupplierCard({
   downloadBusy: boolean;
   downloadMessage: string | null;
   onDownloadMakitoImages: () => void;
+  findBusy: boolean;
+  onFindProduct: () => void;
   linkDraft: string;
   linkBusy: boolean;
   linkError: string | null;
@@ -163,29 +168,37 @@ function SupplierCard({
             {busy ? 'Checking…' : availability ? 'Re-check' : 'Check availability'}
           </button>
           {supplier.supplier === 'MAKITO' ? (
-            <button
-              type="button"
-              class="db-btn"
-              disabled={
-                downloadBusy ||
-                !supplier.catalog ||
-                supplier.catalogSource === 'guessed'
-              }
-              title={
-                supplier.catalog
-                  ? `Save product-gallery images to Downloads/Makito/${supplier.sku}`
-                  : 'Add a confirmed Supplier Product URL in the SKU Library first'
-              }
-              onClick={onDownloadMakitoImages}
-            >
-              {downloadBusy ? 'Downloading images…' : 'Download Makito images'}
-            </button>
+            <>
+              <button
+                type="button"
+                class="db-btn"
+                disabled={findBusy || downloadBusy}
+                title={`Search www.makito.eu for reference ${supplier.sku.replace(/^[A-Za-z]+/, '')}`}
+                onClick={onFindProduct}
+              >
+                {findBusy ? 'Searching Makito…' : 'Find product page'}
+              </button>
+              <button
+                type="button"
+                class="db-btn"
+                disabled={downloadBusy || findBusy}
+                title={
+                  supplier.catalog
+                    ? `Save the product-gallery images of ${supplier.catalog}`
+                    : 'Finds the product page first, then saves its gallery'
+                }
+                onClick={onDownloadMakitoImages}
+              >
+                {downloadBusy ? 'Downloading images…' : 'Download Makito images'}
+              </button>
+            </>
           ) : null}
         </div>
       </div>
       {supplier.supplier === 'MAKITO' && !supplier.catalog ? (
         <p class="db-muted" role="note">
-          Add a confirmed Makito product URL to the SKU Library to enable gallery downloads.
+          No product link is known yet — <b>Find product page</b> searches the Makito site for
+          this SKU's reference and stores the page it finds.
         </p>
       ) : null}
       {downloadMessage ? (
@@ -248,7 +261,7 @@ function SupplierCard({
         {!supplier.catalog && supplier.searchUrl ? (
           <li>
             <span>Find by SKU</span>
-            <b>search the supplier site for {supplier.sku}</b>
+            <b>search the supplier site for {supplier.sku.replace(/^[A-Za-z]+/, '')}</b>
           </li>
         ) : null}
         <li>
@@ -430,6 +443,8 @@ function ResolverResult({
   imageDownloadBusy,
   imageDownloadMessage,
   onDownloadMakitoImages,
+  findBusy,
+  onFindProduct,
   linkDraft,
   linkBusy,
   linkError,
@@ -454,6 +469,8 @@ function ResolverResult({
   imageDownloadBusy: boolean;
   imageDownloadMessage: string | null;
   onDownloadMakitoImages: () => void;
+  findBusy: boolean;
+  onFindProduct: () => void;
   linkDraft: string;
   linkBusy: boolean;
   linkError: string | null;
@@ -636,6 +653,8 @@ function ResolverResult({
           downloadBusy={imageDownloadBusy}
           downloadMessage={imageDownloadMessage}
           onDownloadMakitoImages={onDownloadMakitoImages}
+          findBusy={findBusy}
+          onFindProduct={onFindProduct}
           linkDraft={linkDraft}
           linkBusy={linkBusy}
           linkError={linkError}
@@ -974,6 +993,7 @@ export function Resolver({
   const [linkDraft, setLinkDraft] = useState('');
   const [linkBusy, setLinkBusy] = useState(false);
   const [linkError, setLinkError] = useState<string | null>(null);
+  const [findBusy, setFindBusy] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -1101,6 +1121,43 @@ export function Resolver({
     }
   };
 
+  /**
+   * Ask the worker which Makito page carries this SKU's reference.
+   *
+   * Returns the stored URL so a caller can continue straight into a download;
+   * the answer includes the refreshed supplier card, so the button, the
+   * catalogue line and the dossier all pick the link up at once.
+   */
+  const findProductLink = async (targetSku: string): Promise<string | null> => {
+    setFindBusy(true);
+    setLinkError(null);
+    try {
+      const response = (await browser.runtime.sendMessage({
+        type: 'FIND_MAKITO_URL',
+        sku: targetSku,
+      })) as FindMakitoUrlResponse;
+      if (!response?.ok || !response.url) {
+        setLinkError(response?.error ?? 'No Makito product page was found for this SKU.');
+        return null;
+      }
+      if (response.supplier) {
+        setResult((prev) => (prev ? { ...prev, supplier: response.supplier } : prev));
+      }
+      return response.url;
+    } catch (err) {
+      setLinkError((err as Error).message);
+      return null;
+    } finally {
+      setFindBusy(false);
+    }
+  };
+
+  const onFindProduct = (): void => {
+    const targetSku = result?.resolver?.sku ?? sku.trim();
+    if (!targetSku) return;
+    void findProductLink(targetSku);
+  };
+
   const downloadMakitoImages = async (): Promise<void> => {
     const targetSku = result?.resolver?.sku ?? sku.trim();
     const supplierInfo =
@@ -1113,25 +1170,36 @@ export function Resolver({
       setImageDownloadMessage('Image downloads are only available for Makito products.');
       return;
     }
-    if (!supplierInfo.catalog || supplierInfo.catalogSource === 'guessed') {
-      setImageDownloadMessage('Add a confirmed Makito product URL in the SKU Library first.');
-      return;
-    }
-
     setImageDownloadBusy(true);
     setImageDownloadMessage(null);
     try {
       // The picked evidence root is the operator's image-corrections folder, so
       // the gallery belongs inside the SKU it will be used to fix. Ask for
-      // permission before any network work, while the click is still a gesture.
+      // permission before any network work, while the click is still a gesture -
+      // a search first would spend the gesture and the prompt would be refused.
       const root = await evidenceRoot();
       const canWrite = root ? await ensureWritePermission(root).catch(() => false) : false;
+
+      // A confirmed link saves the extra search; without one, find it first so
+      // the button works from a bare SKU.
+      let catalogUrl = supplierInfo.catalog;
+      if (!catalogUrl || supplierInfo.catalogSource === 'guessed') {
+        setImageDownloadMessage('Looking for the Makito product page…');
+        catalogUrl = (await findProductLink(targetSku)) ?? '';
+        if (!catalogUrl) {
+          setImageDownloadMessage(
+            'No Makito product page was found for this SKU, so there is no gallery to save.',
+          );
+          return;
+        }
+        setImageDownloadMessage(null);
+      }
 
       if (root && canWrite) {
         const response = (await browser.runtime.sendMessage({
           type: 'DOWNLOAD_MAKITO_IMAGES',
           sku: targetSku,
-          catalogUrl: supplierInfo.catalog,
+          catalogUrl,
           mode: 'files',
         })) as DownloadMakitoImagesResponse;
         if (!response?.ok || !response.files?.length) {
@@ -1144,8 +1212,9 @@ export function Resolver({
           await writeEvidenceFile(root, parts, file.name, base64Bytes(file.base64));
           written += 1;
         }
+        const skipped = response.skipped ? ` (${response.skipped} thumbnail skipped)` : '';
         setImageDownloadMessage(
-          `Saved ${written} of ${response.total ?? written} ${written === 1 ? 'image' : 'images'} to ${root.name}/${parts.join('/')}.`,
+          `Saved ${written} of ${response.total ?? written} ${written === 1 ? 'image' : 'images'} to ${root.name}/${parts.join('/')}.${skipped}`,
         );
         return;
       }
@@ -1155,7 +1224,7 @@ export function Resolver({
       const response = (await browser.runtime.sendMessage({
         type: 'DOWNLOAD_MAKITO_IMAGES',
         sku: targetSku,
-        catalogUrl: supplierInfo.catalog,
+        catalogUrl,
       })) as DownloadMakitoImagesResponse;
       if (!response?.ok || response.folder === undefined) {
         setImageDownloadMessage(response?.error ?? 'Makito image download failed.');
@@ -1292,6 +1361,8 @@ export function Resolver({
             void checkSupplier(result?.resolver?.sku ?? sku.trim(), true)
           }
           onDownloadMakitoImages={() => void downloadMakitoImages()}
+          findBusy={findBusy}
+          onFindProduct={onFindProduct}
           linkDraft={linkDraft}
           linkBusy={linkBusy}
           linkError={linkError}

@@ -2,11 +2,17 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  collectMakitoGallery,
   downloadMakitoCarouselImages,
   galleryImageSources,
   isMakitoUrl,
   makitoImageFilename,
 } from '../makitoImages';
+import {
+  findMakitoProductUrl,
+  makitoReference,
+  makitoSearchUrl,
+} from '../makitoFind';
 
 // --- chrome stub -----------------------------------------------------------
 // The downloader only talks to tabs/scripting/downloads, so the whole flow can
@@ -14,6 +20,12 @@ import {
 
 interface FakeChrome {
   gallery: string[];
+  /** Measured pixel width per URL; anything absent is a full-size photo. */
+  sizes: Record<string, number>;
+  /** Refuse the image data for every URL. */
+  unreadable: boolean;
+  /** What the search tab reports as the matching product page. */
+  matchUrl: string | null;
   finalUrl: string;
   downloads: 'complete' | 'interrupted' | 'reject';
   createdTabs: number;
@@ -28,6 +40,9 @@ function installChrome(overrides: Partial<FakeChrome> = {}): FakeChrome {
       'https://www.makito.eu/4212-large_default/cable.jpg',
       'https://www.makito.eu/4213-large_default/soporte.jpg',
     ],
+    sizes: {},
+    unreadable: false,
+    matchUrl: 'https://www.makito.eu/es/adorno-navidad-kyper.html',
     finalUrl: 'https://www.makito.eu/es/cable-cargador-soporte-zynix.html',
     downloads: 'complete',
     createdTabs: 0,
@@ -54,7 +69,30 @@ function installChrome(overrides: Partial<FakeChrome> = {}): FakeChrome {
       onRemoved: { addListener() {}, removeListener() {} },
     },
     scripting: {
-      executeScript: async () => [{ result: fake.gallery }],
+      // The gallery reader and the image reader are separate injections, so the
+      // stub dispatches on the injected function's name.
+      executeScript: async ({ func, args }: { func?: { name?: string }; args?: unknown[] }) => {
+        if (func?.name === 'readImages') {
+          const urls = (args?.[0] as string[] | undefined) ?? [];
+          const wantBytes = Boolean(args?.[1]);
+          return [
+            {
+              result: urls.map((url) => {
+                if (fake.unreadable) return { url, width: 0, height: 0, error: 'HTTP 403' };
+                const width = fake.sizes[url] ?? 1080;
+                return {
+                  url,
+                  width,
+                  height: width,
+                  base64: wantBytes ? 'AAAA' : undefined,
+                };
+              }),
+            },
+          ];
+        }
+        if (func?.name === 'matchReference') return [{ result: fake.matchUrl }];
+        return [{ result: fake.gallery }];
+      },
     },
     downloads: {
       download: async ({ url, filename }: { url: string; filename: string }) => {
@@ -229,4 +267,78 @@ test('makitoImageFilename names the original, not the cache path', () => {
     ),
     '01-M22482-22482-W.jpg',
   );
+});
+
+test('drops the thumbnail preview and keeps the photos', async () => {
+  const preview = 'https://www.makito.eu/media/catalog/product/2/2/22482_250.gif';
+  const photo = 'https://www.makito.eu/media/catalog/product/cache/a6cdd0/2/2/22482-W.jpg';
+  const fake = installChrome({
+    gallery: [preview, photo],
+    sizes: {
+      'https://www.makito.eu/media/catalog/product/2/2/22482_250.gif': 90,
+      'https://www.makito.eu/media/catalog/product/2/2/22482-W.jpg': 1080,
+    },
+  });
+
+  const result = await downloadMakitoCarouselImages('M22482', CATALOG);
+
+  assert.equal(result.total, 1, 'the 90px preview is not a gallery photo');
+  assert.equal(fake.urls.length, 1);
+  assert.match(fake.urls[0] ?? '', /22482-W\.jpg$/);
+});
+
+test('reports the page refusing the image data instead of an empty success', async () => {
+  installChrome({ unreadable: true });
+  await assert.rejects(
+    () => downloadMakitoCarouselImages('M22477', CATALOG),
+    /refused to hand over the image data \(HTTP 403\)/,
+  );
+});
+
+test('collectMakitoGallery returns bytes for the evidence folder', async () => {
+  installChrome();
+  const gallery = await collectMakitoGallery('M22477', CATALOG, { withBytes: true });
+
+  assert.equal(gallery.total, 2);
+  assert.equal(gallery.files[0]?.base64, 'AAAA');
+  assert.equal(gallery.files[0]?.width, 1080);
+});
+
+// --- finding the product page ----------------------------------------------
+
+test('the shop reference is the SKU without the supplier prefix', () => {
+  assert.equal(makitoReference('M22482'), '22482');
+  assert.equal(makitoReference(' m4624 '), '4624');
+  assert.equal(makitoReference('M-22482'), '22482');
+  assert.equal(makitoReference('M12'), null, 'too short to be a reference');
+});
+
+test('the search URL carries the reference, not our SKU', () => {
+  assert.equal(
+    makitoSearchUrl('22482'),
+    'https://www.makito.eu/es/catalogsearch/result/?q=22482',
+  );
+});
+
+test('accepts the product page the shop redirects to', async () => {
+  const fake = installChrome();
+  const match = await findMakitoProductUrl('M22482');
+
+  assert.deepEqual(match, {
+    url: 'https://www.makito.eu/es/adorno-navidad-kyper.html',
+    reference: '22482',
+  });
+  assert.equal(fake.createdTabs, 1);
+  assert.equal(fake.removedTabs, 1, 'the search tab is always closed');
+});
+
+test('reports no match instead of guessing a product page', async () => {
+  const fake = installChrome({ matchUrl: null });
+  assert.equal(await findMakitoProductUrl('M99999'), null);
+  assert.equal(fake.removedTabs, 1);
+});
+
+test('refuses to search for another supplier\'s SKU', async () => {
+  installChrome();
+  await assert.rejects(() => findMakitoProductUrl('R0317C'), /only available for Makito/);
 });
