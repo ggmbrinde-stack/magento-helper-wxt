@@ -142,9 +142,16 @@ function setPrice(row: HTMLTableRowElement, discount: number): void {
     }
     return false;
   };
-  if (!setPct()) {
-    setTimeout(() => { if (!setPct()) setTimeout(setPct, 300); }, 100);
-  }
+  // Poll for the percentage_value input to appear after Magento swaps it in.
+  let attempts = 0;
+  const poll = () => {
+    if (setPct()) return;
+    if (attempts < 20) {
+      attempts++;
+      setTimeout(poll, 50);
+    }
+  };
+  setTimeout(poll, 100);
 }
 
 function setQty(row: HTMLTableRowElement, qty: number): void {
@@ -276,7 +283,7 @@ export async function fillTierPrices(
           else if (Date.now() - start < 1000) setTimeout(check, 50);
           else resolve();
         };
-        setTimeout(check, 50);
+        setTimeout(check, 150);
       });
       const rows = Array.from(tbody.querySelectorAll('tr'));
       const last = rows.length > 0 ? rows[rows.length - 1] : null;
