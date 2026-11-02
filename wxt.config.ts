@@ -17,6 +17,7 @@ export default defineConfig({
       'scripting',
       'tabs',
       'tabGroups',
+      'downloads',
       'unlimitedStorage',
     ],
     host_permissions: [
@@ -37,6 +38,15 @@ export default defineConfig({
       'https://roly.pt/*',
       'https://www.roly.pt/*',
       'https://rolymalta.com/*',
+      // Makito product pages are read in a user-triggered browser tab so the
+      // extension can collect the visible product gallery without bypassing
+      // the site's automated-request restrictions.
+      'https://makito.eu/*',
+      'https://www.makito.eu/*',
+      'https://makito.es/*',
+      'https://www.makito.es/*',
+      'https://makito.pt/*',
+      'https://www.makito.pt/*',
       // Model bridge presets (OpenAI-compatible backends). Local servers are
       // covered by the localhost entries above; anything else is requested at
       // runtime from Model bridge settings (optional_host_permissions).

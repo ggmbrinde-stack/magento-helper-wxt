@@ -26,6 +26,7 @@ import {
   loadAvailability,
   saveAvailability,
   resolveSkuForDashboard,
+  downloadMakitoCarouselImages,
 } from '../../../audit';
 import { resolveSku, resolveSkuWithHtml } from '../../../shared/resolver';
 import { imageAuditForSku } from '../../../audit';
@@ -315,6 +316,24 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
       }
     })();
     // Outer return keeps the message channel open for the async response.
+    return true;
+  }
+
+  if (message?.type === 'DOWNLOAD_MAKITO_IMAGES') {
+    const sku = String(message.sku ?? '').trim().toUpperCase();
+    const catalogUrl = String(message.catalogUrl ?? '').trim();
+    if (!sku || !catalogUrl) {
+      sendResponse({ ok: false, error: 'A Makito SKU and confirmed product URL are required.' });
+      return true;
+    }
+    void downloadMakitoCarouselImages(sku, catalogUrl)
+      .then((result) => sendResponse({ ok: true, ...result }))
+      .catch((err) =>
+        sendResponse({
+          ok: false,
+          error: (err as Error).message ?? 'Could not download Makito product images.',
+        }),
+      );
     return true;
   }
 

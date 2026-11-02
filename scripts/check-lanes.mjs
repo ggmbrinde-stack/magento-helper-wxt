@@ -55,7 +55,8 @@ const ENTRYPOINT_DIR = 'src/entrypoints/';
  * Reached only from a manual fixture (`tsconfig.json` excludes it from the
  * build); it is a harness, not dead product code.
  */
-const DEAD_ALLOW = new Set(['src/ui/smoke-test.ts', 'src/audit/__tests__/supplier.test.ts']);
+const DEAD_ALLOW = new Set(['src/ui/smoke-test.ts', 'src/audit/__tests__/supplier.test.ts',
+  'src/audit/__tests__/makitoImages.test.ts',]);
 
 const EXTENSIONS = ['', '.ts', '.tsx', '/index.ts', '/index.tsx'];
 

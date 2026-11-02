@@ -5,6 +5,7 @@ import type {
   CacheDuplicate,
   CategoryCheck,
   CheckSupplierResponse,
+  DownloadMakitoImagesResponse,
   ResolveAdminFallback,
   ResolveSkuResponse,
   ResolverNotionMetadata,
@@ -100,11 +101,17 @@ function SupplierCard({
   availability,
   busy,
   onCheck,
+  downloadBusy,
+  downloadMessage,
+  onDownloadMakitoImages,
 }: {
   supplier: SupplierLinkInfo;
   availability: AvailabilityCheck | null;
   busy: boolean;
   onCheck: () => void;
+  downloadBusy: boolean;
+  downloadMessage: string | null;
+  onDownloadMakitoImages: () => void;
 }) {
   return (
     <section class="db-card db-wide">
@@ -133,8 +140,37 @@ function SupplierCard({
           <button type="button" class="db-btn" disabled={busy} onClick={onCheck}>
             {busy ? 'Checking…' : availability ? 'Re-check' : 'Check availability'}
           </button>
+          {supplier.supplier === 'MAKITO' ? (
+            <button
+              type="button"
+              class="db-btn"
+              disabled={
+                downloadBusy ||
+                !supplier.catalog ||
+                supplier.catalogSource === 'guessed'
+              }
+              title={
+                supplier.catalog
+                  ? `Save product-gallery images to Downloads/Makito/${supplier.sku}`
+                  : 'Add a confirmed Supplier Product URL in the SKU Library first'
+              }
+              onClick={onDownloadMakitoImages}
+            >
+              {downloadBusy ? 'Downloading images…' : 'Download Makito images'}
+            </button>
+          ) : null}
         </div>
       </div>
+      {supplier.supplier === 'MAKITO' && !supplier.catalog ? (
+        <p class="db-muted" role="note">
+          Add a confirmed Makito product URL to the SKU Library to enable gallery downloads.
+        </p>
+      ) : null}
+      {downloadMessage ? (
+        <p class="db-muted" role="status">
+          {downloadMessage}
+        </p>
+      ) : null}
       <ul class="db-kv">
         <li>
           <span>Official site</span>
@@ -326,6 +362,9 @@ function ResolverResult({
   availability,
   supplierBusy,
   onCheckSupplier,
+  imageDownloadBusy,
+  imageDownloadMessage,
+  onDownloadMakitoImages,
 }: {
   r: ResolverJson;
   notion?: ResolverNotionMetadata;
@@ -341,6 +380,9 @@ function ResolverResult({
   availability: AvailabilityCheck | null;
   supplierBusy: boolean;
   onCheckSupplier: () => void;
+  imageDownloadBusy: boolean;
+  imageDownloadMessage: string | null;
+  onDownloadMakitoImages: () => void;
 }) {
   // A partial (admin-only) payload has no attributes or index: rendering the
   // matrix would invent an empty one (F7).
@@ -514,6 +556,9 @@ function ResolverResult({
           availability={availability}
           busy={supplierBusy}
           onCheck={onCheckSupplier}
+          downloadBusy={imageDownloadBusy}
+          downloadMessage={imageDownloadMessage}
+          onDownloadMakitoImages={onDownloadMakitoImages}
         />
       ) : null}
 
@@ -841,6 +886,8 @@ export function Resolver({
   const [warning, setWarning] = useState<string | null>(null);
   const [availability, setAvailability] = useState<AvailabilityCheck | null>(null);
   const [supplierBusy, setSupplierBusy] = useState(false);
+  const [imageDownloadBusy, setImageDownloadBusy] = useState(false);
+  const [imageDownloadMessage, setImageDownloadMessage] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
@@ -936,6 +983,53 @@ export function Resolver({
       setWarning((err as Error).message);
     } finally {
       setSupplierBusy(false);
+    }
+  };
+
+  const downloadMakitoImages = async (): Promise<void> => {
+    const targetSku = result?.resolver?.sku ?? sku.trim();
+    const supplierInfo =
+      result?.supplier ??
+      supplierLinkFor(targetSku, {
+        catalogUrl: result?.notion?.supplierProduct,
+        supplierUrl: result?.notion?.supplierLink,
+      });
+    if (supplierInfo.supplier !== 'MAKITO') {
+      setImageDownloadMessage('Image downloads are only available for Makito products.');
+      return;
+    }
+    if (!supplierInfo.catalog || supplierInfo.catalogSource === 'guessed') {
+      setImageDownloadMessage('Add a confirmed Makito product URL in the SKU Library first.');
+      return;
+    }
+
+    setImageDownloadBusy(true);
+    setImageDownloadMessage(null);
+    try {
+      const response = (await browser.runtime.sendMessage({
+        type: 'DOWNLOAD_MAKITO_IMAGES',
+        sku: targetSku,
+        catalogUrl: supplierInfo.catalog,
+      })) as DownloadMakitoImagesResponse;
+      if (!response?.ok || response.folder === undefined) {
+        setImageDownloadMessage(response?.error ?? 'Makito image download failed.');
+        return;
+      }
+      const saved = response.saved ?? response.started ?? 0;
+      const total = response.total ?? saved;
+      const failed = response.failures?.length ?? 0;
+      // Report what reached the disk, not what was merely started: a supplier
+      // that blocks download requests would otherwise look like a success.
+      const detail = failed
+        ? ` ${failed} failed (${response.failures?.[0]?.error ?? 'unknown error'}).`
+        : '';
+      setImageDownloadMessage(
+        `Saved ${saved} of ${total} ${total === 1 ? 'image' : 'images'} to Downloads/${response.folder}.${detail}`,
+      );
+    } catch (err) {
+      setImageDownloadMessage((err as Error).message);
+    } finally {
+      setImageDownloadBusy(false);
     }
   };
 
@@ -1046,9 +1140,12 @@ export function Resolver({
           supplier={result.supplier}
           availability={availability}
           supplierBusy={supplierBusy}
+          imageDownloadBusy={imageDownloadBusy}
+          imageDownloadMessage={imageDownloadMessage}
           onCheckSupplier={() =>
             void checkSupplier(result?.resolver?.sku ?? sku.trim(), true)
           }
+          onDownloadMakitoImages={() => void downloadMakitoImages()}
         />
       ) : null}
       {result?.adminFallback && result.adminFallback.children.length > 0 ? (

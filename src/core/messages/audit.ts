@@ -157,6 +157,26 @@ export interface CheckSupplierResponse {
   error?: string;
 }
 
+/** Download the visible product-gallery images from a confirmed Makito URL. */
+export interface DownloadMakitoImagesRequest {
+  type: 'DOWNLOAD_MAKITO_IMAGES';
+  sku: string;
+  catalogUrl: string;
+}
+
+export interface DownloadMakitoImagesResponse {
+  ok: boolean;
+  /** Downloads Chrome accepted. */
+  started?: number;
+  /** Downloads that reached the disk. */
+  saved?: number;
+  /** Gallery photos found on the page. */
+  total?: number;
+  folder?: string;
+  failures?: { url: string; error: string }[];
+  error?: string;
+}
+
 /** Read or clear the per-SKU resolver cache (F5). */
 export interface ResolverCacheRequest {
   type: 'RESOLVER_CACHE';
