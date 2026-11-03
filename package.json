@@ -18,6 +18,7 @@
     "test:supplier": "npx esbuild src/audit/__tests__/supplier.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/supplier-test.mjs --log-level=warning && node --test .output/supplier-test.mjs",
     "index:build": "node scripts/build-category-index.mjs",
     "diag:badges": "node scripts/diag-category-badges.mjs",
+    "audit:badges": "node scripts/audit-category-badges.mjs",
     "test:makito": "npx esbuild src/audit/__tests__/makitoImages.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/makito-images-test.mjs --log-level=warning && node --test .output/makito-images-test.mjs",
     "test:enable": "npx esbuild src/audit/__tests__/enableFlow.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/enable-flow-test.mjs --log-level=warning && node --test .output/enable-flow-test.mjs",
     "test": "npm run test:supplier && npm run test:makito && npm run test:enable"

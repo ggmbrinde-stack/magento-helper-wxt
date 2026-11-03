@@ -347,17 +347,30 @@ function ancestorNames(li: HTMLLIElement): string[] {
  * one), and the fix belongs in the index, not in a guess on the page.
  */
 const UNRESOLVED = new Set<string>();
-let reportedUnresolved = false;
+const badgeStats = { numbered: 0, total: 0 };
+let lastCoverage = '';
 
-function reportUnresolved(): void {
-  if (UNRESOLVED.size === 0 || reportedUnresolved) return;
-  reportedUnresolved = true;
-  const list = Array.from(UNRESOLVED).sort();
+/**
+ * One console line per selection of the tree, in both directions: "all
+ * numbered" is the confirmation, a gap count is the work list. Logged once per
+ * distinct count so the debounced scan cannot spam the console.
+ */
+function logBadgeCoverage(): void {
+  const { numbered, total } = badgeStats;
+  if (total === 0) return;
+  const summary = `${numbered}/${total}`;
+  if (summary === lastCoverage) return;
+  lastCoverage = summary;
+  if (numbered === total) {
+    // eslint-disable-next-line no-console
+    console.info(`[category-tree] ${summary} categories numbered — no gaps.`);
+    return;
+  }
   // eslint-disable-next-line no-console
   console.info(
-    `[category-tree] ${list.length} ${list.length === 1 ? 'category has' : 'categories have'} no Notion index code. ` +
+    `[category-tree] ${summary} categories numbered — ${total - numbered} without a Notion index code. ` +
       'Copy the list below to extend categoryIndex.ts:',
-    list,
+    Array.from(UNRESOLVED).sort(),
   );
 }
 
@@ -1268,6 +1281,8 @@ export function enhanceCategoryTrees(): number {
     }
     // Numbers for every item that has one, including leaves (that is where the
     // operator most needs the code).
+    let numbered = 0;
+    let total = 0;
     tree
       .querySelectorAll<HTMLLIElement>('li')
       .forEach((li) => {
@@ -1275,10 +1290,14 @@ export function enhanceCategoryTrees(): number {
         // left alone instead of being reported as a gap.
         if (li === root) return;
         if (!li.querySelector(TREE_BOX_SELECTOR)) return;
+        total += 1;
         addCodeBadge(li);
         indentItem(li);
+        if (li.dataset['mhxCatNo']) numbered += 1;
       });
-    reportUnresolved();
+    badgeStats.numbered = numbered;
+    badgeStats.total = total;
+    logBadgeCoverage();
     if (isNew) {
       if (root) setCollapsed(root, false);
       collapseTree(tree);

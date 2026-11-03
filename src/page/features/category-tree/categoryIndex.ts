@@ -247,6 +247,10 @@ for (const node of NODES) {
   }
 }
 
+/** Normalised name of Magento's store root, which the tree always shows and
+ *  which the index never carries. */
+const STORE_ROOT_KEY = 'default category';
+
 /**
  * The index code for one category, given its ancestor names (root first, and
  * the Magento "Default Category" root may or may not be included).
@@ -271,15 +275,34 @@ export function categoryCode(
   ancestors: readonly string[] = [],
   parentCode: string | null = null,
 ): string | null {
+  // Normalised form of Magento's store root, which the tree always shows above
+  // the first real category.
   const key = normalizeCategoryText(name);
   if (key === '') return null;
 
   const path = ancestors.map((ancestor) => normalizeCategoryText(ancestor));
+  // Magento's store root ("Default Category") has no index row — the page's
+  // ancestor list always includes it — so it is not a path segment here. Left
+  // in, it made every top-level row look like a leaf with an unusable path.
+  while (path[0] === STORE_ROOT_KEY) path.shift();
 
   for (let depth = path.length; depth >= 0; depth -= 1) {
     const suffix = depth === 0 ? [] : path.slice(path.length - depth);
     const hit = byPath.get([...suffix, name].map(normalizeCategoryText).join('>'));
-    if (hit) return hit;
+    if (!hit) continue;
+    // "Name alone" is the weakest path match there is; when the page already
+    // resolved the parent, a namesake one level up must not win. That is how a
+    // leaf called "PESSOAIS" under ESPECIAL NATAL was numbered as the TOP-LEVEL
+    // "PESSOAIS" (10) instead of 7.7.9.
+    if (depth === 0 && path.length > 0) {
+      if (parentCode && BY_ID.get(hit)?.parent !== parentCode) continue;
+      // Without a parent code the bare name is only evidence when the index
+      // uses that name once; otherwise the later candidate steps decide (or
+      // give up). An empty path means the item *is* top level, where the bare
+      // name is the whole identity — "SACOS E MOCHILAS" is both 5 and 12.2.8.
+      if (!parentCode && (byName.get(key) ?? []).length > 1) continue;
+    }
+    return hit;
   }
 
   const candidates = byName.get(key) ?? [];
@@ -307,7 +330,10 @@ export function categoryCode(
   // or is missing from the index. Try each candidate whose own recorded
   // ancestors overlap with the live path; the row whose recorded path already
   // contains the most leading live segments is the closest real parent.
-  const picked = pickByPath(candidates, path) ?? pickByParent(candidates, parentCode);
+  // The parent's own code outranks the visible path: the page resolved that
+  // parent from the very branch the leaf sits in, while the ancestor *names*
+  // may be spelled differently far above it.
+  const picked = pickByParent(candidates, parentCode) ?? pickByPath(candidates, path);
   if (picked) return picked;
 
   // Absolute last resort: stem so a plural/feminine live name still resolves
@@ -411,13 +437,17 @@ function pickByParent(ids: readonly string[], parentCode: string | null): string
 }
 
 /**
- * Pick a row whose name is a word-boundary prefix (either direction) of the
- * live name, when nothing better matched.
+ * Pick the row a longer live name is built on, when the extra words are a
+ * qualifier the sheet does not carry.
  *
- * The admin adds qualifiers the source sheet leaves out ("Têxtil Criança 100%
- * MADE4YOU" for the row "TÊXTIL CRIANÇA"), which no exact or stem lookup can
- * bridge. Only a unique candidate survives: with several prefix matches the
- * parent code has to break the tie, and without one the answer stays `null`.
+ * The admin adds qualifiers to branch names ("Têxtil Criança 100% MADE4YOU"
+ * for the row "TÊXTIL CRIANÇA"), which no exact, stem or similarity lookup can
+ * bridge. This is deliberately narrow: the live name must *extend* an index
+ * name, and only with a qualifier word (100% / MADE4YOU). A plain extra word is
+ * not evidence of the same category — accepting it turned "Sacos Dobráveis"
+ * into the section "SACOS" and "Polos Manga Curta" into "POLOS", i.e. a wrong
+ * badge, which is worse than none. A live name *shorter* than the index name is
+ * not accepted either; the stem and similarity steps cover those.
  */
 function pickByPrefix(
   key: string,
@@ -427,10 +457,24 @@ function pickByPrefix(
   const ids: string[] = [];
   for (const [id, nodeKey] of NAME_KEYS) {
     if (nodeKey === key) continue;
-    if (nodeKey.startsWith(`${key} `) || key.startsWith(`${nodeKey} `)) ids.push(id);
+    if (!key.startsWith(`${nodeKey} `)) continue;
+    if (!isQualifierTail(key.slice(nodeKey.length + 1))) continue;
+    ids.push(id);
   }
   if (ids.length === 0) return null;
   return pickByParent(ids, parentCode) ?? (ids.length === 1 ? (ids[0] ?? null) : pickByPath(ids, path));
+}
+
+/**
+ * Words the admin appends to a branch name that carry no category meaning of
+ * their own. Anything else after the index name makes the two names different
+ * categories as far as this resolver is concerned.
+ */
+const QUALIFIER_WORDS = new Set(['100%', 'made', '4', 'you', 'made4you']);
+
+function isQualifierTail(tail: string): boolean {
+  const words = tail.split(' ').filter(Boolean);
+  return words.length > 0 && words.every((word) => QUALIFIER_WORDS.has(word));
 }
 
 /** Character bigrams of a normalised name, as a set (spacing kept distinct). */
@@ -471,7 +515,12 @@ function pickBySimilarity(key: string, parentCode: string | null): string | null
   let best = { id: '', score: 0 };
   let runnerUp = 0;
   for (const node of pool) {
-    const score = similarity(target, bigrams(normalizeCategoryText(node.name)));
+    const nodeKey = normalizeCategoryText(node.name);
+    // A word that does not even start with the same letter is a different word
+    // sharing a tail ("JALCAS" vs "CALÇAS" — 0.89 on bigrams), not a typo of
+    // this one. Typos inside a name keep the first letter.
+    if (key.slice(0, 1) !== nodeKey.slice(0, 1)) continue;
+    const score = similarity(target, bigrams(nodeKey));
     if (score > best.score) {
       runnerUp = best.score;
       best = { id: node.id, score };
