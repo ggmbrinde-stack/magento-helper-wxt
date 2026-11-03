@@ -214,9 +214,16 @@ const byStem = new Map<string, string[]>();
 const BY_ID = new Map(NODES.map((n) => [n.id, n]));
 /** Every row's normalised name, kept in index order for the prefix fallback. */
 const NAME_KEYS: [string, string][] = [];
+/** Child ids per parent code, for the sibling-scoped typo fallback. */
+const CHILDREN = new Map<string, string[]>();
 
 for (const node of NODES) {
   const name = normalizeCategoryText(node.name);
+  if (node.parent) {
+    const siblings = CHILDREN.get(node.parent);
+    if (siblings) siblings.push(node.id);
+    else CHILDREN.set(node.parent, [node.id]);
+  }
   if (name === '') continue;
   NAME_KEYS.push([node.id, name]);
   const path = [...indexPath(node), node.name]
@@ -289,7 +296,8 @@ export function categoryCode(
     return (
       pickByPath(stemmed, path) ??
       pickByParent(stemmed, parentCode) ??
-      pickByPrefix(key, path, parentCode)
+      pickByPrefix(key, path, parentCode) ??
+      pickBySimilarity(key, parentCode)
     );
   }
 
@@ -307,12 +315,14 @@ export function categoryCode(
   // A stem collision is not resolved — picking the wrong section is worse than
   // giving up.
   const stem = stemCategoryText(name);
-  if (!stem) return pickByPrefix(key, path, parentCode);
+  if (!stem) return pickByPrefix(key, path, parentCode) ?? pickBySimilarity(key, parentCode);
   return (
     pickByPath(
       candidates.filter((id) => (byStem.get(stem) ?? []).includes(id)),
       path,
-    ) ?? pickByPrefix(key, path, parentCode)
+    ) ??
+    pickByPrefix(key, path, parentCode) ??
+    pickBySimilarity(key, parentCode)
   );
 }
 
@@ -422,5 +432,61 @@ function pickByPrefix(
   if (ids.length === 0) return null;
   return pickByParent(ids, parentCode) ?? (ids.length === 1 ? (ids[0] ?? null) : pickByPath(ids, path));
 }
+
+/** Character bigrams of a normalised name, as a set (spacing kept distinct). */
+function bigrams(text: string): Set<string> {
+  const set = new Set<string>();
+  for (let i = 0; i < text.length - 1; i += 1) set.add(text.slice(i, i + 2));
+  return set;
+}
+
+/** Dice coefficient over bigrams: 1 = identical spelling, 0 = nothing shared. */
+function similarity(a: Set<string>, b: Set<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+  let shared = 0;
+  for (const gram of a) if (b.has(gram)) shared += 1;
+  return (2 * shared) / (a.size + b.size);
+}
+
+/**
+ * Last resort for a misspelling: the index row spelled almost the same way.
+ *
+ * The live admin carries human typos the sheet does not ("Estações
+ * Metereológicas" for "ESTAÇÕES METEOROLÓGICAS"), which no exact, stem, parent
+ * or prefix lookup can bridge. Only the resolved parent's own children are
+ * compared when a parent code is known — a sibling set of a handful of names —
+ * and the winner must clear `SIMILARITY_FLOOR` *and* beat the runner-up by
+ * `SIMILARITY_MARGIN`. A near miss among siblings of one branch is still two
+ * different categories, so an ambiguous best stays unnumbered.
+ */
+function pickBySimilarity(key: string, parentCode: string | null): string | null {
+  const pool: readonly CategoryIndexNode[] = parentCode
+    ? (CHILDREN.get(parentCode) ?? []).flatMap((id) => {
+        const node = BY_ID.get(id);
+        return node ? [node] : [];
+      })
+    : NODES;
+  if (pool.length === 0) return null;
+  const target = bigrams(key);
+  let best = { id: '', score: 0 };
+  let runnerUp = 0;
+  for (const node of pool) {
+    const score = similarity(target, bigrams(normalizeCategoryText(node.name)));
+    if (score > best.score) {
+      runnerUp = best.score;
+      best = { id: node.id, score };
+    } else if (score > runnerUp) {
+      runnerUp = score;
+    }
+  }
+  if (best.score < SIMILARITY_FLOOR || best.score - runnerUp < SIMILARITY_MARGIN) return null;
+  return best.id;
+}
+
+/** Below this the names are different words, not one spelling of a word. */
+const SIMILARITY_FLOOR = 0.87;
+/** Two siblings this close together are ambiguous — neither is picked. */
+const SIMILARITY_MARGIN = 0.08;
+
 /** Number of rows in the mirrored index (used by the fixture checks). */
 export const CATEGORY_INDEX_SIZE = NODES.length;

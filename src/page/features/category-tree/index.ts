@@ -15,7 +15,8 @@
 //   (`categoryIndex.ts`).
 // - Tree | List view toggle. The flat list is depth-indented and drives the
 //   SAME checkboxes by forwarding clicks.
-// - "Selected only" filter, and a pills strip listing every chosen category
+// - "Selected only" filter, and a Selected panel that shows the chosen
+//   categories as an indented tree (unchecked parents kept as grey context),
 //   (click a pill to remove it), so the selection is visible at a glance
 //   instead of being buried in a 200-row tree.
 // - Search filter ("Filter categories…", accent-insensitive, narrows matches
@@ -31,7 +32,7 @@
 // - Display-only: flips `display` of lists/items and inserts spans/buttons.
 //   The operator's own checkbox clicks are the only writers, forwarded
 //   through Magento's own boxes + a native `change` — the reverse cascade
-//   and the locked root below click those same boxes, so pills, list view
+//   and the locked root below click those same boxes, so the Selected panel, list view
 //   and form state stay in sync. No request is made and nothing is saved.
 // - Idempotent: processed nodes/trees are marked, so the content script's
 //   debounced re-scan and AJAX reloads cannot stack duplicate controls.
@@ -41,7 +42,7 @@
 //   the build if a palette token creeps back in.
 
 import { categoryCode } from './categoryIndex';
-import { button, segmented, badge, chip } from '../../../ui';
+import { button, segmented, badge } from '../../../ui';
 
 const TREE_MARK = 'data-mhx-cat-tree';
 const NODE_MARK = 'data-mhx-cat-node';
@@ -54,9 +55,12 @@ const SEARCH_CLASS = 'mhx-cat-search';
 const COUNT_CLASS = 'mhx-cat-tree-count';
 const NO_CLASS = 'mhx-cat-no';
 const PILLS_CLASS = 'mhx-cat-pills';
-const PILL_CLASS = 'mhx-cat-pill';
 const PILL_NO_CLASS = 'mhx-cat-pill-no';
-const PILL_X_CLASS = 'mhx-cat-pill-x';
+const SEL_LIST_CLASS = 'mhx-cat-sel';
+const SEL_ROW_CLASS = 'mhx-cat-sel-row';
+const SEL_CONTEXT_CLASS = 'mhx-cat-sel-row--context';
+const SEL_NAME_CLASS = 'mhx-cat-sel-name';
+const SEL_X_CLASS = 'mhx-cat-sel-x';
 
 /* --- Tree | List view toggle ---------------------------------------------- */
 // The flat "List" view never owns form fields: every row forwards its click
@@ -320,7 +324,7 @@ function itemLabel(li: HTMLLIElement): string {
   if (label?.textContent) return label.textContent.trim();
   const clone = li.cloneNode(true) as HTMLLIElement;
   clone
-    .querySelectorAll(`ul, ol, button, .${NO_CLASS}, .${PILL_CLASS}`)
+    .querySelectorAll(`ul, ol, button, .${NO_CLASS}, .${SEL_ROW_CLASS}`)
     .forEach((n) => n.remove());
   return (clone.textContent ?? '').trim();
 }
@@ -382,6 +386,31 @@ function codeOf(li: HTMLLIElement, report = true): string | null {
  * Insert the number badge once, right before the item's own label, so it reads
  * as a prefix of the category name instead of a separate ornament.
  */
+function depthOf(li: HTMLLIElement): number {
+  let depth = 0;
+  let ancestor = parentBranchItem(li);
+  while (ancestor) {
+    depth += 1;
+    ancestor = parentBranchItem(ancestor);
+  }
+  return depth;
+}
+
+/**
+ * Push each nesting level further right than Magento's own indent does.
+ *
+ * The native tree adds only a few pixels per level, so a leaf at 4.8.6 sat almost
+ * flush with its section and the numbers were hard to read as a hierarchy. The
+ * pad is set on the item itself, so nested lists accumulate it (each level is one
+ * step further right) and the operator's own drag/drop is untouched. Idempotent:
+ * the debounced scan can run it as often as it likes.
+ */
+function indentItem(li: HTMLLIElement): void {
+  const depth = depthOf(li);
+  // Accumulates through the nesting (a child list sits inside its parent item),
+  // so every level ends up one step further right than Magento put it.
+  li.style.setProperty('padding-left', `${depth * 10}px`);
+}
 function addCodeBadge(li: HTMLLIElement): void {
   if (li.querySelector(`:scope > .${NO_CLASS}`)) return;
   const code = codeOf(li);
@@ -685,56 +714,93 @@ function applyTreeFilter(tree: Element): void {
       : `${matches} ${matches === 1 ? 'match' : 'matches'}`;
 }
 
-/* --- Selected pills ------------------------------------------------------- */
+/* --- Selected tree -------------------------------------------------------- */
 
-interface CheckedRow {
+interface SelectionNode {
   real: HTMLInputElement;
   name: string;
   code: string;
+  selected: boolean;
+  depth: number;
 }
 
-/** Every checked category, in document order — excluding the locked root
- *  ("Default Category" is always on, so it gets no pill and no remove ✕). */
-function checkedRows(tree: Element): CheckedRow[] {
-  const out: CheckedRow[] = [];
+/**
+ * The rows the strip has to show, in document (tree) order: every checked
+ * category plus the unchecked ancestors above it.
+ *
+ * Those ancestors are the point. A flat chip list said *which* categories were
+ * checked but not *where they live*, so "T-shirts Manga Comprida" and
+ * "Sweatshirts com Fecho" read as unrelated names even though one is a leaf of
+ * T-shirts and the other of Sweatshirts. Keeping the branch in the list —
+ * indented, greyed and marked as not selected — makes the strip the family tree
+ * the operator is building up. The root ("Default Category") is skipped: always
+ * checked, no index row, nothing to explain.
+ */
+function selectionNodes(tree: Element): SelectionNode[] {
+  const out: SelectionNode[] = [];
   const root = rootItemOf(tree);
   for (const li of Array.from(tree.querySelectorAll<HTMLLIElement>('li'))) {
     if (root && li === root) continue;
     const real = li.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
-    if (!real || !real.checked) continue;
+    if (!real) continue;
     const name = itemLabel(li);
     if (!name) continue;
-    out.push({ real, name, code: codeOf(li) ?? '' });
+    const selected = real.checked;
+    if (!selected) {
+      const checkedBelow = Array.from(
+        li.querySelectorAll<HTMLInputElement>(TREE_BOX_SELECTOR),
+      ).some((box) => box.checked);
+      if (!checkedBelow) continue;
+    }
+    out.push({ real, name, code: codeOf(li) ?? '', selected, depth: depthOf(li) });
   }
   return out;
 }
 
 /**
- * The pills strip: one removable chip per checked category, with its number.
- * Rebuilt from the real checkboxes, so it is correct no matter who changed
- * them (tree, list, Magento, or the operator).
+ * The Selected panel: the checked categories as an indented tree, with their
+ * unchecked branch above them for context. Rebuilt from the real checkboxes, so
+ * it is correct no matter who changed them (tree, list, Magento, or the
+ * operator). Clicking a greyed row selects that branch too; ✕ on a chosen row
+ * unchecks it — both go through the real box, so form state stays Magento's.
  */
 function renderPills(tree: Element): void {
   const state = treeStates.get(tree);
   const ui = state?.ui;
   if (!state || !ui) return;
 
-  const rows = checkedRows(tree);
+  const nodes = selectionNodes(tree);
   // Rebuilding on every debounced scan would itself be a childList mutation,
   // so the scan would schedule the next one forever. Only redraw when the
   // selection actually changed (or the strip was thrown away by a re-render).
-  const sig = rows.map((row) => `${row.code}\u0001${row.name}`).join('\u0002');
+  const sig = nodes
+    .map((node) => `${node.selected ? '1' : '0'}${node.code}\u0001${node.name}`)
+    .join('\u0002');
   if (sig === state.pillSig && ui.pills.childElementCount > 0) return;
   state.pillSig = sig;
 
   ui.pills.replaceChildren();
 
+  const chosen = nodes.filter((node) => node.selected);
+  const context = nodes.length - chosen.length;
+
+  const head = document.createElement('div');
+  head.className = 'mhx-cat-pills-head';
   const title = document.createElement('span');
   title.className = 'mhx-cat-pills-title';
-  title.textContent = `Selected (${rows.length})`;
-  ui.pills.appendChild(title);
+  title.textContent = `Selected (${chosen.length})`;
+  head.appendChild(title);
+  if (context > 0) {
+    const hint = document.createElement('span');
+    hint.className = 'mhx-cat-pills-hint';
+    hint.textContent = `+${context} parent ${context === 1 ? 'branch' : 'branches'} for context`;
+    hint.title =
+      'Grey rows are the branches above a selected category. Grey means not selected — click one to select it too.';
+    head.appendChild(hint);
+  }
+  ui.pills.appendChild(head);
 
-  if (rows.length === 0) {
+  if (chosen.length === 0) {
     const empty = document.createElement('span');
     empty.className = 'mhx-cat-pills-empty';
     empty.textContent = 'No category selected';
@@ -742,25 +808,54 @@ function renderPills(tree: Element): void {
     return;
   }
 
-  for (const row of rows) {
-    const pill = chip({
-      label: row.name,
-      title: `Remove ${row.name}`,
-      onRemove: () => row.real.click(),
-    });
-    pill.classList.add(PILL_CLASS);
-    if (row.code) {
-      const no = badge(row.code, { title: `Category ${row.code} (Notion index)` });
-      no.classList.add(PILL_NO_CLASS);
-      pill.insertBefore(no, pill.firstChild);
+  const list = document.createElement('ul');
+  list.className = SEL_LIST_CLASS;
+
+  for (const node of nodes) {
+    const row = document.createElement('li');
+    row.className = `${SEL_ROW_CLASS}${node.selected ? '' : ` ${SEL_CONTEXT_CLASS}`}`;
+    row.style.setProperty('padding-left', `${node.depth * 14}px`);
+    row.title = node.selected
+      ? `${node.name}${node.code ? ` (${node.code})` : ''} — selected`
+      : `${node.name}${node.code ? ` (${node.code})` : ''} is NOT selected — click to select this branch too`;
+
+    if (node.code) {
+      const no = badge(node.code, { title: `Category ${node.code} (Notion index)` });
+      no.classList.add(NO_CLASS, PILL_NO_CLASS);
+      row.appendChild(no);
     }
-    const textSpan = Array.from(pill.children).find(
-      (el): el is HTMLSpanElement =>
-        el instanceof HTMLSpanElement && !el.classList.contains(PILL_NO_CLASS),
-    );
-    if (textSpan) textSpan.classList.add('mhx-cat-pill-label');
-    ui.pills.appendChild(pill);
+    const label = document.createElement('span');
+    label.className = SEL_NAME_CLASS;
+    label.textContent = node.name;
+    row.appendChild(label);
+
+    if (node.selected) {
+      const remove = button({
+        label: '×',
+        title: `Remove ${node.name}`,
+        variant: 'icon',
+        className: SEL_X_CLASS,
+      });
+      remove.setAttribute('aria-label', `Remove ${node.name}`);
+      remove.addEventListener('click', () => node.real.click());
+      row.appendChild(remove);
+      list.appendChild(row);
+      continue;
+    }
+
+    row.tabIndex = 0;
+    row.setAttribute('role', 'button');
+    const selectBranch = (): void => node.real.click();
+    row.addEventListener('click', selectBranch);
+    row.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      selectBranch();
+    });
+    list.appendChild(row);
   }
+
+  ui.pills.appendChild(list);
 }
 
 /* --- Toolbar -------------------------------------------------------------- */
@@ -1179,7 +1274,9 @@ export function enhanceCategoryTrees(): number {
         // The store root ("Default Category") has no row in the index, so it is
         // left alone instead of being reported as a gap.
         if (li === root) return;
-        if (li.querySelector(TREE_BOX_SELECTOR)) addCodeBadge(li);
+        if (!li.querySelector(TREE_BOX_SELECTOR)) return;
+        addCodeBadge(li);
+        indentItem(li);
       });
     reportUnresolved();
     if (isNew) {
@@ -1214,15 +1311,21 @@ const CATEGORY_TREE_STYLES = `
 .mhx-cat-search::placeholder{color:var(--mhx-pg-ink);}
 .mhx-cat-search:focus{outline:none;border-color:var(--mhx-pg-accent);box-shadow:0 0 0 1px var(--mhx-pg-accent);}
 .mhx-cat-tree-count{margin-right:4px;font:11px/1.3 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-muted);white-space:nowrap;}
-.mhx-cat-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill-hover);}
-.mhx-cat-pills-title{font:11px/1.4 system-ui,"Segoe UI",Arial,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--mhx-pg-muted);margin-right:2px;}
+.mhx-cat-pills{display:flex;flex-direction:column;gap:4px;padding:8px 10px;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill-hover);max-height:240px;overflow-y:auto;}
+.mhx-cat-pills-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;}
+.mhx-cat-pills-title{font:11px/1.4 system-ui,"Segoe UI",Arial,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--mhx-pg-muted);}
+.mhx-cat-pills-hint{font:11px/1.4 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-muted);font-style:italic;}
 .mhx-cat-pills-empty{font:12px/1.4 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-ink);font-style:italic;}
-.mhx-cat-pill{display:inline-flex;align-items:center;gap:6px;margin:0;border:1px solid var(--mhx-pg-accent);border-radius:12px;background:var(--mhx-pg-fill-hover);color:var(--mhx-pg-accent-strong);font:12px/1.4 system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer;}
-.mhx-cat-pill:hover{background:var(--mhx-pg-accent);border-color:var(--mhx-pg-accent);color:var(--mhx-pg-on-accent);}
-.mhx-cat-pill:focus-visible{outline:2px solid var(--mhx-pg-accent);outline-offset:1px;}
+.mhx-cat-sel{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:1px;}
+.mhx-cat-sel-row{display:flex;align-items:center;gap:6px;padding:2px 6px;border-left:2px solid var(--mhx-pg-accent);border-radius:2px;font:12px/1.5 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-ink);}
+.mhx-cat-sel-row:hover{background:var(--mhx-pg-fill);}
+.mhx-cat-sel-row--context{border-left-color:var(--mhx-pg-line);color:var(--mhx-pg-muted);cursor:pointer;font-style:italic;}
+.mhx-cat-sel-row--context:focus-visible{outline:2px solid var(--mhx-pg-accent);outline-offset:-2px;}
+.mhx-cat-sel-row--context:hover{color:var(--mhx-pg-ink);}
 .mhx-cat-pill-no{padding:0 4px;border-radius:2px;color:var(--mhx-pg-muted);font:10px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
-.mhx-cat-pill:hover .mhx-cat-pill-no{background:transparent;color:inherit;}
-.mhx-cat-pill-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}
+.mhx-cat-sel-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px;}
+.mhx-cat-sel-x{padding:0 4px;border:0;background:transparent;color:var(--mhx-pg-muted);cursor:pointer;border-radius:2px;line-height:1;}
+.mhx-cat-sel-x:hover{background:var(--mhx-pg-fill);color:var(--mhx-pg-accent-strong);}
 .mhx-cat-list{margin:0;max-height:480px;overflow-y:auto;padding:4px 0;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill);}
 .mhx-cat-list[hidden]{display:none !important;}
 .mhx-cat-row{display:flex;align-items:center;gap:8px;padding:4px 8px;cursor:pointer;font:13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-ink);}
