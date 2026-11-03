@@ -48,8 +48,12 @@ const TREE_MARK = 'data-mhx-cat-tree';
 const NODE_MARK = 'data-mhx-cat-node';
 const COLLAPSED = 'data-mhx-collapsed';
 const TOGGLE_CLASS = 'mhx-cat-toggle';
+/** Empty box that holds a toggle's place on rows that have no children. */
+const SLOT_CLASS = 'mhx-cat-slot';
 const STYLE_ID = 'mhx-cat-tree-styles';
 const SHELL_CLASS = 'mhx-cat-shell';
+/** Tree + Selected panel side by side. */
+const MAIN_CLASS = 'mhx-cat-main';
 const BAR_CLASS = 'mhx-cat-tree-bar';
 const SEARCH_CLASS = 'mhx-cat-search';
 const COUNT_CLASS = 'mhx-cat-tree-count';
@@ -312,6 +316,24 @@ function addToggle(node: HTMLLIElement): void {
   node.setAttribute(NODE_MARK, '1');
 }
 
+/**
+ * Give every row the same left gutter.
+ *
+ * Only branches carry a toggle, so a leaf's checkbox started ~38px to the LEFT
+ * of its parent's — the sub-subcategory boxes read as a separate, shallower
+ * tree (the operator's complaint: "move checkboxes more to the right, the
+ * sub-sub categorie"). A branch keeps its toggle; a leaf gets an empty slot of
+ * the same width, which is what makes the boxes line up in one column per
+ * depth instead of drifting.
+ */
+function addToggleSlot(li: HTMLLIElement): void {
+  if (li.querySelector(`:scope > .${TOGGLE_CLASS}, :scope > .${SLOT_CLASS}`)) return;
+  const slot = document.createElement('span');
+  slot.className = SLOT_CLASS;
+  slot.setAttribute('aria-hidden', 'true');
+  li.insertBefore(slot, li.firstChild);
+}
+
 /* --- Labels, numbers, ancestors ------------------------------------------- */
 
 /**
@@ -409,6 +431,9 @@ function depthOf(li: HTMLLIElement): number {
   return depth;
 }
 
+/** Extra left pad per nesting level, in px. */
+const INDENT_STEP = 18;
+
 /**
  * Push each nesting level further right than Magento's own indent does.
  *
@@ -420,9 +445,10 @@ function depthOf(li: HTMLLIElement): number {
  */
 function indentItem(li: HTMLLIElement): void {
   const depth = depthOf(li);
-  // Accumulates through the nesting (a child list sits inside its parent item),
-  // so every level ends up one step further right than Magento put it.
-  li.style.setProperty('padding-left', `${depth * 10}px`);
+  // One step per level, measured from the item's own list: Magento puts a
+  // branch's child list in the SAME ul as the branch, so the step cannot come
+  // from the nesting — the item pad is the only thing that separates levels.
+  li.style.setProperty('padding-left', `${depth * INDENT_STEP}px`);
 }
 function addCodeBadge(li: HTMLLIElement): void {
   if (li.querySelector(`:scope > .${NO_CLASS}`)) return;
@@ -972,12 +998,24 @@ function addToolbar(tree: Element): void {
 
   bar.append(seg, search, counter, only, naturaBtn, collapseBtn, expandBtn);
 
-  // Pills strip under the bar: the selection at a glance.
+  // Selected panel: the selection at a glance, in its own column to the RIGHT
+  // of the tree (it used to sit above it and pushed the first rows down).
   const pills = document.createElement('div');
   pills.className = PILLS_CLASS;
   pills.setAttribute('aria-live', 'polite');
 
-  shell.append(bar, pills);
+  shell.append(bar);
+
+  // Two columns: the tree (or the flat list) and the Selected panel beside it.
+  // The tree is moved into the row, so the panel sits next to the rows the
+  // operator is reading instead of above them.
+  const main = document.createElement('div');
+  main.className = MAIN_CLASS;
+  if (tree.parentElement) {
+    tree.parentElement.insertBefore(shell, tree);
+    tree.parentElement.insertBefore(main, tree);
+  }
+  main.append(tree, pills);
 
   const ui: TreeUi = { shell, bar, pills, counter, search, only };
   state.ui = ui;
@@ -1056,10 +1094,6 @@ function addToolbar(tree: Element): void {
       if (li && target.checked) revealBranchOf(li);
     }
   });
-
-  // Right above the tree: lands between the section heading and the list,
-  // with no dependency on which tag Magento used for the heading.
-  if (tree.parentElement) tree.parentElement.insertBefore(shell, tree);
 
   // Lock the root from the first render — see `ensureRootChecked`.
   ensureRootChecked(tree);
@@ -1286,12 +1320,16 @@ export function enhanceCategoryTrees(): number {
     tree
       .querySelectorAll<HTMLLIElement>('li')
       .forEach((li) => {
+        // Same gutter as every other row, so the locked root's box lines up
+        // with the level below it instead of sitting far to the left.
+        addToggleSlot(li);
         // The store root ("Default Category") has no row in the index, so it is
         // left alone instead of being reported as a gap.
         if (li === root) return;
         if (!li.querySelector(TREE_BOX_SELECTOR)) return;
         total += 1;
         addCodeBadge(li);
+        addToggleSlot(li);
         indentItem(li);
         if (li.dataset['mhxCatNo']) numbered += 1;
       });
@@ -1323,14 +1361,18 @@ export function enhanceCategoryTrees(): number {
  */
 const CATEGORY_TREE_STYLES = `
 .mhx-cat-shell{display:flex;flex-direction:column;gap:8px;margin:8px 0 10px;}
+.mhx-cat-main{display:flex;gap:14px;align-items:flex-start;}
+.mhx-cat-main > *{min-width:0;}
+.mhx-cat-main > :not(.mhx-cat-pills){flex:1 1 auto;}
 .mhx-cat-tree-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .mhx-cat-toggle{width:22px;height:22px;margin:0 14px 0 2px;vertical-align:middle;flex-shrink:0;}
-.mhx-cat-no{min-width:34px;margin:0 6px 0 0;padding:1px 5px;border-radius:3px;background:var(--mhx-pg-fill-hover);color:var(--mhx-pg-muted);font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:center;vertical-align:middle;}
+.mhx-cat-slot{display:inline-block;width:22px;height:22px;margin:0 14px 0 2px;vertical-align:middle;flex-shrink:0;}
+.mhx-cat-no{width:46px;box-sizing:border-box;margin:0 6px 0 0;padding:1px 0;border-radius:3px;background:var(--mhx-pg-fill-hover);color:var(--mhx-pg-muted);font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:center;vertical-align:middle;}
 .mhx-cat-search{width:200px;margin:0 4px 0 0;padding:5px 10px;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill);color:var(--mhx-pg-ink);font:12px/1.3 system-ui,"Segoe UI",Arial,sans-serif;}
 .mhx-cat-search::placeholder{color:var(--mhx-pg-ink);}
 .mhx-cat-search:focus{outline:none;border-color:var(--mhx-pg-accent);box-shadow:0 0 0 1px var(--mhx-pg-accent);}
 .mhx-cat-tree-count{margin-right:4px;font:11px/1.3 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-muted);white-space:nowrap;}
-.mhx-cat-pills{display:flex;flex-direction:column;gap:4px;padding:8px 10px;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill-hover);max-height:240px;overflow-y:auto;}
+.mhx-cat-pills{display:flex;flex:0 0 clamp(230px,24vw,330px);flex-direction:column;gap:4px;padding:8px 10px;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill-hover);max-height:480px;overflow-y:auto;position:sticky;top:8px;}
 .mhx-cat-pills-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;}
 .mhx-cat-pills-title{font:11px/1.4 system-ui,"Segoe UI",Arial,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--mhx-pg-muted);}
 .mhx-cat-pills-hint{font:11px/1.4 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-muted);font-style:italic;}
@@ -1341,8 +1383,8 @@ const CATEGORY_TREE_STYLES = `
 .mhx-cat-sel-row--context{border-left-color:var(--mhx-pg-line);color:var(--mhx-pg-muted);cursor:pointer;font-style:italic;}
 .mhx-cat-sel-row--context:focus-visible{outline:2px solid var(--mhx-pg-accent);outline-offset:-2px;}
 .mhx-cat-sel-row--context:hover{color:var(--mhx-pg-ink);}
-.mhx-cat-pill-no{padding:0 4px;border-radius:2px;color:var(--mhx-pg-muted);font:10px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
-.mhx-cat-sel-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px;}
+.mhx-cat-pill-no{width:38px;box-sizing:border-box;padding:0;border-radius:2px;color:var(--mhx-pg-muted);font:10px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:center;}
+.mhx-cat-sel-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .mhx-cat-sel-x{padding:0 4px;border:0;background:transparent;color:var(--mhx-pg-muted);cursor:pointer;border-radius:2px;line-height:1;}
 .mhx-cat-sel-x:hover{background:var(--mhx-pg-fill);color:var(--mhx-pg-accent-strong);}
 .mhx-cat-list{margin:0;max-height:480px;overflow-y:auto;padding:4px 0;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill);}

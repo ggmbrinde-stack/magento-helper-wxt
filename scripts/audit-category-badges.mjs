@@ -12,7 +12,8 @@
 //   upper     UPPERCASE, accents stripped (the admin's own casing/typing)
 //   typoLeaf  one character removed from the leaf name, ancestors exact
 //   typoTop   one character removed from the top group name, rest exact
-//   noPath    leaf name only, no ancestors (a branch above it was unresolvable)
+//   withRoot  the page's real ancestor list, which always starts with the
+//             store root ("Default Category")
 //
 // `wrong` must stay at 0 for every variant. `sheet` and `upper` must be 100%.
 //
@@ -177,7 +178,7 @@ if (gaps.length > 0) {
 }
 
 if (audit.verbose) {
-  for (const name of ['typoLeaf', 'typoTop', 'noPath']) {
+  for (const name of ['typoLeaf', 'typoTop', 'withRoot']) {
     const r = audit.results[name];
     console.log(`\n${name}: ${r.blank} blank of ${audit.total}`);
     for (const line of r.detail.misses) console.log('   ', line.join(' | '));

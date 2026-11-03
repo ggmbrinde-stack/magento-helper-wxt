@@ -411,9 +411,14 @@ checkboxes, which stay the only writers of form state.
   render, change and re-scan (box disabled + labelled, re-ticked if anything
   clears it), even when nothing else is checked. It gets no pill and no List
   row, since it can never be removed.
-- **Selected pills** — a strip under the toolbar lists every checked category
-  as a removable chip (code + name); clicking one unchecks the real checkbox.
-  Rebuilt from the inputs, so it stays right whoever changed them.
+- **Selected panel, right of the tree** — a column beside the tree lists the
+  checked categories as an indented tree (code + name), with the unchecked
+  branches above them as greyed context; ✕ unchecks the real box, clicking a
+  grey row selects that branch. Rebuilt from the inputs, so it stays right
+  whoever changed them.
+- **One column per depth** — every row keeps a fixed gutter (the branch toggle,
+  or an empty slot on leaves) plus 18px of extra pad per level, so the boxes of
+  one level line up with each other instead of sitting left of their parent.
 - **Tree | List** — collapsible tree, or a flat depth-indented list that drives
   the same checkboxes.
 - **Selected only** — hides everything not checked, in either view.
@@ -428,9 +433,23 @@ checkboxes, which stay the only writers of form state.
 
 Colours come from the toolkit's page layer (`--mhx-pg-*`), not from the extension
 palette: that is the rule for anything injected onto a Magento page
-(UI-TOOLKIT.md §2), and `check:ui` G6 enforces it. The bar, list and pills follow
+(UI-TOOLKIT.md §2), and `check:ui` G6 enforces it. The bar, list and panel follow
 a light admin, Magento's own dark one and our themed dark one alike.
 Toggle: `ENHANCE_CATEGORY_TREE`.
+
+### Checking the live tree against Notion
+
+`npm run audit:badges` proves the resolver (`scripts/audit-category-badges.mjs`);
+`npm run cat:check` proves the real page. The latter compares a snapshot of the
+live admin tree (`scripts/probe-cat-dump.js`, pasted into the DevTools Console on
+the Categories tab) with `scripts/categorias-source.md` — the exported Notion
+page the index is built from — and lists the categories that got **no code**, the
+codes that **disagree** with Notion, the paths **spelled differently** on the
+page (numbered via the typo fallback, worth fixing at the source) and the Notion
+categories **missing from the admin**. The dump usually comes from the clipboard:
+paste the probe, then `npm run cat:check`; pass a file path or `--notion` for a
+fresher export, `--json` for machine output. Exit 1 on a missing code, a
+disagreeing code, a stale index or a badge from another build.
 
 ## Deliberately NOT ported
 
