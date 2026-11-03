@@ -1,7 +1,12 @@
 #!/usr/bin/env node
-// Rebuild src/lib/categorias-index.json from the consolidated Notion text.
+// Rebuild src/page/features/category-tree/categorias-index.json from the
+// consolidated Notion text.
 //
-// Usage: node scripts/build-category-index.mjs   (or: npm run index:build)
+// Usage: node scripts/build-category-index.mjs [target.json]
+//        (or: npm run index:build)
+//
+// Without an argument the committed index is overwritten; pass a path to
+// rebuild somewhere else and diff first.
 //
 // Parses `categorias-source.md` next to this script:
 //   ## 1. NAME            -> top-level node   (parent null)
@@ -14,12 +19,14 @@
 // and uppercased — matching how Magento spells the tree.
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const SOURCE = join(here, 'categorias-source.md');
-const TARGET = join(here, '..', 'src', 'lib', 'categorias-index.json');
+const TARGET = process.argv[2]
+  ? resolve(process.argv[2])
+  : join(here, '..', 'src', 'page', 'features', 'category-tree', 'categorias-index.json');
 
 const text = readFileSync(SOURCE, 'utf8');
 

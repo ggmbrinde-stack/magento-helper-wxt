@@ -81,12 +81,12 @@ export function renderTierPricesButtons(): void {
     btn.textContent = label;
     btn.style.cssText = `
       padding: 6px 14px;
-      border: 1px solid var(--mhx-border, #e4e7eb);
+      border: 1px solid var(--mhx-pg-line);
       border-radius: 4px;
       cursor: pointer;
       font: 13px/1.4 system-ui, "Segoe UI", Arial, sans-serif;
-      background: var(--mhx-surface, #fff);
-      color: var(--mhx-ink);
+      background: var(--mhx-pg-fill);
+      color: var(--mhx-pg-ink);
     `;
     btn.title = title;
     btn.addEventListener('click', onClick);

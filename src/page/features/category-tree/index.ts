@@ -336,15 +336,46 @@ function ancestorNames(li: HTMLLIElement): string[] {
   return names;
 }
 
+/**
+ * Categories the index cannot number, keyed by their full path. Collected so
+ * one console line can list them: "some categories have no number" is
+ * otherwise invisible (a missing badge looks like a category that never had
+ * one), and the fix belongs in the index, not in a guess on the page.
+ */
+const UNRESOLVED = new Set<string>();
+let reportedUnresolved = false;
+
+function reportUnresolved(): void {
+  if (UNRESOLVED.size === 0 || reportedUnresolved) return;
+  reportedUnresolved = true;
+  const list = Array.from(UNRESOLVED).sort();
+  // eslint-disable-next-line no-console
+  console.info(
+    `[category-tree] ${list.length} ${list.length === 1 ? 'category has' : 'categories have'} no Notion index code. ` +
+      'Copy the list below to extend categoryIndex.ts:',
+    list,
+  );
+}
+
 /** The index number for one tree item, or null when it cannot be resolved. */
-function codeOf(li: HTMLLIElement): string | null {
+function codeOf(li: HTMLLIElement, report = true): string | null {
   const cached = li.dataset['mhxCatNo'];
   if (cached) return cached;
   const name = itemLabel(li);
   if (!name) return null;
-  const code = categoryCode(name, ancestorNames(li));
-  if (code) li.dataset['mhxCatNo'] = code;
-  return code;
+  const ancestors = ancestorNames(li);
+  // The parent's own code disambiguates a leaf whose branch the admin spells
+  // differently from the index (see pickByParent in categoryIndex.ts).
+  const parent = parentBranchItem(li);
+  const parentCode = parent ? codeOf(parent, false) : null;
+  const code = categoryCode(name, ancestors, parentCode);
+  if (code) {
+    li.dataset['mhxCatNo'] = code;
+    return code;
+  }
+  // Only real categories are worth reporting; the store root has no index row.
+  if (report) UNRESOLVED.add([...ancestors, name].join(' > '));
+  return null;
 }
 
 /**
@@ -1145,8 +1176,12 @@ export function enhanceCategoryTrees(): number {
     tree
       .querySelectorAll<HTMLLIElement>('li')
       .forEach((li) => {
+        // The store root ("Default Category") has no row in the index, so it is
+        // left alone instead of being reported as a gap.
+        if (li === root) return;
         if (li.querySelector(TREE_BOX_SELECTOR)) addCodeBadge(li);
       });
+    reportUnresolved();
     if (isNew) {
       if (root) setCollapsed(root, false);
       collapseTree(tree);

@@ -23,7 +23,14 @@
 //   parent is wrong the answer is still the row whose spelled parent is the
 //   closest live ancestor the index already holds.
 // - When a name matches several index rows and no ancestor path resolves it,
-//   the answer is `null`: a wrong number is worse than no number.
+//   the parent's already-resolved code decides (same name under the same
+//   parent is the same category), then a word-boundary prefix — the admin adds
+//   qualifiers the sheet leaves out ("Têxtil Criança 100% MADE4YOU" for
+//   "TÊXTIL CRIANÇA").
+// - When none of that resolves a name, the answer is `null`: a wrong number is
+//   worse than no number. The page logs the unresolved paths once per scan
+//   (see `reportUnresolved` in ./index.ts) so a gap can be closed in the index
+//   instead of guessed at.
 
 import rawIndex from './categorias-index.json';
 
@@ -203,10 +210,15 @@ function indexPath(node: CategoryIndexNode): string[] {
 const byPath = new Map<string, string>();
 const byName = new Map<string, string[]>();
 const byStem = new Map<string, string[]>();
+/** Row lookup by id, so prefix/parent tie-breakers do not rebuild a map. */
+const BY_ID = new Map(NODES.map((n) => [n.id, n]));
+/** Every row's normalised name, kept in index order for the prefix fallback. */
+const NAME_KEYS: [string, string][] = [];
 
 for (const node of NODES) {
   const name = normalizeCategoryText(node.name);
   if (name === '') continue;
+  NAME_KEYS.push([node.id, name]);
   const path = [...indexPath(node), node.name]
     .map(normalizeCategoryText)
     .join('>');
@@ -250,6 +262,7 @@ for (const node of NODES) {
 export function categoryCode(
   name: string,
   ancestors: readonly string[] = [],
+  parentCode: string | null = null,
 ): string | null {
   const key = normalizeCategoryText(name);
   if (key === '') return null;
@@ -272,8 +285,12 @@ export function categoryCode(
   // was unreachable whenever the exact-name lookup missed.
   if (candidates.length === 0) {
     const stem = stemCategoryText(name);
-    if (!stem) return null;
-    return pickByPath(byStem.get(stem) ?? [], path);
+    const stemmed = stem ? (byStem.get(stem) ?? []) : [];
+    return (
+      pickByPath(stemmed, path) ??
+      pickByParent(stemmed, parentCode) ??
+      pickByPrefix(key, path, parentCode)
+    );
   }
 
   if (candidates.length === 1) return candidates[0] ?? null;
@@ -282,7 +299,7 @@ export function categoryCode(
   // or is missing from the index. Try each candidate whose own recorded
   // ancestors overlap with the live path; the row whose recorded path already
   // contains the most leading live segments is the closest real parent.
-  const picked = pickByPath(candidates, path);
+  const picked = pickByPath(candidates, path) ?? pickByParent(candidates, parentCode);
   if (picked) return picked;
 
   // Absolute last resort: stem so a plural/feminine live name still resolves
@@ -290,10 +307,12 @@ export function categoryCode(
   // A stem collision is not resolved — picking the wrong section is worse than
   // giving up.
   const stem = stemCategoryText(name);
-  if (!stem) return null;
-  return pickByPath(
-    candidates.filter((id) => (byStem.get(stem) ?? []).includes(id)),
-    path,
+  if (!stem) return pickByPrefix(key, path, parentCode);
+  return (
+    pickByPath(
+      candidates.filter((id) => (byStem.get(stem) ?? []).includes(id)),
+      path,
+    ) ?? pickByPrefix(key, path, parentCode)
   );
 }
 
@@ -335,8 +354,7 @@ function pickByPath(
  * ties the caller breaks them further downstream (or gives up).
  */
 function pathOverlap(nodeId: string, livePath: readonly string[]): number {
-  const byId = new Map(NODES.map((n) => [n.id, n]));
-  const node = byId.get(nodeId);
+  const node = BY_ID.get(nodeId);
   if (!node) return 0;
 
   const nodePath = indexPath(node).map(normalizeCategoryText);
@@ -361,6 +379,48 @@ function pathOverlap(nodeId: string, livePath: readonly string[]): number {
     if (matches > best) best = matches;
   }
   return best;
+}
+
+/**
+ * Pick the one candidate that sits directly under a parent whose code the page
+ * already resolved.
+ *
+ * This covers what the name path cannot: the live tree resolves the parent
+ * fine, but spells the branch above it differently ("Têxtil Criança 100%
+ * MADE4YOU" against the index row "TÊXTIL CRIANÇA"), so the live ancestor list
+ * never matches the recorded one segment by segment. A matching parent code is
+ * the strongest signal available — the same name under the same parent is the
+ * same category — so only a unique hit counts.
+ */
+function pickByParent(ids: readonly string[], parentCode: string | null): string | null {
+  if (!parentCode) return null;
+  const unique = Array.from(new Set(ids)).filter(
+    (id) => BY_ID.get(id)?.parent === parentCode,
+  );
+  return unique.length === 1 ? (unique[0] ?? null) : null;
+}
+
+/**
+ * Pick a row whose name is a word-boundary prefix (either direction) of the
+ * live name, when nothing better matched.
+ *
+ * The admin adds qualifiers the source sheet leaves out ("Têxtil Criança 100%
+ * MADE4YOU" for the row "TÊXTIL CRIANÇA"), which no exact or stem lookup can
+ * bridge. Only a unique candidate survives: with several prefix matches the
+ * parent code has to break the tie, and without one the answer stays `null`.
+ */
+function pickByPrefix(
+  key: string,
+  path: readonly string[],
+  parentCode: string | null,
+): string | null {
+  const ids: string[] = [];
+  for (const [id, nodeKey] of NAME_KEYS) {
+    if (nodeKey === key) continue;
+    if (nodeKey.startsWith(`${key} `) || key.startsWith(`${nodeKey} `)) ids.push(id);
+  }
+  if (ids.length === 0) return null;
+  return pickByParent(ids, parentCode) ?? (ids.length === 1 ? (ids[0] ?? null) : pickByPath(ids, path));
 }
 /** Number of rows in the mirrored index (used by the fixture checks). */
 export const CATEGORY_INDEX_SIZE = NODES.length;
