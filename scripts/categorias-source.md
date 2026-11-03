@@ -1664,6 +1664,7 @@ Usar LABELS Linha Natura Tempo de Entrega?? 🔹 Isqueiros de Cozinha tb em 8. C
 **12.1.6.** Calças e Calções
 **12.1.7.** Cachecóis e Golas
 **12.1.8.** Têxtil 100% Personalizável (Confeção Nacional)?????
+**12.1.9.** Camisas
 
 **Atributos**
 
