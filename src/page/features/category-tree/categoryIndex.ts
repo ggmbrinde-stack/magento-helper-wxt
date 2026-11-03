@@ -210,6 +210,13 @@ function indexPath(node: CategoryIndexNode): string[] {
 const byPath = new Map<string, string>();
 const byName = new Map<string, string[]>();
 const byStem = new Map<string, string[]>();
+/**
+ * Rows the sheet wrote with two names ("VISEIRAS / PALAS"): folded part -> id.
+ * The admin keeps only one of the two, so the part is the real name there.
+ */
+const byAlternateName = new Map<string, string[]>();
+/** Folded name with every space removed, for "100% MADE4YOU" vs "100% MADE 4 YOU". */
+const byCompact = new Map<string, string[]>();
 /** Row lookup by id, so prefix/parent tie-breakers do not rebuild a map. */
 const BY_ID = new Map(NODES.map((n) => [n.id, n]));
 /** Every row's normalised name, kept in index order for the prefix fallback. */
@@ -235,6 +242,24 @@ for (const node of NODES) {
   const list = byName.get(name);
   if (list) list.push(node.id);
   else byName.set(name, [node.id]);
+
+  const compact = name.replace(/ /g, '');
+  if (compact !== '') {
+    const sameLetters = byCompact.get(compact);
+    if (sameLetters) sameLetters.push(node.id);
+    else byCompact.set(compact, [node.id]);
+  }
+
+  // "VISEIRAS / PALAS": either part alone is the name the admin may show.
+  if (node.name.includes('/')) {
+    for (const part of node.name.split('/')) {
+      const alternate = normalizeCategoryText(part);
+      if (alternate === '' || alternate === name) continue;
+      const ids = byAlternateName.get(alternate);
+      if (ids) ids.push(node.id);
+      else byAlternateName.set(alternate, [node.id]);
+    }
+  }
 
   // Stems are *not* unique: several source rows share a stem
   // ("casacos leve" and "casacos leves" both stem to "casacos leve"). The
@@ -305,7 +330,7 @@ export function categoryCode(
     return hit;
   }
 
-  const candidates = byName.get(key) ?? [];
+  const candidates = candidatesForName(name, key);
 
   // No index row carries this exact normalized name. The live admin spells
   // some names with endings the source left out ("Casacos Leves" vs the index
@@ -350,6 +375,39 @@ export function categoryCode(
     pickByPrefix(key, path, parentCode) ??
     pickBySimilarity(key, parentCode)
   );
+}
+
+/**
+ * The index rows whose name is this live name, allowing for the two ways the
+ * admin and the sheet spell the same category:
+ *
+ * - two names in one row ("VISEIRAS / PALAS" on the sheet, "Viseiras" in the
+ *   admin, or the other way round);
+ * - the same letters with different spacing ("100% MADE 4 YOU" on the sheet,
+ *   "100% MADE4YOU" in the admin).
+ *
+ * Both are the same name, not an inference: nothing here widens a name to a
+ * longer or shorter one — that is what `pickByPrefix` and `pickBySimilarity`
+ * are for, and they stay gated.
+ */
+function candidatesForName(name: string, key: string): string[] {
+  const exact = byName.get(key);
+  if (exact) return exact;
+
+  // The live name offers the alternatives ("Viseiras / Palas").
+  for (const part of name.split('/')) {
+    const alternate = normalizeCategoryText(part);
+    if (alternate === '' || alternate === key) continue;
+    const hit = byName.get(alternate);
+    if (hit) return hit;
+  }
+
+  // The row offers them (it is the sheet that wrote "A / B").
+  const alternateRow = byAlternateName.get(key);
+  if (alternateRow) return alternateRow;
+
+  const compact = key.replace(/ /g, '');
+  return compact === key ? [] : (byCompact.get(compact) ?? []);
 }
 
 /**
@@ -470,7 +528,9 @@ function pickByPrefix(
  * their own. Anything else after the index name makes the two names different
  * categories as far as this resolver is concerned.
  */
-const QUALIFIER_WORDS = new Set(['100%', 'made', '4', 'you', 'made4you']);
+// Folded forms: `normalizeCategoryText` drops the % and the punctuation, so
+// "100% MADE4YOU" reaches this tail as "100 made4you".
+const QUALIFIER_WORDS = new Set(['100', '100%', 'made', '4', 'you', 'made4you']);
 
 function isQualifierTail(tail: string): boolean {
   const words = tail.split(' ').filter(Boolean);
