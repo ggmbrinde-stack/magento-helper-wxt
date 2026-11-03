@@ -76,6 +76,7 @@ const BOX_CLASS = 'mhx-cat-row-box';
 const BOX_CHECKED_CLASS = 'mhx-cat-row--checked';
 const ONLY_CLASS = 'mhx-cat-only';
 const NATURA_CLASS = 'mhx-cat-natura';
+const UNTICK_CLASS = 'mhx-cat-untick';
 
 /** The counterpart category this action adds, accent/case-insensitive. */
 const NATURA_NAME = 'linha natura';
@@ -976,6 +977,27 @@ function addToolbar(tree: Element): void {
     }, 1800);
   });
 
+  // "Untick all": clears the selection in one click. Every box goes through
+  // Magento's own checkbox + a native `change`, and the locked root
+  // ("Default Category") is never touched — it must stay checked or Save would
+  // store a category set with no root.
+  const untickBtn = button({
+    label: 'Untick all',
+    title: 'Uncheck every selected category (Default Category stays checked)',
+    variant: 'ghost',
+    className: UNTICK_CLASS,
+  });
+  let untickResetTimer: ReturnType<typeof setTimeout> | undefined;
+  untickBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const cleared = untickAll(tree);
+    untickBtn.textContent = cleared > 0 ? `Unticked ${cleared}` : 'Nothing ticked';
+    clearTimeout(untickResetTimer);
+    untickResetTimer = setTimeout(() => {
+      untickBtn.textContent = 'Untick all';
+    }, 1800);
+  });
+
   const collapseBtn = button({
     label: 'Collapse all',
     variant: 'ghost',
@@ -996,7 +1018,7 @@ function addToolbar(tree: Element): void {
     expandTree(tree);
   });
 
-  bar.append(seg, search, counter, only, naturaBtn, collapseBtn, expandBtn);
+  bar.append(seg, search, counter, only, naturaBtn, untickBtn, collapseBtn, expandBtn);
 
   // Selected panel: the selection at a glance, in its own column to the RIGHT
   // of the tree (it used to sit above it and pushed the first rows down).
@@ -1148,6 +1170,44 @@ function tickLinhaNatura(tree: Element): number {
     box.dispatchEvent(new Event('change', { bubbles: true }));
   }
   return pending.length;
+}
+
+/**
+ * "Untick all": uncheck every selected category except the locked root.
+ *
+ * The bulk walk runs inside the cascade guard: each change event would
+ * otherwise walk the subtree and the ancestors of every box it clears, which is
+ * O(n²) on a 600-box tree and — worse — would re-enter the listener hundreds of
+ * times for a result we already know. The guard only skips OUR cascades;
+ * Magento's own change handling still runs, so form state is exactly what the
+ * operator would get by unticking each box by hand. The root is skipped (it is
+ * disabled and re-locked), and pills/filter are refreshed once at the end.
+ *
+ * Returns how many boxes this press cleared.
+ */
+function untickAll(tree: Element): number {
+  const root = rootItemOf(tree);
+  const boxes = Array.from(
+    tree.querySelectorAll<HTMLInputElement>(TREE_BOX_SELECTOR),
+  ).filter((box) => {
+    if (!box.checked || box.disabled) return false;
+    const li = box.closest<HTMLLIElement>('li');
+    return li !== root;
+  });
+
+  cascading = true;
+  try {
+    for (const box of boxes) {
+      box.checked = false;
+      box.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  } finally {
+    cascading = false;
+  }
+  ensureRootChecked(tree);
+  renderPills(tree);
+  applyTreeFilter(tree);
+  return boxes.length;
 }
 
 /**

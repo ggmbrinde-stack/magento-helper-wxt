@@ -426,6 +426,9 @@ checkboxes, which stay the only writers of form state.
   same parent list for every category already checked, so a multi-category
   pick needs no second pass. Additive only (nothing is ever unticked) and it
   reports how many it ticked.
+- **Untick all** — one click clears the whole selection (start over). Every box
+  is unticked through Magento's own checkbox + a native `change`, and the locked
+  root “Default Category” is never touched; it reports how many it cleared.
 - **Filter** — accent-insensitive search over names *and* numbers (“1.2.3”
   finds it, “textil” finds “Têxtil Promocional”), ancestors kept on screen.
 - **View state persists** — mode, filter text and “Selected only” survive
