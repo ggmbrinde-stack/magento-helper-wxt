@@ -68,6 +68,9 @@
     const name = labelOf(li);
     if (!name) continue;
     const path = pathOf(li);
+    // The store root is not a category the sheet carries: it has no number and
+    // is always checked, so listing it would show up as a false gap.
+    if (path.length === 1 && /^default category$/i.test(path[0] || '')) continue;
     // Drop the store root from the path when it only names the tree itself.
     if (/^default category$/i.test(path[0] || '') && path.length > 1) path.shift();
     const badge = li.querySelector('.mhx-cat-no');
@@ -94,4 +97,23 @@
     console.log('MHX dump: clipboard unavailable, JSON follows:');
     console.log(json);
   }
+
+  // Also answer the question in the console, so the output is pasteable on its
+  // own: which rows are showing no number right now. Only meaningful when the
+  // helper is loaded (otherwise every badge is null by definition).
+  const withBadge = rows.filter((row) => row.badge !== null);
+  if (withBadge.length === 0) {
+    console.log('MHX numbers: no badges on the page (helper not loaded?) — use the JSON for the full check.');
+    return;
+  }
+  const missing = rows.filter((row) => row.badge === null);
+  if (missing.length === 0) {
+    console.log(`MHX numbers: ${withBadge.length}/${rows.length} categories show a number — no gaps.`);
+    return;
+  }
+  console.log(`MHX numbers: ${withBadge.length}/${rows.length} show a number, ${missing.length} without:`);
+  for (const row of missing.slice(0, 60)) {
+    console.log('  ' + [...row.path, row.name].join(' > '));
+  }
+  if (missing.length > 60) console.log(`  … ${missing.length - 60} more (use the JSON)`);
 })();
