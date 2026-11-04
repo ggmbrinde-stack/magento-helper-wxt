@@ -420,6 +420,11 @@ checkboxes, which stay the only writers of form state.
 - **One column per depth** — every row keeps a fixed gutter (the branch toggle,
   or an empty slot on leaves) plus 18px of extra pad per level, so the boxes of
   one level line up with each other instead of sitting left of their parent.
+- **Numbers in reading order** — each sibling list is sorted by its numbers, so
+  a category the admin keeps at the end (6.1 “Acessórios Secretária” after 6.5)
+  is drawn where its number belongs. Display-only: the items, their child lists,
+  toggles and checkboxes move as they are, so the form state is unchanged, and
+  the console reports `N numbers in reading order` after every scan.
 - **Selected only** — hides everything not checked.
 - **Tick Linha Natura** — one click ticks the “Linha Natura” category in the
   same parent list for every category already checked, so a multi-category

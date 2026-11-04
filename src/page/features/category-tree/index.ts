@@ -43,6 +43,7 @@
 import {
   categoryCode,
   categoryOrderIssues,
+  compareCategoryCodes,
   type OrderedCategoryRow,
 } from './categoryIndex';
 import { button, badge } from '../../../ui';
@@ -379,6 +380,69 @@ function logBadgeCoverage(): void {
       'Copy the list below to extend categoryIndex.ts:',
     Array.from(UNRESOLVED).sort(),
   );
+}
+
+/**
+ * One item and the child list that belongs to it. Magento renders a branch as
+ * `li` followed by its children in the NEXT SIBLING `ul`, so the two have to
+ * move together or the hierarchy breaks.
+ */
+interface SiblingGroup {
+  item: HTMLLIElement;
+  childList: HTMLUListElement | null;
+}
+
+/**
+ * Reorder every sibling list so the numbers ascend: 6.1 before 6.2, and 3.4.9
+ * before 3.4.10.
+ *
+ * The admin keeps its own category order, which is not the sheet's order —
+ * "Acessórios Secretária" (6.1) sits at the END of Escrita e Escritório there,
+ * so a column of numbers read 6.2, 6.3, 6.4, 6.5, 6.1 even though every badge
+ * was right. Display-only: items, their child lists, toggles, badges and the
+ * real checkboxes all move as they are, so form state and Save are untouched.
+ * Rows without a number keep their relative order at the end of their list, and
+ * the store root is never moved (it is the only child of the tree's own list).
+ */
+function sortSiblingsByNumber(tree: Element): void {
+  const lists: Element[] = [tree, ...Array.from(tree.querySelectorAll('ul'))];
+  for (const list of lists) {
+    // Pair each item with the sibling list that follows it.
+    const groups: SiblingGroup[] = [];
+    let paired = true;
+    for (const child of Array.from(list.children)) {
+      if (child instanceof HTMLLIElement) {
+        groups.push({ item: child, childList: null });
+        continue;
+      }
+      if (child instanceof HTMLUListElement) {
+        const last = groups[groups.length - 1];
+        // A list with no item before it is not this model; leave it alone.
+        if (!last || last.childList) {
+          paired = false;
+          break;
+        }
+        last.childList = child;
+      }
+    }
+    if (!paired || groups.length < 2) continue;
+    if (groups.every((group) => !codeOf(group.item, false))) continue;
+
+    const sorted = [...groups].sort((a, b) => {
+      const left = codeOf(a.item, false);
+      const right = codeOf(b.item, false);
+      if (left && right) return compareCategoryCodes(left, right);
+      if (left) return -1;
+      if (right) return 1;
+      return 0;
+    });
+    if (sorted.every((group, index) => group === groups[index])) continue;
+
+    for (const group of sorted) {
+      list.append(group.item);
+      if (group.childList) list.append(group.childList);
+    }
+  }
 }
 
 /**
@@ -1273,6 +1337,8 @@ export function enhanceCategoryTrees(): number {
       });
     badgeStats.numbered = numbered;
     badgeStats.total = total;
+    // Every number is assigned now, so the rows can be put in that order.
+    sortSiblingsByNumber(tree);
     logBadgeCoverage();
     logBadgeOrder(tree);
     if (isNew) {
