@@ -23,6 +23,13 @@ const ATTRIBUTE_SET_SELECT = [
   'select#attribute_set_id',
 ].join(', ');
 
+/**
+ * Magento 2.4.7+ shows the set as a text field with a "change" dialog instead
+ * of a dropdown, so the name arrives as a plain input value.
+ */
+const ATTRIBUTE_SET_INPUT =
+  'input[name="attribute-set-name"], input#attribute-set-name, input[name="attribute_set_name"]';
+
 const ATTRIBUTE_SET_LABEL =
   /\battribute\s*set\b|conjunto\s+de\s+atributos|jeu\s+d'?attributs|conjunto\s+de\s+atributos/i;
 
@@ -136,6 +143,11 @@ function labelledFieldValue(labelPattern: RegExp): string {
 
 /** Attribute Set name exactly as the product edit page shows it. */
 export function readAttributeSetName(): string {
+  const named = document.querySelector<HTMLInputElement>(ATTRIBUTE_SET_INPUT);
+  if (named) {
+    const value = squash(named.value) || squash(named.defaultValue);
+    if (value) return value;
+  }
   const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
   if (select) {
     const text = optionsText(select);
@@ -178,6 +190,10 @@ export function readAttributeSetProfile(): AttributeSetProfile {
 
 /** Attribute Set id from the select/hidden input, when the page exposes it. */
 export function readAttributeSetId(): string {
+  const named = document.querySelector<HTMLInputElement>(
+    'input[name="attribute-set-id"], input#attribute-set-id',
+  );
+  if (named && squash(named.value)) return squash(named.value);
   const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
   if (select && squash(select.value)) return squash(select.value);
   const hidden = document.querySelector<HTMLInputElement>(
