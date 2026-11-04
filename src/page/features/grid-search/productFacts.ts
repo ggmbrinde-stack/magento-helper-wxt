@@ -317,6 +317,31 @@ async function waitFor(predicate: () => boolean, timeoutMs: number): Promise<boo
   return predicate();
 }
 
+/** The product form container, as every build we support names it. */
+const PRODUCT_FORM =
+  '#product_form, .product-edit, [data-ui-id="product-form"], form[data-role="product-form"]';
+
+/**
+ * Wait until the edit form is actually built and parsed.
+ *
+ * The pass is often requested on a tab the resolver just opened, so the message
+ * can arrive while the document is still parsing: the Attribute Set select (near
+ * the top of the markup) is already there, while price, stock, visibility and
+ * the tab bar further down are not. Reading then reported PP correctly and every
+ * other fact as "not read". Wait for the form plus one commercial field, which
+ * only exist once the page is complete.
+ */
+async function waitForEditForm(): Promise<void> {
+  const commercial =
+    'input[name="product[price]"], input#price, select[name="product[status]"], select#status';
+  const ready = (): boolean =>
+    document.readyState !== 'loading' &&
+    document.querySelector(PRODUCT_FORM) !== null &&
+    document.querySelector(commercial) !== null;
+  if (ready()) return;
+  await waitFor(ready, 8_000);
+}
+
 /**
  * Read PP + categories from the open product edit page.
  *
@@ -344,14 +369,10 @@ function categorySelectEntries(): CategoryEntry[] {
 export async function readProductFacts(
   options: ReadProductFactsOptions = {},
 ): Promise<ResolverMagentoFacts | null> {
-  let attributeSet = readAttributeSetName();
-  // The edit form is built by Magento's UI components after document_idle, so on
-  // a cold page the select may not exist yet. Wait for it briefly instead of
-  // concluding "not a product edit page" (which would report PP as unreadable).
-  if (!attributeSet) {
-    await waitFor(() => readAttributeSetName() !== '', 2_000);
-    attributeSet = readAttributeSetName();
-  }
+  // The pass can be requested on a tab that is still parsing, so the form is
+  // awaited before anything is read rather than reporting it as unreadable.
+  await waitForEditForm();
+  const attributeSet = readAttributeSetName();
   let boxes = categoryBoxes();
   let selectEntries = categorySelectEntries();
   let categoryReason = '';
