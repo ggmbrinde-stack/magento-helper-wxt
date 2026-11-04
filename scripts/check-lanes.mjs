@@ -58,7 +58,8 @@ const ENTRYPOINT_DIR = 'src/entrypoints/';
 const DEAD_ALLOW = new Set(['src/ui/smoke-test.ts', 'src/audit/__tests__/supplier.test.ts',
   'src/audit/__tests__/makitoImages.test.ts',
   'src/audit/__tests__/enableFlow.test.ts',
-  'src/audit/__tests__/adminFacts.test.ts',]);
+  'src/audit/__tests__/adminFacts.test.ts',
+  'src/audit/__tests__/attributeSet.test.ts',]);
 
 const EXTENSIONS = ['', '.ts', '.tsx', '/index.ts', '/index.tsx'];
 

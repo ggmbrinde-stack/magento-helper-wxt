@@ -47,6 +47,22 @@ function controlValue(node: Element | null): string {
   return squash(node.textContent);
 }
 
+/**
+ * The "change attribute set" dialog. It holds a select named `attribute-set-name`
+ * whose options are every set in the store, and its selection is the dialog's
+ * starting point (`Default`), not the product's set. Reading it reported a value
+ * that exists on the page but describes nothing, so it is excluded everywhere.
+ */
+const ATTRIBUTE_SET_DIALOG = [
+  '[data-role="affected-attribute-set-selector"]',
+  '.affected-attribute-set',
+  '#choose-affected-attribute-set',
+].join(', ');
+
+function inSetChangeDialog(node: Element | null): boolean {
+  return Boolean(node?.closest(ATTRIBUTE_SET_DIALOG));
+}
+
 /** Is this node inside something the markup labels as an attribute-set widget? */
 function inAttributeSetWidget(node: Element): boolean {
   let current: Element | null = node;
@@ -70,6 +86,7 @@ function selectedSetOption(): string {
   );
   for (const option of options) {
     if (option instanceof HTMLOptionElement && !option.selected) continue;
+    if (inSetChangeDialog(option)) continue;
     if (!inAttributeSetWidget(option)) continue;
     const text = squash(option.textContent);
     if (text) return text;
@@ -158,6 +175,47 @@ function staticFieldValue(field: Element): string {
   return squash(clone.textContent);
 }
 
+/** Exact field label, so a paragraph that merely mentions the set is ignored. */
+const ATTRIBUTE_SET_LABEL_EXACT = /^(attribute\s*set|conjunto\s+de\s+atributos)$/i;
+
+/**
+ * The set name printed beside the header label on the newer product form.
+ *
+ * There the set is neither a dropdown nor a hidden field: the header shows the
+ * name as static text and only the "change attribute set" dialog has controls.
+ * The value is the label's immediate neighbour, never a whole row of fields.
+ */
+function headerSetValue(): string {
+  const labels = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      'label, dt, .admin__field-label, span, div, strong, th',
+    ),
+  ).filter(
+    (node) =>
+      node.children.length === 0 &&
+      ATTRIBUTE_SET_LABEL_EXACT.test(fieldLabelText(node.textContent)),
+  );
+  for (const label of labels) {
+    if (inSetChangeDialog(label)) continue;
+    const row = label.parentElement;
+    if (!row) continue;
+    const candidates: (Element | null)[] = [
+      label.nextElementSibling,
+      row.nextElementSibling,
+      row.querySelector('.admin__field-value, [data-role="field-value"]'),
+    ];
+    for (const candidate of candidates) {
+      if (!candidate || candidate.contains(label)) continue;
+      if (candidate.matches('a, button')) continue;
+      const text = squash(candidate.textContent);
+      // A long text is a container of several fields, not one set name.
+      if (!text || text.length > 160) continue;
+      return text;
+    }
+  }
+  return '';
+}
+
 /** The value of a labelled admin field (select/input, else static text). */
 function labelledFieldValue(labelPattern: RegExp): string {
   const labels = Array.from(
@@ -166,6 +224,7 @@ function labelledFieldValue(labelPattern: RegExp): string {
     ),
   );
   for (const label of labels) {
+    if (inSetChangeDialog(label)) continue;
     if (!labelPattern.test(fieldLabelText(label.textContent))) continue;
     const field =
       label.closest('.admin__field, .field, tr, fieldset') ??
@@ -191,7 +250,7 @@ function labelledFieldValue(labelPattern: RegExp): string {
 /** Attribute Set name exactly as the product edit page shows it. */
 export function readAttributeSetName(): string {
   const named = document.querySelector(ATTRIBUTE_SET_INPUT);
-  const namedValue = controlValue(named);
+  const namedValue = inSetChangeDialog(named) ? '' : controlValue(named);
   if (namedValue) return namedValue;
   const picked = selectedSetOption();
   if (picked) return picked;
@@ -213,6 +272,9 @@ export function readAttributeSetName(): string {
       if (text) return text;
     }
   }
+  // The newer form prints the name as plain header text, no control at all.
+  const header = headerSetValue();
+  if (header) return header;
   return labelledFieldValue(ATTRIBUTE_SET_LABEL);
 }
 
