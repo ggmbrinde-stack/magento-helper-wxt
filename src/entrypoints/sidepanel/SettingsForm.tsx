@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { browser } from 'wxt/browser';
 import { ThemePicker } from '../../dashboard/kit/ThemePicker';
 import { ToolkitColors } from '../../dashboard/kit/ToolkitColors';
+import { saveFeatureSettings, FEATURE_DEFAULTS, loadFeatureSettings } from '../../shared/featureSettings';
 
 export interface SettingsValues {
   notionToken: string;
@@ -22,6 +23,10 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 export function SettingsForm(props: Props) {
   const [form, setForm] = useState<SettingsValues>(props.settings);
   const [state, setState] = useState<SaveState>('idle');
+  const [features, setFeatures] = useState<Record<string, boolean>>({ ...FEATURE_DEFAULTS });
+  useEffect(() => {
+    void loadFeatureSettings().then(setFeatures);
+  }, []);
   const [error, setError] = useState('');
 
   // Keep the form in sync when the panel loads settings asynchronously (or
@@ -126,6 +131,23 @@ export function SettingsForm(props: Props) {
           onInput={(e) => update('adminBaseUrl', e.currentTarget.value)}
         />
       </label>
+      <div class="mhx-feature-toggles">
+        <strong>Features</strong>
+        {Object.keys(FEATURE_DEFAULTS).map((k) => (
+          <label key={k} class="mhx-panel-field">
+            <input
+              type="checkbox"
+              checked={features[k] ?? true}
+              onChange={async (e) => {
+                const next = { ...features, [k]: e.currentTarget.checked };
+                setFeatures(next);
+                await saveFeatureSettings(next);
+              }}
+            />
+            <span>{k}</span>
+          </label>
+        ))}
+      </div>
       <div class="mhx-row">
         <button
           type="button"

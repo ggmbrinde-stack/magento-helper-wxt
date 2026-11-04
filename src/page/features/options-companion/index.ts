@@ -11,6 +11,8 @@ export const OPT_LANGS: { code: string; storeId: string; flag: string }[] = [
   { code: 'EN', storeId: '2', flag: '🇬🇧' },
   { code: 'ES', storeId: '4', flag: '🇪🇸' },
   { code: 'FR', storeId: '5', flag: '🇫🇷' },
+  { code: 'DE', storeId: '6', flag: '🇩🇪' },
+  { code: 'IT', storeId: '7', flag: '🇮🇹' },
 ];
 
 export function isCustomOptionsPage(): boolean {
@@ -116,6 +118,40 @@ export function mountLangRowForOption(tr: HTMLElement): void {
   tr.parentNode?.insertBefore(companionTr, tr);
 }
 
+/**
+ * Widen the .admin__control-table-wrapper that directly wraps a given table.
+ * Called per-table so AJAX-loaded tables are handled when they appear.
+ * Only touches the single nearest wrapper -- nothing else on the page.
+ */
+export function widenTableWrapper(table: HTMLElement): void {
+  const wrapper = table.closest<HTMLElement>('.admin__control-table-wrapper');
+  if (!wrapper) return;
+  wrapper.style.maxWidth = 'none';
+  wrapper.style.width = '100%';
+  wrapper.style.overflowX = 'visible';
+
+  // admin__field-control is a ~46%-wide column inside admin__field (Magento two-col layout).
+  // Override it to fill the full admin__field width so the table can use all available space.
+  const fieldControl = wrapper.closest<HTMLElement>('.admin__field-control');
+  if (fieldControl) {
+    fieldControl.style.width = '100%';
+    fieldControl.style.maxWidth = 'none';
+    fieldControl.style.flexBasis = '100%';
+    fieldControl.style.flexGrow = '1';
+  }
+
+  // Also tell the admin__field row itself to allow its child to overflow the two-col layout
+  const adminField = wrapper.closest<HTMLElement>('.admin__field');
+  if (adminField) {
+    adminField.style.flexWrap = 'wrap';
+  }
+}
+
+/** @deprecated use widenTableWrapper(table) directly */
+export function widenOptionsPage(): void {
+  document.querySelectorAll<HTMLTableElement>('table').forEach(widenTableWrapper);
+}
+
 export function addOptionsCompanion(): void {
   if (!isCustomOptionsPage()) return;
 
@@ -129,16 +165,18 @@ export function addOptionsCompanion(): void {
   }
   if (!optionsTable) return;
 
-  // Widen the table
-  const tableContainer = optionsTable.closest<HTMLElement>('fieldset, .admin__fieldset, .fieldset-wrapper') ?? optionsTable.parentElement as HTMLElement | null;
-  if (tableContainer) { tableContainer.style.maxWidth = 'none'; tableContainer.style.width = '100%'; }
+  // Widen this table's specific wrapper -- called after table is found so the
+  // wrapper is guaranteed to exist in DOM.
+  widenTableWrapper(optionsTable);
   optionsTable.style.width = '100%';
+  optionsTable.style.tableLayout = 'fixed';
 
   const isNewMode = (): boolean => optionsTable!.dataset.mhxMode !== 'original';
 
   if (!document.getElementById('mhx-opt-toggle')) {
-    const tableParent = optionsTable.closest<HTMLElement>('fieldset, .admin__fieldset, div') ?? optionsTable.parentElement;
-    if (tableParent) {
+    // Insert toggle button directly before the table wrapper, not inside the fieldset
+    const tableWrapper = optionsTable.closest<HTMLElement>('.admin__control-table-wrapper') ?? optionsTable.parentElement;
+    if (tableWrapper?.parentElement) {
       const toggleBtn = document.createElement('button');
       toggleBtn.id = 'mhx-opt-toggle';
       toggleBtn.type = 'button';
@@ -156,7 +194,7 @@ export function addOptionsCompanion(): void {
         applyMode();
       });
 
-      tableParent.insertBefore(toggleBtn, optionsTable);
+      tableWrapper.parentElement.insertBefore(toggleBtn, tableWrapper);
       optionsTable.dataset.mhxMode = 'new';
       applyMode();
     }

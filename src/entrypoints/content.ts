@@ -1,6 +1,7 @@
 import { defineContentScript } from 'wxt/sandbox';
 import type { ListingError } from '../shared/schemas';
 import { ENHANCE_NAV_TOGGLE, MOVE_PAGE_ACTIONS } from '../shared/flags';
+import { getFeatureSettings, loadFeatureSettings, onFeatureSettingsChange } from '../shared/featureSettings';
 import { detectStoreView } from '../shared/store';
 import { isProductEditPage, readFormState, readPageSku } from '../page/shared/magentoForm';
 import { ensureUi } from '../ui';
@@ -35,7 +36,7 @@ import { handleSearchMagento } from '../page/features/grid-search';
 import { addOptionsCompanion } from '../page/features/options-companion';
 import { enhanceOptionsItems } from '../page/features/options-items';
 import { renderTierPricesButtons, findTierPricesTable } from '../page/features/tier-prices';
-import { mhxVisTest } from '../page/features/vis-test';
+
 
 /**
  * The scan loop.
@@ -51,6 +52,8 @@ import { mhxVisTest } from '../page/features/vis-test';
  * dropdown pass once cost the operator every pencil on the page).
  */
 function scan(): void {
+  const f = getFeatureSettings();
+  if (!f.extensionEnabled) return;
   const safe = (name: string, fn: () => void): void => {
     try {
       fn();
@@ -59,34 +62,25 @@ function scan(): void {
     }
   };
 
-  // First, so a later step throwing cannot cost the operator their dropdowns.
-  safe('selects', enhanceAdminSelects);
-  safe('tierPrices', renderTierPricesButtons);
-  // The page-feature styles are not injected from here: they are part of the
-  // toolkit sheet (src/ui/toolkit.css), which ensureUi() puts on the page in
-  // main() before the first scan. Features only pass classes.
-  // First, so a later step throwing cannot cost the operator their dropdowns.
-  safe('selects', enhanceAdminSelects);
-  safe('navToggle', () => {
-    if (ENHANCE_NAV_TOGGLE) enhanceAdminNavToggle();
-  });
-  safe('rowActions', enhanceGridRowActions);
-  safe('massactions', enhanceMassactions);
-  safe('paging', enhanceGridPagingSizes);
-  safe('activeFilters', enhanceActiveFilterChips);
-  safe('categoryTree', enhanceCategoryTree);
-  if (MOVE_PAGE_ACTIONS) safe('pageActions', () => movePageActionsToHeader());
-  safe('scanEditPage', scanEditPage);
-  safe('productTypeBadge', renderProductTypeBadge);
-  safe('scanGrid', scanGrid);
-  safe('gridCopy', addGridCopyButtons);
-  safe('storeViews', addStoreViewButtons);
-  safe('configButtons', renderConfigButtons);
-  safe('errorMarkup', maybeRequestErrorMarkup);
-  // Options features: run on every scan so they pick up AJAX-loaded rows; each
-  // one is a no-op outside the custom-options editor.
-  safe('optionsCompanion', addOptionsCompanion);
-  safe('optionsItems', enhanceOptionsItems);
+  if (f.selects) safe('selects', enhanceAdminSelects);
+  if (f.tierPrices) safe('tierPrices', renderTierPricesButtons);
+  if (f.selects) safe('selects', enhanceAdminSelects);
+  if (f.navToggle && ENHANCE_NAV_TOGGLE) safe('navToggle', () => enhanceAdminNavToggle());
+  if (f.rowActions) safe('rowActions', enhanceGridRowActions);
+  if (f.massactions) safe('massactions', enhanceMassactions);
+  if (f.paging) safe('paging', enhanceGridPagingSizes);
+  if (f.activeFilters) safe('activeFilters', enhanceActiveFilterChips);
+  if (f.categoryTree) safe('categoryTree', enhanceCategoryTree);
+  if (f.pageActions && MOVE_PAGE_ACTIONS) safe('pageActions', () => movePageActionsToHeader());
+  if (f.skuCopy) safe('scanEditPage', scanEditPage);
+  if (f.productTypeBadge) safe('productTypeBadge', renderProductTypeBadge);
+  if (f.gridCopy) safe('scanGrid', scanGrid);
+  if (f.gridCopy) safe('gridCopy', addGridCopyButtons);
+  if (f.storeViews) safe('storeViews', addStoreViewButtons);
+  if (f.configButtons) safe('configButtons', renderConfigButtons);
+  if (f.errorMarkup) safe('errorMarkup', maybeRequestErrorMarkup);
+  if (f.optionsCompanion) safe('optionsCompanion', addOptionsCompanion);
+  if (f.optionsItems) safe('optionsItems', enhanceOptionsItems);
 }
 
 export default defineContentScript({
@@ -100,7 +94,7 @@ export default defineContentScript({
     'https://bestofgifts.fr/*',
   ],
   runAt: 'document_idle',
-  main() {
+  async main() {
     // Tab that predates an extension reload? The background injects this bundle
     // on demand (see ensureHelperContentScript). A second injection must not
     // bind a second message listener or start a second scan loop, so the boot
@@ -114,18 +108,15 @@ export default defineContentScript({
     // first call gets the sheet on the page before the first scan draws.
     ensureUi();
     watchToolkitColors();
-    // Keep the admin's own colours in step with the stored theme preference.
     watchMagentoPageTheme();
+    await loadFeatureSettings();
     scan();
+    onFeatureSettingsChange(() => scan());
     let timer: number | undefined;
     new MutationObserver(() => {
       window.clearTimeout(timer);
       timer = window.setTimeout(scan, 200);
     }).observe(document.body, { childList: true, subtree: true });
-
-    // Visibility probe: proves the content script ran even when no feature
-    // matches the page. Remove with src/page/features/vis-test.
-    mhxVisTest();
 
     chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       const type = message?.type;
