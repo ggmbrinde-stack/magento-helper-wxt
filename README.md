@@ -454,6 +454,19 @@ paste the probe, then `npm run cat:check`; pass a file path or `--notion` for a
 fresher export, `--json` for machine output. Exit 1 on a missing code, a
 disagreeing code, a stale index or a badge from another build.
 
+### Numbers in reading order
+
+A dump can only describe what it captured, so the page also checks itself: with
+every scan, alongside the coverage line, the console reports whether the numbers
+read `1, 1.1, 1.1.1 …` in the order the rows are drawn —
+`[category-tree] 619 numbers in reading order — no branch runs backwards.` Two
+things are flagged, both with the row's full path: a branch whose numbers step
+**backwards** (the admin shows a newly added category in the middle of a
+section), and a child whose number is **outside the branch it is drawn in** (the
+admin nests it under a category the sheet files elsewhere). Codes are compared
+numerically, so `3.4.9` still sorts before `3.4.10`. Neither finding is a
+resolver bug: the fix is the sheet row or the admin tree.
+
 ## Deliberately NOT ported
 
 - The old toolbar **popup** (`popup.js`) — replaced by the side panel (the action

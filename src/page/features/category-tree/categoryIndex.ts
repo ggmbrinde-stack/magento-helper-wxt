@@ -599,3 +599,83 @@ const SIMILARITY_MARGIN = 0.08;
 
 /** Number of rows in the mirrored index (used by the fixture checks). */
 export const CATEGORY_INDEX_SIZE = NODES.length;
+
+/* --- Reading order -------------------------------------------------------- */
+
+/**
+ * One row of the page tree as it is displayed: its number, its depth (1 = a
+ * top-level category, so the store root is 0) and its full path, for messages.
+ */
+export interface OrderedCategoryRow {
+  code: string;
+  name: string;
+  depth: number;
+  path: string;
+}
+
+/**
+ * Numeric comparison of two codes: "3.4.9" sorts before "3.4.10". A plain
+ * string compare gets that backwards, which is why it is never used on codes.
+ */
+export function compareCategoryCodes(a: string, b: string): number {
+  const left = a.split('.');
+  const right = b.split('.');
+  for (let i = 0; i < Math.max(left.length, right.length); i += 1) {
+    const diff = Number(left[i] ?? 0) - Number(right[i] ?? 0);
+    if (diff) return diff;
+  }
+  return 0;
+}
+
+/**
+ * Numbers that read out of order in a tree walked top to bottom.
+ *
+ * Two things can make a column of codes look wrong even though every individual
+ * number is right: a branch whose children run backwards (the admin shows a
+ * newly added category in the middle of a section), and a child numbered outside
+ * the branch it is drawn under (the admin nests it under a category the sheet
+ * files elsewhere). Both are reported by path, because the fix is in the data —
+ * the sheet row or the admin tree — never in the resolver.
+ */
+export function categoryOrderIssues(
+  rows: readonly OrderedCategoryRow[],
+): string[] {
+  const issues: string[] = [];
+  // Deepest code seen on the way down, per depth, for the sibling and
+  // parent checks. Stepping back up to a shallower row drops the deeper ones.
+  const lastByDepth = new Map<number, OrderedCategoryRow>();
+  const codeByDepth = new Map<number, string>();
+
+  for (const row of rows) {
+    if (!row.code) continue; // unnumbered rows carry no order of their own
+    for (const depth of [...lastByDepth.keys()]) {
+      if (depth > row.depth) {
+        lastByDepth.delete(depth);
+        codeByDepth.delete(depth);
+      }
+    }
+
+    const previous = lastByDepth.get(row.depth);
+    if (previous && compareCategoryCodes(previous.code, row.code) > 0) {
+      issues.push(
+        `${previous.code} ${previous.name} is followed by ${row.code} ${row.name} ` +
+          `(${row.path}) — the numbers run backwards.`,
+      );
+    }
+    lastByDepth.set(row.depth, row);
+
+    const parentCode = codeByDepth.get(row.depth - 1);
+    if (parentCode !== undefined) {
+      const ownParent = row.code.slice(0, row.code.lastIndexOf('.'));
+      if (ownParent !== parentCode) {
+        issues.push(
+          `${row.code} ${row.name} (${row.path}) sits under ${parentCode}, ` +
+            `so its number is outside the branch it is drawn in.`,
+        );
+      }
+    }
+    codeByDepth.set(row.depth, row.code);
+  }
+
+  return issues;
+}

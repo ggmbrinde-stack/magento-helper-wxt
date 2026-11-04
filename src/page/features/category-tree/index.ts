@@ -41,7 +41,11 @@
 //   — light, our own dark theme, or Magento's own — and `check-ui.mjs` G6 fails
 //   the build if a palette token creeps back in.
 
-import { categoryCode } from './categoryIndex';
+import {
+  categoryCode,
+  categoryOrderIssues,
+  type OrderedCategoryRow,
+} from './categoryIndex';
 import { button, segmented, badge } from '../../../ui';
 
 const TREE_MARK = 'data-mhx-cat-tree';
@@ -161,6 +165,7 @@ const treeStates = new WeakMap<Element, TreeState>();
  * cascade entry and only refreshes pills/filters.
  */
 let cascading = false;
+const rootClickGuards = new WeakSet<HTMLInputElement>();
 
 /**
  * Magento renders this tree as SIBLINGS, not nested children (live DOM,
@@ -372,6 +377,9 @@ function ancestorNames(li: HTMLLIElement): string[] {
 const UNRESOLVED = new Set<string>();
 const badgeStats = { numbered: 0, total: 0 };
 let lastCoverage = '';
+// `null` until the first scan: an empty report ("nothing wrong") must still be
+// logged once, so it cannot share the initial value.
+let lastOrderReport: string | null = null;
 
 /**
  * One console line per selection of the tree, in both directions: "all
@@ -394,6 +402,50 @@ function logBadgeCoverage(): void {
     `[category-tree] ${summary} categories numbered — ${total - numbered} without a Notion index code. ` +
       'Copy the list below to extend categoryIndex.ts:',
     Array.from(UNRESOLVED).sort(),
+  );
+}
+
+/**
+ * Check that the badges read 1, 1.1, 1.1.1 … in the order the rows are drawn.
+ *
+ * Every number can be right and the column still look wrong: a category the
+ * admin lists mid-section gets a high number there, and a child the admin nests
+ * under a category the sheet files elsewhere shows a number from another branch.
+ * Neither is a resolver bug, so neither can be fixed by guessing — the page
+ * names the rows instead, once per distinct finding, and the fix goes to the
+ * sheet or to the admin tree.
+ */
+function logBadgeOrder(tree: Element): void {
+  const root = rootItemOf(tree);
+  const rows: OrderedCategoryRow[] = [];
+  let numbered = 0;
+  for (const li of Array.from(tree.querySelectorAll<HTMLLIElement>('li'))) {
+    const code = li === root ? '' : (li.dataset['mhxCatNo'] ?? '');
+    if (code) numbered += 1;
+    const name = itemLabel(li);
+    rows.push({
+      code,
+      name,
+      depth: depthOf(li),
+      path: [...ancestorNames(li), name].filter(Boolean).join(' > '),
+    });
+  }
+  const issues = categoryOrderIssues(rows);
+  const report = issues.join('\n');
+  if (report === lastOrderReport) return;
+  lastOrderReport = report;
+  if (issues.length === 0) {
+    // eslint-disable-next-line no-console
+    console.info(
+      `[category-tree] ${numbered} numbers in reading order — no branch runs backwards.`,
+    );
+    return;
+  }
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[category-tree] ${issues.length} number${issues.length === 1 ? '' : 's'} out of reading order: ` +
+      'fix the sheet row or the admin tree (not the resolver):',
+    issues,
   );
 }
 
@@ -1329,21 +1381,31 @@ function rootBoxOf(tree: Element): HTMLInputElement | null {
  * with it unchecked saves a broken category set. So it stays checked,
  * always: every render, every operator change, every re-scan, even when
  * nothing else is checked. The tick goes through Magento's own checkbox + a
- * native `change` (same as the cascades), and the box is disabled + labelled
- * so the operator cannot uncheck it by hand — it would silently re-tick on
- * the next change event anyway.
+ * native `change` (same as the cascades). The box remains enabled so Magento
+ * includes it in form submission; clicks are intercepted to keep it checked.
  */
 function ensureRootChecked(tree: Element): void {
   const root = rootItemOf(tree);
   if (!root) return;
   const box = root.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
   if (!box) return;
-  if (box.disabled === false) {
-    box.disabled = true;
-    box.title = 'Default Category is always selected (store root).';
-    box.setAttribute('aria-disabled', 'true');
-    box.setAttribute('aria-label', 'Default Category (always selected)');
+  if (box.disabled) box.disabled = false;
+  if (!rootClickGuards.has(box)) {
+    rootClickGuards.add(box);
+    box.addEventListener(
+      'click',
+      (event) => {
+        event.preventDefault();
+        if (!box.checked) {
+          box.checked = true;
+          box.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      },
+      true,
+    );
   }
+  box.title = 'Default Category is always selected (store root).';
+  box.setAttribute('aria-label', 'Default Category (always selected)');
   if (!box.checked) {
     box.checked = true;
     box.dispatchEvent(new Event('change', { bubbles: true }));
@@ -1396,6 +1458,7 @@ export function enhanceCategoryTrees(): number {
     badgeStats.numbered = numbered;
     badgeStats.total = total;
     logBadgeCoverage();
+    logBadgeOrder(tree);
     if (isNew) {
       if (root) setCollapsed(root, false);
       collapseTree(tree);
