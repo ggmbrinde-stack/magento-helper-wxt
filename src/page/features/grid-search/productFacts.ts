@@ -25,10 +25,57 @@ const ATTRIBUTE_SET_SELECT = [
 
 /**
  * Magento 2.4.7+ shows the set as a text field with a "change" dialog instead
- * of a dropdown, so the name arrives as a plain input value.
+ * of a dropdown, so the name arrives as a plain input value. Themes also render
+ * it as a custom picker, so the control is matched by name or id, not by tag.
  */
-const ATTRIBUTE_SET_INPUT =
-  'input[name="attribute-set-name"], input#attribute-set-name, input[name="attribute_set_name"]';
+const ATTRIBUTE_SET_INPUT = [
+  '[name="attribute-set-name"]',
+  '#attribute-set-name',
+  '[name="attribute_set_name"]',
+  '[id$="attribute-set-name" i]',
+].join(', ');
+
+/** Value of any control: a select's label, an input's value, else its text. */
+function controlValue(node: Element | null): string {
+  if (!node) return '';
+  if (node instanceof HTMLSelectElement) {
+    return optionsText(node) || squash(node.value);
+  }
+  if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
+    return squash(node.value) || squash(node.defaultValue);
+  }
+  return squash(node.textContent);
+}
+
+/** Is this node inside something the markup labels as an attribute-set widget? */
+function inAttributeSetWidget(node: Element): boolean {
+  let current: Element | null = node;
+  for (let depth = 0; depth < 6 && current; depth += 1) {
+    if (/attribute[_-]?set/i.test(`${current.id} ${current.className}`)) return true;
+    current = current.parentElement;
+  }
+  return false;
+}
+
+/**
+ * The current choice of a custom attribute-set picker: the option a theme marks
+ * as selected, but only inside a widget whose own id/class names the set. A
+ * picked option from any other widget would be a wrong value, not a fallback.
+ */
+function selectedSetOption(): string {
+  const options = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      '[aria-selected="true"], [aria-checked="true"], option:checked',
+    ),
+  );
+  for (const option of options) {
+    if (option instanceof HTMLOptionElement && !option.selected) continue;
+    if (!inAttributeSetWidget(option)) continue;
+    const text = squash(option.textContent);
+    if (text) return text;
+  }
+  return '';
+}
 
 const ATTRIBUTE_SET_LABEL =
   /\battribute\s*set\b|conjunto\s+de\s+atributos|jeu\s+d'?attributs|conjunto\s+de\s+atributos/i;
@@ -143,11 +190,11 @@ function labelledFieldValue(labelPattern: RegExp): string {
 
 /** Attribute Set name exactly as the product edit page shows it. */
 export function readAttributeSetName(): string {
-  const named = document.querySelector<HTMLInputElement>(ATTRIBUTE_SET_INPUT);
-  if (named) {
-    const value = squash(named.value) || squash(named.defaultValue);
-    if (value) return value;
-  }
+  const named = document.querySelector(ATTRIBUTE_SET_INPUT);
+  const namedValue = controlValue(named);
+  if (namedValue) return namedValue;
+  const picked = selectedSetOption();
+  if (picked) return picked;
   const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
   if (select) {
     const text = optionsText(select);
