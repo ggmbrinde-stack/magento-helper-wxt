@@ -13,6 +13,7 @@ import {
 } from '../shared/notion/client';
 import { SkuLibrarySchema, validateRows } from '../shared/schemas';
 import {
+  MAGENTO_FACTS_VERSION,
   PRODUCT_TYPES,
   RESOLVER_SCHEMA,
   RESOLVER_TTL_DAYS,
@@ -46,6 +47,20 @@ import type {
 export const RESOLVER_CACHE_PREFIX = 'mhx:resolver:';
 const LEGACY_CACHE_KEYS = ['resolverMap', 'resolverMapV2'] as const;
 const DAY_MS = 86_400_000;
+
+/**
+ * Price and stock change faster than the 14-day resolver payload, so the
+ * Enable flow re-reads the edit page when the snapshot is older than a day.
+ */
+const FACTS_TTL_MS = DAY_MS;
+
+/** Read facts that are missing, from an older reader, or too old to trust. */
+export function factsNeedRead(facts: ResolverMagentoFacts | undefined): boolean {
+  if (!facts) return true;
+  if ((facts.factsVersion ?? 0) < MAGENTO_FACTS_VERSION) return true;
+  const read = Date.parse(facts.readAt);
+  return !Number.isFinite(read) || Date.now() - read > FACTS_TTL_MS;
+}
 
 function normalizeSku(sku: string): string {
   return sku.trim().toUpperCase();
@@ -967,7 +982,10 @@ export async function resolveSkuForDashboard(
   // storefront breadcrumb, so without this pass the card could only show the
   // Notion row - and report "missing" for a product that already has both.
   // The pass runs on its own tab so it may open the Categories tab (read-only).
-  if (readAdminFacts && (!magentoFacts || !magentoFacts.categoryRead)) {
+  if (
+    readAdminFacts &&
+    (force || factsNeedRead(magentoFacts) || !magentoFacts?.categoryRead)
+  ) {
     const factsParentId = knownParentId || retryParentId || parentEntityId;
     if (factsParentId) {
       const factsTab = await readMatrixTab(
@@ -1108,7 +1126,7 @@ export async function resolveSkuForDashboard(
   }
   if (!source && notion) source = 'notion';
 
-  if (resolver && (fresh || adminChildren.length > 0)) {
+  if (resolver && (fresh || adminChildren.length > 0 || (readAdminFacts && magentoFacts))) {
     try {
       await cacheResolverJson(sku, resolver);
     } catch (err) {

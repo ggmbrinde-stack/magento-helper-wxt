@@ -80,23 +80,99 @@ export interface ResolverCategories {
 }
 
 /**
- * PP and category facts read from the Magento product edit page.
+ * Bumped when the reader starts carrying fields an older cached payload cannot
+ * have. The Enable flow re-reads when it sees an older number.
+ */
+export const MAGENTO_FACTS_VERSION = 3;
+
+/** One row of the product's tier price table (Advanced Pricing). */
+export interface ResolverTierPrice {
+  /** Quantity threshold (`price_qty`). */
+  qty: number;
+  /** `percent` = percentage discount, `fixed` = absolute price. */
+  valueType: 'percent' | 'fixed';
+  /** The discount (0-100) or the fixed price, depending on `valueType`. */
+  value: number;
+  /** Website id (`0` = all websites), or the select's label. */
+  website: string;
+  /** Customer group id (`32000` = all groups), or the select's label. */
+  group: string;
+}
+
+/** Price fields read from the product edit page's main tab. */
+export interface ResolverPriceFacts {
+  price: number | null;
+  specialPrice: number | null;
+  cost: number | null;
+  /** Tax class label, or its id when the select had no label. */
+  taxClass: string;
+}
+
+/** Stock fields read from the product edit page (best effort). */
+export interface ResolverStockFacts {
+  qty: number | null;
+  isInStock: boolean | null;
+  /** Backorders label/value when the field is on the page. */
+  backorders: string;
+}
+
+/**
+ * Facts read from the Magento product edit page.
  *
  * PP is not a standalone field: the Attribute Set name carries it
  * (`AS>PP0957_CONJ ESCRITA...`). Categories come from the checked nodes of the
- * Categories tab, which the reader may activate on a tab it owns.
+ * Categories tab, which the reader may activate on a tab it owns. Tier prices,
+ * price, stock, visibility and websites are read from the same page.
+ *
+ * Every block has a `*Read` flag: "not read" is never reported as "empty", so
+ * the Enable flow can say `manual` instead of inventing a missing value.
  */
 export interface ResolverMagentoFacts {
+  /** Reader version; older cached payloads lack the newer fields. */
+  factsVersion: number;
   /** Attribute Set display name, e.g. `AS>PP0957_CONJ ESCRITA...`. */
   attributeSet: string;
+  /** Attribute Set id when the select/hidden input exposes it. */
+  attributeSetId: string;
   /** PP code parsed from the Attribute Set name (`0957`), or empty. */
   ppCode: string;
   /** Checked category paths, root first; deepest first. */
   categoryPaths: string[][];
+  /** Category id per path (same order as `categoryPaths`), or empty strings. */
+  categoryIds: string[][];
   /** True when the category tree was present and read (even if empty). */
   categoryRead: boolean;
   /** Why the category tree could not be read, when it could not. */
   categoryReason?: string;
+  /** Every tier row, in table order. Empty when none are defined. */
+  tierPrices: ResolverTierPrice[];
+  /** True when the Advanced Pricing table was present and read. */
+  tierRead: boolean;
+  /** Why the tier table could not be read, when it could not. */
+  tierReason?: string;
+  /** True when the price fields were present and read, even if blank. */
+  priceRead: boolean;
+  /** Price fields from the main tab (null when the field is absent). */
+  price: ResolverPriceFacts;
+  /** True when stock controls were present and read. */
+  stockRead: boolean;
+  /** Stock fields (null when the field is absent). */
+  stock: ResolverStockFacts;
+  /** True when the visibility field was present and read. */
+  visibilityRead: boolean;
+  /** Visibility label (`Catalog, Search`, `Not Visible Individually`, …). */
+  visibility: string;
+  /** True when the status field was present and read. */
+  statusRead: boolean;
+  /** Status label from the edit page (`Enabled` / `Disabled`). */
+  status: string;
+  /** True when website assignments were present and read. */
+  websitesRead: boolean;
+  /** Assigned website labels (or ids when no label is available). */
+  websites: string[];
+  /** True when the weight field was present and read. */
+  weightRead: boolean;
+  weight: number | null;
   /** When the edit page was read. */
   readAt: string;
 }
@@ -189,6 +265,11 @@ export interface ResolverJson {
   categories?: ResolverCategories;
   /** PP + category facts read from the Magento product edit page. */
   magento_facts?: ResolverMagentoFacts;
+  /**
+   * The price the storefront shows (guest/catalog price), when the PDP
+   * publishes it. Admin facts are the source of truth; this is a cross-check.
+   */
+  storefront_price?: { amount: number | null; currency: string };
   /** Supplier attribution (D4). */
   supplier?: ResolverSupplier;
   /** Enable/disable state as Magento reports it. */
@@ -465,6 +546,35 @@ export function readSimpleProductId(html: string): number | null {
   const m = html.match(/data-product-id\s*=\s*"(\d+)"/);
   if (!m || m[1] === undefined) return null;
   return Number.parseInt(m[1], 10);
+}
+
+/** First regex capture, or empty string. */
+function capture(html: string, pattern: RegExp): string {
+  const match = pattern.exec(html);
+  return (match?.[1] ?? '').trim();
+}
+
+/**
+ * The price the PDP advertises to a guest. Magento themes publish it in
+ * `product:price:amount` / `itemprop="price"` meta tags (and Luma also puts it
+ * on `data-price-amount`). It is a cross-check for the admin price, never a
+ * replacement: catalog price rules make the two legitimately differ.
+ */
+export function readStorefrontPrice(
+  html: string,
+): { amount: number | null; currency: string } | undefined {
+  const raw =
+    capture(html, /<meta[^>]+property=["']product:price:amount["'][^>]+content=["']([^"']+)["']/i) ||
+    capture(html, /<meta[^>]+itemprop=["']price["'][^>]+content=["']([^"']+)["']/i) ||
+    capture(html, /<meta[^>]+content=["']([^"']+)["'][^>]+itemprop=["']price["']/i) ||
+    capture(html, /class=["'][^"']*price-wrapper[^"']*["'][^>]+data-price-amount=["']([^"']+)["']/i);
+  const currency =
+    capture(html, /<meta[^>]+property=["']product:price:currency["'][^>]+content=["']([^"']+)["']/i) ||
+    capture(html, /<meta[^>]+itemprop=["']priceCurrency["'][^>]+content=["']([^"']+)["']/i) ||
+    'EUR';
+  if (!raw) return currency ? { amount: null, currency } : undefined;
+  const amount = Number(raw.replace(/[^\d.,-]/g, '').replace(',', '.'));
+  return { amount: Number.isFinite(amount) ? amount : null, currency };
 }
 
 export function getOgUrl(html: string): string | null {
@@ -1095,6 +1205,7 @@ export function parseResolver(input: ParseResolverInput): ResolverJson {
     snapshots: input.snapshots ?? {},
     anomalies,
     categories,
+    storefront_price: readStorefrontPrice(enHtml),
     redirected_to: input.redirectedTo ?? null,
     notices,
     supplier: input.supplier,

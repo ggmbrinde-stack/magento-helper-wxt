@@ -22,7 +22,8 @@
     "cat:check": "node scripts/check-categories-live.mjs",
     "test:makito": "npx esbuild src/audit/__tests__/makitoImages.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/makito-images-test.mjs --log-level=warning && node --test .output/makito-images-test.mjs",
     "test:enable": "npx esbuild src/audit/__tests__/enableFlow.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/enable-flow-test.mjs --log-level=warning && node --test .output/enable-flow-test.mjs",
-    "test": "npm run test:supplier && npm run test:makito && npm run test:enable"
+    "test:facts": "npx esbuild src/audit/__tests__/adminFacts.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/admin-facts-test.mjs --log-level=warning && node --test .output/admin-facts-test.mjs",
+    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts"
   },
   "dependencies": {
     "preact": "^10.29.8",

@@ -5,7 +5,7 @@ import type {
   SearchMagentoResponse,
 } from '../../../core/messages';
 import { findConfigSection, isCollapsed } from '../../shared/config-section';
-import { readProductFacts } from './productFacts';
+import { readAdminFacts } from './adminFacts';
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -610,7 +610,7 @@ export async function handleSearchMagento(
       // Reading them here means a disabled SKU gets real Magento values instead
       // of a Notion-only guess.
       const facts = readFacts
-        ? await readProductFacts({ activateCategoryTab: expand })
+        ? await readAdminFacts({ activateCategoryTab: expand, expandPricing: expand })
         : null;
       if (matrix.children.length > 0 || facts) {
         return {

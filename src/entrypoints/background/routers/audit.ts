@@ -220,13 +220,14 @@ export const handleAuditMessage: LaneRouter = (message, ctx) => {
     const sku = String(message.sku ?? '').trim();
     const url = message.url ? String(message.url) : undefined;
     const force = message.force === true;
+    const readAdminFacts = message.readAdminFacts === true;
     if (!sku) {
       sendResponse({ ok: false, error: 'SKU is required' });
       return true;
     }
     void (async () => {
       try {
-        sendResponse(await resolveSkuForDashboard(sku, url, force));
+        sendResponse(await resolveSkuForDashboard(sku, url, force, readAdminFacts));
       } catch (err) {
         sendResponse({ ok: false, error: (err as Error).message ?? 'Resolve failed' });
       }

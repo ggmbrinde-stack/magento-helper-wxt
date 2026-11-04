@@ -15,7 +15,7 @@ import type { AvailabilityCheck } from '../../../audit';
 import type { SupplierLinkInfo } from '../../../audit';
 import { ensureWritePermission, evidenceRoot, writeEvidenceFile } from '../../../audit';
 import { supplierLinkFor } from '../../../audit';
-import type { ResolverJson } from '../../../shared/resolver';
+import type { ResolverJson, ResolverMagentoFacts, ResolverTierPrice } from '../../../shared/resolver';
 import type { VariantTargets } from '../../../audit';
 import { supplierFor } from '../../../shared/resolver';
 import { buildVariantSummary } from '../../../audit';
@@ -425,6 +425,192 @@ function DuplicateFlags({ duplicates }: { duplicates: CacheDuplicate[] }) {
   );
 }
 
+/** One tier row, as the operator would read it in Advanced Pricing. */
+function describeTier(row: ResolverTierPrice): string {
+  return row.valueType === 'percent'
+    ? `${row.qty}+: ${row.value}%`
+    : `${row.qty}+: ${row.value} fixed`;
+}
+
+function categoryLine(
+  path: readonly string[],
+  ids: readonly string[] | undefined,
+): string {
+  return path
+    .map((name, index) => {
+      const id = ids?.[index];
+      return id ? `${name} (${id})` : name;
+    })
+    .join(' > ');
+}
+
+function MagentoFactsCard({
+  facts,
+  storefrontPrice,
+  busy,
+  onRead,
+}: {
+  facts?: ResolverMagentoFacts;
+  storefrontPrice?: ResolverJson['storefront_price'];
+  busy: boolean;
+  onRead: () => void;
+}) {
+  const readAt = formatCheckedAt(facts?.readAt);
+  const price = facts?.price.price ?? null;
+  const special = facts?.price.specialPrice ?? null;
+  const qty = facts?.stock.qty ?? null;
+  const inStock = facts?.stock.isInStock ?? null;
+
+  return (
+    <section class="db-card db-wide">
+      <div class="db-card-head">
+        <h2>Magento facts</h2>
+        {facts ? (
+          <span class="db-badge" title="read from the product edit page">
+            v{facts.factsVersion} {readAt}
+          </span>
+        ) : (
+          <span class="db-badge db-warn">not read</span>
+        )}
+        <button
+          type="button"
+          class="db-btn"
+          disabled={busy}
+          title="Read the product edit page in Magento (read-only)"
+          onClick={onRead}
+        >
+          {busy ? 'Reading…' : facts ? 'Re-read Magento facts' : 'Read Magento facts'}
+        </button>
+      </div>
+
+      {!facts ? (
+        <p class="db-empty">
+          No Magento facts are cached for this SKU. Read the product edit page to
+          capture the Attribute Set / PP, categories, tier prices, price, stock
+          and visibility. This opens a background admin tab when none is open.
+        </p>
+      ) : (
+        <>
+          <ul class="db-kv">
+            <li>
+              <span>Attribute Set</span>
+              <b>{facts.attributeSet || '—'}</b>
+            </li>
+            <li>
+              <span>PP</span>
+              <b class={facts.ppCode ? 'db-mono' : 'db-warn'}>
+                {facts.ppCode || 'not in the Attribute Set name'}
+              </b>
+            </li>
+            <li>
+              <span>Attribute Set ID</span>
+              <b class="db-mono">{facts.attributeSetId || '—'}</b>
+            </li>
+            <li>
+              <span>Price</span>
+              <b class={price === null ? 'db-warn' : ''}>
+                {!facts.priceRead ? 'not read' : price === null ? 'blank' : price}
+                {special !== null ? ` · special ${special}` : ''}
+              </b>
+            </li>
+            <li>
+              <span>Storefront price</span>
+              <b>
+                {storefrontPrice?.amount === null || storefrontPrice?.amount === undefined
+                  ? 'not published'
+                  : `${storefrontPrice.amount} ${storefrontPrice.currency}`}
+              </b>
+            </li>
+            <li>
+              <span>Stock</span>
+              <b class={qty !== null && qty <= 0 ? 'db-warn' : ''}>
+                {!facts.stockRead
+                  ? 'not read'
+                  : qty === null
+                    ? 'quantity blank'
+                    : `qty ${qty}`}
+                {inStock === null
+                  ? ''
+                  : inStock
+                    ? ' · In Stock'
+                    : ' · Out of Stock'}
+                {facts.stock.backorders ? ` · ${facts.stock.backorders}` : ''}
+              </b>
+            </li>
+            <li>
+              <span>Visibility</span>
+              <b>{facts.visibilityRead ? facts.visibility || 'blank' : 'not read'}</b>
+            </li>
+            <li>
+              <span>Status</span>
+              <b class={facts.status === 'Disabled' ? 'bad' : ''}>
+                {facts.statusRead ? facts.status || 'blank' : 'not read'}
+              </b>
+            </li>
+            <li>
+              <span>Websites</span>
+              <b>
+                {!facts.websitesRead
+                  ? 'not read'
+                  : facts.websites.length > 0
+                    ? facts.websites.join(', ')
+                    : 'none assigned'}
+              </b>
+            </li>
+            <li>
+              <span>Weight</span>
+              <b>
+                {!facts.weightRead
+                  ? 'not read'
+                  : facts.weight === null
+                    ? 'blank'
+                    : facts.weight}
+              </b>
+            </li>
+          </ul>
+
+          <ul class="db-kv">
+            <li>
+              <span>Categories</span>
+              <span class="db-kv-value">
+                {facts.categoryPaths.length > 0 ? (
+                  facts.categoryPaths.map((path, index) => (
+                    <b key={path.join(' > ')} class="db-mono">
+                      {categoryLine(path, facts.categoryIds[index])}
+                    </b>
+                  ))
+                ) : (
+                  <b class="db-warn">
+                    {facts.categoryReason ?? 'no category is checked'}
+                  </b>
+                )}
+              </span>
+            </li>
+            <li>
+              <span>Tier prices</span>
+              <span class="db-kv-value">
+                {!facts.tierRead ? (
+                  <b class="db-warn">{facts.tierReason ?? 'not read'}</b>
+                ) : facts.tierPrices.length === 0 ? (
+                  <b>none defined</b>
+                ) : (
+                  facts.tierPrices.map((row, index) => (
+                    <b key={`${row.qty}-${row.valueType}-${index}`} class="db-mono">
+                      {describeTier(row)}
+                      {row.group ? ` · ${row.group}` : ''}
+                      {row.website ? ` · ${row.website}` : ''}
+                    </b>
+                  ))
+                )}
+              </span>
+            </li>
+          </ul>
+        </>
+      )}
+    </section>
+  );
+}
+
 function ResolverResult({
   r,
   notion,
@@ -445,6 +631,8 @@ function ResolverResult({
   onDownloadMakitoImages,
   findBusy,
   onFindProduct,
+  factsBusy,
+  onReadFacts,
   linkDraft,
   linkBusy,
   linkError,
@@ -471,6 +659,8 @@ function ResolverResult({
   onDownloadMakitoImages: () => void;
   findBusy: boolean;
   onFindProduct: () => void;
+  factsBusy: boolean;
+  onReadFacts: () => void;
   linkDraft: string;
   linkBusy: boolean;
   linkError: string | null;
@@ -643,6 +833,13 @@ function ResolverResult({
       </section>
 
       <CategoryCard r={r} notion={notion} check={categoryCheck} />
+
+      <MagentoFactsCard
+        facts={r.magento_facts}
+        storefrontPrice={r.storefront_price}
+        busy={factsBusy}
+        onRead={onReadFacts}
+      />
 
       {resolvedSupplier.supplier ? (
         <SupplierCard
@@ -994,6 +1191,7 @@ export function Resolver({
   const [linkBusy, setLinkBusy] = useState(false);
   const [linkError, setLinkError] = useState<string | null>(null);
   const [findBusy, setFindBusy] = useState(false);
+  const [factsBusy, setFactsBusy] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -1014,20 +1212,27 @@ export function Resolver({
     })();
   }, []);
 
-  const run = async (force = false): Promise<void> => {
+  const run = async (force = false, readFacts = false): Promise<void> => {
     const trimmed = sku.trim();
     if (!trimmed) return;
-    setLoading(true);
+    // Reading facts is an enrichment of the result already on screen, so it
+    // must not blank the card while the admin tab loads.
+    if (readFacts) {
+      setFactsBusy(true);
+    } else {
+      setLoading(true);
+      setResult(null);
+      setAvailability(null);
+    }
     setError(null);
     setWarning(null);
-    setResult(null);
-    setAvailability(null);
     try {
       const response = (await browser.runtime.sendMessage({
         type: 'RESOLVE_SKU',
         sku: trimmed,
         url: activeUrl(ws),
         force,
+        readAdminFacts: readFacts,
       })) as ResolveSkuResponse;
       if (response?.ok) {
         setResult(response);
@@ -1064,6 +1269,7 @@ export function Resolver({
       setError((err as Error).message);
     } finally {
       setLoading(false);
+      setFactsBusy(false);
     }
   };
 
@@ -1363,6 +1569,8 @@ export function Resolver({
           onDownloadMakitoImages={() => void downloadMakitoImages()}
           findBusy={findBusy}
           onFindProduct={onFindProduct}
+          factsBusy={factsBusy}
+          onReadFacts={() => void run(true, true)}
           linkDraft={linkDraft}
           linkBusy={linkBusy}
           linkError={linkError}

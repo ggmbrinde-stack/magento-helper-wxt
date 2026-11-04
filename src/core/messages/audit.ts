@@ -116,6 +116,12 @@ export interface ResolveSkuRequest {
   url?: string;
   /** Bypass the cache and re-resolve (F1). */
   force?: boolean;
+  /**
+   * Read the full Magento facts snapshot from the product edit page (PP,
+   * categories, tier prices, price, stock, visibility). Opens a background
+   * admin tab when needed; read-only.
+   */
+  readAdminFacts?: boolean;
 }
 
 export interface ResolveSkuResponse {

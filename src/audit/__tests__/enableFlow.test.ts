@@ -42,10 +42,32 @@ const resolverComplete = {
     source: 'document' as const,
   },
   magento_facts: {
+    factsVersion: 2,
     attributeSet: 'AS>PP0323_CANETAS PLÁSTICO',
+    attributeSetId: '42',
     ppCode: '323',
     categoryPaths: [['Escrita e Escritório', 'Canetas', 'Canetas de Plástico']],
+    categoryIds: [['41', '52', '63']],
     categoryRead: true,
+    tierPrices: [
+      { qty: 200, valueType: 'percent' as const, value: 5, website: 'All Websites', group: 'ALL GROUPS' },
+      { qty: 500, valueType: 'percent' as const, value: 8, website: 'All Websites', group: 'ALL GROUPS' },
+      { qty: 1000, valueType: 'percent' as const, value: 10, website: 'All Websites', group: 'ALL GROUPS' },
+      { qty: 5000, valueType: 'percent' as const, value: 12, website: 'All Websites', group: 'ALL GROUPS' },
+    ],
+    tierRead: true,
+    priceRead: true,
+    price: { price: 1.25, specialPrice: null, cost: null, taxClass: 'Taxable Goods' },
+    stockRead: true,
+    stock: { qty: 120, isInStock: true, backorders: 'No Backorders' },
+    visibilityRead: true,
+    visibility: 'Catalog, Search',
+    statusRead: true,
+    status: 'Disabled',
+    websitesRead: true,
+    websites: ['Main Website'],
+    weightRead: true,
+    weight: 0.02,
     readAt: '2026-11-02T00:00:00.000Z',
   },
   configurable_id: 364009,
@@ -83,14 +105,67 @@ test('a fully readable SKU passes every automatic check', () => {
   assert.equal(checkOf(report, 'variants').status, 'pass');
   assert.equal(checkOf(report, 'size-order').status, 'pass');
   assert.equal(checkOf(report, 'type').status, 'pass');
+  assert.equal(checkOf(report, 'tier-prices').status, 'pass');
+  assert.equal(checkOf(report, 'visibility').status, 'pass');
 
   assert.equal(report.counts.missing, 0);
   assert.equal(report.ready, false, 'manual rows still need verification');
   assert.equal(report.blockers, report.counts.missing + report.counts.manual);
-  assert.equal(report.counts.manual, 7);
+  // images, price-stock, new-colours, attribute-translations, text-translations
+  assert.equal(report.counts.manual, 5);
   assert.equal(report.summary.magentoStatus, 'Disabled');
   assert.equal(report.summary.ppCode, '323');
   assert.match(report.adminUrl, /catalog\/product\/edit\/id\/364009/);
+});
+
+test('unread price and visibility remain manual, not false failures', () => {
+  const resolver = {
+    ...resolverComplete,
+    magento_facts: {
+      ...resolverComplete.magento_facts,
+      priceRead: false,
+      stockRead: false,
+      visibilityRead: false,
+    },
+  };
+  const report = buildEnableFlow(baseInput({ resolver }));
+  assert.equal(checkOf(report, 'price-stock').status, 'manual');
+  assert.equal(checkOf(report, 'visibility').status, 'manual');
+});
+
+test('read but blank stock is reported missing', () => {
+  const resolver = {
+    ...resolverComplete,
+    product_type: 'simple' as const,
+    child_count: 0,
+    children_detail: [],
+    supplier: { ...resolverComplete.supplier, supplier: 'ROLY' as const },
+    magento_facts: {
+      ...resolverComplete.magento_facts,
+      stockRead: true,
+      stock: { qty: null, isInStock: null, backorders: '' },
+    },
+  };
+  const report = buildEnableFlow(baseInput({ resolver }));
+  assert.equal(checkOf(report, 'price-stock').status, 'missing');
+  assert.match(checkOf(report, 'price-stock').detail, /stock quantity and status are blank/);
+});
+
+test('catalogue suppliers use Notion supplier data for stock exceptions', () => {
+  const resolver = {
+    ...resolverComplete,
+    product_type: 'simple' as const,
+    child_count: 0,
+    children_detail: [],
+    magento_facts: {
+      ...resolverComplete.magento_facts,
+      stock: { qty: 0, isInStock: false, backorders: '' },
+    },
+  };
+  const report = buildEnableFlow(
+    baseInput({ resolver, notion: { supplier: 'WORKTEAM' } }),
+  );
+  assert.equal(checkOf(report, 'price-stock').status, 'pass');
 });
 
 test('a SKU with no Notion row still passes on the Magento PP and categories', () => {

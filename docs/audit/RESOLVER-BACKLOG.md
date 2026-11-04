@@ -1,6 +1,6 @@
 # Resolver backlog — open work
 
-Last updated: 2026-10-30. Companion to `records/HANDOFF-EXTENSION.md` §6 (which
+Last updated: 2026-11-04. Companion to `records/HANDOFF-EXTENSION.md` §6 (which
 covers the whole extension); this file is scoped to **Resolve SKU**.
 
 ## Where the resolver stands
@@ -35,6 +35,15 @@ present the admin labels as proof of storefront availability or completeness.
   (200 rows) means the filter was ignored — treat as no answer.
 - When nothing else answers, a **background tab** is opened and walked to the
   parent's edit page, then closed. The operator's own tab is never navigated.
+- **Magento facts** (`src/page/features/grid-search/adminFacts.ts`) are read
+  from that edit page: Attribute Set name + id (the PP code lives in the name),
+  checked category paths with ids, Advanced Pricing tier rows, price/special/
+  cost/tax class, stock qty/status/backorders, visibility, status, websites and
+  weight. The reader is read-only: it may activate the Categories tab and expand
+  Advanced Pricing on a tab it owns, but never changes a value or saves.
+  `MAGENTO_FACTS_VERSION` is 3; per-section read flags distinguish unread
+  controls from blank values. The Enable flow re-reads a snapshot that is
+  missing, older than version 3, or more than 24 h old.
 
 ## Open items
 
@@ -88,6 +97,35 @@ configurable that needs labels pays a second page load. Reusing one long-lived
 tab for the session would remove both. `src/audit/skuResolution.ts`.
 
 ## Resolved
+
+### R10 — Magento facts for the Enable flow (done 2026-11-04)
+
+The resolver now stores a versioned facts snapshot read from the product edit
+page (`categoryPaths` + `categoryIds`, tier rows, price, stock, visibility,
+status, websites, weight, plus the existing Attribute Set/PP). The Enable flow
+uses it automatically:
+
+- tier bands are compared with the Notion table chosen by category L1
+  (Têxtil vs Outros); the implicit 0% band is not required, percent rows are
+  compared directly, and fixed rows are converted with the product price and
+  flagged. A configurable parent with no tier rows stays `manual` (children may
+  carry them), not `missing`;
+- price/stock auto-fail only for a missing price or qty ≤ 0 / Out of Stock on a
+  non-configurable, non-exception supplier (Workteam / JHK / ALLBEST);
+- a configurable parent must be `Catalog, Search`; simple products stay
+  `manual` because parent vs child is not provable from the page alone.
+
+The Resolve card shows the snapshot and a **Read Magento facts** button when it
+is missing. Prices and stock are the parts that age fastest; the 24 h TTL is why
+the Enable flow re-reads instead of trusting a two-week-old resolver cache.
+`src/shared/resolver.ts`, `src/page/features/grid-search/adminFacts.ts`,
+`src/audit/skuResolution.ts`, `src/audit/enableFlow.ts`,
+`src/dashboard/sections/audit/Resolver.tsx`.
+
+Known limit: the tier-table selectors (`tier_price[N][...]`) were confirmed on
+the mass-update page; the product edit page's Advanced Pricing is assumed to use
+the same names until a live DOM read confirms it. When the section or its rows
+cannot be read, the check reports the reason and stays `manual`.
 
 ### R1 — Colour/size labels for disabled SKUs (done 2026-10-30)
 

@@ -29,6 +29,7 @@ import type {
   ResolverCategories,
   ResolverChildDetail,
   ResolverMagentoFacts,
+  ResolverTierPrice,
 } from '../shared/resolver';
 import type { ResolverNotionMetadata } from '../core/messages';
 
@@ -87,6 +88,117 @@ export const TIER_PRICE_TABLES: TierTable[] = [
 
 /** Suppliers that sell from a catalogue without Magento stock management. */
 export const STOCK_EXCEPTION_SUPPLIERS = ['WORKTEAM', 'JHK', 'ALLBEST'] as const;
+
+/**
+ * Which tier table applies. The Notion page splits on "wearable", so the
+ * category path decides; an unknown path returns null and the check stays
+ * manual instead of guessing and failing a correct product.
+ */
+export function tierTableForCategory(path: readonly string[]): TierTable | null {
+  const levelOne = path.find(
+    (name) => foldCategoryName(name) !== 'default category',
+  );
+  const root = (levelOne ?? '').toUpperCase();
+  if (!root) return null;
+  if (/T[ÊE]XTIL|TEXTILE|VESTU[AÁ]RIO|APPAREL|ROUPA/.test(root)) {
+    return TIER_PRICE_TABLES[0] ?? null;
+  }
+  return TIER_PRICE_TABLES[1] ?? null;
+}
+
+export interface TierComparison {
+  table: TierTable;
+  /** Bands with a real discount (0% bands are implicit in Magento). */
+  expected: Array<{ qty: number; percent: number }>;
+  /** Rows as read; `percent` is null for a fixed-price row with no price. */
+  actual: Array<{ qty: number; percent: number | null; valueType: string }>;
+  missing: number[];
+  wrong: Array<{ qty: number; expected: number; found: number[] }>;
+  extra: number[];
+  /** Quantities whose row is a fixed price rather than a percentage. */
+  fixed: number[];
+}
+
+const TIER_EPSILON = 0.05;
+
+/**
+ * Compare Magento tier rows with a Notion table.
+ *
+ * The 0% band is not stored as a Magento row, so only bands with a discount are
+ * required. Multiple customer groups/websites legitimately repeat a threshold;
+ * a band passes when any row at that quantity carries the expected percentage.
+ * Fixed-price rows are converted with the product price and reported as fixed.
+ */
+export function compareTierPrices(
+  rows: readonly ResolverTierPrice[],
+  table: TierTable,
+  price: number | null,
+): TierComparison {
+  const expected = table.bands
+    .filter((band) => band.discount > 0)
+    .map((band) => ({ qty: band.from, percent: band.discount }));
+  const actual = rows
+    .filter((row) => row.qty > 0)
+    .map((row) => {
+      if (row.valueType === 'percent') {
+        return { qty: row.qty, percent: row.value, valueType: row.valueType };
+      }
+      const percent =
+        price !== null && price > 0 ? (1 - row.value / price) * 100 : null;
+      return { qty: row.qty, percent, valueType: row.valueType };
+    });
+
+  const expectedQty = new Set(expected.map((band) => band.qty));
+  const missing: number[] = [];
+  const wrong: TierComparison['wrong'] = [];
+  for (const band of expected) {
+    const found = actual
+      .filter((row) => row.qty === band.qty && row.percent !== null)
+      .map((row) => row.percent as number);
+    if (found.length === 0) {
+      missing.push(band.qty);
+      continue;
+    }
+    if (!found.some((percent) => Math.abs(percent - band.percent) < TIER_EPSILON)) {
+      wrong.push({ qty: band.qty, expected: band.percent, found });
+    }
+  }
+
+  return {
+    table,
+    expected,
+    actual,
+    missing,
+    wrong,
+    extra: [...new Set(actual.map((row) => row.qty))].filter(
+      (qty) => !expectedQty.has(qty),
+    ),
+    fixed: [...new Set(actual.filter((row) => row.valueType === 'fixed').map((row) => row.qty))],
+  };
+}
+
+function describeTierRow(row: { qty: number; percent: number | null; valueType: string }): string {
+  const value =
+    row.percent === null
+      ? 'fixed price (conversion needs the product price)'
+      : `${row.percent}%`;
+  return `${row.qty}+: ${value}${row.valueType === 'fixed' ? ' [fixed]' : ''}`;
+}
+
+/** Same rows, de-duplicated for display (one line per threshold/value). */
+function describeTierRows(
+  rows: ReadonlyArray<{ qty: number; percent: number | null; valueType: string }>,
+): string {
+  const seen = new Set<string>();
+  const lines: string[] = [];
+  for (const row of rows) {
+    const line = describeTierRow(row);
+    if (seen.has(line)) continue;
+    seen.add(line);
+    lines.push(line);
+  }
+  return lines.join(' · ');
+}
 
 /* ------------------------------------------------------------------------- */
 /* Notion: PP & Category Assignment                                          */
@@ -345,6 +457,7 @@ export interface EnableFlowInput {
     configurable_id?: number | null;
     simple_product_id?: number | null;
     magento_status?: { label: string };
+    storefront_price?: { amount: number | null; currency: string };
     supplier?: { supplier: string; tier?: number };
   };
   notion?: ResolverNotionMetadata;
@@ -806,34 +919,256 @@ export function buildEnableFlow(input: EnableFlowInput): EnableFlowReport {
   }
 
   /* 5. Tier prices -------------------------------------------------------- */
-  push(
-    'tier-prices',
-    'Tier prices defined',
-    'manual',
-    'Tier prices are not read by the resolver. Compare Advanced Pricing in Magento with the Notion Tier Prices table.',
-    ['Expected bands: Têxtil 100/250/500/5000 · Outros artigos 200/500/1000/5000.'],
-    fix('Open Tier Prices (Notion)', TIER_PRICES_URL),
-  );
+  // The 0% band is not stored by Magento: only bands with a discount produce a
+  // row, so only those are required here.
+  const tierCategoryPaths =
+    magento?.categoryPaths.length
+      ? magento.categoryPaths
+      : resolver?.categories?.path.length
+        ? [resolver.categories.path]
+        : [];
+  const tierTables = tierCategoryPaths.map(tierTableForCategory);
+  const tierNames = new Set(tierTables.map((table) => table?.name ?? ''));
+  const tierTable =
+    tierTables.length > 0 &&
+    tierTables.every((table) => table !== null) &&
+    tierNames.size === 1
+      ? (tierTables[0] ?? null)
+      : null;
+  const expectedTierText = (table: TierTable): string =>
+    `Expected (${table.name}): ${table.bands
+      .filter((band) => band.discount > 0)
+      .map((band) => `${band.from}+ → ${band.discount}%`)
+      .join(' · ')}`;
+  if (!magento) {
+    push(
+      'tier-prices',
+      'Tier prices defined',
+      'manual',
+      'Magento tier prices were not read for this SKU.',
+      [
+        'Expected bands: Têxtil 100/250/500/5000 · Outros artigos 200/500/1000/5000.',
+        `Read the product edit page (Advanced Pricing) and compare with the Notion page read on ${TIER_PRICES_READ_ON}.`,
+      ],
+      fix('Open Tier Prices (Notion)', TIER_PRICES_URL),
+    );
+  } else if (!magento.tierRead) {
+    push(
+      'tier-prices',
+      'Tier prices defined',
+      'manual',
+      `The Magento tier table could not be read (${magento.tierReason ?? 'reason unknown'}).`,
+      [expectedTierText(tierTable ?? TIER_PRICE_TABLES[0]!)],
+      fix('Open the product', editUrl),
+    );
+  } else if (!tierTable) {
+    push(
+      'tier-prices',
+      'Tier prices defined',
+      'manual',
+      'The category path could not be classified as Têxtil or Outros, so the expected bands are ambiguous.',
+      [
+        expectedTierText(TIER_PRICE_TABLES[0]!),
+        expectedTierText(TIER_PRICE_TABLES[1]!),
+        'Set the category on the product (or confirm the table by hand) before trusting this check.',
+      ],
+      fix('Open Tier Prices (Notion)', TIER_PRICES_URL),
+    );
+  } else {
+    const comparison = compareTierPrices(
+      magento.tierPrices,
+      tierTable,
+      magento.price.price,
+    );
+    const detailLines = [
+      expectedTierText(tierTable),
+      `Notion table read ${TIER_PRICES_READ_ON}.`,
+      ...(comparison.actual.length > 0
+        ? [`Magento: ${describeTierRows(comparison.actual)}`]
+        : []),
+      ...(comparison.missing.length > 0
+        ? [`Missing threshold(s): ${comparison.missing.join(', ')}`]
+        : []),
+      ...comparison.wrong.map(
+        (row) =>
+          `${row.qty}+ is ${row.found.map((p) => `${p}%`).join(' / ')}, expected ${row.expected}%`,
+      ),
+      ...(comparison.fixed.length > 0
+        ? [
+            `Fixed-price row(s) at ${comparison.fixed.join(', ')}: convert to a percentage or confirm the resulting discount by hand.`,
+          ]
+        : []),
+      ...(comparison.extra.length > 0
+        ? [`Threshold(s) not in the table: ${comparison.extra.join(', ')}`]
+        : []),
+    ];
+    if (magento.tierPrices.length === 0) {
+      if (resolver?.product_type === 'configurable') {
+        push(
+          'tier-prices',
+          'Tier prices defined',
+          'manual',
+          'The configurable parent has no tier rows; Magento may carry them on the children.',
+          [
+            ...detailLines,
+            'Open a child product → Advanced Pricing, or set the tiers on the parent.',
+          ],
+          fix('Open the product', editUrl),
+        );
+      } else {
+        push(
+          'tier-prices',
+          'Tier prices defined',
+          'missing',
+          'No tier prices are defined in Magento.',
+          detailLines,
+          fix('Open the product', editUrl),
+        );
+      }
+    } else if (comparison.missing.length > 0 || comparison.wrong.length > 0) {
+      push(
+        'tier-prices',
+        'Tier prices defined',
+        'missing',
+        'Magento tier prices do not match the Notion table.',
+        detailLines,
+        fix('Open the product', editUrl),
+      );
+    } else {
+      push(
+        'tier-prices',
+        'Tier prices defined',
+        'pass',
+        `${tierTable.name} bands match Magento.`,
+        detailLines,
+      );
+    }
+  }
 
   /* 6. Price and stock ---------------------------------------------------- */
-  const supplier = (resolver?.supplier?.supplier ?? input.notion?.supplier ?? '').toUpperCase();
+  const supplier = (input.notion?.supplier ?? resolver?.supplier?.supplier ?? '').toUpperCase();
   const stockException = (STOCK_EXCEPTION_SUPPLIERS as readonly string[]).includes(
     supplier,
   );
-  push(
-    'price-stock',
-    'Price and stock correct',
-    'manual',
-    stockException
-      ? `${supplier} is a catalogue supplier without Magento stock management: verify the price and the catalogue availability only.`
-      : 'Verify the price and stock quantity in Magento.',
-    [
-      stockException
-        ? 'Stock exception applies (Workteam / JHK / ALLBEST).'
-        : 'The Workteam / JHK / ALLBEST stock exception is still to be confirmed for other suppliers.',
-    ],
-    fix('Open the product', editUrl),
-  );
+  const productType = resolver?.product_type;
+  const priceFacts = magento?.price;
+  const stockFacts = magento?.stock;
+  const price = priceFacts?.price ?? null;
+  const priceNotes: string[] = [];
+  if (price !== null) priceNotes.push(`Magento price: ${price}`);
+  if (priceFacts?.specialPrice !== null && priceFacts?.specialPrice !== undefined) {
+    priceNotes.push(`Special price: ${priceFacts.specialPrice}`);
+  }
+  if (priceFacts?.cost !== null && priceFacts?.cost !== undefined) {
+    priceNotes.push(`Cost: ${priceFacts.cost}`);
+  }
+  if (priceFacts?.taxClass) priceNotes.push(`Tax class: ${priceFacts.taxClass}`);
+  const storefrontPrice = resolver?.storefront_price?.amount ?? null;
+  if (storefrontPrice !== null) priceNotes.push(`Storefront price: ${storefrontPrice}`);
+  if (stockFacts?.qty !== null && stockFacts?.qty !== undefined) {
+    priceNotes.push(`Quantity: ${stockFacts.qty}`);
+  }
+  if (stockFacts?.isInStock !== null && stockFacts?.isInStock !== undefined) {
+    priceNotes.push(`Stock status: ${stockFacts.isInStock ? 'In Stock' : 'Out of Stock'}`);
+  }
+  if (stockFacts?.backorders) priceNotes.push(`Backorders: ${stockFacts.backorders}`);
+  if (magento?.status) priceNotes.push(`Status: ${magento.status}`);
+  if (stockException) {
+    priceNotes.push(
+      `${supplier} is a catalogue supplier without Magento stock management: the stock exception applies.`,
+    );
+  }
+
+  const stockIssues: string[] = [];
+  if (!magento || !magento.priceRead) {
+    push(
+      'price-stock',
+      'Price and stock correct',
+      'manual',
+      'Magento price fields were not available to read.',
+      ['Read the product edit page, then confirm the price and stock values.'],
+      fix('Open the product', editUrl),
+    );
+  } else if (productType === 'configurable') {
+    // A configurable parent usually carries no stock of its own and may carry
+    // no price (children do). Failing it here would block a correct product.
+    if (price === null) {
+      priceNotes.push(
+        'The configurable parent has no price field: prices and stock live on the children.',
+      );
+    }
+    push(
+      'price-stock',
+      'Price and stock correct',
+      'manual',
+      price === null
+        ? 'The parent carries no price; confirm the price and stock on the children.'
+        : 'Parent price is set; stock is per child and was not read.',
+      priceNotes,
+      fix('Open the product', editUrl),
+    );
+  } else if (!productType) {
+    // Without a type, parent-vs-child rules cannot be applied: a configurable
+    // parent legitimately has no price/stock of its own, so do not fail it.
+    push(
+      'price-stock',
+      'Price and stock correct',
+      'manual',
+      'The product type was not read, so the price/stock rule for this product cannot be chosen.',
+      priceNotes,
+      fix('Open the product', editUrl),
+    );
+  } else {
+    if (price === null) stockIssues.push('no price on the product edit page');
+    if (
+      !stockException &&
+      stockFacts?.qty !== null &&
+      stockFacts?.qty !== undefined &&
+      stockFacts.qty <= 0
+    ) {
+      stockIssues.push(`stock quantity is ${stockFacts.qty}`);
+    }
+    if (!stockException && stockFacts?.isInStock === false) {
+      stockIssues.push('Magento stock status is Out of Stock');
+    }
+    const stockRead = magento.stockRead;
+    if (
+      stockRead &&
+      stockFacts?.qty === null &&
+      stockFacts?.isInStock === null
+    ) {
+      stockIssues.push('stock quantity and status are blank');
+    }
+    if (stockIssues.length > 0) {
+      push(
+        'price-stock',
+        'Price and stock correct',
+        'missing',
+        stockIssues.join('; ') + '.',
+        priceNotes,
+        fix('Open the product', editUrl),
+      );
+    } else if (!stockRead && !stockException) {
+      push(
+        'price-stock',
+        'Price and stock correct',
+        'manual',
+        'The price was read, but stock quantity and status were not on the page.',
+        priceNotes,
+        fix('Open the product', editUrl),
+      );
+    } else {
+      push(
+        'price-stock',
+        'Price and stock correct',
+        'pass',
+        stockException
+          ? `${supplier}: price is set; stock management does not apply.`
+          : 'Price is set and stock is positive / in stock.',
+        priceNotes,
+      );
+    }
+  }
 
   /* 7a. Type -------------------------------------------------------------- */
   const type = resolver?.product_type;
@@ -874,14 +1209,64 @@ export function buildEnableFlow(input: EnableFlowInput): EnableFlowReport {
   }
 
   /* 7b. Visibility -------------------------------------------------------- */
-  push(
-    'visibility',
-    'Visibility correct',
-    'manual',
-    'Visibility is not read by the resolver. Check Catalog, Search, or Not Visible Individually.',
-    ['Expected: configurable parent = Catalog, Search; children = Not Visible Individually.'],
-    fix('Open the product', editUrl),
-  );
+  const visibility = magento?.visibility ?? '';
+  if (!magento || !magento.visibilityRead) {
+    push(
+      'visibility',
+      'Visibility correct',
+      'manual',
+      'Visibility was not read from Magento.',
+      ['Expected: configurable parent = Catalog, Search; children = Not Visible Individually.'],
+      fix('Open the product', editUrl),
+    );
+  } else if (!visibility) {
+    push(
+      'visibility',
+      'Visibility correct',
+      'missing',
+      'Magento visibility is blank.',
+      ['Expected: configurable parent = Catalog, Search; children = Not Visible Individually.'],
+      fix('Open the product', editUrl),
+    );
+  } else if (productType === 'configurable') {
+    if (/catalog\s*,\s*search/i.test(visibility)) {
+      push(
+        'visibility',
+        'Visibility correct',
+        'pass',
+        `Configurable parent is "${visibility}".`,
+      );
+    } else if (/not visible/i.test(visibility)) {
+      push(
+        'visibility',
+        'Visibility correct',
+        'missing',
+        `The configurable parent is "${visibility}"; it must be Catalog, Search.`,
+        ['Children stay Not Visible Individually.'],
+        fix('Open the product', editUrl),
+      );
+    } else {
+      push(
+        'visibility',
+        'Visibility correct',
+        'missing',
+        `Visibility is "${visibility}"; a configurable parent must be Catalog, Search.`,
+        [],
+        fix('Open the product', editUrl),
+      );
+    }
+  } else {
+    push(
+      'visibility',
+      'Visibility correct',
+      'manual',
+      `Magento reports "${visibility}".`,
+      [
+        'A standalone product is normally Catalog, Search; a child is Not Visible Individually. Confirm which this SKU is.',
+      ],
+      fix('Open the product', editUrl),
+    );
+  }
 
   /* 8. New colours -------------------------------------------------------- */
   push(
@@ -928,7 +1313,8 @@ export function buildEnableFlow(input: EnableFlowInput): EnableFlowReport {
     blockers: counts.missing + counts.manual,
     ready: counts.missing === 0 && counts.manual === 0,
     summary: {
-      magentoStatus: resolver?.magento_status?.label ?? 'unknown',
+      magentoStatus:
+        magento?.status || resolver?.magento_status?.label || 'unknown',
       productType: resolver?.product_type ?? '—',
       children: childCount,
       supplier: resolver?.supplier?.supplier ?? input.notion?.supplier ?? '—',

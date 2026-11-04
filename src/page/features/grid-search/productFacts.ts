@@ -157,6 +157,35 @@ export function readAttributeSetName(): string {
   return labelledFieldValue(ATTRIBUTE_SET_LABEL);
 }
 
+/**
+ * PP, Attribute Set name and id from the product edit page, in one read.
+ *
+ * PP is the only fact here that the storefront cannot supply, so it is kept in
+ * one place: the value shown in the "Attribute Set" dropdown (or its static
+ * form), the id beside it, and the `PPnnnn` code parsed out of the name. No PP
+ * in the name means an empty code — never a guessed one.
+ */
+export interface AttributeSetProfile {
+  name: string;
+  id: string;
+  ppCode: string;
+}
+
+export function readAttributeSetProfile(): AttributeSetProfile {
+  const name = readAttributeSetName();
+  return { name, id: readAttributeSetId(), ppCode: ppCodeFromAttributeSet(name) };
+}
+
+/** Attribute Set id from the select/hidden input, when the page exposes it. */
+export function readAttributeSetId(): string {
+  const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
+  if (select && squash(select.value)) return squash(select.value);
+  const hidden = document.querySelector<HTMLInputElement>(
+    'input[name="product[attribute_set_id]"], input[name="attribute_set_id"]',
+  );
+  return hidden ? squash(hidden.value) : '';
+}
+
 /** The checkout checkboxes currently in the DOM (tree may not be loaded yet). */
 function categoryBoxes(): HTMLInputElement[] {
   const boxes = new Set<HTMLInputElement>();
@@ -194,15 +223,14 @@ function nodeLabel(li: HTMLLIElement): string {
  * Supports both shapes Magento has shipped: nested (`li > ul > li`) and the
  * sibling form the mass-update tree uses (`li` followed by its child `ul`).
  */
-function categoryPathFor(box: HTMLInputElement): string[] {
+function ancestorItems(box: HTMLInputElement): HTMLLIElement[] {
   let li = box.closest<HTMLLIElement>('li');
   if (!li) return [];
-  const names: string[] = [];
+  const items: HTMLLIElement[] = [];
   const seen = new Set<HTMLLIElement>();
   while (li && !seen.has(li)) {
     seen.add(li);
-    const label = nodeLabel(li);
-    if (label) names.unshift(label);
+    items.unshift(li);
 
     // Nested tree: the list sits inside its parent li.
     const nested: HTMLLIElement | null =
@@ -215,22 +243,48 @@ function categoryPathFor(box: HTMLInputElement): string[] {
     const sibling: Element | null = li.parentElement?.previousElementSibling ?? null;
     li = sibling instanceof HTMLLIElement ? sibling : null;
   }
-  return names;
+  return items;
 }
 
-function uniquePaths(paths: string[][]): string[][] {
+/**
+ * Category name + id per ancestor, kept aligned: a node whose own checkbox is
+ * not found still contributes its name, and its id slot is empty rather than
+ * shifting every later id onto the wrong name.
+ */
+function categoryEntryFor(box: HTMLInputElement): CategoryEntry {
+  const path: string[] = [];
+  const ids: string[] = [];
+  for (const li of ancestorItems(box)) {
+    const name = nodeLabel(li);
+    if (!name) continue;
+    path.push(name);
+    const own = li.querySelector<HTMLInputElement>(
+      ':scope > input[type="checkbox"], :scope > label > input[type="checkbox"]',
+    );
+    ids.push(own?.value ?? '');
+  }
+  return { path, ids };
+}
+
+interface CategoryEntry {
+  path: string[];
+  ids: string[];
+}
+
+/** De-duplicate by path, keep ids aligned, deepest first (the real home). */
+function uniqueEntries(entries: CategoryEntry[]): CategoryEntry[] {
   const seen = new Set<string>();
-  const out: string[][] = [];
-  for (const raw of paths) {
-    const path = raw.map((name) => squash(name)).filter(Boolean);
+  const out: CategoryEntry[] = [];
+  for (const raw of entries) {
+    const path = raw.path.map((name) => squash(name)).filter(Boolean);
     if (path.length === 0) continue;
     const key = path.join(' > ').toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(path);
+    out.push({ path, ids: raw.ids.slice(0, path.length) });
   }
   // Deepest first: that is the category the product actually sits in.
-  return out.sort((a, b) => b.length - a.length);
+  return out.sort((a, b) => b.path.length - a.path.length);
 }
 
 function findCategoryTab(): HTMLElement | null {
@@ -269,11 +323,11 @@ async function waitFor(predicate: () => boolean, timeoutMs: number): Promise<boo
  * Returns `null` when this is not a product edit page (no Attribute Set and no
  * category tree), so the caller can tell "not read" from "read and empty".
  */
-function categorySelectPaths(): string[][] {
+function categorySelectEntries(): CategoryEntry[] {
   const selects = document.querySelectorAll<HTMLSelectElement>(
     'select[name*="categor" i], select[id*="categor" i]',
   );
-  const out: string[][] = [];
+  const out: CategoryEntry[] = [];
   for (const select of selects) {
     const options =
       select.selectedOptions.length > 0
@@ -281,44 +335,52 @@ function categorySelectPaths(): string[][] {
         : Array.from(select.options).filter((option) => option.selected);
     for (const option of options) {
       const text = squash(option.textContent);
-      if (text) out.push([text]);
+      if (text) out.push({ path: [text], ids: option.value ? [option.value] : [] });
     }
   }
-  return uniquePaths(out);
+  return uniqueEntries(out);
 }
 
 export async function readProductFacts(
   options: ReadProductFactsOptions = {},
 ): Promise<ResolverMagentoFacts | null> {
-  const attributeSet = readAttributeSetName();
+  let attributeSet = readAttributeSetName();
+  // The edit form is built by Magento's UI components after document_idle, so on
+  // a cold page the select may not exist yet. Wait for it briefly instead of
+  // concluding "not a product edit page" (which would report PP as unreadable).
+  if (!attributeSet) {
+    await waitFor(() => readAttributeSetName() !== '', 2_000);
+    attributeSet = readAttributeSetName();
+  }
   let boxes = categoryBoxes();
-  const selectPaths = categorySelectPaths();
+  let selectEntries = categorySelectEntries();
   let categoryReason = '';
 
-  if (boxes.length === 0 && selectPaths.length === 0 && options.activateCategoryTab) {
+  if (boxes.length === 0 && selectEntries.length === 0 && options.activateCategoryTab) {
     const tab = findCategoryTab();
     if (tab) {
       tab.click();
       const loaded = await waitFor(() => categoryBoxes().length > 0, 4_000);
       boxes = categoryBoxes();
+      selectEntries = categorySelectEntries();
       if (!loaded) {
         categoryReason = 'the Categories tab did not load its tree';
       }
     } else {
       categoryReason = 'no Categories tab was found on this page';
     }
-  } else if (boxes.length === 0 && selectPaths.length === 0) {
+  } else if (boxes.length === 0 && selectEntries.length === 0) {
     categoryReason = 'the category selector is not loaded in this tab';
   }
 
-  const checkboxPaths = uniquePaths(
-    boxes
-      .filter((box) => box.checked)
-      .map((box) => categoryPathFor(box)),
+  const checkedEntries = uniqueEntries(
+    boxes.filter((box) => box.checked).map(categoryEntryFor),
   );
-  const categoryPaths =
-    checkboxPaths.length > 0 ? checkboxPaths : selectPaths;
-  const categoryRead = checkboxPaths.length > 0 || selectPaths.length > 0 || boxes.length > 0;
+  const entries = checkedEntries.length > 0 ? checkedEntries : selectEntries;
+  const categoryPaths = entries.map((entry) => entry.path);
+  const categoryIds = entries.map((entry) => entry.ids);
+  const categoryRead =
+    checkedEntries.length > 0 || selectEntries.length > 0 || boxes.length > 0;
 
   if (categoryRead && categoryPaths.length === 0 && !categoryReason) {
     categoryReason = 'no category is checked';
@@ -328,11 +390,30 @@ export async function readProductFacts(
   if (!attributeSet && !categoryRead) return null;
 
   return {
+    // Base fields only. `readAdminFacts` raises the version and fills the rest.
+    factsVersion: 1,
     attributeSet,
+    attributeSetId: readAttributeSetId(),
     ppCode: ppCodeFromAttributeSet(attributeSet),
     categoryPaths,
+    categoryIds,
     categoryRead,
     categoryReason: categoryReason || undefined,
+    tierPrices: [],
+    tierRead: false,
+    tierReason: 'tier prices are read by the full admin facts pass',
+    priceRead: false,
+    price: { price: null, specialPrice: null, cost: null, taxClass: '' },
+    stockRead: false,
+    stock: { qty: null, isInStock: null, backorders: '' },
+    visibilityRead: false,
+    visibility: '',
+    statusRead: false,
+    status: '',
+    websitesRead: false,
+    websites: [],
+    weightRead: false,
+    weight: null,
     readAt: new Date().toISOString(),
   };
 }
