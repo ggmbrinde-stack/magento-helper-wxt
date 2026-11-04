@@ -51,9 +51,28 @@ import { renderTierPricesButtons, findTierPricesTable } from '../page/features/t
  * step is isolated: one enhancer throwing must never skip the rest (a dead
  * dropdown pass once cost the operator every pencil on the page).
  */
+function detectPageFeatures(): string[] {
+  const has = (sel: string) => !!document.querySelector(sel);
+  const ids: string[] = [];
+  if (document.querySelectorAll('select').length > 0) ids.push('selects');
+  if (has('.admin__menu, nav.admin__menu')) ids.push('navToggle');
+  if (has('.data-grid, table.data-grid')) ids.push('rowActions', 'massactions', 'gridCopy');
+  if (has('.selectmenu, .paging, .toolbar-amount')) ids.push('paging');
+  if (has('.active-filters, .filter-actions')) ids.push('activeFilters');
+  if (has('.category-tree, #category_ids, .categories-side-col')) ids.push('categoryTree');
+  if (has('.page-actions, .page-actions-buttons')) ids.push('pageActions');
+  if (has('#product_form, .product-edit, [data-ui-id="product-form"]')) ids.push('skuCopy', 'productTypeBadge', 'tierPrices');
+  if (has('.store-switcher, .store-view')) ids.push('storeViews');
+  if (has('.configurable, .super-attribute')) ids.push('configButtons');
+  if (has('.custom-options, .options')) ids.push('optionsCompanion', 'optionsItems');
+  ids.push('errorMarkup');
+  return Array.from(new Set(ids));
+}
+
 function scan(): void {
   const f = getFeatureSettings();
   if (!f.extensionEnabled) return;
+  void chrome.storage.local.set({ detectedFeatures: detectPageFeatures() });
   const safe = (name: string, fn: () => void): void => {
     try {
       fn();

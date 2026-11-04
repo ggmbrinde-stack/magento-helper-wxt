@@ -24,8 +24,13 @@ export function SettingsForm(props: Props) {
   const [form, setForm] = useState<SettingsValues>(props.settings);
   const [state, setState] = useState<SaveState>('idle');
   const [features, setFeatures] = useState<Record<string, boolean>>({ ...FEATURE_DEFAULTS });
+  const [detected, setDetected] = useState<string[]>([]);
   useEffect(() => {
     void loadFeatureSettings().then(setFeatures);
+    void chrome.storage.local.get('detectedFeatures').then((d) => {
+      const v = d.detectedFeatures;
+      if (Array.isArray(v)) setDetected(v as string[]);
+    });
   }, []);
   const [error, setError] = useState('');
 
@@ -133,7 +138,9 @@ export function SettingsForm(props: Props) {
       </label>
       <div class="mhx-feature-toggles">
         <strong>Features</strong>
-        {Object.keys(FEATURE_DEFAULTS).map((k) => (
+        {Object.keys(FEATURE_DEFAULTS)
+          .filter((k) => k === 'extensionEnabled' || detected.length === 0 || detected.includes(k))
+          .map((k) => (
           <label key={k} class="mhx-panel-field">
             <input
               type="checkbox"
