@@ -409,19 +409,18 @@ checkboxes, which stay the only writers of form state.
   `change`, nothing saved.
 - **Default Category is always checked** — the store root is locked on every
   render, change and re-scan (box disabled + labelled, re-ticked if anything
-  clears it), even when nothing else is checked. It gets no pill and no List
-  row, since it can never be removed.
-- **Selected panel, right of the tree** — a column beside the tree lists the
-  checked categories as an indented tree (code + name), with the unchecked
-  branches above them as greyed context; ✕ unchecks the real box, clicking a
-  grey row selects that branch. Rebuilt from the inputs, so it stays right
-  whoever changed them.
+  clears it), even when nothing else is checked. It gets no pill, since it can
+  never be removed.
+- **Selected panel, right of the tree** — a column immediately beside the tree
+  (the tree keeps its own content width, so the panel is not pushed out to the
+  far right of the fieldset) lists the checked categories as an indented tree
+  (code + name), with the unchecked branches above them as greyed context; ✕
+  unchecks the real box, clicking a grey row selects that branch. Rebuilt from
+  the inputs, so it stays right whoever changed them.
 - **One column per depth** — every row keeps a fixed gutter (the branch toggle,
   or an empty slot on leaves) plus 18px of extra pad per level, so the boxes of
   one level line up with each other instead of sitting left of their parent.
-- **Tree | List** — collapsible tree, or a flat depth-indented list that drives
-  the same checkboxes.
-- **Selected only** — hides everything not checked, in either view.
+- **Selected only** — hides everything not checked.
 - **Tick Linha Natura** — one click ticks the “Linha Natura” category in the
   same parent list for every category already checked, so a multi-category
   pick needs no second pass. Additive only (nothing is ever unticked) and it
@@ -431,7 +430,7 @@ checkboxes, which stay the only writers of form state.
   root “Default Category” is never touched; it reports how many it cleared.
 - **Filter** — accent-insensitive search over names *and* numbers (“1.2.3”
   finds it, “textil” finds “Têxtil Promocional”), ancestors kept on screen.
-- **View state persists** — mode, filter text and “Selected only” survive
+- **View state persists** — filter text and “Selected only” survive
   navigation/reloads in `localStorage` (`mhx.catTree.prefs.v1`).
 
 Colours come from the toolkit's page layer (`--mhx-pg-*`), not from the extension

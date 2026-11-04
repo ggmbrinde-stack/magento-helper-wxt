@@ -13,27 +13,26 @@
 // - Number badges. Every category carries the code from the Notion index
 //   ("1", "1.2.3") so the admin matches the sheet the operator works from
 //   (`categoryIndex.ts`).
-// - Tree | List view toggle. The flat list is depth-indented and drives the
-//   SAME checkboxes by forwarding clicks.
 // - "Selected only" filter, and a Selected panel that shows the chosen
 //   categories as an indented tree (unchecked parents kept as grey context),
 //   (click a pill to remove it), so the selection is visible at a glance
-//   instead of being buried in a 200-row tree.
+//   instead of being buried in a 200-row tree. It sits directly beside the
+//   tree, in the tree's own column width, not pinned to the far right.
 // - Search filter ("Filter categories…", accent-insensitive, narrows matches
 //   and keeps their ancestor path on screen).
-// - Collapse all / Expand all (tree view).
+// - Collapse all / Expand all.
 // - "Tick Linha Natura": one click ticks the LINHA NATURA counterpart of
 //   every category the operator has already ticked (same parent list), so a
 //   multi-category pick does not need a second pass down the tree.
-// - The chosen view, filter text and "Selected only" survive navigation and
-//   reloads (localStorage, per browser).
+// - The filter text and "Selected only" survive navigation and reloads
+//   (localStorage, per browser).
 //
 // How it stays safe:
 // - Display-only: flips `display` of lists/items and inserts spans/buttons.
 //   The operator's own checkbox clicks are the only writers, forwarded
 //   through Magento's own boxes + a native `change` — the reverse cascade
-//   and the locked root below click those same boxes, so the Selected panel, list view
-//   and form state stay in sync. No request is made and nothing is saved.
+//   and the locked root below click those same boxes, so the Selected panel and
+//   form state stay in sync. No request is made and nothing is saved.
 // - Idempotent: processed nodes/trees are marked, so the content script's
 //   debounced re-scan and AJAX reloads cannot stack duplicate controls.
 // - Colours come from the toolkit's page layer (`--mhx-pg-*`), never from the
@@ -46,7 +45,7 @@ import {
   categoryOrderIssues,
   type OrderedCategoryRow,
 } from './categoryIndex';
-import { button, segmented, badge } from '../../../ui';
+import { button, badge } from '../../../ui';
 
 const TREE_MARK = 'data-mhx-cat-tree';
 const NODE_MARK = 'data-mhx-cat-node';
@@ -70,14 +69,7 @@ const SEL_CONTEXT_CLASS = 'mhx-cat-sel-row--context';
 const SEL_NAME_CLASS = 'mhx-cat-sel-name';
 const SEL_X_CLASS = 'mhx-cat-sel-x';
 
-/* --- Tree | List view toggle ---------------------------------------------- */
-// The flat "List" view never owns form fields: every row forwards its click
-// to the tree's real checkbox (the enhanceSelect contract — the native
-// control stays the source of truth, so values, handlers and Save are safe).
-const LIST_CLASS = 'mhx-cat-list';
-const ROW_CLASS = 'mhx-cat-row';
-const BOX_CLASS = 'mhx-cat-row-box';
-const BOX_CHECKED_CLASS = 'mhx-cat-row--checked';
+/* --- Toolbar -------------------------------------------------------------- */
 const ONLY_CLASS = 'mhx-cat-only';
 const NATURA_CLASS = 'mhx-cat-natura';
 const UNTICK_CLASS = 'mhx-cat-untick';
@@ -88,15 +80,12 @@ const NATURA_NAME = 'linha natura';
 /** View preferences survive navigation; one admin origin, one set. */
 const PREFS_KEY = 'mhx.catTree.prefs.v1';
 
-type TreeMode = 'tree' | 'list';
-
 interface TreePrefs {
-  mode: TreeMode;
   query: string;
   selectedOnly: boolean;
 }
 
-const DEFAULT_PREFS: TreePrefs = { mode: 'tree', query: '', selectedOnly: false };
+const DEFAULT_PREFS: TreePrefs = { query: '', selectedOnly: false };
 
 function readPrefs(): TreePrefs {
   try {
@@ -104,7 +93,6 @@ function readPrefs(): TreePrefs {
     if (!raw) return { ...DEFAULT_PREFS };
     const parsed = JSON.parse(raw) as Partial<TreePrefs>;
     return {
-      mode: parsed.mode === 'list' ? 'list' : 'tree',
       query: typeof parsed.query === 'string' ? parsed.query : '',
       selectedOnly: parsed.selectedOnly === true,
     };
@@ -116,7 +104,6 @@ function readPrefs(): TreePrefs {
 
 function writePrefs(state: TreeState): void {
   const prefs: TreePrefs = {
-    mode: state.mode,
     query: state.ui?.search.value ?? '',
     selectedOnly: state.selectedOnly,
   };
@@ -125,14 +112,6 @@ function writePrefs(state: TreeState): void {
   } catch {
     // Preferences are a convenience, never a requirement.
   }
-}
-
-interface FlatRow {
-  row: HTMLLIElement;
-  box: HTMLSpanElement;
-  real: HTMLInputElement;
-  name: string;
-  code: string;
 }
 
 interface TreeUi {
@@ -145,10 +124,7 @@ interface TreeUi {
 }
 
 interface TreeState {
-  mode: TreeMode;
   selectedOnly: boolean;
-  list: HTMLUListElement | null;
-  rows: FlatRow[];
   ui: TreeUi | null;
   /** Last rendered pill set, so a re-scan cannot rebuild it into a loop. */
   pillSig: string;
@@ -588,153 +564,10 @@ function setLiVisible(li: HTMLLIElement, visible: boolean): void {
   else li.style.setProperty('display', 'none', 'important');
 }
 
-/**
- * Flat "List" view: every category as one row (depth-indented), built ONCE
- * per tree. Rows own no form fields — clicking a row (or its box) forwards
- * to the tree's real checkbox via .click(), so Magento's own change
- * handling runs and the form state stays exactly what Save would expect.
- * Checked state is mirrored from the real input on every change.
- */
-function buildFlatList(tree: Element, state: TreeState): HTMLUListElement {
-  const list = document.createElement('ul');
-  list.className = LIST_CLASS;
-
-  // The locked root ("Default Category") gets no List row: it is always on
-  // and its box is disabled, so a row would only confuse (click = no-op).
-  const root = rootItemOf(tree);
-  for (const li of Array.from(tree.querySelectorAll<HTMLLIElement>('li'))) {
-    if (root && li === root) continue;
-    const real = li.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
-    if (!real) continue;
-    const label = itemLabel(li);
-    if (!label) continue;
-    const code = codeOf(li) ?? '';
-
-    // Depth = number of ancestor branches, for indentation.
-    let depth = 0;
-    let ancestor = parentBranchItem(li);
-    while (ancestor) {
-      depth += 1;
-      ancestor = parentBranchItem(ancestor);
-    }
-
-    const row = document.createElement('li');
-    row.className = ROW_CLASS;
-    row.style.setProperty('padding-left', `${8 + depth * 16}px`);
-    row.tabIndex = 0;
-    row.setAttribute('role', 'checkbox');
-
-    const box = document.createElement('span');
-    box.className = BOX_CLASS;
-    row.appendChild(box);
-
-    if (code) {
-      const badgeEl = badge(code, { title: `Category ${code} (Notion index)` });
-      badgeEl.classList.add(NO_CLASS, PILL_NO_CLASS);
-      row.appendChild(badgeEl);
-    }
-
-    const name = document.createElement('span');
-    name.className = 'mhx-cat-row-label';
-    name.textContent = label;
-    row.appendChild(name);
-
-    const sync = (): void => {
-      row.classList.toggle(BOX_CHECKED_CLASS, real.checked);
-      row.setAttribute('aria-checked', String(real.checked));
-    };
-    const toggle = (): void => {
-      // Forward to the real checkbox — the only writer of form state.
-      real.click();
-      sync();
-    };
-    row.addEventListener('click', (e) => {
-      e.preventDefault();
-      toggle();
-    });
-    row.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggle();
-      }
-    });
-    // The tree checkbox can change from the tree view, Magento, or the
-    // operator — keep the row mirror in step either way.
-    real.addEventListener('change', sync);
-    sync();
-
-    list.appendChild(row);
-    state.rows.push({ row, box, real, name: label, code });
-  }
-  return list;
-}
-
-/** Flat-view filter: substring over the row name and its number. */
-function applyListFilter(tree: Element): void {
-  const state = treeStates.get(tree);
-  const ui = state?.ui;
-  if (!state || !ui) return;
-  const needle = normalizeFilterText(ui.search.value.trim());
-  let shown = 0;
-  for (const row of state.rows) {
-    const label = normalizeFilterText(row.name);
-    const matchesNeedle =
-      needle === '' ||
-      label.includes(needle) ||
-      row.code.toLowerCase().includes(needle);
-    const show = matchesNeedle && (!state.selectedOnly || row.real.checked);
-    row.row.style.setProperty('display', show ? '' : 'none', 'important');
-    if (show) shown += 1;
-  }
-  ui.counter.textContent =
-    needle === '' && !state.selectedOnly ? '' : `${shown} shown`;
-}
-
-/** Switch a tree between the collapsible "Tree" and flat "List" views. */
-function setTreeMode(tree: Element, mode: TreeMode): void {
-  const state = treeStates.get(tree);
-  const ui = state?.ui;
-  if (!state || !ui || state.mode === mode) return;
-  state.mode = mode;
-
-  ui.bar.querySelectorAll<HTMLButtonElement>('.mhx-seg-btn').forEach((b) => {
-    const active = b.dataset['value'] === mode;
-    b.classList.toggle('mhx-seg-btn--active', active);
-    b.setAttribute('aria-pressed', String(active));
-  });
-  // Collapse/Expand only mean something in tree view.
-  ui.bar.querySelectorAll<HTMLButtonElement>('.mhx-cat-tree-btn').forEach((b) => {
-    b.style.setProperty('display', mode === 'tree' ? '' : 'none', 'important');
-  });
-  const treeEl = tree as HTMLElement;
-  if (mode === 'list') {
-    if (!state.list) {
-      state.list = buildFlatList(tree, state);
-      if (tree.parentElement) {
-        tree.parentElement.insertBefore(state.list, tree);
-      }
-    }
-    treeEl.style.setProperty('display', 'none', 'important');
-    state.list.style.removeProperty('display');
-    applyListFilter(tree);
-  } else {
-    state.list?.style.setProperty('display', 'none', 'important');
-    treeEl.style.removeProperty('display');
-    // Re-run the tree filter so the current search still applies.
-    applyTreeFilter(tree);
-  }
-  writePrefs(state);
-}
-
 function applyTreeFilter(tree: Element): void {
   const state = treeStates.get(tree);
   const ui = state?.ui;
   if (!state || !ui) return;
-  // Active view decides which surface the search narrows.
-  if (state.mode === 'list') {
-    applyListFilter(tree);
-    return;
-  }
 
   const needle = normalizeFilterText(ui.search.value.trim());
   const onlySelected = state.selectedOnly;
@@ -959,10 +792,7 @@ function addToolbar(tree: Element): void {
   const prefs = readPrefs();
 
   const state: TreeState = {
-    mode: 'tree',
     selectedOnly: prefs.selectedOnly,
-    list: null,
-    rows: [],
     ui: null,
     pillSig: '',
   };
@@ -973,19 +803,6 @@ function addToolbar(tree: Element): void {
 
   const bar = document.createElement('div');
   bar.className = BAR_CLASS;
-
-  // Tree | List view toggle (segmented, same idiom as the select enhancer).
-  const seg = segmented({
-    label: 'Category view',
-    options: [
-      { label: 'Tree', value: 'tree' },
-      { label: 'List', value: 'list' },
-    ],
-    active: prefs.mode,
-    onPick: (value) => {
-      if (value === 'tree' || value === 'list') setTreeMode(tree, value);
-    },
-  });
 
   // Search box, same idea as the searchable picker: instant narrowing as
   // you type. Enter must never submit the mass-attributes form.
@@ -999,7 +816,7 @@ function addToolbar(tree: Element): void {
   const counter = document.createElement('span');
   counter.className = COUNT_CLASS;
 
-  // "Selected only": hide everything that is not checked, in either view.
+  // "Selected only": hide everything that is not checked.
   const only = button({
     label: 'Selected only',
     variant: prefs.selectedOnly ? 'accent' : 'default',
@@ -1070,7 +887,7 @@ function addToolbar(tree: Element): void {
     expandTree(tree);
   });
 
-  bar.append(seg, search, counter, only, naturaBtn, untickBtn, collapseBtn, expandBtn);
+  bar.append(search, counter, only, naturaBtn, untickBtn, collapseBtn, expandBtn);
 
   // Selected panel: the selection at a glance, in its own column to the RIGHT
   // of the tree (it used to sit above it and pushed the first rows down).
@@ -1080,9 +897,9 @@ function addToolbar(tree: Element): void {
 
   shell.append(bar);
 
-  // Two columns: the tree (or the flat list) and the Selected panel beside it.
-  // The tree is moved into the row, so the panel sits next to the rows the
-  // operator is reading instead of above them.
+  // Two columns: the tree and the Selected panel immediately beside it. The
+  // tree column is sized to its own content (CSS), so the panel follows the
+  // rows instead of being pushed out to the far right of a wide fieldset.
   const main = document.createElement('div');
   main.className = MAIN_CLASS;
   if (tree.parentElement) {
@@ -1163,7 +980,7 @@ function addToolbar(tree: Element): void {
     ensureRootChecked(tree);
     renderPills(tree);
     if (state.selectedOnly) applyTreeFilter(tree);
-    else if (state.mode === 'tree' && target instanceof HTMLInputElement) {
+    else if (target instanceof HTMLInputElement) {
       const li = target.closest<HTMLLIElement>('li');
       if (li && target.checked) revealBranchOf(li);
     }
@@ -1172,8 +989,7 @@ function addToolbar(tree: Element): void {
   // Lock the root from the first render — see `ensureRootChecked`.
   ensureRootChecked(tree);
   renderPills(tree);
-  if (prefs.mode === 'list') setTreeMode(tree, 'list');
-  else applyTreeFilter(tree);
+  applyTreeFilter(tree);
 }
 
 /** True when the item's own name is the LINHA NATURA counterpart. */
@@ -1486,7 +1302,9 @@ const CATEGORY_TREE_STYLES = `
 .mhx-cat-shell{display:flex;flex-direction:column;gap:8px;margin:8px 0 10px;}
 .mhx-cat-main{display:flex;gap:14px;align-items:flex-start;}
 .mhx-cat-main > *{min-width:0;}
-.mhx-cat-main > :not(.mhx-cat-pills){flex:1 1 auto;}
+/* The tree takes its own content width, so the Selected panel sits right
+   beside it instead of at the far right of the fieldset. */
+.mhx-cat-main > :not(.mhx-cat-pills){flex:0 1 auto;max-width:min(560px,100%);}
 .mhx-cat-tree-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .mhx-cat-toggle{width:22px;height:22px;margin:0 14px 0 2px;vertical-align:middle;flex-shrink:0;}
 .mhx-cat-slot{display:inline-block;width:22px;height:22px;margin:0 14px 0 2px;vertical-align:middle;flex-shrink:0;}
@@ -1510,12 +1328,4 @@ const CATEGORY_TREE_STYLES = `
 .mhx-cat-sel-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
 .mhx-cat-sel-x{padding:0 4px;border:0;background:transparent;color:var(--mhx-pg-muted);cursor:pointer;border-radius:2px;line-height:1;}
 .mhx-cat-sel-x:hover{background:var(--mhx-pg-fill);color:var(--mhx-pg-accent-strong);}
-.mhx-cat-list{margin:0;max-height:480px;overflow-y:auto;padding:4px 0;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill);}
-.mhx-cat-list[hidden]{display:none !important;}
-.mhx-cat-row{display:flex;align-items:center;gap:8px;padding:4px 8px;cursor:pointer;font:13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-ink);}
-.mhx-cat-row:hover{background:var(--mhx-pg-fill-hover);}
-.mhx-cat-row:focus-visible{outline:2px solid var(--mhx-pg-accent);outline-offset:-2px;}
-.mhx-cat-row-box{width:14px;height:14px;border:1px solid var(--mhx-pg-line);border-radius:2px;background:var(--mhx-pg-fill);flex-shrink:0;position:relative;}
-.mhx-cat-row--checked .mhx-cat-row-box{background:var(--mhx-pg-accent);border-color:var(--mhx-pg-accent);}
-.mhx-cat-row--checked .mhx-cat-row-box::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mhx-pg-on-accent);font-size:11px;line-height:1;}
 `;
