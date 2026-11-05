@@ -59,7 +59,8 @@ const DEAD_ALLOW = new Set(['src/ui/smoke-test.ts', 'src/audit/__tests__/supplie
   'src/audit/__tests__/makitoImages.test.ts',
   'src/audit/__tests__/enableFlow.test.ts',
   'src/audit/__tests__/adminFacts.test.ts',
-  'src/audit/__tests__/attributeSet.test.ts',]);
+  'src/audit/__tests__/attributeSet.test.ts',
+  'src/shared/__tests__/features.test.ts',]);
 
 const EXTENSIONS = ['', '.ts', '.tsx', '/index.ts', '/index.tsx'];
 

@@ -38,6 +38,21 @@ export interface CategoryIndexNode {
   id: string;
   name: string;
   parent: string | null;
+  notes?: string;
+  crossCategory?: CrossCategoryRule[];
+}
+
+/** Cross-category rule extracted from a "tb em" pattern in notes. */
+export interface CrossCategoryRule {
+  source: string;
+  targetId: string;
+  targetName: string;
+}
+
+/** Category notes with optional cross-category rules. */
+export interface CategoryNote {
+  notes?: string;
+  crossCategory?: CrossCategoryRule[];
 }
 
 const NODES: CategoryIndexNode[] = (rawIndex as { nodes: CategoryIndexNode[] })
@@ -678,4 +693,24 @@ export function categoryOrderIssues(
   }
 
   return issues;
+}
+
+/* --- Notes and Rules -------------------------------------------------------- */
+
+/** Lookup maps for notes and cross-category rules. */
+const notesById = new Map<string, CategoryNote>();
+
+// Build the maps from the NODES at module load time
+for (const node of NODES) {
+  if (node.notes || node.crossCategory) {
+    notesById.set(node.id, {
+      notes: node.notes,
+      crossCategory: node.crossCategory,
+    });
+  }
+}
+
+/** Get notes and cross-category rules for a category code. */
+export function categoryNotes(code: string): CategoryNote | undefined {
+  return notesById.get(code);
 }

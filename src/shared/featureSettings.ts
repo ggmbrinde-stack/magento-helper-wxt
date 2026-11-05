@@ -1,23 +1,9 @@
-export const FEATURE_DEFAULTS: Record<string, boolean> = {
-  extensionEnabled: true,
-  selects: true,
-  navToggle: true,
-  rowActions: true,
-  massactions: true,
-  paging: true,
-  activeFilters: true,
-  categoryTree: true,
-  pageActions: false,
-  skuCopy: true,
-  productTypeBadge: true,
-  gridCopy: true,
-  storeViews: true,
-  configButtons: true,
-  errorMarkup: true,
-  optionsCompanion: true,
-  optionsItems: true,
-  tierPrices: true,
-};
+// The defaults are derived from the feature catalog, so a feature cannot exist
+// in one list and be missing from the other. Storage keeps the same shape it
+// has always had: one `featureFlags` object keyed by these names.
+import { FEATURE_DEFAULTS } from './featureCatalog';
+
+export { FEATURE_DEFAULTS };
 
 type FeatureSettings = Record<string, boolean>;
 

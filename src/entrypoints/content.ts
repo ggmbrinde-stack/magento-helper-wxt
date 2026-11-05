@@ -1,6 +1,5 @@
 import { defineContentScript } from 'wxt/sandbox';
 import type { ListingError } from '../shared/schemas';
-import { ENHANCE_NAV_TOGGLE, MOVE_PAGE_ACTIONS } from '../shared/flags';
 import { getFeatureSettings, loadFeatureSettings, onFeatureSettingsChange } from '../shared/featureSettings';
 import { detectStoreView } from '../shared/store';
 import { isProductEditPage, readFormState, readPageSku } from '../page/shared/magentoForm';
@@ -15,28 +14,15 @@ import type {
   SearchMagentoResponse,
 } from '../core/messages';
 
-// Page features. Each one owns a folder (src/page/features/<feature>/) with its
-// mount function, and the scan loop below is the only place they are ordered.
-import { enhanceAdminSelects } from '../page/features/dropdowns/scan';
-import { enhanceAdminNavToggle } from '../page/features/nav-toggle';
-import { enhanceGridRowActions } from '../page/features/row-actions/scan';
-import { enhanceMassactions } from '../page/features/massactions/scan';
-import { enhanceGridPagingSizes } from '../page/features/paging-sizes/scan';
-import { enhanceActiveFilterChips } from '../page/features/active-filters/scan';
-import { enhanceCategoryTree } from '../page/features/category-tree/scan';
-import { movePageActionsToHeader } from '../page/features/page-header';
-import { scanEditPage } from '../page/features/sku-copy';
-import { renderProductTypeBadge } from '../page/features/product-type';
-import { addGridCopyButtons, scanGrid } from '../page/features/grid-copy';
-import { addStoreViewButtons } from '../page/features/store-views';
-import { extractColorGroups, renderConfigButtons } from '../page/features/config-groups';
-import { applyErrorMarkup, maybeRequestErrorMarkup } from '../page/features/error-markup';
+// Page features. The list of them lives in `src/shared/featureCatalog.ts` (key,
+// label, page detection, default) and the mounts in
+// `src/page/features/registry.ts`. This file only runs the chain.
+import { FEATURE_CATALOG, detectFeatureIds } from '../shared/featureCatalog';
+import { FEATURE_MOUNTS } from '../page/features/registry';
+import { extractColorGroups } from '../page/features/config-groups';
+import { applyErrorMarkup } from '../page/features/error-markup';
 import { handleApplyField } from '../page/features/form-fill';
 import { handleSearchMagento } from '../page/features/grid-search';
-import { addOptionsCompanion } from '../page/features/options-companion';
-import { enhanceOptionsItems } from '../page/features/options-items';
-import { renderTierPricesButtons, findTierPricesTable } from '../page/features/tier-prices';
-
 
 /**
  * The scan loop.
@@ -51,28 +37,10 @@ import { renderTierPricesButtons, findTierPricesTable } from '../page/features/t
  * step is isolated: one enhancer throwing must never skip the rest (a dead
  * dropdown pass once cost the operator every pencil on the page).
  */
-function detectPageFeatures(): string[] {
-  const has = (sel: string) => !!document.querySelector(sel);
-  const ids: string[] = [];
-  if (document.querySelectorAll('select').length > 0) ids.push('selects');
-  if (has('.admin__menu, nav.admin__menu')) ids.push('navToggle');
-  if (has('.data-grid, table.data-grid')) ids.push('rowActions', 'massactions', 'gridCopy');
-  if (has('.selectmenu, .paging, .toolbar-amount')) ids.push('paging');
-  if (has('.active-filters, .filter-actions')) ids.push('activeFilters');
-  if (has('.category-tree, #category_ids, .categories-side-col')) ids.push('categoryTree');
-  if (has('.page-actions, .page-actions-buttons')) ids.push('pageActions');
-  if (has('#product_form, .product-edit, [data-ui-id="product-form"]')) ids.push('skuCopy', 'productTypeBadge', 'tierPrices');
-  if (has('.store-switcher, .store-view')) ids.push('storeViews');
-  if (has('.configurable, .super-attribute')) ids.push('configButtons');
-  if (has('.custom-options, .options')) ids.push('optionsCompanion', 'optionsItems');
-  ids.push('errorMarkup');
-  return Array.from(new Set(ids));
-}
-
 function scan(): void {
   const f = getFeatureSettings();
   if (!f.extensionEnabled) return;
-  void chrome.storage.local.set({ detectedFeatures: detectPageFeatures() });
+  void chrome.storage.local.set({ detectedFeatures: detectFeatureIds(document) });
   const safe = (name: string, fn: () => void): void => {
     try {
       fn();
@@ -81,25 +49,12 @@ function scan(): void {
     }
   };
 
-  if (f.selects) safe('selects', enhanceAdminSelects);
-  if (f.tierPrices) safe('tierPrices', renderTierPricesButtons);
-  if (f.selects) safe('selects', enhanceAdminSelects);
-  if (f.navToggle && ENHANCE_NAV_TOGGLE) safe('navToggle', () => enhanceAdminNavToggle());
-  if (f.rowActions) safe('rowActions', enhanceGridRowActions);
-  if (f.massactions) safe('massactions', enhanceMassactions);
-  if (f.paging) safe('paging', enhanceGridPagingSizes);
-  if (f.activeFilters) safe('activeFilters', enhanceActiveFilterChips);
-  if (f.categoryTree) safe('categoryTree', enhanceCategoryTree);
-  if (f.pageActions && MOVE_PAGE_ACTIONS) safe('pageActions', () => movePageActionsToHeader());
-  if (f.skuCopy) safe('scanEditPage', scanEditPage);
-  if (f.productTypeBadge) safe('productTypeBadge', renderProductTypeBadge);
-  if (f.gridCopy) safe('scanGrid', scanGrid);
-  if (f.gridCopy) safe('gridCopy', addGridCopyButtons);
-  if (f.storeViews) safe('storeViews', addStoreViewButtons);
-  if (f.configButtons) safe('configButtons', renderConfigButtons);
-  if (f.errorMarkup) safe('errorMarkup', maybeRequestErrorMarkup);
-  if (f.optionsCompanion) safe('optionsCompanion', addOptionsCompanion);
-  if (f.optionsItems) safe('optionsItems', enhanceOptionsItems);
+  for (const feature of FEATURE_CATALOG) {
+    const key = feature.id;
+    if (key === 'extensionEnabled') continue;
+    if (!f[key]) continue;
+    safe(key, FEATURE_MOUNTS[key]);
+  }
 }
 
 export default defineContentScript({

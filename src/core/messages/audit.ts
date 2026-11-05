@@ -139,10 +139,14 @@ export interface ResolveSkuResponse {
   supplier?: SupplierLinkInfo;
   /** Last stored supplier-availability verdict, when one was checked (D4). */
   availability?: AvailabilityCheck | null;
-  /** Storefront breadcrumb vs SKU Library category (C5). */
-  categoryCheck?: CategoryCheck;
   /** Other cached SKUs resolving to the same product (E3). */
   duplicates?: CacheDuplicate[];
+  /** Storefront breadcrumb vs SKU Library category (C5). */
+  categoryCheck?: CategoryCheck;
+  /** PP + category facts read from the Magento product edit page. */
+  magento_facts?: ResolverMagentoFacts;
+  /** Price the storefront shows, when the PDP publishes it. */
+  storefront_price?: ResolverJson['storefront_price'];
   /** True when the payload came from the cache past its TTL (F1). */
   stale?: boolean;
   /** Age of the payload in days (F2). */
@@ -151,8 +155,6 @@ export interface ResolveSkuResponse {
   error?: string;
   warning?: string;
 }
-
-/** Check one SKU against its supplier catalogue now (D2/D3). */
 export interface CheckSupplierRequest {
   type: 'CHECK_SUPPLIER';
   sku: string;

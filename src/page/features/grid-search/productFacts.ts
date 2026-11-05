@@ -59,8 +59,27 @@ const ATTRIBUTE_SET_DIALOG = [
   '#choose-affected-attribute-set',
 ].join(', ');
 
+/**
+ * Any modal/overlay body. The set picker is a modal in every build we support,
+ * and a modal is never the product's own field - whatever its classes are
+ * called. Matching only the known dialog wrappers missed builds that render the
+ * picker as a plain `.admin__modal`, whose select then reported its placeholder
+ * ("All Options") as if it were the product's set.
+ */
+const MODAL = [
+  '.admin__modal',
+  '[data-role="modal"]',
+  '.modal-slide',
+  '.modal-popup',
+  '.ui-dialog',
+].join(', ');
+
+function inModal(node: Element | null): boolean {
+  return Boolean(node?.closest(MODAL));
+}
+
 function inSetChangeDialog(node: Element | null): boolean {
-  return Boolean(node?.closest(ATTRIBUTE_SET_DIALOG));
+  return Boolean(node?.closest(ATTRIBUTE_SET_DIALOG)) || inModal(node);
 }
 
 /** Is this node inside something the markup labels as an attribute-set widget? */
@@ -88,14 +107,12 @@ function selectedSetOption(): string {
     if (option instanceof HTMLOptionElement && !option.selected) continue;
     if (inSetChangeDialog(option)) continue;
     if (!inAttributeSetWidget(option)) continue;
-    const text = squash(option.textContent);
+    // The picker's own label ("All Options", "Default") is not a product value.
+    const text = cleanSetName(option.textContent);
     if (text) return text;
   }
   return '';
 }
-
-const ATTRIBUTE_SET_LABEL =
-  /\battribute\s*set\b|conjunto\s+de\s+atributos|jeu\s+d'?attributs|conjunto\s+de\s+atributos/i;
 
 const CATEGORY_TAB_LABEL =
   /^(categories|categorias|categorías|catégories|kategorien)$/i;
@@ -167,53 +184,132 @@ function staticFieldValue(field: Element): string {
   const control =
     field.querySelector<HTMLElement>('.admin__field-control') ??
     field.querySelector<HTMLElement>('[data-role="field-value"]');
-  if (!control) return '';
-  const clone = control.cloneNode(true) as HTMLElement;
+  return control ? staticFieldText(control) : '';
+}
+
+/** The label and nothing else: "Choose existing Attribute Set" is not it. */
+const ATTRIBUTE_SET_LABEL_ONLY =
+  /^(?:attribute\s*set|conjunto\s+de\s+atributos|jeu\s+d'?attributs)\s*:?\s*$/i;
+
+/** The field container Magento gives the set, even when its label is hidden. */
+const ATTRIBUTE_SET_FIELD = [
+  '[data-index="attribute_set_id"]',
+  '[data-index="attribute-set-name"]',
+  '.field-attribute_set_id',
+  '.field-attribute-set-name',
+].join(', ');
+
+/** Picker words that are never a set name. */
+const NOT_A_SET_NAME =
+  /^(?:all options|all|any|none|no|yes|select\.{0,3}|--\s*please select\s*--|please select(?:\s+\w+)*|choose(?:\s+\w+)*|all store views|all websites|-+|—|–)\s*:?\s*$/i;
+
+/** Text inside a block with its controls removed (a `<select>`'s text is not a value). */
+function staticFieldText(node: Element): string {
+  const clone = node.cloneNode(true) as Element;
   clone
     .querySelectorAll('input, select, textarea, button, script, style, [class*="mhx-"]')
-    .forEach((node) => node.remove());
+    .forEach((child) => child.remove());
   return squash(clone.textContent);
 }
 
-/** Exact field label, so a paragraph that merely mentions the set is ignored. */
-const ATTRIBUTE_SET_LABEL_EXACT = /^(attribute\s*set|conjunto\s+de\s+atributos)$/i;
+/** A field's text, preferring a readable input value over its static text. */
+function candidateFieldText(node: Element): string {
+  const input = (
+    node.matches('input, textarea')
+      ? node
+      : node.querySelector(
+          'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea',
+        )
+  ) as HTMLInputElement | HTMLTextAreaElement | null;
+  if (input && squash(input.value)) return squash(input.value);
+  return staticFieldText(node);
+}
 
 /**
- * The set name printed beside the header label on the newer product form.
+ * A set name, or nothing.
  *
- * There the set is neither a dropdown nor a hidden field: the header shows the
- * name as static text and only the "change attribute set" dialog has controls.
- * The value is the label's immediate neighbour, never a whole row of fields.
+ * Rejects everything a picker can show instead of a product value: a label on
+ * its own, a placeholder ("All Options", "Please select…"), a concatenation of
+ * every set in the store (several `AS>PP` names, which is what a `<select>`'s
+ * textContent looks like), and a row/container of several fields.
+ */
+function cleanSetName(raw: string): string {
+  const text = squash(raw)
+    .replace(
+      /^(?:attribute\s*set|conjunto\s+de\s+atributos|jeu\s+d'?attributs)\s*[:\-–]?\s*/i,
+      '',
+    )
+    .replace(/\s+(?:change|alterar|editar|modifier|ändern)$/i, '')
+    .trim();
+  if (!text || NOT_A_SET_NAME.test(text)) return '';
+  if (/^(?:attribute\s*set|conjunto\s+de\s+atributos|jeu\s+d'?attributs)$/i.test(text)) {
+    return '';
+  }
+  // A container of several fields is not a value.
+  if (text.length > 200) return '';
+  // A list of sets is not a value.
+  const ppMatches = text.match(/AS>PP/gi);
+  if (ppMatches && ppMatches.length > 1) return '';
+  if (isConcatenatedAttributeSetText(text)) return '';
+  return text;
+}
+
+/**
+ * The set name printed beside the "Attribute Set" label.
+ *
+ * There the set is neither a dropdown nor a hidden field: the form shows the
+ * name as static text (or a read-only input) next to the label, while a select
+ * in the same row lists every set in the store - its textContent is a
+ * concatenation of all set names and its selected option can be a placeholder.
+ * Neither is the product's value, so every candidate goes through cleanSetName.
  */
 function headerSetValue(): string {
   const labels = Array.from(
     document.querySelectorAll<HTMLElement>(
-      'label, dt, .admin__field-label, span, div, strong, th',
+      '.admin__field-label, label, dt, th, span, div, strong',
     ),
   ).filter(
     (node) =>
       node.children.length === 0 &&
-      ATTRIBUTE_SET_LABEL_EXACT.test(fieldLabelText(node.textContent)),
+      ATTRIBUTE_SET_LABEL_ONLY.test(fieldLabelText(node.textContent)),
   );
+  const found: string[] = [];
   for (const label of labels) {
     if (inSetChangeDialog(label)) continue;
     const row = label.parentElement;
     if (!row) continue;
+    const field = label.closest('.admin__field, .field, fieldset, tr') ?? row;
     const candidates: (Element | null)[] = [
       label.nextElementSibling,
       row.nextElementSibling,
-      row.querySelector('.admin__field-value, [data-role="field-value"]'),
+      field.querySelector('.admin__field-value, [data-role="field-value"]'),
+      field.querySelector('.admin__field-control'),
+      row,
     ];
     for (const candidate of candidates) {
       if (!candidate || candidate.contains(label)) continue;
       if (candidate.matches('a, button')) continue;
-      const text = squash(candidate.textContent);
-      // A long text is a container of several fields, not one set name.
-      if (!text || text.length > 160) continue;
-      return text;
+      if (inSetChangeDialog(candidate)) continue;
+      const name = cleanSetName(candidateFieldText(candidate));
+      if (name) found.push(name);
     }
   }
-  return '';
+  // A set name carries `AS>` (or a PP code); when a neighbour also reads as
+  // plain text (another header field), the set-looking value wins.
+  return found.find((name) => /AS>|PP\s*\d/i.test(name)) ?? found[0] ?? '';
+}
+
+/** Check if this text looks like a concatenated list (from the UI bug) */
+function isConcatenatedAttributeSetText(text: string): boolean {
+  // A concatenated list typically starts with "Attribute Set" and contains multiple AS>PP patterns
+  if (!text) return false;
+  const trimmed = text.trim();
+  // Check if it starts with "Attribute Set" followed by multiple set names
+  if (/^Attribute\s+Set\s+/i.test(trimmed)) {
+    const ppMatches = trimmed.match(/AS>PP/gi);
+    return ppMatches !== null && ppMatches.length > 1;
+  }
+  return false;
 }
 
 /** The value of a labelled admin field (select/input, else static text). */
@@ -225,23 +321,32 @@ function labelledFieldValue(labelPattern: RegExp): string {
   );
   for (const label of labels) {
     if (inSetChangeDialog(label)) continue;
-    if (!labelPattern.test(fieldLabelText(label.textContent))) continue;
+    const labelText = fieldLabelText(label.textContent);
+    if (!labelPattern.test(labelText)) continue;
     const field =
       label.closest('.admin__field, .field, tr, fieldset') ??
       label.parentElement;
     if (!field) continue;
+    // Each source is validated, not trusted: a select can be showing a
+    // placeholder ("All Options") and its text is every option at once.
     const select = field.querySelector<HTMLSelectElement>('select');
-    if (select) {
-      const text = optionsText(select);
+    if (select && !inSetChangeDialog(select)) {
+      const text = cleanSetName(optionsText(select));
       if (text) return text;
     }
     const input = field.querySelector<HTMLInputElement>(
       'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])',
     );
-    if (input && squash(input.value)) return squash(input.value);
+    if (input && !inSetChangeDialog(input)) {
+      const text = cleanSetName(input.value);
+      if (text) return text;
+    }
     const hidden = field.querySelector<HTMLInputElement>('input[type="hidden"]');
-    if (hidden && squash(hidden.value)) return squash(hidden.value);
-    const text = staticFieldValue(field);
+    if (hidden && !inSetChangeDialog(hidden)) {
+      const text = cleanSetName(hidden.value);
+      if (text) return text;
+    }
+    const text = cleanSetName(staticFieldValue(field));
     if (text) return text;
   }
   return '';
@@ -249,33 +354,50 @@ function labelledFieldValue(labelPattern: RegExp): string {
 
 /** Attribute Set name exactly as the product edit page shows it. */
 export function readAttributeSetName(): string {
-  const named = document.querySelector(ATTRIBUTE_SET_INPUT);
-  const namedValue = inSetChangeDialog(named) ? '' : controlValue(named);
-  if (namedValue) return namedValue;
-  const picked = selectedSetOption();
-  if (picked) return picked;
-  const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
-  if (select) {
-    const text = optionsText(select);
-    if (text) return text;
+  // 1. The product's own control, when the page has one. Anything inside the
+  //    change-set dialog (or any modal) is the picker, not this product. More
+  //    than one control can share the name, so every candidate is tried.
+  for (const named of Array.from(document.querySelectorAll(ATTRIBUTE_SET_INPUT))) {
+    if (inSetChangeDialog(named)) continue;
+    const value = cleanSetName(controlValue(named));
+    if (value) return value;
   }
-  // Some builds replace the select with a static value plus a hidden input.
+  // 2. The classic dropdown.
+  const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
+  if (select && !inSetChangeDialog(select)) {
+    const value = cleanSetName(optionsText(select) || squash(select.value));
+    if (value) return value;
+  }
+  // 3. Some builds replace the select with a static value plus a hidden input.
   const hidden = document.querySelector<HTMLInputElement>(
     'input[name="product[attribute_set_id]"], input[name="attribute_set_id"]',
   );
-  if (hidden && squash(hidden.value)) {
+  if (hidden && !inSetChangeDialog(hidden) && squash(hidden.value)) {
     const selected = document.querySelector<HTMLElement>(
       `[data-attribute-set-id="${CSS.escape(hidden.value)}"]`,
     );
-    if (selected) {
-      const text = squash(selected.textContent);
-      if (text) return text;
+    if (selected && !inSetChangeDialog(selected)) {
+      const value = cleanSetName(staticFieldText(selected));
+      if (value) return value;
     }
   }
-  // The newer form prints the name as plain header text, no control at all.
+  // 4. The newer form prints the name as plain text beside the label, so read
+  //    the field itself before falling back to any picker widget.
+  for (const field of Array.from(document.querySelectorAll(ATTRIBUTE_SET_FIELD))) {
+    if (inSetChangeDialog(field)) continue;
+    const control =
+      field.querySelector(
+        '.admin__field-value, [data-role="field-value"], .admin__field-control',
+      ) ?? field;
+    const value = cleanSetName(candidateFieldText(control));
+    if (value) return value;
+  }
   const header = headerSetValue();
   if (header) return header;
-  return labelledFieldValue(ATTRIBUTE_SET_LABEL);
+  const labelled = labelledFieldValue(ATTRIBUTE_SET_LABEL_ONLY);
+  if (labelled) return labelled;
+  // 5. A custom picker marks its choice with aria-selected/aria-checked.
+  return selectedSetOption();
 }
 
 /**
@@ -302,13 +424,17 @@ export function readAttributeSetId(): string {
   const named = document.querySelector<HTMLInputElement>(
     'input[name="attribute-set-id"], input#attribute-set-id',
   );
-  if (named && squash(named.value)) return squash(named.value);
+  if (named && !inSetChangeDialog(named) && squash(named.value)) {
+    return squash(named.value);
+  }
   const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
-  if (select && squash(select.value)) return squash(select.value);
+  if (select && !inSetChangeDialog(select) && squash(select.value)) {
+    return squash(select.value);
+  }
   const hidden = document.querySelector<HTMLInputElement>(
     'input[name="product[attribute_set_id]"], input[name="attribute_set_id"]',
   );
-  return hidden ? squash(hidden.value) : '';
+  return hidden && !inSetChangeDialog(hidden) ? squash(hidden.value) : '';
 }
 
 /** The checkout checkboxes currently in the DOM (tree may not be loaded yet). */
@@ -447,6 +573,16 @@ const PRODUCT_FORM =
   '#product_form, .product-edit, [data-ui-id="product-form"], form[data-role="product-form"]';
 
 /**
+ * Is this the product edit page, and not a grid/dashboard that happens to have
+ * a field labelled "Attribute Set"? The URL is the cheapest proof; the form
+ * container covers builds whose route is rewritten.
+ */
+function onProductEditPage(): boolean {
+  if (/\/catalog\/product\/edit(\/|$)/i.test(location.pathname)) return true;
+  return document.querySelector(PRODUCT_FORM) !== null;
+}
+
+/**
  * Wait until the edit form is actually built and parsed.
  *
  * The pass is often requested on a tab the resolver just opened, so the message
@@ -494,6 +630,11 @@ function categorySelectEntries(): CategoryEntry[] {
 export async function readProductFacts(
   options: ReadProductFactsOptions = {},
 ): Promise<ResolverMagentoFacts | null> {
+  // Never read a page that is not the product form. The product grid also has
+  // fields labelled "Attribute Set" (and selects showing placeholders such as
+  // "All Options"), so reading there produced a snapshot full of other pages'
+  // text - and it was cached as if it described the product.
+  if (!onProductEditPage()) return null;
   // The pass can be requested on a tab that is still parsing, so the form is
   // awaited before anything is read rather than reporting it as unreadable.
   await waitForEditForm();

@@ -2,6 +2,8 @@
 // Read helpers plus a per-field value application that never clicks Save
 // (Build Plan rule: per-field Apply only, with snapshot + undo).
 
+import { resolvePageContext } from '../../shared/pageContext';
+
 export type MageFieldKind = 'name' | 'short_description';
 
 export interface MageFormField {
@@ -31,7 +33,10 @@ export const FIELD_LABELS: Record<MageFieldKind, string> = {
 export const MAGE_FIELDS: MageFieldKind[] = ['name', 'short_description'];
 
 export function isProductEditPage(url: string): boolean {
-  return /\/catalog\/product\/edit/.test(url);
+  // The admin URL names its controller, so read it instead of pattern-matching
+  // a substring: this is the same resolver the feature scheduler will use, and
+  // it cannot be fooled by `/catalog/product/edit` appearing in a query value.
+  return resolvePageContext(url).area === 'product-edit';
 }
 
 type FieldElement = HTMLInputElement | HTMLTextAreaElement;

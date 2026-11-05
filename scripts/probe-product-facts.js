@@ -115,11 +115,6 @@
   };
 
   const text = JSON.stringify(report, null, 2);
-  console.log('%c[mhx facts probe] ' + location.href, 'font-weight:bold');
-  console.log(report);
-  navigator.clipboard?.writeText(text).then(
-    () => console.log('[mhx facts probe] JSON copied to clipboard'),
-    () => console.log('[mhx facts probe] copy failed — right-click the object above > Copy object'),
-  );
+  console.log(text);
   return report;
 })();

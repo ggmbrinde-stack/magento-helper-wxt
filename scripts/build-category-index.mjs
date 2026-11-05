@@ -52,7 +52,10 @@ let nextTop = 1;
 let nextSecond = 1;
 let nextLeaf = 1;
 
-for (const rawLine of text.split(/\r?\n/)) {
+const lines = text.split(/\r?\n/);
+
+for (let i = 0; i < lines.length; i++) {
+  const rawLine = lines[i];
   const line = rawLine.trim();
   if (line === '') continue;
 
@@ -65,7 +68,12 @@ for (const rawLine of text.split(/\r?\n/)) {
     top = { id: m[1], name: cleanName(m[2]) };
     second = null;
     nextSecond = 1;
-    nodes.push({ id: top.id, name: top.name, parent: null });
+    nodes.push({
+      id: top.id,
+      name: top.name,
+      parent: null,
+      notes: extractNotes(i, lines),
+    });
     continue;
   }
 
@@ -81,7 +89,12 @@ for (const rawLine of text.split(/\r?\n/)) {
     nextSecond = s + 1;
     second = { id: m[1], name: cleanName(m[2]) };
     nextLeaf = 1;
-    nodes.push({ id: second.id, name: second.name, parent: top.id });
+    nodes.push({
+      id: second.id,
+      name: second.name,
+      parent: top.id,
+      notes: extractNotes(i, lines),
+    });
     continue;
   }
 
@@ -104,8 +117,94 @@ for (const rawLine of text.split(/\r?\n/)) {
       warnings.push(`empty leaf name: ${line}`);
       continue;
     }
-    nodes.push({ id: m[1], name, parent: second.id });
+    nodes.push({
+      id: m[1],
+      name,
+      parent: second.id,
+      // Leaves don't usually have their own "Notas" section in this MD,
+      // they are usually listed under a section's "Notas".
+      // But we can check if there's any immediate note if the MD structure allows.
+    });
     continue;
+  }
+}
+
+/**
+ * Scan forward from the current node line to find the next "**Notas**" section
+ * before the next section-level header (## or ###).
+ *
+ * For section-level nodes (###), we look through the entire section block
+ * until the next ## or ### header.
+ */
+function extractNotes(index, allLines) {
+  const notes = [];
+  let foundNotas = false;
+  for (let j = index + 1; j < allLines.length; j++) {
+    const line = allLines[j].trim();
+    // Stop only when we hit a new top-level or section header
+    // (NOT at leaf nodes, since notes come after leaf nodes and attributes)
+    if (/^##\s+/.test(line) || /^###\s+/.test(line)) {
+      break;
+    }
+    if (line === '**Notas**') {
+      foundNotas = true;
+      continue;
+    }
+    if (foundNotas) {
+      // Collect everything until the next section header or horizontal rule
+      if (line === '---') {
+        break;
+      }
+      if (line !== '' && !line.startsWith('**Atributos**') && !line.startsWith('**Categoria**')) {
+        notes.push(line);
+      }
+    }
+  }
+  return notes.length > 0 ? notes.join(' ').trim() : undefined;
+}
+
+// Post-process: extract cross-category rules from notes
+function extractCrossCategoryRules(noteText) {
+  const rules = [];
+  if (!noteText) return rules;
+
+  // Pattern: 🔹Name tb em 1.2.3. Name or 🔸Name tb em 7. AR LIVRE...
+  // Matches patterns like: "🔹Térmicos (interiores) tb em 2. TÊXTIL DESPORTO > ACESSÓRIOS"
+  // We need to handle: emoji? source (maybe with parens) tb em dest-id. dest-path
+  const regex = /(?:🔹|🔸|⚠)?\s*([^🔹🔸⚠]+?)\s+tb\s+em\s+(?:>|também\s+em\s+)?\s*(\d+(?:\.\d+)*)\.?\s*([^🔹🔸⚠]*)/gi;
+  let match;
+  while ((match = regex.exec(noteText)) !== null) {
+    let source = match[1].trim();
+    // Remove trailing emoji or parens content from source
+    source = source.replace(/\s*[🔹🔸⚠].*$/, '').replace(/\s*\([^)]*\)\s*$/, '').trim();
+
+    let targetId = match[2];
+    let targetName = match[3].trim();
+    // Clean up target name - remove leading > and any "tb em" fragments
+    targetName = targetName.replace(/^>\s*/, '').replace(/\s*tb\s+em\s+.*$/i, '').trim();
+
+    // Normalize targetId: remove leading 0 for categories 01-09 -> 1-9
+    if (targetId.length === 2 && targetId[0] === '0') {
+      targetId = targetId[1];
+    }
+
+    if (source && targetId) {
+      rules.push({
+        source,
+        targetId,
+        targetName,
+      });
+    }
+  }
+  return rules;
+}
+
+for (const node of nodes) {
+  if (node.notes) {
+    const rules = extractCrossCategoryRules(node.notes);
+    if (rules.length > 0) {
+      node.crossCategory = rules;
+    }
   }
 }
 
@@ -129,12 +228,12 @@ if (fatal.length) {
 }
 
 const out = {
-  version: '2.0.0',
+  version: '2.1.0',
   source: {
     page: '📚 Categorias - Índice',
     url: 'https://app.notion.com/p/3f8b6705-ae1f-81df-a86d-f175c1637642',
     from: 'scripts/categorias-source.md',
-    exported: '2026-10-20',
+    exported: '2026-11-05',
   },
   nodes,
 };

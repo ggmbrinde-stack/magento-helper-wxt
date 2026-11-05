@@ -4,6 +4,7 @@ import { browser } from 'wxt/browser';
 import { ThemePicker } from '../../dashboard/kit/ThemePicker';
 import { ToolkitColors } from '../../dashboard/kit/ToolkitColors';
 import { saveFeatureSettings, FEATURE_DEFAULTS, loadFeatureSettings } from '../../shared/featureSettings';
+import { FEATURE_CATALOG, FEATURE_GROUPS } from '../../shared/featureCatalog';
 
 export interface SettingsValues {
   notionToken: string;
@@ -138,22 +139,46 @@ export function SettingsForm(props: Props) {
       </label>
       <div class="mhx-feature-toggles">
         <strong>Features</strong>
-        {Object.keys(FEATURE_DEFAULTS)
-          .filter((k) => k === 'extensionEnabled' || detected.length === 0 || detected.includes(k))
-          .map((k) => (
-          <label key={k} class="mhx-panel-field">
-            <input
-              type="checkbox"
-              checked={features[k] ?? true}
-              onChange={async (e) => {
-                const next = { ...features, [k]: e.currentTarget.checked };
-                setFeatures(next);
-                await saveFeatureSettings(next);
-              }}
-            />
-            <span>{k}</span>
-          </label>
-        ))}
+        {FEATURE_GROUPS.map((group) => {
+          const inGroup = FEATURE_CATALOG.filter(
+            (feature) =>
+              feature.group === group &&
+              (feature.id === 'extensionEnabled' ||
+                detected.length === 0 ||
+                detected.includes(feature.id)),
+          );
+          if (inGroup.length === 0) return null;
+          return (
+            <div key={group} class="mhx-feature-group">
+              <span class="mhx-note">{group}</span>
+              {inGroup.map((feature) => (
+                <label
+                  key={feature.id}
+                  class="mhx-panel-field"
+                  title={feature.description}
+                >
+                  <input
+                    type="checkbox"
+                    checked={features[feature.id] ?? feature.defaultOn}
+                    disabled={!feature.available}
+                    onChange={async (e) => {
+                      const next = {
+                        ...features,
+                        [feature.id]: e.currentTarget.checked,
+                      };
+                      setFeatures(next);
+                      await saveFeatureSettings(next);
+                    }}
+                  />
+                  <span>{feature.label}</span>
+                  {feature.available ? null : (
+                    <em class="mhx-note">unavailable in this build</em>
+                  )}
+                </label>
+              ))}
+            </div>
+          );
+        })}
       </div>
       <div class="mhx-row">
         <button

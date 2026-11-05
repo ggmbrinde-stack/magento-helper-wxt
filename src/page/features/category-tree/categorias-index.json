@@ -1,10 +1,10 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "source": {
     "page": "📚 Categorias - Índice",
     "url": "https://app.notion.com/p/3f8b6705-ae1f-81df-a86d-f175c1637642",
     "from": "scripts/categorias-source.md",
-    "exported": "2026-10-20"
+    "exported": "2026-11-05"
   },
   "nodes": [
     {
@@ -15,7 +15,8 @@
     {
       "id": "1.1",
       "name": "T-SHIRTS",
-      "parent": "1"
+      "parent": "1",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "1.1.1",
@@ -40,7 +41,8 @@
     {
       "id": "1.2",
       "name": "POLOS",
-      "parent": "1"
+      "parent": "1",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "1.2.1",
@@ -60,7 +62,8 @@
     {
       "id": "1.3",
       "name": "SWEATSHIRTS",
-      "parent": "1"
+      "parent": "1",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "1.3.1",
@@ -90,7 +93,8 @@
     {
       "id": "1.4",
       "name": "CASACOS",
-      "parent": "1"
+      "parent": "1",
+      "notes": "Usar LABELS Impermeável À prova de Vento Linha Natura Tempo de Entrega??"
     },
     {
       "id": "1.4.1",
@@ -130,7 +134,8 @@
     {
       "id": "1.5",
       "name": "COLETES",
-      "parent": "1"
+      "parent": "1",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "1.5.1",
@@ -160,7 +165,8 @@
     {
       "id": "1.6",
       "name": "BONÉS E CHAPÉUS",
-      "parent": "1"
+      "parent": "1",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "1.6.1",
@@ -190,7 +196,15 @@
     {
       "id": "1.7",
       "name": "INTERIORES",
-      "parent": "1"
+      "parent": "1",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹Térmicos (interiores) tb em 2. TÊXTIL DESPORTO > ACESSÓRIOS DE DESPORTO > Térmicos",
+      "crossCategory": [
+        {
+          "source": "Térmicos",
+          "targetId": "2",
+          "targetName": "TÊXTIL DESPORTO > ACESSÓRIOS DE DESPORTO > Térmicos"
+        }
+      ]
     },
     {
       "id": "1.7.1",
@@ -220,7 +234,15 @@
     {
       "id": "2.1",
       "name": "TÊXTIL 100% MADE 4 YOU",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Tempo de Entrega?? 🔹TÊXTIL 100% MADE 4YOU tb em 12.1. 100% MADE 4YOU ⚠Braçadeiras em 100% MADE 4 YOU (artigos de raiz) ARTIGOS EXCLUSIVOS> Acessórios",
+      "crossCategory": [
+        {
+          "source": "TÊXTIL 100% MADE 4YOU",
+          "targetId": "12.1",
+          "targetName": "100% MADE 4YOU"
+        }
+      ]
     },
     {
       "id": "2.1.1",
@@ -260,7 +282,8 @@
     {
       "id": "2.2",
       "name": "T-SHIRTS",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Térmico Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.2.1",
@@ -280,7 +303,8 @@
     {
       "id": "2.3",
       "name": "POLOS",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.3.1",
@@ -295,7 +319,8 @@
     {
       "id": "2.4",
       "name": "SWEATSHIRTS",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.4.1",
@@ -315,7 +340,8 @@
     {
       "id": "2.5",
       "name": "CASACOS",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Impermeável À prova de Vento Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.5.1",
@@ -345,7 +371,8 @@
     {
       "id": "2.6",
       "name": "COLETES",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS À prova de Vento Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.6.1",
@@ -365,7 +392,8 @@
     {
       "id": "2.7",
       "name": "CALÇAS E CALÇÕES",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Térmico Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.7.1",
@@ -390,7 +418,8 @@
     {
       "id": "2.8",
       "name": "FATOS DE TREINO",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.8.1",
@@ -410,7 +439,8 @@
     {
       "id": "2.9",
       "name": "BONÉS E GORROS",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "2.9.1",
@@ -425,7 +455,30 @@
     {
       "id": "2.10",
       "name": "ACESSÓRIOS DE DESPORTO",
-      "parent": "2"
+      "parent": "2",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Acessórios de Desporto tb em 7. AR LIVRE E EVENTOS>ACESSÓRIOS DESPORTO > Acessórios de Desporto(colocar artigos que tanto são têxtil como Brinde: fitas cabelo, braçadeiras, etc) 🔹Térmicos (interiores) tb em 1. TÊXTIL PROMOCIONAL > INTERIORES > Térmicos 🔸 Chinelos tb em 7. AR LIVRE E EVENTOS > VERÃO E PRAIA > Chinelos 🔹Toalhas de Desporto tb em 7. AR LIVRE E EVENTOS > ACESSÓRIOS DESPORTO > Toalhas Desporto",
+      "crossCategory": [
+        {
+          "source": "Acessórios de Desporto",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS>ACESSÓRIOS DESPORTO > Acessórios de Desporto(colocar artigos que tanto são têxtil como Brinde: fitas cabelo, braçadeiras, etc)"
+        },
+        {
+          "source": "Térmicos",
+          "targetId": "1",
+          "targetName": "TÊXTIL PROMOCIONAL > INTERIORES > Térmicos"
+        },
+        {
+          "source": "Chinelos",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > VERÃO E PRAIA > Chinelos"
+        },
+        {
+          "source": "Toalhas de Desporto",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > ACESSÓRIOS DESPORTO > Toalhas Desporto"
+        }
+      ]
     },
     {
       "id": "2.10.1",
@@ -465,7 +518,8 @@
     {
       "id": "3.1",
       "name": "ALTA VISIBILIDADE",
-      "parent": "3"
+      "parent": "3",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "3.1.1",
@@ -540,7 +594,8 @@
     {
       "id": "3.2",
       "name": "INDÚSTRIA",
-      "parent": "3"
+      "parent": "3",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "3.2.1",
@@ -620,7 +675,15 @@
     {
       "id": "3.3",
       "name": "SAÚDE E ESTÉTICA",
-      "parent": "3"
+      "parent": "3",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Máscaras de Viagem tb em 7. AR LIVRE E EVENTOS > Acessórios Viagem > Máscaras",
+      "crossCategory": [
+        {
+          "source": "Máscaras de Viagem",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > Acessórios Viagem > Máscaras"
+        }
+      ]
     },
     {
       "id": "3.3.1",
@@ -685,7 +748,8 @@
     {
       "id": "3.4",
       "name": "HORECA",
-      "parent": "3"
+      "parent": "3",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "3.4.1",
@@ -775,7 +839,8 @@
     {
       "id": "4.1",
       "name": "USB",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "4.1.1",
@@ -805,7 +870,20 @@
     {
       "id": "4.2",
       "name": "POWERBANKS E CARREGADORES",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Carregadores Automóvel tb em 11. BRICO E AUTO > ACESSÓRIOS AUTO > Suportes e Carregadores 🔸 Cabos e Adaptadores tb em 4. TECNOLOGIA > ACESSÓRIOS DE COMPUTADOR > Cabos e Adaptadores",
+      "crossCategory": [
+        {
+          "source": "Carregadores Automóvel",
+          "targetId": "11",
+          "targetName": "BRICO E AUTO > ACESSÓRIOS AUTO > Suportes e Carregadores"
+        },
+        {
+          "source": "Cabos e Adaptadores",
+          "targetId": "4",
+          "targetName": "TECNOLOGIA > ACESSÓRIOS DE COMPUTADOR > Cabos e Adaptadores"
+        }
+      ]
     },
     {
       "id": "4.2.1",
@@ -845,7 +923,15 @@
     {
       "id": "4.3",
       "name": "ACESSÓRIOS COMPUTADOR",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura CMYK Tempo de Entrega?? 🔸 Cabos e Adaptadores tb em 4. TECNOLOGIA >POWERBANKS E CARREGADORES > Cabos e Adaptadores (Porta USB não!!)",
+      "crossCategory": [
+        {
+          "source": "Cabos e Adaptadores",
+          "targetId": "4",
+          "targetName": "TECNOLOGIA >POWERBANKS E CARREGADORES > Cabos e Adaptadores (Porta USB não!!)"
+        }
+      ]
     },
     {
       "id": "4.3.1",
@@ -885,7 +971,15 @@
     {
       "id": "4.4",
       "name": "ACESSÓRIOS TELEMÓVEIS E TABLETS",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Suportes para Automóvel tb em 11. BRICO E AUTO > ACESSÓRIOS AUTO > Suportes e carregadores",
+      "crossCategory": [
+        {
+          "source": "Suportes para Automóvel",
+          "targetId": "11",
+          "targetName": "BRICO E AUTO > ACESSÓRIOS AUTO > Suportes e carregadores"
+        }
+      ]
     },
     {
       "id": "4.4.1",
@@ -920,7 +1014,8 @@
     {
       "id": "4.5",
       "name": "ACESSÓRIOS MÚSICA",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "4.5.1",
@@ -960,7 +1055,8 @@
     {
       "id": "4.6",
       "name": "ACESSÓRIOS FOTOGRAFIA E VÍDEO",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "4.6.1",
@@ -995,7 +1091,20 @@
     {
       "id": "4.7",
       "name": "ACESSÓRIOS ILUMINAÇÃO",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹Luz Decoração tb em 9. CASA E VINHO >ACESSÓRIOS DECORAÇÃO > Luz Decoração 🔹 Luz Secretária tb em 6. ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA >Luz Secretária",
+      "crossCategory": [
+        {
+          "source": "Luz Decoração",
+          "targetId": "9",
+          "targetName": "CASA E VINHO >ACESSÓRIOS DECORAÇÃO > Luz Decoração"
+        },
+        {
+          "source": "Luz Secretária",
+          "targetId": "6",
+          "targetName": "ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA >Luz Secretária"
+        }
+      ]
     },
     {
       "id": "4.7.1",
@@ -1030,7 +1139,15 @@
     {
       "id": "4.8",
       "name": "RELÓGIOS E ESTAÇÕES DIGITAIS",
-      "parent": "4"
+      "parent": "4",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹Relógios de Parede tb em 9. CASA E VINHO >ACESSÓRIOS DECORAÇÃO > Relógios de Parede",
+      "crossCategory": [
+        {
+          "source": "Relógios de Parede",
+          "targetId": "9",
+          "targetName": "CASA E VINHO >ACESSÓRIOS DECORAÇÃO > Relógios de Parede"
+        }
+      ]
     },
     {
       "id": "4.8.1",
@@ -1075,7 +1192,15 @@
     {
       "id": "5.1",
       "name": "SACOS",
-      "parent": "5"
+      "parent": "5",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸 Sacos Papel e Mini Sacos Tecido também em 7. AR LIVRE E EVENTOS > EVENTOS E FESTA > Caixas e Sacos Presente 🔹 Sacos de Praia tb em 7. AR LIVRE E EVENTOS > VERÃO E PRAIA > Sacos de Praia",
+      "crossCategory": [
+        {
+          "source": "Sacos de Praia",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > VERÃO E PRAIA > Sacos de Praia"
+        }
+      ]
     },
     {
       "id": "5.1.1",
@@ -1120,7 +1245,15 @@
     {
       "id": "5.2",
       "name": "MOCHILAS",
-      "parent": "5"
+      "parent": "5",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹 Mochilas Criança tb em 08. INFANTIS E PETS > UTILIDADES CRIANÇA > Mochilas Criança",
+      "crossCategory": [
+        {
+          "source": "Mochilas Criança",
+          "targetId": "8",
+          "targetName": "INFANTIS E PETS > UTILIDADES CRIANÇA > Mochilas Criança"
+        }
+      ]
     },
     {
       "id": "5.2.1",
@@ -1160,7 +1293,8 @@
     {
       "id": "5.3",
       "name": "PASTAS",
-      "parent": "5"
+      "parent": "5",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "5.3.1",
@@ -1180,7 +1314,15 @@
     {
       "id": "5.4",
       "name": "BOLSAS",
-      "parent": "5"
+      "parent": "5",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹 Bolsas Cosmética e Bolsas PVC tb em 7. AR LIVRE E EVENTOS > ACESSÓRIOS VIAGEM > Bolsas Cosmética",
+      "crossCategory": [
+        {
+          "source": "Bolsas Cosmética e Bolsas PVC",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > ACESSÓRIOS VIAGEM > Bolsas Cosmética"
+        }
+      ]
     },
     {
       "id": "5.4.1",
@@ -1220,7 +1362,8 @@
     {
       "id": "5.5",
       "name": "TÉRMICOS",
-      "parent": "5"
+      "parent": "5",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "5.5.1",
@@ -1245,7 +1388,8 @@
     {
       "id": "5.6",
       "name": "TROLLEYS",
-      "parent": "5"
+      "parent": "5",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "5.6.1",
@@ -1280,7 +1424,30 @@
     {
       "id": "6.1",
       "name": "ACESSÓRIOS SECRETÁRIA",
-      "parent": "6"
+      "parent": "6",
+      "notes": "Usar LABELS Linha Natura CMYK Tempo de Entrega?? 🔹 Luz Secretária tb em 4. TECNOLOGIA > ACESSÓRIOS ILUMINAÇÂO >Luz Secretária 🔹 X-atos tb em 11. BRICO E AUTO > FERRAMENTAS > X-atos 🔹 Réguas tb em 8. INFANTIL E PETS > ACESSÓRIOS ESCOLA 🔸 Calendários e Plannings (SÓ exclusivos) em 12. 100% MADE4YOU > PAPELARIA > Calendários e Plannings 🔸 Material Escritório tb em 8. INFANTIL E PETS > ACESSÓRIOS ESCOLA > Material Escolar (Genérico + Infantil) 🔸 Conjuntos Colocar na subcat. “Conjuntos” (se existir) da Categoria do outro objeto",
+      "crossCategory": [
+        {
+          "source": "Luz Secretária",
+          "targetId": "4",
+          "targetName": "TECNOLOGIA > ACESSÓRIOS ILUMINAÇÂO >Luz Secretária"
+        },
+        {
+          "source": "X-atos",
+          "targetId": "11",
+          "targetName": "BRICO E AUTO > FERRAMENTAS > X-atos"
+        },
+        {
+          "source": "Réguas",
+          "targetId": "8",
+          "targetName": "INFANTIL E PETS > ACESSÓRIOS ESCOLA"
+        },
+        {
+          "source": "Material Escritório",
+          "targetId": "8",
+          "targetName": "INFANTIL E PETS > ACESSÓRIOS ESCOLA > Material Escolar (Genérico + Infantil)"
+        }
+      ]
     },
     {
       "id": "6.1.1",
@@ -1345,7 +1512,15 @@
     {
       "id": "6.2",
       "name": "CANETAS",
-      "parent": "6"
+      "parent": "6",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸 Marcadores tb em 8. INFANTIL E PETS > ACESSÓRIOS ESCOLA > Material Escolar (Genérico + Infantil) 🔸 Conjuntos Colocar na subcat. “Conjuntos” (se existir) da Categoria do outro objeto 🔹 Canetas Sem Tinta tb em> 06. ESCRITA E ESCRITÓRIO> LÁPIS E LAPISEIRAS > Lápis Infinito",
+      "crossCategory": [
+        {
+          "source": "Marcadores",
+          "targetId": "8",
+          "targetName": "INFANTIL E PETS > ACESSÓRIOS ESCOLA > Material Escolar (Genérico + Infantil)"
+        }
+      ]
     },
     {
       "id": "6.2.1",
@@ -1410,7 +1585,8 @@
     {
       "id": "6.3",
       "name": "LÁPIS E LAPISEIRAS",
-      "parent": "6"
+      "parent": "6",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹 Lápis Infinito tb em> 06. ESCRITA E ESCRITÓRIO> CANETAS > Canetas sem Tinta"
     },
     {
       "id": "6.3.1",
@@ -1450,7 +1626,15 @@
     {
       "id": "6.4",
       "name": "BLOCOS E CADERNOS",
-      "parent": "6"
+      "parent": "6",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸 Conjuntos Colocar na subcat. “Conjuntos” (se existir) da Categoria do outro objeto 🔸 Porta Notas e Post-its tb em 12. 100% MADE4YOU > PAPELARIA Porta Notas e Post-its",
+      "crossCategory": [
+        {
+          "source": "Porta Notas e Post-its",
+          "targetId": "12",
+          "targetName": "100% MADE4YOU > PAPELARIA Porta Notas e Post-its"
+        }
+      ]
     },
     {
       "id": "6.4.1",
@@ -1495,7 +1679,8 @@
     {
       "id": "6.5",
       "name": "PORTA-DOCUMENTOS",
-      "parent": "6"
+      "parent": "6",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "6.5.1",
@@ -1530,7 +1715,15 @@
     {
       "id": "7.1",
       "name": "INVERNO",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹Acessórios Térmicos tb em 10. PESSOAIS > ACESSÓRIOS SAÚDE > Acessórios Térmicos",
+      "crossCategory": [
+        {
+          "source": "Acessórios Térmicos",
+          "targetId": "10",
+          "targetName": "PESSOAIS > ACESSÓRIOS SAÚDE > Acessórios Térmicos"
+        }
+      ]
     },
     {
       "id": "7.1.1",
@@ -1580,7 +1773,25 @@
     {
       "id": "7.2",
       "name": "VERÃO E PRAIA",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸 Chinelos tb em 2. TÊXTIL DESPORTO > ACESSÓRIOS DE DESPORTO > Sapatilhas e Chinelos 🔹 Sacos de Praia tb em 5. SACOS E MOCHILAS > SACOS > Sacos de Praia 🔸Bolas Vólei tb em 7. AR LIVRE E VENTOS > ACESSÓRIOS DESPORTO > Acessórios Futebol/Rugby/Vólei",
+      "crossCategory": [
+        {
+          "source": "Chinelos",
+          "targetId": "2",
+          "targetName": "TÊXTIL DESPORTO > ACESSÓRIOS DE DESPORTO > Sapatilhas e Chinelos"
+        },
+        {
+          "source": "Sacos de Praia",
+          "targetId": "5",
+          "targetName": "SACOS E MOCHILAS > SACOS > Sacos de Praia"
+        },
+        {
+          "source": "Bolas Vólei",
+          "targetId": "7",
+          "targetName": "AR LIVRE E VENTOS > ACESSÓRIOS DESPORTO > Acessórios Futebol/Rugby/Vólei"
+        }
+      ]
     },
     {
       "id": "7.2.1",
@@ -1645,7 +1856,8 @@
     {
       "id": "7.3",
       "name": "ACESSÓRIOS AR LIVRE",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "7.3.1",
@@ -1675,7 +1887,25 @@
     {
       "id": "7.4",
       "name": "ACESSÓRIOS VIAGEM",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Máscaras de Viagem tb em 3. TÊXTIL LABORAL > Saúde e Estética > Acessórios ⚠EXCLUIR Máscaras COVID de todo o site 🔹 Bolsas Cosmética e Bolsas PVC tb em 5. SACOS E MOCHILAS > BOLSAS > Bolsas Cosmética 🔸Kits costura + kits engraxar tb em 10. PESSOAIS >ACESSÓRIOS jogos E CALÇADO >Acessórios para Roupa + Calçado",
+      "crossCategory": [
+        {
+          "source": "Máscaras de Viagem",
+          "targetId": "3",
+          "targetName": "TÊXTIL LABORAL > Saúde e Estética > Acessórios"
+        },
+        {
+          "source": "Bolsas Cosmética e Bolsas PVC",
+          "targetId": "5",
+          "targetName": "SACOS E MOCHILAS > BOLSAS > Bolsas Cosmética"
+        },
+        {
+          "source": "Kits costura + kits engraxar",
+          "targetId": "10",
+          "targetName": "PESSOAIS >ACESSÓRIOS jogos E CALÇADO >Acessórios para Roupa + Calçado"
+        }
+      ]
     },
     {
       "id": "7.4.1",
@@ -1725,7 +1955,25 @@
     {
       "id": "7.5",
       "name": "ACESSÓRIOS DESPORTO",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Acessórios (de Desporto) tb em 2. TÊXTIL DESPORTO>ACESSÓRIOS DE DESPORTO > Acessórios(colocar artigos que tanto são têxtil como Brinde: fitas cabelo, braçadeiras, etc) ⚠Cordas de Saltar sem ter aspeto desporto (madeira, etc.) colorar em: 8. INFANTIL E PETS > BRINQUEDOS > Jogos Tradicionais Criança 🔸Bolas Vólei tb em 7. AR LIVRE E VENTOS > VERÃO E PRAIA > Jogos de Praia 🔹Toalhas Desporto tb em 2. TÊXTIL DESPORTO >ACESSÓRIOS DE DESPORTO > Toalhas Desporto",
+      "crossCategory": [
+        {
+          "source": "Acessórios",
+          "targetId": "2",
+          "targetName": "TÊXTIL DESPORTO>ACESSÓRIOS DE DESPORTO > Acessórios(colocar artigos que tanto são têxtil como Brinde: fitas cabelo, braçadeiras, etc)"
+        },
+        {
+          "source": "Bolas Vólei",
+          "targetId": "7",
+          "targetName": "AR LIVRE E VENTOS > VERÃO E PRAIA > Jogos de Praia"
+        },
+        {
+          "source": "Toalhas Desporto",
+          "targetId": "2",
+          "targetName": "TÊXTIL DESPORTO >ACESSÓRIOS DE DESPORTO > Toalhas Desporto"
+        }
+      ]
     },
     {
       "id": "7.5.1",
@@ -1775,7 +2023,30 @@
     {
       "id": "7.6",
       "name": "EVENTOS E FESTA",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura CMYK Tempo de Entrega?? 🔸 Lanyards tb em 10. PESSOAIS >LANYARDS >Lanyards Simples >Lanyards com Fecho >Lanyards com Cordão >Lanyards com Bolsa 🔸 Lanyards tb em 7. AR LIVRE E EVENTOS >EVENTOS E FESTA >Lanyards 🔹Copos Reutilizáveis tb em 9. CASA E VINHO > CANECAS E COPOS > Copos Reutilizáveis 🔸 Sacos Papel e Mini Sacos Tecido tb em 5. SACOS E MOCHILAS > SACOS > Sacos",
+      "crossCategory": [
+        {
+          "source": "Lanyards",
+          "targetId": "10",
+          "targetName": "PESSOAIS >LANYARDS >Lanyards Simples >Lanyards com Fecho >Lanyards com Cordão >Lanyards com Bolsa"
+        },
+        {
+          "source": "Lanyards",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS >EVENTOS E FESTA >Lanyards"
+        },
+        {
+          "source": "Copos Reutilizáveis",
+          "targetId": "9",
+          "targetName": "CASA E VINHO > CANECAS E COPOS > Copos Reutilizáveis"
+        },
+        {
+          "source": "Sacos Papel e Mini Sacos Tecido",
+          "targetId": "5",
+          "targetName": "SACOS E MOCHILAS > SACOS > Sacos"
+        }
+      ]
     },
     {
       "id": "7.6.1",
@@ -1835,7 +2106,8 @@
     {
       "id": "7.7",
       "name": "ESPECIAL NATAL",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "7.7.1",
@@ -1890,7 +2162,15 @@
     {
       "id": "7.8",
       "name": "JOGOS",
-      "parent": "7"
+      "parent": "7",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? ⚠EXCLUIR PUZZLES 🔹Jogos Quebra-cabeças tb em 8. INFANTIL E PETS > BRINQUEDOS > Jogos Quebra-cabeças",
+      "crossCategory": [
+        {
+          "source": "Jogos Quebra-cabeças",
+          "targetId": "8",
+          "targetName": "INFANTIL E PETS > BRINQUEDOS > Jogos Quebra-cabeças"
+        }
+      ]
     },
     {
       "id": "7.8.1",
@@ -1940,7 +2220,25 @@
     {
       "id": "8.1",
       "name": "ACESSÓRIOS ESCOLA",
-      "parent": "8"
+      "parent": "8",
+      "notes": "🔹 Mochilas Criança tb em 5. SACOS E MOCHILAS > MOCHILAS > Mochilas Criança 🔸 Material Escolar (Highlighters) tb em 6. ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > Material de Escritório (EXCLUIR material infantil) 🔹 Réguas tb em 6. ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > Conjuntos 🔸 Conjuntos Colocar na subcat. “Conjuntos” (se existir) da Categoria do outro objeto",
+      "crossCategory": [
+        {
+          "source": "Mochilas Criança",
+          "targetId": "5",
+          "targetName": "SACOS E MOCHILAS > MOCHILAS > Mochilas Criança"
+        },
+        {
+          "source": "Material Escolar",
+          "targetId": "6",
+          "targetName": "ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > Material de Escritório (EXCLUIR material infantil)"
+        },
+        {
+          "source": "Réguas",
+          "targetId": "6",
+          "targetName": "ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > Conjuntos"
+        }
+      ]
     },
     {
       "id": "8.1.1",
@@ -1990,7 +2288,15 @@
     {
       "id": "8.2",
       "name": "TÊXTIL 100% MADE 4 YOU",
-      "parent": "8"
+      "parent": "8",
+      "notes": "🔹TÊXTIL 100% MADE 4YOU tb em 12.1. 100% MADE 4YOU",
+      "crossCategory": [
+        {
+          "source": "TÊXTIL 100% MADE 4YOU",
+          "targetId": "12.1",
+          "targetName": "100% MADE 4YOU"
+        }
+      ]
     },
     {
       "id": "8.2.1",
@@ -2030,7 +2336,15 @@
     {
       "id": "8.3",
       "name": "TÊXTIL CRIANÇA",
-      "parent": "8"
+      "parent": "8",
+      "notes": "⚠ incluir têxteis de criança aqui Seleção de todos os artigos de Criança 🔸Aventais Criança tb em 9. CASA E VINHO > ACESSÓRIOS COZINHA > Aventais 📌A pensar à Posteriori Artigos 100% MADE4YOU Criança",
+      "crossCategory": [
+        {
+          "source": "Aventais Criança",
+          "targetId": "9",
+          "targetName": "CASA E VINHO > ACESSÓRIOS COZINHA > Aventais"
+        }
+      ]
     },
     {
       "id": "8.3.1",
@@ -2095,7 +2409,15 @@
     {
       "id": "8.4",
       "name": "TÊXTIL DESPORTO CRIANÇA",
-      "parent": "8"
+      "parent": "8",
+      "notes": "⚠ incluir têxteis de criança aqui Seleção de todos os artigos de Criança 🔸Aventais Criança tb em 9. CASA E VINHO > ACESSÓRIOS COZINHA > Aventais 📌A pensar à Posteriori Artigos 100% MADE4YOU Criança",
+      "crossCategory": [
+        {
+          "source": "Aventais Criança",
+          "targetId": "9",
+          "targetName": "CASA E VINHO > ACESSÓRIOS COZINHA > Aventais"
+        }
+      ]
     },
     {
       "id": "8.4.1",
@@ -2140,7 +2462,15 @@
     {
       "id": "8.5",
       "name": "BRINQUEDOS",
-      "parent": "8"
+      "parent": "8",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? ⚠Cordas de Saltar com aspeto desporto colorar em: 7. AR LIVRE E VENTOS > ACESSÓRIOS DESPORTO > Acessórios Fitness 🔹Jogos Quebra-cabeças tb em 7. AR LIVRE E EVENTOS > JOGOS > Jogos Quebra-cabeças",
+      "crossCategory": [
+        {
+          "source": "Jogos Quebra-cabeças",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > JOGOS > Jogos Quebra-cabeças"
+        }
+      ]
     },
     {
       "id": "8.5.1",
@@ -2180,7 +2510,8 @@
     {
       "id": "8.6",
       "name": "UTILIDADES CRIANÇA",
-      "parent": "8"
+      "parent": "8",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "8.6.1",
@@ -2215,7 +2546,8 @@
     {
       "id": "8.7",
       "name": "ACESSÓRIOS ANIMAIS",
-      "parent": "8"
+      "parent": "8",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "8.7.1",
@@ -2250,7 +2582,15 @@
     {
       "id": "9.1",
       "name": "CANECAS E COPOS",
-      "parent": "9"
+      "parent": "9",
+      "notes": "Usar LABELS Linha Natura CMYK Certificado FOOD Tempo de Entrega?? 🔹Copos Reutilizáveis tb em 7. AR LIVRE E EVENTOS > EVENTOS E FESTA > Copos Reutilizáveis",
+      "crossCategory": [
+        {
+          "source": "Copos Reutilizáveis",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > EVENTOS E FESTA > Copos Reutilizáveis"
+        }
+      ]
     },
     {
       "id": "9.1.1",
@@ -2290,7 +2630,8 @@
     {
       "id": "9.2",
       "name": "GARRAFAS",
-      "parent": "9"
+      "parent": "9",
+      "notes": "Usar LABELS Linha Natura CMYK Tempo de Entrega??"
     },
     {
       "id": "9.2.1",
@@ -2325,7 +2666,20 @@
     {
       "id": "9.3",
       "name": "ACESSÓRIOS COZINHA",
-      "parent": "9"
+      "parent": "9",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Aventais Criança tb em 8. INFANTIL E PETS > TÊXTIL CRIANÇA > Aventais 🔹 Isqueiros de Cozinha tb em 11. BRICO E AUTO > ISQ. E CINZEIROS > Isqueiros de Cozinha",
+      "crossCategory": [
+        {
+          "source": "Aventais Criança",
+          "targetId": "8",
+          "targetName": "INFANTIL E PETS > TÊXTIL CRIANÇA > Aventais"
+        },
+        {
+          "source": "Isqueiros de Cozinha",
+          "targetId": "11",
+          "targetName": "BRICO E AUTO > ISQ. E CINZEIROS > Isqueiros de Cozinha"
+        }
+      ]
     },
     {
       "id": "9.3.1",
@@ -2395,7 +2749,8 @@
     {
       "id": "9.4",
       "name": "ACESSÓRIOS CHÁ E CAFÉ",
-      "parent": "9"
+      "parent": "9",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "9.4.1",
@@ -2425,7 +2780,8 @@
     {
       "id": "9.5",
       "name": "ACESSÓRIOS VINHO",
-      "parent": "9"
+      "parent": "9",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? ⚠Ocultar Vinhos (ex. M6031)"
     },
     {
       "id": "9.5.1",
@@ -2465,7 +2821,8 @@
     {
       "id": "9.6",
       "name": "ACESSÓRIOS BAR",
-      "parent": "9"
+      "parent": "9",
+      "notes": "Usar LABELS Linha Natura CMYK Tempo de Entrega??"
     },
     {
       "id": "9.6.1",
@@ -2500,7 +2857,20 @@
     {
       "id": "9.7",
       "name": "ACESSÓRIOS DECORAÇÃO",
-      "parent": "9"
+      "parent": "9",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹Luz Decoração tb em 4. TECNOLOGIA >ACESSÓRIOS ILUMINAÇÃO > Luz Decoração 🔹Relógios de Parede tb em 4. TECNOLOGIA >RELÓGIOS E ESTAÇÕES DIGITAIS > Relógios de Parede",
+      "crossCategory": [
+        {
+          "source": "Luz Decoração",
+          "targetId": "4",
+          "targetName": "TECNOLOGIA >ACESSÓRIOS ILUMINAÇÃO > Luz Decoração"
+        },
+        {
+          "source": "Relógios de Parede",
+          "targetId": "4",
+          "targetName": "TECNOLOGIA >RELÓGIOS E ESTAÇÕES DIGITAIS > Relógios de Parede"
+        }
+      ]
     },
     {
       "id": "9.7.1",
@@ -2550,7 +2920,15 @@
     {
       "id": "10.1",
       "name": "LANYARDS",
-      "parent": "10"
+      "parent": "10",
+      "notes": "Usar LABELS Linha Natura CMYK Tempo de Entrega?? 🔸 Lanyards tb em 7. AR LIVRE E EVENTOS >EVENTOS E FESTA >Lanyards",
+      "crossCategory": [
+        {
+          "source": "Lanyards",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS >EVENTOS E FESTA >Lanyards"
+        }
+      ]
     },
     {
       "id": "10.1.1",
@@ -2585,7 +2963,15 @@
     {
       "id": "10.2",
       "name": "PORTA-CHAVES",
-      "parent": "10"
+      "parent": "10",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸 Lanternas Porta-chaves tb em 11. BRICO E AUTO >LANTERNAS >Lanternas Porta-chaves",
+      "crossCategory": [
+        {
+          "source": "Lanternas Porta-chaves",
+          "targetId": "11",
+          "targetName": "BRICO E AUTO >LANTERNAS >Lanternas Porta-chaves"
+        }
+      ]
     },
     {
       "id": "10.2.1",
@@ -2625,7 +3011,8 @@
     {
       "id": "10.3",
       "name": "PORTA-MOEDAS E PORTA-CARTÕES",
-      "parent": "10"
+      "parent": "10",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "10.3.1",
@@ -2655,7 +3042,15 @@
     {
       "id": "10.4",
       "name": "ACESSÓRIOS HIGIENE",
-      "parent": "10"
+      "parent": "10",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹Higienizantes tb em 10. PESSOAIS >ACCESSÓRIOS SAÚDE > Higienizantes",
+      "crossCategory": [
+        {
+          "source": "Higienizantes",
+          "targetId": "10",
+          "targetName": "PESSOAIS >ACCESSÓRIOS SAÚDE > Higienizantes"
+        }
+      ]
     },
     {
       "id": "10.4.1",
@@ -2695,7 +3090,8 @@
     {
       "id": "10.5",
       "name": "ACESSÓRIOS BELEZA",
-      "parent": "10"
+      "parent": "10",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega??"
     },
     {
       "id": "10.5.1",
@@ -2735,7 +3131,20 @@
     {
       "id": "10.6",
       "name": "ACESSÓRIOS SAÚDE",
-      "parent": "10"
+      "parent": "10",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹Higienizantes tb em 10. PESSOAIS >ACCESSÓRIOS HIGIENE > Higienizantes 🔹Acessórios Térmicos tb em 7. AR LIVRE E EVENTOS > INVERNO > Acessórios Térmicos",
+      "crossCategory": [
+        {
+          "source": "Higienizantes",
+          "targetId": "10",
+          "targetName": "PESSOAIS >ACCESSÓRIOS HIGIENE > Higienizantes"
+        },
+        {
+          "source": "Acessórios Térmicos",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS > INVERNO > Acessórios Térmicos"
+        }
+      ]
     },
     {
       "id": "10.6.1",
@@ -2775,7 +3184,15 @@
     {
       "id": "10.7",
       "name": "ACESSÓRIOS MODA E CALÇADO",
-      "parent": "10"
+      "parent": "10",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸Kits costura + kits engraxar tb em 7. AR LIVRE E EVENTOS >ACESSÓRIOS EVENTOS >Utilitários Viagem",
+      "crossCategory": [
+        {
+          "source": "Kits costura + kits engraxar",
+          "targetId": "7",
+          "targetName": "AR LIVRE E EVENTOS >ACESSÓRIOS EVENTOS >Utilitários Viagem"
+        }
+      ]
     },
     {
       "id": "10.7.1",
@@ -2805,7 +3222,15 @@
     {
       "id": "11.1",
       "name": "FERRAMENTAS",
-      "parent": "11"
+      "parent": "11",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹 X-atos tb em 6. ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > X-atos",
+      "crossCategory": [
+        {
+          "source": "X-atos",
+          "targetId": "6",
+          "targetName": "ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > X-atos"
+        }
+      ]
     },
     {
       "id": "11.1.1",
@@ -2850,7 +3275,20 @@
     {
       "id": "11.2",
       "name": "ACESSÓRIOS AUTOMÓVEL",
-      "parent": "11"
+      "parent": "11",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸 Carregadores Automóvel + Suportes para Automóvel tb em 4. TECNOLOGIA > POWERBANKS E CARREGADORES > Carregadores Automóvel + 4. TECNOLOGIA >ACESS. TELEMÓVEIS E TABLETS >Suportes para Automóvel e Bicicleta 🔸 Mantas Térmicas tb em 10. PESSOAIS >ACESSÓRIOS SAÚDE >Acessórios térmicos + 7. AR LIVRE E EVENTOS >INVERNO >Acessórios térmicos",
+      "crossCategory": [
+        {
+          "source": "Carregadores Automóvel + Suportes para Automóvel",
+          "targetId": "4",
+          "targetName": "TECNOLOGIA > POWERBANKS E CARREGADORES > Carregadores Automóvel + 4. TECNOLOGIA >ACESS. TELEMÓVEIS E TABLETS >Suportes para Automóvel e Bicicleta"
+        },
+        {
+          "source": "Mantas Térmicas",
+          "targetId": "10",
+          "targetName": "PESSOAIS >ACESSÓRIOS SAÚDE >Acessórios térmicos + 7. AR LIVRE E EVENTOS >INVERNO >Acessórios térmicos"
+        }
+      ]
     },
     {
       "id": "11.2.1",
@@ -2885,7 +3323,15 @@
     {
       "id": "11.3",
       "name": "LANTERNAS",
-      "parent": "11"
+      "parent": "11",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔸 Lanternas Porta-chaves tb em 10. PESSOAIS > PORTA-CHAVES > Porta-chaves Multifunções",
+      "crossCategory": [
+        {
+          "source": "Lanternas Porta-chaves",
+          "targetId": "10",
+          "targetName": "PESSOAIS > PORTA-CHAVES > Porta-chaves Multifunções"
+        }
+      ]
     },
     {
       "id": "11.3.1",
@@ -2915,7 +3361,15 @@
     {
       "id": "11.4",
       "name": "ISQUEIROS E CINZEIROS",
-      "parent": "11"
+      "parent": "11",
+      "notes": "Usar LABELS Linha Natura Tempo de Entrega?? 🔹 Isqueiros de Cozinha tb em 8. CASA E VINHO > ACESSÓRIOS COZINHA > Isqueiros de Cozinha",
+      "crossCategory": [
+        {
+          "source": "Isqueiros de Cozinha",
+          "targetId": "8",
+          "targetName": "CASA E VINHO > ACESSÓRIOS COZINHA > Isqueiros de Cozinha"
+        }
+      ]
     },
     {
       "id": "11.4.1",
@@ -2950,7 +3404,15 @@
     {
       "id": "12.1",
       "name": "TÊXTIL 100% MADE4YOU",
-      "parent": "12"
+      "parent": "12",
+      "notes": "Usar LABELS Confeção Nacional??? Tempo de Entrega?? 🔹TÊXTIL 100% MADE 4YOU tb em 2. TÊXTIL DESPORTO",
+      "crossCategory": [
+        {
+          "source": "TÊXTIL 100% MADE 4YOU",
+          "targetId": "2",
+          "targetName": "TÊXTIL DESPORTO"
+        }
+      ]
     },
     {
       "id": "12.1.1",
@@ -3000,7 +3462,8 @@
     {
       "id": "12.2",
       "name": "ARTIGOS EXCLUSIVOS",
-      "parent": "12"
+      "parent": "12",
+      "notes": "Usar LABELS Linha Natura Confeção Nacional??? Tempo de Entrega??"
     },
     {
       "id": "12.2.1",
@@ -3050,7 +3513,20 @@
     {
       "id": "12.3",
       "name": "PAPELARIA",
-      "parent": "12"
+      "parent": "12",
+      "notes": "Usar LABELS Linha Natura Confeção Nacional??? Tempo de Entrega?? 🔸 Calendários e Plannings (exclusivos + brinde) tb em 6. ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > Calendários e Plannings 🔸 Porta Notas e Post-its tb em 6. ESCRITA E ESCRITÓRIO > BLOCOS E CADERNOS Porta Notas e Post-its",
+      "crossCategory": [
+        {
+          "source": "Calendários e Plannings",
+          "targetId": "6",
+          "targetName": "ESCRITA E ESCRITÓRIO > ACESSÓRIOS SECRETÁRIA > Calendários e Plannings"
+        },
+        {
+          "source": "Porta Notas e Post-its",
+          "targetId": "6",
+          "targetName": "ESCRITA E ESCRITÓRIO > BLOCOS E CADERNOS Porta Notas e Post-its"
+        }
+      ]
     },
     {
       "id": "12.3.1",
@@ -3075,7 +3551,8 @@
     {
       "id": "12.4",
       "name": "BANDEIRAS E DISPLAYS",
-      "parent": "12"
+      "parent": "12",
+      "notes": "Usar LABELS Confeção Nacional??? Tempo de Entrega??\""
     },
     {
       "id": "12.4.1",

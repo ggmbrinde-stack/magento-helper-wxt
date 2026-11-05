@@ -450,7 +450,7 @@ function MagentoFactsCard({
   busy,
   onRead,
 }: {
-  facts?: ResolverMagentoFacts;
+  facts?: ResolverMagentoFacts | null;
   storefrontPrice?: ResolverJson['storefront_price'];
   busy: boolean;
   onRead: () => void;
@@ -1192,6 +1192,7 @@ export function Resolver({
   const [linkError, setLinkError] = useState<string | null>(null);
   const [findBusy, setFindBusy] = useState(false);
   const [factsBusy, setFactsBusy] = useState(false);
+  const [magentoFacts, setMagentoFacts] = useState<ResolverMagentoFacts | null>(null);
 
   useEffect(() => {
     void (async () => {
@@ -1238,6 +1239,12 @@ export function Resolver({
         setResult(response);
         setAvailability(response.availability ?? null);
         setWarning(response.warning ?? null);
+        // Store magento_facts separately so the facts card updates without clearing the resolution.
+        // An explicit re-read that could not read the page clears the card instead
+        // of leaving an older snapshot that describes another page.
+        if (readFacts) {
+          setMagentoFacts(response.magento_facts ?? null);
+        }
         // The workspace holds the subject of the whole dashboard, so the SKU a
         // resolve actually proved (not the string typed) is what the next stage
         // should read. The frontend URL is carried too: it skips catalogsearch.
@@ -1547,37 +1554,45 @@ export function Resolver({
         </div>
       ) : null}
       {result?.resolver ? (
-        <ResolverResult
-          r={result.resolver}
-          notion={result.notion}
-          adminBase={result.adminBase}
-          source={result.source}
-          targets={result.targets}
-          targetsError={result.targetsError}
-          categoryCheck={result.categoryCheck}
-          duplicates={result.duplicates}
-          ageDays={result.ageDays}
-          stale={result.stale}
-          supplier={result.supplier}
-          availability={availability}
-          supplierBusy={supplierBusy}
-          imageDownloadBusy={imageDownloadBusy}
-          imageDownloadMessage={imageDownloadMessage}
-          onCheckSupplier={() =>
-            void checkSupplier(result?.resolver?.sku ?? sku.trim(), true)
-          }
-          onDownloadMakitoImages={() => void downloadMakitoImages()}
-          findBusy={findBusy}
-          onFindProduct={onFindProduct}
-          factsBusy={factsBusy}
-          onReadFacts={() => void run(true, true)}
-          linkDraft={linkDraft}
-          linkBusy={linkBusy}
-          linkError={linkError}
-          onLinkDraft={setLinkDraft}
-          onSaveLink={() => void changeSupplierLink('set')}
-          onClearLink={() => void changeSupplierLink('clear')}
-        />
+        <>
+          <ResolverResult
+            r={result.resolver}
+            notion={result.notion}
+            adminBase={result.adminBase}
+            source={result.source}
+            targets={result.targets}
+            targetsError={result.targetsError}
+            categoryCheck={result.categoryCheck}
+            duplicates={result.duplicates}
+            ageDays={result.ageDays}
+            stale={result.stale}
+            supplier={result.supplier}
+            availability={availability}
+            supplierBusy={supplierBusy}
+            imageDownloadBusy={imageDownloadBusy}
+            imageDownloadMessage={imageDownloadMessage}
+            onCheckSupplier={() =>
+              void checkSupplier(result?.resolver?.sku ?? sku.trim(), true)
+            }
+            onDownloadMakitoImages={() => void downloadMakitoImages()}
+            findBusy={findBusy}
+            onFindProduct={onFindProduct}
+            factsBusy={factsBusy}
+            onReadFacts={() => void run(true, true)}
+            linkDraft={linkDraft}
+            linkBusy={linkBusy}
+            linkError={linkError}
+            onLinkDraft={setLinkDraft}
+            onSaveLink={() => void changeSupplierLink('set')}
+            onClearLink={() => void changeSupplierLink('clear')}
+          />
+          <MagentoFactsCard
+            facts={magentoFacts ?? result.magento_facts}
+            storefrontPrice={result.storefront_price}
+            busy={factsBusy}
+            onRead={() => void run(true, true)}
+          />
+        </>
       ) : null}
       {result?.adminFallback && result.adminFallback.children.length > 0 ? (
         <AdminFallbackResult fallback={result.adminFallback} sku={sku.trim()} />

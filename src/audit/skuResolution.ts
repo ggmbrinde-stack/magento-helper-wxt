@@ -1206,6 +1206,7 @@ export async function resolveSkuForDashboard(
     availability,
     categoryCheck,
     duplicates,
+    magento_facts: magentoFacts,
     stale: resolver?.stale,
     ageDays: resolver?.age_days ?? null,
     resolutionError:
