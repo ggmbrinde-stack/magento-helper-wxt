@@ -22,7 +22,7 @@
 - The recent uncommitted work was validated and is being published with this handoff. It includes the Magento facts read path and resolver fallback updates, category cross-rule/UI work, category-tree scanning/performance changes, and a DevTools diagnostic script.
 - The category-tree diagnostic found that a broad checkbox selector could mistake Magento's `ul.tabs.admin__page-nav-items` for the category tree. Detection is now scoped to Magento's `#add-products-to-category-content` / `.store-tree` container. The category list is no longer reparented, and its extension controls follow the tree's visibility.
 - The DevTools trace recorded two long main-thread tasks of about 5.0 s and 4.1 s, with 10 DOM mutation records in the observation window. That indicates significant main-thread work but does not identify which script caused it.
-- **Live confirmation is still required:** reload the unpacked extension and Magento page, then verify the category rows and navigation. The shared admin page was unavailable to the assistant (401), so successful local checks are not a live-page confirmation.
+- **Live confirmation:** the project owner reloaded the extension and confirmed the category menus are displaying correctly. The assistant could not access the authenticated admin (401); this confirmation is from the owner's live check.
 - A local `tmp/probe-attribute-set.js` scratch file was intentionally excluded from Git. Do not add temporary probes or credentials to the repository.
 
 ## Important existing behavior
