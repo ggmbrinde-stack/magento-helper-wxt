@@ -24,6 +24,8 @@ import { applyErrorMarkup } from '../page/features/error-markup';
 import { handleApplyField } from '../page/features/form-fill';
 import { handleSearchMagento } from '../page/features/grid-search';
 
+let lastDetectedFeatures: string[] | undefined;
+
 /**
  * The scan loop.
  *
@@ -37,10 +39,18 @@ import { handleSearchMagento } from '../page/features/grid-search';
  * step is isolated: one enhancer throwing must never skip the rest (a dead
  * dropdown pass once cost the operator every pencil on the page).
  */
-function scan(): void {
+function scan(options: { categoryTreeChanged?: boolean } = {}): void {
   const f = getFeatureSettings();
   if (!f.extensionEnabled) return;
-  void chrome.storage.local.set({ detectedFeatures: detectFeatureIds(document) });
+  const detectedFeatures = detectFeatureIds(document);
+  if (
+    !lastDetectedFeatures ||
+    detectedFeatures.length !== lastDetectedFeatures.length ||
+    detectedFeatures.some((id, index) => id !== lastDetectedFeatures?.[index])
+  ) {
+    lastDetectedFeatures = detectedFeatures;
+    void chrome.storage.local.set({ detectedFeatures });
+  }
   const safe = (name: string, fn: () => void): void => {
     try {
       fn();
@@ -53,8 +63,52 @@ function scan(): void {
     const key = feature.id;
     if (key === 'extensionEnabled') continue;
     if (!f[key]) continue;
+    if (key === 'categoryTree' && options.categoryTreeChanged === false) continue;
     safe(key, FEATURE_MOUNTS[key]);
   }
+}
+
+const CATEGORY_TREE_SELECTOR =
+  'ul[data-mhx-cat-tree="1"], .category-tree, [id="category_ids"], .categories-side-col, [id="add-products-to-category-content"], .store-tree';
+
+function isExtensionUiNode(node: Node): boolean {
+  if (!(node instanceof Element)) return false;
+  if (node.id.startsWith('mhx-')) return true;
+  return Array.from(node.classList).some((className) =>
+    className.startsWith('mhx-'),
+  );
+}
+
+// Do not rescan the page for child-list changes made only by extension UI.
+function isExtensionOnlyMutation(record: MutationRecord): boolean {
+  const addedNodes = Array.from(record.addedNodes);
+  const removedNodes = Array.from(record.removedNodes);
+  if (record.target instanceof Element && isExtensionUiNode(record.target)) {
+    return [...addedNodes, ...removedNodes].every(
+      (node) => !(node instanceof Element) || isExtensionUiNode(node),
+    );
+  }
+  return (
+    addedNodes.length > 0 &&
+    removedNodes.length === 0 &&
+    addedNodes.every(isExtensionUiNode)
+  );
+}
+
+function mutationTouchesCategoryTree(record: MutationRecord): boolean {
+  const target =
+    record.target instanceof Element
+      ? record.target
+      : record.target.parentElement;
+  if (target?.closest(CATEGORY_TREE_SELECTOR)) return true;
+
+  return [...record.addedNodes, ...record.removedNodes].some((node) => {
+    if (!(node instanceof Element)) return false;
+    return (
+      node.matches(CATEGORY_TREE_SELECTOR) ||
+      node.querySelector(CATEGORY_TREE_SELECTOR) !== null
+    );
+  });
 }
 
 export default defineContentScript({
@@ -87,9 +141,18 @@ export default defineContentScript({
     scan();
     onFeatureSettingsChange(() => scan());
     let timer: number | undefined;
-    new MutationObserver(() => {
+    let categoryTreeChanged = false;
+    new MutationObserver((records) => {
+      const pageRecords = records.filter(
+        (record) => !isExtensionOnlyMutation(record),
+      );
+      if (pageRecords.length === 0) return;
+      categoryTreeChanged ||= pageRecords.some(mutationTouchesCategoryTree);
       window.clearTimeout(timer);
-      timer = window.setTimeout(scan, 200);
+      timer = window.setTimeout(() => {
+        scan({ categoryTreeChanged });
+        categoryTreeChanged = false;
+      }, 200);
     }).observe(document.body, { childList: true, subtree: true });
 
     chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {

@@ -697,10 +697,42 @@ export function categoryOrderIssues(
 
 /* --- Notes and Rules -------------------------------------------------------- */
 
+export interface ResolvedCrossCategoryRule {
+  sectionId: string;
+  sectionName: string;
+  sourceName: string;
+  sourceCode: string;
+  targetId: string;
+  targetName: string;
+  targetCode: string;
+  targetNodeName: string;
+  emoji: string;
+}
+
 /** Lookup maps for notes and cross-category rules. */
 const notesById = new Map<string, CategoryNote>();
+const codeToTargets = new Map<string, Set<string>>();
+const codeToRules = new Map<string, ResolvedCrossCategoryRule[]>();
+const allResolvedRules: ResolvedCrossCategoryRule[] = [];
 
-// Build the maps from the NODES at module load time
+// Specific manual targets for Notion edge cases/typos
+const MANUAL_TARGETS: Record<string, string> = {
+  '7.2:Bolas Vólei': '7.5.3',
+  '11.2:Carregadores Automóvel + Suportes para Automóvel': '4.2.3',
+  '11.4:Isqueiros de Cozinha': '9.3.9',
+  '2.1:TÊXTIL 100% MADE 4YOU': '12.1',
+  '8.2:TÊXTIL 100% MADE 4YOU': '12.1',
+  '12.1:TÊXTIL 100% MADE 4YOU': '2.1',
+  '12.3:Porta Notas e Post-its': '6.4.6',
+  '6.4:Porta Notas e Post-its': '12.3.3',
+  '4.3:Cabos e Adaptadores': '4.2.6',
+};
+
+function cleanNoteText(s: string): string {
+  return s.replace(/\([^)]*\)/g, '').trim();
+}
+
+// Build the maps and resolve all 64 cross-category rules from the NODES at module load time
 for (const node of NODES) {
   if (node.notes || node.crossCategory) {
     notesById.set(node.id, {
@@ -708,9 +740,122 @@ for (const node of NODES) {
       crossCategory: node.crossCategory,
     });
   }
+
+  if (node.crossCategory && node.crossCategory.length > 0) {
+    for (const rule of node.crossCategory) {
+      const key = `${node.id}:${rule.source}`;
+      let targetCode = MANUAL_TARGETS[key] ?? null;
+
+      const sNorm = normalizeCategoryText(cleanNoteText(rule.source));
+      const children = NODES.filter((c) => c.parent === node.id);
+      let sourceNode = children.find((c) => {
+        const cNorm = normalizeCategoryText(c.name);
+        return cNorm === sNorm || cNorm.includes(sNorm) || sNorm.includes(cNorm);
+      });
+      if (!sourceNode) {
+        if (
+          normalizeCategoryText(node.name).includes(sNorm) ||
+          sNorm.includes(normalizeCategoryText(node.name))
+        ) {
+          sourceNode = node;
+        }
+      }
+
+      if (!targetCode) {
+        const segs = rule.targetName
+          .split(/\s*>\s*/)
+          .map(cleanNoteText)
+          .map(normalizeCategoryText)
+          .filter(Boolean);
+        const lastSeg = segs[segs.length - 1] ?? sNorm;
+        const pool = NODES.filter(
+          (n) => n.id === rule.targetId || n.id.startsWith(`${rule.targetId}.`),
+        );
+        const leaves = pool.filter(
+          (n) => !NODES.some((child) => child.parent === n.id),
+        );
+        let match = leaves.find((l) => normalizeCategoryText(l.name) === lastSeg);
+        if (!match) {
+          match = leaves.find(
+            (l) =>
+              normalizeCategoryText(l.name).includes(lastSeg) ||
+              lastSeg.includes(normalizeCategoryText(l.name)),
+          );
+        }
+        if (!match) {
+          match = pool.find((n) => normalizeCategoryText(n.name) === lastSeg);
+        }
+        if (!match) {
+          match = pool.find(
+            (n) =>
+              normalizeCategoryText(n.name).includes(lastSeg) ||
+              lastSeg.includes(normalizeCategoryText(n.name)),
+          );
+        }
+        if (match) targetCode = match.id;
+      }
+
+      const sCode = sourceNode ? sourceNode.id : node.id;
+      if (sCode && targetCode) {
+        if (!codeToTargets.has(sCode)) codeToTargets.set(sCode, new Set());
+        codeToTargets.get(sCode)!.add(targetCode);
+
+        // Bidirectional mapping
+        if (!codeToTargets.has(targetCode)) codeToTargets.set(targetCode, new Set());
+        codeToTargets.get(targetCode)!.add(sCode);
+      }
+
+      // Determine rule emoji
+      let emoji = '🔹';
+      if (node.notes?.includes(`🔸${rule.source}`) || node.notes?.includes(`🔸 ${rule.source}`)) {
+        emoji = '🔸';
+      } else if (node.notes?.includes(`⚠${rule.source}`) || node.notes?.includes(`⚠ ${rule.source}`)) {
+        emoji = '⚠';
+      }
+
+      const targetNode = targetCode ? BY_ID.get(targetCode) : undefined;
+      const resolved: ResolvedCrossCategoryRule = {
+        sectionId: node.id,
+        sectionName: node.name,
+        sourceName: rule.source,
+        sourceCode: sCode,
+        targetId: rule.targetId,
+        targetName: rule.targetName,
+        targetCode: targetCode ?? '',
+        targetNodeName: targetNode?.name ?? '',
+        emoji,
+      };
+
+      allResolvedRules.push(resolved);
+
+      if (!codeToRules.has(sCode)) codeToRules.set(sCode, []);
+      codeToRules.get(sCode)!.push(resolved);
+
+      if (targetCode) {
+        if (!codeToRules.has(targetCode)) codeToRules.set(targetCode, []);
+        codeToRules.get(targetCode)!.push(resolved);
+      }
+    }
+  }
 }
 
 /** Get notes and cross-category rules for a category code. */
 export function categoryNotes(code: string): CategoryNote | undefined {
   return notesById.get(code);
+}
+
+/** Get all resolved cross-category rules across the entire Notion index. */
+export function getAllNotionRules(): ResolvedCrossCategoryRule[] {
+  return allResolvedRules;
+}
+
+/** Get linked counterpart target codes for a category code. */
+export function getLinkedTargetCodes(code: string): string[] {
+  const targets = codeToTargets.get(code);
+  return targets ? Array.from(targets) : [];
+}
+
+/** Get rules that apply directly to a category code. */
+export function getRulesForCategory(code: string): ResolvedCrossCategoryRule[] {
+  return codeToRules.get(code) ?? [];
 }

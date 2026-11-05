@@ -4,7 +4,7 @@
 // Same logic as the other page-UI replacements (rowActions, pagingSizes):
 // detect the DOM shape, wire toggles, mark processed nodes, stay idempotent
 // for the debounced re-scan. No hard URL gate and no heading-tag or
-// checkbox-name assumptions â€” exact-route gating already missed the real
+// checkbox-name assumptions — exact-route gating already missed the real
 // route once (product_action_attribute, no trailing slash), and the live DOM
 // shows the tree is a plain nested ul/li checkbox list.
 //
@@ -18,7 +18,7 @@
 //   (click a pill to remove it), so the selection is visible at a glance
 //   instead of being buried in a 200-row tree. It sits directly beside the
 //   tree, in the tree's own column width, not pinned to the far right.
-// - Search filter ("Filter categoriesâ€¦", accent-insensitive, narrows matches
+// - Search filter ("Filter categories…", accent-insensitive, narrows matches
 //   and keeps their ancestor path on screen).
 // - Collapse all / Expand all.
 // - "Tick Linha Natura": one click ticks the LINHA NATURA counterpart of
@@ -30,14 +30,14 @@
 // How it stays safe:
 // - Display-only: flips `display` of lists/items and inserts spans/buttons.
 //   The operator's own checkbox clicks are the only writers, forwarded
-//   through Magento's own boxes + a native `change` â€” the reverse cascade
+//   through Magento's own boxes + a native `change` — the reverse cascade
 //   and the locked root below click those same boxes, so the Selected panel and
 //   form state stay in sync. No request is made and nothing is saved.
 // - Idempotent: processed nodes/trees are marked, so the content script's
 //   debounced re-scan and AJAX reloads cannot stack duplicate controls.
 // - Colours come from the toolkit's page layer (`--mhx-pg-*`), never from the
 //   extension palette: this is page chrome, so it follows whatever the admin is
-//   â€” light, our own dark theme, or Magento's own â€” and `check-ui.mjs` G6 fails
+//   — light, our own dark theme, or Magento's own — and `check-ui.mjs` G6 fails
 //   the build if a palette token creeps back in.
 
 import {
@@ -45,9 +45,13 @@ import {
   categoryNotes,
   categoryOrderIssues,
   compareCategoryCodes,
+  getAllNotionRules,
+  getLinkedTargetCodes,
+  getRulesForCategory,
   type CategoryNote,
   type CrossCategoryRule,
   type OrderedCategoryRow,
+  type ResolvedCrossCategoryRule,
 } from './categoryIndex';
 import { button, badge } from '../../../ui';
 
@@ -136,12 +140,17 @@ interface TreeState {
 }
 
 const treeStates = new WeakMap<Element, TreeState>();
+// Avoid repeating the sort and diagnostics when only unrelated page content changed.
+const treeSignatures = new WeakMap<Element, string>();
+const treeShells = new WeakMap<Element, HTMLElement>();
+const treePanels = new WeakMap<Element, HTMLElement>();
+const treeVisibilityObservers = new WeakMap<Element, MutationObserver>();
 
 /**
  * Re-entrancy guard: cascade ticks dispatch `change`, which re-enters the
  * tree's delegated listener. Without this, Phase 1 unticking N descendants
- * fires N nested cascades, each re-walking the same subtree (O(nÂ²) on a
- * 606-box tree) and â€” worse â€” Phase 2 of a nested call can untick an
+ * fires N nested cascades, each re-walking the same subtree (O(n²) on a
+ * 606-box tree) and — worse — Phase 2 of a nested call can untick an
  * ancestor the outer call still needs. While set, the listener skips its own
  * cascade entry and only refreshes pills/filters.
  */
@@ -151,15 +160,15 @@ const rootClickGuards = new WeakSet<HTMLInputElement>();
 /**
  * Magento renders this tree as SIBLINGS, not nested children (live DOM,
  * probe v3): each branch item is an li followed by its child list as the
- * NEXT SIBLING ul â€” never a child ul. Leaf items are followed by an empty
+ * NEXT SIBLING ul — never a child ul. Leaf items are followed by an empty
  * `<ul></ul>`. That is why `li ul` selectors found zero branches.
  *
  *   <ul>
  *     <li><input class="category-checkbox">Default Category</li>
  *     <ul>                          <!-- children of the li above -->
- *       <li>â€¦TÃªxtil Promocionalâ€¦</li>
- *       <ul> â€¦ </ul>
- *       <li>â€¦leafâ€¦</li>
+ *       <li>…Têxtil Promocional…</li>
+ *       <ul> … </ul>
+ *       <li>…leaf…</li>
  *       <ul></ul>                   <!-- empty: leaf, nothing to collapse -->
  */
 const TREE_BOX_SELECTOR =
@@ -212,7 +221,7 @@ function branchNodesIn(tree: Element): HTMLLIElement[] {
 }
 
 /**
- * The tree's root item â€” the first li of the root list ("Default Category"
+ * The tree's root item — the first li of the root list ("Default Category"
  * here). It stays open at all times and gets NO toggle: with no toggle it
  * could never be re-opened, so collapsing it would strand the operator.
  */
@@ -241,17 +250,25 @@ function parentBranchItem(li: HTMLLIElement): HTMLLIElement | null {
  * `input.category-checkbox` / `input[name="add_category_ids[]"]`.
  */
 function isCategoryTree(ul: Element): boolean {
+  if (ul.closest('.admin__page-nav-items, ul.tabs')) return false;
+  if (!ul.closest('[id="add-products-to-category-content"], .store-tree')) return false;
   if (ul.querySelectorAll(TREE_BOX_SELECTOR).length < 3) return false;
   if (branchNodesIn(ul).length === 0) return false;
   return hasCategoryContext(ul);
 }
 
-/** Topmost category trees; trees nested inside another tree are dropped. */
+/** Find Magento's category tree only within its Categories panel. */
 function findCategoryTrees(): Element[] {
-  const candidates = Array.from(document.querySelectorAll<Element>('ul')).filter(
-    isCategoryTree,
+  const containers = Array.from(
+    document.querySelectorAll<Element>(
+      '[id="add-products-to-category-content"], .store-tree',
+    ),
   );
-  return candidates.filter(
+  const candidates = containers.flatMap((container) =>
+    Array.from(container.querySelectorAll<Element>('ul')).filter(isCategoryTree),
+  );
+  const uniqueCandidates = Array.from(new Set(candidates));
+  return uniqueCandidates.filter(
     (ul) => !candidates.some((other) => other !== ul && other.contains(ul)),
   );
 }
@@ -268,7 +285,7 @@ function branchHidden(node: HTMLLIElement): boolean {
 function paintToggle(node: HTMLLIElement, collapsed: boolean): void {
   const toggle = node.querySelector<HTMLElement>(`:scope > .${TOGGLE_CLASS}`);
   if (!toggle) return;
-  toggle.textContent = collapsed ? 'â–¸' : 'â–¾';
+  toggle.textContent = collapsed ? '▸' : '▾';
   toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
   toggle.title = collapsed ? 'Expand' : 'Collapse';
 }
@@ -292,7 +309,7 @@ function addToggle(node: HTMLLIElement): void {
     node.setAttribute(NODE_MARK, '1');
     return;
   }
-  const toggle = button({ label: 'â–¾', title: 'Collapse', variant: 'icon', className: TOGGLE_CLASS });
+  const toggle = button({ label: '▾', title: 'Collapse', variant: 'icon', className: TOGGLE_CLASS });
   toggle.setAttribute('aria-expanded', 'true');
   toggle.addEventListener('click', (event) => {
     event.preventDefault();
@@ -307,7 +324,7 @@ function addToggle(node: HTMLLIElement): void {
  * Give every row the same left gutter.
  *
  * Only branches carry a toggle, so a leaf's checkbox started ~38px to the LEFT
- * of its parent's â€” the sub-subcategory boxes read as a separate, shallower
+ * of its parent's — the sub-subcategory boxes read as a separate, shallower
  * tree (the operator's complaint: "move checkboxes more to the right, the
  * sub-sub categorie"). A branch keeps its toggle; a leaf gets an empty slot of
  * the same width, which is what makes the boxes line up in one column per
@@ -375,12 +392,12 @@ function logBadgeCoverage(): void {
   lastCoverage = summary;
   if (numbered === total) {
     // eslint-disable-next-line no-console
-    console.info(`[category-tree] ${summary} categories numbered â€” no gaps.`);
+    console.info(`[category-tree] ${summary} categories numbered — no gaps.`);
     return;
   }
   // eslint-disable-next-line no-console
   console.info(
-    `[category-tree] ${summary} categories numbered â€” ${total - numbered} without a Notion index code. ` +
+    `[category-tree] ${summary} categories numbered — ${total - numbered} without a Notion index code. ` +
       'Copy the list below to extend categoryIndex.ts:',
     Array.from(UNRESOLVED).sort(),
   );
@@ -400,8 +417,8 @@ interface SiblingGroup {
  * Reorder every sibling list so the numbers ascend: 6.1 before 6.2, and 3.4.9
  * before 3.4.10.
  *
- * The admin keeps its own category order, which is not the sheet's order â€”
- * "AcessÃ³rios SecretÃ¡ria" (6.1) sits at the END of Escrita e EscritÃ³rio there,
+ * The admin keeps its own category order, which is not the sheet's order —
+ * "Acessórios Secretária" (6.1) sits at the END of Escrita e Escritório there,
  * so a column of numbers read 6.2, 6.3, 6.4, 6.5, 6.1 even though every badge
  * was right. Display-only: items, their child lists, toggles, badges and the
  * real checkboxes all move as they are, so form state and Save are untouched.
@@ -450,12 +467,12 @@ function sortSiblingsByNumber(tree: Element): void {
 }
 
 /**
- * Check that the badges read 1, 1.1, 1.1.1 â€¦ in the order the rows are drawn.
+ * Check that the badges read 1, 1.1, 1.1.1 … in the order the rows are drawn.
  *
  * Every number can be right and the column still look wrong: a category the
  * admin lists mid-section gets a high number there, and a child the admin nests
  * under a category the sheet files elsewhere shows a number from another branch.
- * Neither is a resolver bug, so neither can be fixed by guessing â€” the page
+ * Neither is a resolver bug, so neither can be fixed by guessing — the page
  * names the rows instead, once per distinct finding, and the fix goes to the
  * sheet or to the admin tree.
  */
@@ -481,7 +498,7 @@ function logBadgeOrder(tree: Element): void {
   if (issues.length === 0) {
     // eslint-disable-next-line no-console
     console.info(
-      `[category-tree] ${numbered} numbers in reading order â€” no branch runs backwards.`,
+      `[category-tree] ${numbered} numbers in reading order — no branch runs backwards.`,
     );
     return;
   }
@@ -528,6 +545,23 @@ function depthOf(li: HTMLLIElement): number {
   return depth;
 }
 
+function treeSignature(tree: Element): string {
+  return Array.from(tree.querySelectorAll<HTMLLIElement>('li'))
+    .map((li) => {
+      const label = li.querySelector(':scope > label');
+      const name = label?.textContent?.trim() ?? itemLabel(li);
+      const box = li.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
+      const path = [...ancestorNames(li), name].join('\u0001');
+      const controls = [
+        li.querySelector(`:scope > .${NO_CLASS}`) ? 'n' : '',
+        li.querySelector(`:scope > .${TOGGLE_CLASS}`) ? 't' : '',
+        li.querySelector(`:scope > .${SLOT_CLASS}`) ? 's' : '',
+      ].join('');
+      return `${path}\u0002${box?.id ?? ''}\u0002${box?.value ?? ''}\u0002${controls}`;
+    })
+    .join('\u0003');
+}
+
 /** Extra left pad per nesting level, in px. */
 const INDENT_STEP = 18;
 
@@ -544,7 +578,7 @@ function indentItem(li: HTMLLIElement): void {
   const depth = depthOf(li);
   // One step per level, measured from the item's own list: Magento puts a
   // branch's child list in the SAME ul as the branch, so the step cannot come
-  // from the nesting â€” the item pad is the only thing that separates levels.
+  // from the nesting — the item pad is the only thing that separates levels.
   li.style.setProperty('padding-left', `${depth * INDENT_STEP}px`);
 }
 function addCodeBadge(li: HTMLLIElement): void {
@@ -576,7 +610,7 @@ function revealBranchOf(li: HTMLLIElement): void {
 
 /**
  * Expand ancestor branches of checked boxes, so selections stay visible.
- * The `:checked` filter is applied per element with matches() â€” appending
+ * The `:checked` filter is applied per element with matches() — appending
  * it to the comma-joined TREE_BOX_SELECTOR only qualifies the LAST part,
  * which matched every box and re-expanded the whole tree right after each
  * collapse (that is what made "Collapse all" look dead).
@@ -608,6 +642,57 @@ function expandTree(tree: Element): void {
   for (const node of branchNodesIn(tree)) setCollapsed(node, false);
 }
 
+function restoreExtensionCollapsedLists(tree: Element): void {
+  for (const node of Array.from(
+    tree.querySelectorAll<HTMLLIElement>(`li[${COLLAPSED}]`),
+  )) {
+    const list = node.nextElementSibling;
+    if (list instanceof HTMLUListElement) list.style.removeProperty('display');
+    node.removeAttribute(COLLAPSED);
+  }
+}
+
+function syncTreeUiVisibility(tree: Element): void {
+  const shell = treeShells.get(tree);
+  const panel = treePanels.get(tree);
+  if (!shell || !panel) return;
+
+  let hidden = !tree.isConnected;
+  for (let node: Element | null = tree; !hidden && node; node = node.parentElement) {
+    const style = window.getComputedStyle(node);
+    hidden =
+      node.hasAttribute('hidden') ||
+      style.display === 'none' ||
+      style.visibility === 'hidden';
+  }
+  shell.style.display = hidden ? 'none' : '';
+  panel.style.display = hidden ? 'none' : '';
+}
+
+function watchTreeUiVisibility(tree: Element): void {
+  if (treeVisibilityObservers.has(tree)) {
+    syncTreeUiVisibility(tree);
+    return;
+  }
+
+  const observer = new MutationObserver(() => {
+    syncTreeUiVisibility(tree);
+    if (!tree.isConnected) {
+      observer.disconnect();
+      treeVisibilityObservers.delete(tree);
+    }
+  });
+  for (let node: Element | null = tree; node; node = node.parentElement) {
+    observer.observe(node, {
+      attributes: true,
+      attributeFilter: ['class', 'style', 'hidden', 'aria-expanded'],
+      childList: node === tree.parentElement,
+    });
+  }
+  treeVisibilityObservers.set(tree, observer);
+  syncTreeUiVisibility(tree);
+}
+
 /* --- Filtering ------------------------------------------------------------ */
 
 /**
@@ -615,9 +700,9 @@ function expandTree(tree: Element): void {
  * adapted to a checkbox tree): type in the bar's search box and the tree
  * narrows to matching categories plus their ancestor branches, which are
  * auto-expanded so every match is reachable. Clearing restores the default
- * collapsed state. Matching is accent-insensitive ("textil" finds "TÃªxtil")
+ * collapsed state. Matching is accent-insensitive ("textil" finds "Têxtil")
  * and also matches the index number ("1.1").
- * Display-only: only li visibility flips â€” checkboxes, values, handlers and
+ * Display-only: only li visibility flips — checkboxes, values, handlers and
  * Save are untouched, and hidden checkboxes still submit with the form.
  */
 function normalizeFilterText(text: string): string {
@@ -637,18 +722,30 @@ function applyTreeFilter(tree: Element): void {
   const ui = state?.ui;
   if (!state || !ui) return;
 
+  const root = rootItemOf(tree);
+  if (
+    state.selectedOnly &&
+    !Array.from(tree.querySelectorAll<HTMLLIElement>('li')).some((li) => {
+      if (li === root) return false;
+      return li.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR)?.checked === true;
+    })
+  ) {
+    state.selectedOnly = false;
+    ui.only.dataset['variant'] = 'default';
+    ui.only.setAttribute('aria-pressed', 'false');
+    writePrefs(state);
+  }
+
   const needle = normalizeFilterText(ui.search.value.trim());
   const onlySelected = state.selectedOnly;
 
   if (needle === '' && !onlySelected) {
-    // Restore the default view: root open, rest collapsed, checked revealed.
+    // Restore visibility changed by this feature without overriding Magento's
+    // own initial expanded/collapsed state.
     for (const li of Array.from(tree.querySelectorAll<HTMLLIElement>('li'))) {
       setLiVisible(li, true);
     }
-    const root = rootItemOf(tree);
-    if (root) setCollapsed(root, false);
-    collapseTree(tree);
-    revealChecked(tree);
+    restoreExtensionCollapsedLists(tree);
     ui.counter.textContent = '';
     return;
   }
@@ -690,7 +787,6 @@ function applyTreeFilter(tree: Element): void {
     );
   }
 
-  const root = rootItemOf(tree);
   for (const li of items) {
     const matchesFilter = visible.get(li) === true;
     const matchesSelection = hasChecked.get(li) === true;
@@ -724,8 +820,8 @@ interface SelectionNode {
  * Those ancestors are the point. A flat chip list said *which* categories were
  * checked but not *where they live*, so "T-shirts Manga Comprida" and
  * "Sweatshirts com Fecho" read as unrelated names even though one is a leaf of
- * T-shirts and the other of Sweatshirts. Keeping the branch in the list â€”
- * indented, greyed and marked as not selected â€” makes the strip the family tree
+ * T-shirts and the other of Sweatshirts. Keeping the branch in the list —
+ * indented, greyed and marked as not selected — makes the strip the family tree
  * the operator is building up. The root ("Default Category") is skipped: always
  * checked, no index row, nothing to explain.
  */
@@ -754,8 +850,8 @@ function selectionNodes(tree: Element): SelectionNode[] {
  * The Selected panel: the checked categories as an indented tree, with their
  * unchecked branch above them for context. Rebuilt from the real checkboxes, so
  * it is correct no matter who changed them (tree, list, Magento, or the
- * operator). Clicking a greyed row selects that branch too; âœ• on a chosen row
- * unchecks it â€” both go through the real box, so form state stays Magento's.
+ * operator). Clicking a greyed row selects that branch too; ✕ on a chosen row
+ * unchecks it — both go through the real box, so form state stays Magento's.
  */
 function renderPills(tree: Element): void {
   const state = treeStates.get(tree);
@@ -788,7 +884,7 @@ function renderPills(tree: Element): void {
     hint.className = 'mhx-cat-pills-hint';
     hint.textContent = `+${context} parent ${context === 1 ? 'branch' : 'branches'} for context`;
     hint.title =
-      'Grey rows are the branches above a selected category. Grey means not selected â€” click one to select it too.';
+      'Grey rows are the branches above a selected category. Grey means not selected — click one to select it too.';
     head.appendChild(hint);
   }
   ui.pills.appendChild(head);
@@ -809,8 +905,8 @@ function renderPills(tree: Element): void {
     row.className = `${SEL_ROW_CLASS}${node.selected ? '' : ` ${SEL_CONTEXT_CLASS}`}`;
     row.style.setProperty('padding-left', `${node.depth * 14}px`);
     row.title = node.selected
-      ? `${node.name}${node.code ? ` (${node.code})` : ''} â€” selected`
-      : `${node.name}${node.code ? ` (${node.code})` : ''} is NOT selected â€” click to select this branch too`;
+      ? `${node.name}${node.code ? ` (${node.code})` : ''} — selected`
+      : `${node.name}${node.code ? ` (${node.code})` : ''} is NOT selected — click to select this branch too`;
 
     if (node.code) {
       const no = badge(node.code, { title: `Category ${node.code} (Notion index)` });
@@ -824,7 +920,7 @@ function renderPills(tree: Element): void {
 
     if (node.selected) {
       const remove = button({
-        label: 'Ã—',
+        label: '×',
         title: `Remove ${node.name}`,
         variant: 'icon',
         className: SEL_X_CLASS,
@@ -877,7 +973,7 @@ function addToolbar(tree: Element): void {
   const search = document.createElement('input');
   search.type = 'search';
   search.className = SEARCH_CLASS;
-  search.placeholder = 'Filter categoriesâ€¦';
+  search.placeholder = 'Filter categories…';
   search.setAttribute('aria-label', 'Filter categories');
   search.value = prefs.query;
 
@@ -937,7 +1033,7 @@ function addToolbar(tree: Element): void {
 
   // "Untick all": clears the selection in one click. Every box goes through
   // Magento's own checkbox + a native `change`, and the locked root
-  // ("Default Category") is never touched â€” it must stay checked or Save would
+  // ("Default Category") is never touched — it must stay checked or Save would
   // store a category set with no root.
   const untickBtn = button({
     label: 'Untick all',
@@ -978,30 +1074,32 @@ function addToolbar(tree: Element): void {
 
   bar.append(search, counter, only, naturaBtn, applyRulesBtn, untickBtn, collapseBtn, expandBtn);
 
-  // Selected panel: the selection at a glance, in its own column to the RIGHT
-  // of the tree (it used to sit above it and pushed the first rows down).
+  // Keep the selected panel beside the controls; do not reparent Magento's
+  // category tree, which can break its native tab/accordion structure.
   const pills = document.createElement('div');
   pills.className = PILLS_CLASS;
   pills.setAttribute('aria-live', 'polite');
 
   shell.append(bar);
 
-  // Two columns: the tree and the Selected panel immediately beside it. The
-  // tree column is sized to its own content (CSS), so the panel follows the
-  // rows instead of being pushed out to the far right of a wide fieldset.
+  // Place extension UI beside the tree in the original Magento parent without
+  // moving the native tree out of its tab/accordion container.
   const main = document.createElement('div');
   main.className = MAIN_CLASS;
-  if (tree.parentElement) {
-    tree.parentElement.insertBefore(shell, tree);
-    tree.parentElement.insertBefore(main, tree);
+  const parent = tree.parentElement;
+  if (parent) {
+    parent.insertBefore(shell, tree);
+    parent.insertBefore(main, tree);
   }
-  main.append(tree, pills);
+  main.append(pills);
+  treeShells.set(tree, shell);
+  treePanels.set(tree, main);
 
   const ui: TreeUi = { shell, bar, pills, counter, search, only };
   state.ui = ui;
 
   // Board direction (2026-10-20): "Default Category" stays checked, always.
-  // It is the store root, not a real choice â€” a mass update with the root
+  // It is the store root, not a real choice — a mass update with the root
   // unchecked saves a broken category set, so lock it on every render, on
   // every operator change, and on every re-scan. The tick goes through
   // Magento's own checkbox + a native `change`, like every cascade tick.
@@ -1042,15 +1140,15 @@ function addToolbar(tree: Element): void {
   // change: our list rows, our pills, the operator in the tree, Magento.
   tree.addEventListener('change', (event) => {
     const target = event.target;
-    // Cascade ticks dispatch `change` too â€” while a cascade runs, skip
+    // Cascade ticks dispatch `change` too — while a cascade runs, skip
     // re-entry (see `cascading`) and only refresh the renders.
     if (!cascading && target instanceof HTMLInputElement) {
       // First, so this render already reflects the cascades: checking a leaf
-      // also checks its whole path up ("BONÃ‰S" ticks BONÃ‰S E CHAPÃ‰US and the
+      // also checks its whole path up ("BONÉS" ticks BONÉS E CHAPÉUS and the
       // section above); unchecking a parent also unchecks its whole subtree,
       // and a parent left with no checked children unchecks too (up to, but
       // excluding, the locked root). The root itself is re-locked on every
-      // change â€” see `ensureRootChecked`.
+      // change — see `ensureRootChecked`.
       // The locked root must never drive a cascade: a stray uncheck event
       // on it would otherwise clear the whole tree before the re-lock.
       cascading = true;
@@ -1072,9 +1170,8 @@ function addToolbar(tree: Element): void {
     else if (target instanceof HTMLInputElement) {
       const li = target.closest<HTMLLIElement>('li');
       if (li && target.checked) revealBranchOf(li);
-      // Show rules panel on selection change
-      renderRulesPanel(tree, li);
     }
+    updateRulesPanel(tree, target instanceof HTMLInputElement ? target.closest<HTMLLIElement>('li') : null);
   });
 
   // Also handle clicks on rows to show rules panel
@@ -1083,15 +1180,17 @@ function addToolbar(tree: Element): void {
     if (target instanceof Element && !target.closest(`.${TOGGLE_CLASS}`) && !target.closest('input[type="checkbox"]')) {
       const li = target.closest<HTMLLIElement>('li');
       if (li) {
-        renderRulesPanel(tree, li);
+        updateRulesPanel(tree, li);
       }
     }
   });
 
-  // Lock the root from the first render â€” see `ensureRootChecked`.
+  // Lock the root from the first render — see `ensureRootChecked`.
   ensureRootChecked(tree);
   renderPills(tree);
   applyTreeFilter(tree);
+  updateRulesPanel(tree);
+  watchTreeUiVisibility(tree);
 }
 
 /** True when the item's own name is the LINHA NATURA counterpart. */
@@ -1147,7 +1246,7 @@ function tickLinhaNatura(tree: Element): number {
  *
  * The bulk walk runs inside the cascade guard: each change event would
  * otherwise walk the subtree and the ancestors of every box it clears, which is
- * O(nÂ²) on a 600-box tree and â€” worse â€” would re-enter the listener hundreds of
+ * O(n²) on a 600-box tree and — worse — would re-enter the listener hundreds of
  * times for a result we already know. The guard only skips OUR cascades;
  * Magento's own change handling still runs, so form state is exactly what the
  * operator would get by unticking each box by hand. The root is skipped (it is
@@ -1182,12 +1281,12 @@ function untickAll(tree: Element): number {
 
 /**
  * Checking a category also checks every ancestor up to (but not including)
- * the root item: picking "BONÃ‰S" ticks BONÃ‰S E CHAPÃ‰US and its section, so a
+ * the root item: picking "BONÉS" ticks BONÉS E CHAPÉUS and its section, so a
  * leaf pick never saves a half-selected path. The walk uses the tree's own
  * parent link (`parentBranchItem`, the sibling-model shape Magento ships), and
  * each tick goes through the real checkbox + a native change event, so pills,
  * list view and Magento's own state stay in sync. The root item ("Default
- * Category") is deliberately skipped â€” it is locked checked by
+ * Category") is deliberately skipped — it is locked checked by
  * `ensureRootChecked`, and the tree treats it as special everywhere else
  * too. A disabled box stops the walk rather than producing a path with a
  * gap.
@@ -1210,7 +1309,7 @@ function cascadeAncestorChecks(box: HTMLInputElement, tree: Element): void {
 
 /**
  * The reverse of the check cascade: unchecking a category also unchecks its
- * whole subtree (every descendant box), then walks UP â€” any ancestor left
+ * whole subtree (every descendant box), then walks UP — any ancestor left
  * with no checked children unchecks too, up to but excluding the locked
  * root. So unchecking a section clears its leaves, and unchecking the last
  * checked child clears the parent; a parent that still holds another checked
@@ -1219,7 +1318,7 @@ function cascadeAncestorChecks(box: HTMLInputElement, tree: Element): void {
  * than forced.
  *
  * NOTE the sibling model: Magento nests children as the branch li's NEXT
- * SIBLING ul, not inside the li â€” so descendants are collected with
+ * SIBLING ul, not inside the li — so descendants are collected with
  * `descendantLis` (walk into `childListOf`), never with
  * `li.querySelectorAll`. The old version used querySelectorAll and found
  * zero descendants on the live DOM, which is why unchecking did nothing.
@@ -1228,14 +1327,14 @@ function cascadeDescendantUnchecks(box: HTMLInputElement, tree: Element): void {
   const root = rootItemOf(tree);
   const startLi = box.closest<HTMLLIElement>('li');
   if (!startLi) return;
-  // Phase 1 â€” DOWN: untick every checked descendant of the unchecked item.
+  // Phase 1 — DOWN: untick every checked descendant of the unchecked item.
   for (const item of descendantLis(startLi)) {
     const child = item.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
     if (!child || child === box || child.disabled || !child.checked) continue;
     child.checked = false;
     child.dispatchEvent(new Event('change', { bubbles: true }));
   }
-  // Phase 2 â€” UP: any ancestor left with no checked children unchecks too.
+  // Phase 2 — UP: any ancestor left with no checked children unchecks too.
   // The walk stops at (and never unticks) the locked root.
   let li: HTMLLIElement | null = startLi;
   for (let hops = 0; li && hops < 50; hops += 1) {
@@ -1255,7 +1354,7 @@ function cascadeDescendantUnchecks(box: HTMLInputElement, tree: Element): void {
 
 /**
  * Every li under a branch item's child list, recursively (sibling model:
- * branch li â†’ next-sibling ul â†’ its li children â†’ their own child lists).
+ * branch li → next-sibling ul → its li children → their own child lists).
  * The branch item itself is NOT included.
  */
 function descendantLis(branch: HTMLLIElement): HTMLLIElement[] {
@@ -1276,7 +1375,7 @@ function descendantLis(branch: HTMLLIElement): HTMLLIElement[] {
 
 /**
  * True when the branch item's subtree holds any checked box: its own box, or
- * any box in a descendant li (sibling model â€” see `descendantLis`).
+ * any box in a descendant li (sibling model — see `descendantLis`).
  */
 function subtreeHasChecked(branch: HTMLLIElement): boolean {
   const own = branch.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
@@ -1311,111 +1410,63 @@ function normalizeRuleText(text: string): string {
     .trim();
 }
 
+/* --- Apply Rules ----------------------------------------------------------- */
+
 /**
- * Resolve a cross-category rule's target leaf in the live tree.
+ * Apply cross-category rules based on Notion "tb em" patterns.
  *
- * The `targetId` stored in the rule is the **section-level** code (e.g. "7"),
- * not the leaf. The full path to the leaf is in `targetName`
- * (e.g. "AR LIVRE E EVENTOS > ACESSÓRIOS DESPORTO > Toalhas Desporto").
+ * For each explicitly checked category (leaves and direct user picks,
+ * excluding passive ancestor cascade containers), looks up its linked
+ * target category code in the index and checks the matching target box.
  *
- * Strategy (most-specific first):
- *  1. Walk the `targetName` segments as a path: find the section by `targetId`,
- *     then descend level by level matching names.
- *  2. If path walk fails, search descendants of the `targetId` section for the
- *     last path segment by fuzzy match.
- *  3. As a last resort tick the section itself (the `targetId` node).
+ * Safe and idempotent:
+ * - Only checks specific counterpart leaf boxes (never ticks entire parent sections).
+ * - Avoids cascade avalanches by only acting on boxes already checked when clicked.
+ * - Dispatches a native change event so Magento and the Selected panel update.
  */
-function findBoxesByRule(tree: Element, rule: CrossCategoryRule): HTMLInputElement[] {
-  const allLis = Array.from(tree.querySelectorAll<HTMLLIElement>('li'));
-
-  // ---- Step 1: path-walk from the targetId section ----
-  // Parse path segments from targetName (separated by " > " or ">")
-  const pathSegments = rule.targetName
-    .split(/\s*>\s*/)
-    .map((s) => normalizeRuleText(s))
-    .filter(Boolean);
-
-  // Find the root section (by targetId code)
-  let currentLi: HTMLLIElement | null =
-    allLis.find((l) => l.dataset['mhxCatNo'] === rule.targetId) ?? null;
-
-  if (currentLi && pathSegments.length > 0) {
-    // The first segment in targetName is typically the section name itself —
-    // skip it if it matches the already-found section.
-    const sectionLabel = normalizeRuleText(itemLabel(currentLi));
-    let segStart = pathSegments[0] === sectionLabel ? 1 : 0;
-    // Also skip if the first segment is a prefix/partial match of the section name
-    if (segStart === 0 && sectionLabel.startsWith(pathSegments[0] ?? '')) segStart = 1;
-
-    for (let i = segStart; i < pathSegments.length; i++) {
-      const seg = pathSegments[i];
-      if (!seg) continue;
-      const childList = childListOf(currentLi);
-      if (!childList) { currentLi = null; break; }
-      const kids = childItems(childList);
-      const match = kids.find((kid) => {
-        const kidLabel = normalizeRuleText(itemLabel(kid));
-        return kidLabel === seg || kidLabel.startsWith(seg) || seg.startsWith(kidLabel);
-      });
-      if (!match) { currentLi = null; break; }
-      currentLi = match;
-    }
-  }
-
-  if (currentLi) {
-    const box = currentLi.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
-    if (box && !box.checked && !box.disabled) return [box];
-    // Already checked or disabled — still found it, nothing to tick.
-    return [];
-  }
-
-  // ---- Step 2: fuzzy search under the targetId section ----
-  const sectionLi = allLis.find((l) => l.dataset['mhxCatNo'] === rule.targetId);
-  const lastSeg = normalizeRuleText(pathSegments[pathSegments.length - 1] ?? rule.source);
-
-  if (sectionLi) {
-    const descendants = descendantLis(sectionLi);
-    const match = descendants.find((li) => {
-      const lbl = normalizeRuleText(itemLabel(li));
-      return lbl === lastSeg || lbl.startsWith(lastSeg) || lastSeg.startsWith(lbl);
-    });
-    if (match) {
-      const box = match.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
-      if (box && !box.checked && !box.disabled) return [box];
-      return [];
-    }
-    // ---- Step 3: tick the section itself as fallback ----
-    const sectionBox = sectionLi.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
-    if (sectionBox && !sectionBox.checked && !sectionBox.disabled) return [sectionBox];
-  }
-
-  return [];
-}
-
 function applyRules(tree: Element): number {
+  const root = rootItemOf(tree);
   const ticked: HTMLInputElement[] = [];
 
-  // Collect all checked categories and their associated rules
-  const checked = Array.from(
-    tree.querySelectorAll<HTMLInputElement>(`${TREE_BOX_SELECTOR}:checked`),
-  );
+  // Collect explicitly checked categories.
+  // Exclude ancestor sections whose children are already checked,
+  // and exclude the locked root ("Default Category").
+  const checkedLis = Array.from(tree.querySelectorAll<HTMLLIElement>('li')).filter((li) => {
+    if (li === root) return false;
+    const box = li.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
+    if (!box || !box.checked || box.disabled) return false;
+    const list = childListOf(li);
+    if (
+      list &&
+      Array.from(list.querySelectorAll<HTMLInputElement>(TREE_BOX_SELECTOR)).some(
+        (b) => b.checked,
+      )
+    ) {
+      return false;
+    }
+    return true;
+  });
 
-  for (const box of checked) {
-    const li = box.closest<HTMLLIElement>('li');
-    if (!li || !li.dataset['mhxCatNo']) continue;
+  for (const li of checkedLis) {
+    const code = li.dataset['mhxCatNo'];
+    if (!code) continue;
 
-    const rules = getCrossCategoryRules(li.dataset['mhxCatNo']);
-    if (!rules) continue;
-
-    for (const rule of rules) {
-      const targetBoxes = findBoxesByRule(tree, rule);
-      for (const targetBox of targetBoxes) {
-        if (!ticked.includes(targetBox)) ticked.push(targetBox);
+    const targetCodes = getLinkedTargetCodes(code);
+    for (const targetCode of targetCodes) {
+      const targetLi = tree.querySelector<HTMLLIElement>(
+        `li[data-mhx-cat-no="${targetCode}"]`,
+      );
+      if (!targetLi) continue;
+      const targetBox = targetLi.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
+      if (targetBox && !targetBox.checked && !targetBox.disabled) {
+        if (!ticked.includes(targetBox)) {
+          ticked.push(targetBox);
+        }
       }
     }
   }
 
-  // Tick them all (cascade handles ancestors)
+  // Check the target boxes
   for (const box of ticked) {
     box.checked = true;
     box.dispatchEvent(new Event('change', { bubbles: true }));
@@ -1428,29 +1479,19 @@ function applyRules(tree: Element): number {
 
 const RULES_PANEL_CLASS = 'mhx-cat-rules-panel';
 const RULES_HEADER_CLASS = 'mhx-cat-rules-header';
-const RULES_CONTENT_CLASS = 'mhx-cat-rules-content';
-const RULES_CLEAR_CLASS = 'mhx-cat-rules-clear';
-
-/** Get cross-category rules for a category code. */
-function getCrossCategoryRules(code: string): CrossCategoryRule[] | null {
-  const notes = categoryNotes(code);
-  return notes?.crossCategory ?? null;
-}
+const RULES_ACTIVE_CLASS = 'mhx-cat-rules-active';
+const RULES_CATALOG_CLASS = 'mhx-cat-rules-catalog';
+const RULES_LIST_CLASS = 'mhx-cat-rules-list';
+const RULES_ITEM_CLASS = 'mhx-cat-rules-item';
 
 /**
- * Parse the raw notes string into two parts:
- *  - `intro`: the leading plain text before the first emoji rule line
- *  - `ruleLines`: each emoji-prefixed line (🔹 / 🔸 / ⚠) as its own string
- *
- * Source notes look like:
- *   "Usar LABELS... 🔹Térmicos tb em 2. TÊXTIL... 🔸Chinelos tb em 7. ..."
- * We split on the emoji boundary so the intro and each rule get separate
- * visual treatment instead of being piled into one text blob.
+ * Parse a raw notes string into introductory text and emoji-prefixed rule bullets.
  */
 function parseNotesLines(raw: string): { intro: string; ruleLines: string[] } {
-  // The emoji bullet characters used in the source: 🔹 (\u{1F539}), 🔸 (\u{1F538}), ⚠ (\u26A0)
-  // Split just before each emoji bullet that starts a rule.
-  const parts = raw.split(/(?=[\u{1F538}\u{1F539}\u26A0])/u).map((s) => s.trim()).filter(Boolean);
+  const parts = raw
+    .split(/(?=[\u{1F538}\u{1F539}\u26A0])/u)
+    .map((s) => s.trim())
+    .filter(Boolean);
   const BULLET_RE = /^[\u{1F538}\u{1F539}\u26A0]/u;
   const firstIsBullet = BULLET_RE.test(parts[0] ?? '');
   const intro = firstIsBullet ? '' : (parts[0] ?? '');
@@ -1458,109 +1499,306 @@ function parseNotesLines(raw: string): { intro: string; ruleLines: string[] } {
   return { intro, ruleLines };
 }
 
-function renderRulesPanel(tree: Element, li: HTMLLIElement | null): void {
-  // The panel lives in `shell` (a sibling above the tree wrapper),
-  // NOT inside `tree` — always search shell, never tree itself.
-  const main = tree.closest(`.${MAIN_CLASS}`);
-  const shell = main?.previousElementSibling?.classList.contains(SHELL_CLASS)
-    ? main.previousElementSibling
-    : null;
-  if (shell) {
-    shell.querySelector(`.${RULES_PANEL_CLASS}`)?.remove();
-  }
-
-  if (!li || !li.dataset['mhxCatNo']) {
-    // Show placeholder panel ??? no category selected yet
-    insertPanel(tree, buildPanel(null, null));
-    return;
-  }
-
-  const code = li.dataset['mhxCatNo'];
-  const notes = categoryNotes(code);
-  insertPanel(tree, buildPanel(li, notes ?? null));
-}
-
 /**
- * Build the rules panel DOM for a given li/notes pair.
- * Both null = initial "click a category" state.
+ * Ensure the rules panel exists in the toolbar shell and is always visible.
+ * Returns the panel element.
  */
-function buildPanel(
-  li: HTMLLIElement | null,
-  notes: { notes?: string; crossCategory?: CrossCategoryRule[] } | null,
-): HTMLElement {
-  const code = li?.dataset['mhxCatNo'];
-  const catName = li ? itemLabel(li) : '';
-  const hasNotes = !!(notes?.notes?.trim());
+function ensureRulesPanel(tree: Element): HTMLElement | null {
+  const shell = treeShells.get(tree);
+  if (!shell) return null;
 
-  const panel = document.createElement('div');
-  panel.className = RULES_PANEL_CLASS;
-
-  // Header: "Notas: CategoryName (code)" or just "Notas e Regras"
-  const header = document.createElement('div');
-  header.className = RULES_HEADER_CLASS;
-  const titleSpan = document.createElement('span');
-  titleSpan.textContent = code ? `Notas: ${catName} (${code})` : 'Notas e Regras';
-  const closeBtn = document.createElement('span');
-  closeBtn.className = RULES_CLEAR_CLASS;
-  closeBtn.textContent = '✕ Fechar';
-  closeBtn.addEventListener('click', () => panel.remove());
-  header.append(titleSpan, closeBtn);
-
-  const content = document.createElement('div');
-  content.className = RULES_CONTENT_CLASS;
-
-  if (!code) {
-    const hint = document.createElement('p');
-    hint.className = 'mhx-cat-rules-hint';
-    hint.textContent = 'Clique numa categoria para ver as notas e regras “tb em”.';
-    content.appendChild(hint);
-  } else if (!hasNotes) {
-    const hint = document.createElement('p');
-    hint.className = 'mhx-cat-rules-hint';
-    hint.textContent = 'Sem notas ou regras para esta categoria.';
-    content.appendChild(hint);
-  } else {
-    // Parse the notes string into intro text + emoji bullet lines
-    const { intro, ruleLines } = parseNotesLines(notes!.notes!);
-    if (intro) {
-      const introEl = document.createElement('p');
-      introEl.className = 'mhx-cat-rules-intro';
-      introEl.textContent = intro;
-      content.appendChild(introEl);
-    }
-    if (ruleLines.length > 0) {
-      const ul = document.createElement('ul');
-      ul.className = 'mhx-cat-rules-list';
-      for (const line of ruleLines) {
-        const item = document.createElement('li');
-        item.textContent = line;
-        ul.appendChild(item);
-      }
-      content.appendChild(ul);
+  let panel = shell.querySelector<HTMLElement>(`.${RULES_PANEL_CLASS}`);
+  if (!panel) {
+    panel = createRulesPanel(tree);
+    const bar = shell.querySelector(`.${BAR_CLASS}`);
+    if (bar?.nextSibling) {
+      shell.insertBefore(panel, bar.nextSibling);
+    } else {
+      shell.appendChild(panel);
     }
   }
-
-  panel.append(header, content);
   return panel;
 }
 
-function insertPanel(tree: Element, panel: HTMLElement): void {
-  // The shell is the PREVIOUS sibling of the .mhx-cat-main wrapper.
-  const main = tree.closest(`.${MAIN_CLASS}`);
-  const prevSibling = main?.previousElementSibling;
-  const shell = prevSibling?.classList.contains(SHELL_CLASS) ? prevSibling : null;
-  if (!shell) return;
-  // Belt-and-suspenders: remove any stale panel.
-  shell.querySelector(`.${RULES_PANEL_CLASS}`)?.remove();
-  const bar = shell.querySelector(`.${BAR_CLASS}`);
-  if (bar?.nextSibling) {
-    shell.insertBefore(panel, bar.nextSibling);
-  } else {
-    shell.appendChild(panel);
+/**
+ * Create the persistent Rules Panel with:
+ * 1) Active category / selection rules area
+ * 2) Full Notion rules reference catalog (collapsible / searchable)
+ */
+function createRulesPanel(tree: Element): HTMLElement {
+  const panel = document.createElement('div');
+  panel.className = RULES_PANEL_CLASS;
+
+  // Header
+  const header = document.createElement('div');
+  header.className = RULES_HEADER_CLASS;
+
+  const titleWrap = document.createElement('div');
+  titleWrap.className = 'mhx-cat-rules-title-wrap';
+  const title = document.createElement('span');
+  title.className = 'mhx-cat-rules-title';
+  title.textContent = 'Notas e Regras Notion';
+  titleWrap.appendChild(title);
+
+  const toggleCatalogBtn = button({
+    label: 'Todas as regras Notion (64) \u25BE',
+    title: 'Ver catálogo completo com todas as regras cruzadas do Notion',
+    variant: 'ghost',
+    className: 'mhx-cat-rules-toggle-catalog',
+  });
+
+  header.append(titleWrap, toggleCatalogBtn);
+
+  // Active / Selected category notes area
+  const activeArea = document.createElement('div');
+  activeArea.className = RULES_ACTIVE_CLASS;
+
+  // Catalog area (all 64 Notion rules, searchable)
+  const catalogArea = document.createElement('div');
+  catalogArea.className = RULES_CATALOG_CLASS;
+  catalogArea.style.display = 'none';
+
+  const filterBar = document.createElement('div');
+  filterBar.className = 'mhx-cat-rules-filter-bar';
+
+  const searchInput = document.createElement('input');
+  searchInput.type = 'search';
+  searchInput.placeholder = 'Filtrar regras Notion (ex: x-atos, chinelos, mochilas)...';
+  searchInput.className = 'mhx-cat-rules-search';
+  searchInput.setAttribute('aria-label', 'Filtrar regras Notion');
+
+  const countBadge = document.createElement('span');
+  countBadge.className = 'mhx-cat-rules-count-badge';
+  countBadge.textContent = '64 regras';
+
+  filterBar.append(searchInput, countBadge);
+
+  const listWrap = document.createElement('div');
+  listWrap.className = 'mhx-cat-rules-list-wrap';
+
+  // Render all Notion rules into listWrap
+  const allRules = getAllNotionRules();
+  renderCatalogList(listWrap, allRules, '', tree);
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    const filtered = allRules.filter(
+      (r) =>
+        r.sourceName.toLowerCase().includes(q) ||
+        r.targetName.toLowerCase().includes(q) ||
+        r.sectionName.toLowerCase().includes(q) ||
+        r.sourceCode.includes(q) ||
+        r.targetCode.includes(q),
+    );
+    countBadge.textContent = `${filtered.length} ${filtered.length === 1 ? 'regra' : 'regras'}`;
+    renderCatalogList(listWrap, filtered, q, tree);
+  });
+
+  toggleCatalogBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const isOpen = catalogArea.style.display !== 'none';
+    catalogArea.style.display = isOpen ? 'none' : 'block';
+    toggleCatalogBtn.textContent = isOpen
+      ? 'Todas as regras Notion (64) \u25BE'
+      : 'Ocultar catálogo Notion \u25B4';
+  });
+
+  catalogArea.append(filterBar, listWrap);
+  panel.append(header, activeArea, catalogArea);
+
+  return panel;
+}
+
+/**
+ * Render the full list of Notion rules into the catalog scroll area.
+ */
+function renderCatalogList(
+  container: HTMLElement,
+  rules: ResolvedCrossCategoryRule[],
+  query: string,
+  tree: Element,
+): void {
+  container.replaceChildren();
+
+  if (rules.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'mhx-cat-rules-empty';
+    empty.textContent = 'Nenhuma regra encontrada para este filtro.';
+    container.appendChild(empty);
+    return;
   }
+
+  const ul = document.createElement('ul');
+  ul.className = RULES_LIST_CLASS;
+
+  for (const rule of rules) {
+    const li = document.createElement('li');
+    li.className = RULES_ITEM_CLASS;
+    li.title = `Clique para localizar ${rule.sourceName} (${rule.sourceCode}) na árvore`;
+
+    const secSpan = document.createElement('span');
+    secSpan.className = 'mhx-cat-rule-sec';
+    secSpan.textContent = `${rule.sectionId} ${rule.sectionName}`;
+
+    const textSpan = document.createElement('span');
+    textSpan.className = 'mhx-cat-rule-text';
+    textSpan.textContent = `${rule.emoji} ${rule.sourceName} tb em ${rule.targetName}`;
+
+    const arrowSpan = document.createElement('span');
+    arrowSpan.className = 'mhx-cat-rule-badge';
+    arrowSpan.textContent = `${rule.sourceCode} \u2794 ${rule.targetCode}`;
+
+    li.append(secSpan, textSpan, arrowSpan);
+
+    li.addEventListener('click', () => {
+      // Find source or target li in tree and reveal/scroll
+      const targetLi =
+        tree.querySelector<HTMLLIElement>(`li[data-mhx-cat-no="${rule.sourceCode}"]`) ??
+        tree.querySelector<HTMLLIElement>(`li[data-mhx-cat-no="${rule.targetCode}"]`);
+      if (targetLi) {
+        revealBranchOf(targetLi);
+        targetLi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetLi.style.transition = 'background-color 0.3s';
+        targetLi.style.backgroundColor = 'var(--mhx-pg-fill-hover)';
+        setTimeout(() => {
+          targetLi.style.removeProperty('background-color');
+        }, 1500);
+      }
+    });
+
+    ul.appendChild(li);
+  }
+
+  container.appendChild(ul);
+}
+
+/**
+ * Update the active rules section of the panel.
+ * Shows applicable rules for the clicked category `activeLi`
+ * or for any currently checked categories.
+ */
+function updateRulesPanel(tree: Element, activeLi?: HTMLLIElement | null): void {
+  const panel = ensureRulesPanel(tree);
+  if (!panel) return;
+
+  const activeArea = panel.querySelector<HTMLElement>(`.${RULES_ACTIVE_CLASS}`);
+  if (!activeArea) return;
+
+  activeArea.replaceChildren();
+
+  // If activeLi is provided, show its notes and rules
+  if (activeLi && activeLi.dataset['mhxCatNo']) {
+    const code = activeLi.dataset['mhxCatNo'];
+    const name = itemLabel(activeLi);
+    const notes = categoryNotes(code);
+    const rules = getRulesForCategory(code);
+
+    const block = document.createElement('div');
+    block.className = 'mhx-cat-rules-active-block';
+
+    const header = document.createElement('div');
+    header.className = 'mhx-cat-rules-active-title';
+    header.textContent = `Notas da Categoria: ${name} (${code})`;
+    block.appendChild(header);
+
+    let hasContent = false;
+
+    if (notes?.notes?.trim()) {
+      const { intro, ruleLines } = parseNotesLines(notes.notes);
+      if (intro) {
+        const introP = document.createElement('p');
+        introP.className = 'mhx-cat-rules-intro';
+        introP.textContent = intro;
+        block.appendChild(introP);
+        hasContent = true;
+      }
+      if (ruleLines.length > 0) {
+        const ul = document.createElement('ul');
+        ul.className = 'mhx-cat-rules-bullet-list';
+        for (const line of ruleLines) {
+          const item = document.createElement('li');
+          item.textContent = line;
+          ul.appendChild(item);
+        }
+        block.appendChild(ul);
+        hasContent = true;
+      }
+    }
+
+    if (rules.length > 0) {
+      const rulesUl = document.createElement('ul');
+      rulesUl.className = 'mhx-cat-rules-active-rules';
+      for (const r of rules) {
+        const rLi = document.createElement('li');
+        rLi.textContent = `${r.emoji} ${r.sourceName} tb em ${r.targetName} (${r.sourceCode} \u2794 ${r.targetCode})`;
+        rulesUl.appendChild(rLi);
+      }
+      block.appendChild(rulesUl);
+      hasContent = true;
+    }
+
+    if (!hasContent) {
+      const emptyP = document.createElement('p');
+      emptyP.className = 'mhx-cat-rules-hint';
+      emptyP.textContent = 'Sem notas ou regras registadas no Notion para esta categoria.';
+      block.appendChild(emptyP);
+    }
+
+    activeArea.appendChild(block);
+    return;
+  }
+
+  // Otherwise, inspect all checked categories in the tree
+  const root = rootItemOf(tree);
+  const checkedLis = Array.from(tree.querySelectorAll<HTMLLIElement>('li')).filter((li) => {
+    if (li === root) return false;
+    const box = li.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
+    return box && box.checked && !box.disabled;
+  });
+
+  // Collect rules for all checked categories
+  const applicable: { li: HTMLLIElement; rule: ResolvedCrossCategoryRule }[] = [];
+  for (const li of checkedLis) {
+    const code = li.dataset['mhxCatNo'];
+    if (!code) continue;
+    const rules = getRulesForCategory(code);
+    for (const rule of rules) {
+      if (!applicable.some((a) => a.rule === rule)) {
+        applicable.push({ li, rule });
+      }
+    }
+  }
+
+  if (applicable.length > 0) {
+    const block = document.createElement('div');
+    block.className = 'mhx-cat-rules-active-block';
+
+    const header = document.createElement('div');
+    header.className = 'mhx-cat-rules-active-title';
+    header.textContent = `Regras Aplicáveis para Categorias Selecionadas (${applicable.length})`;
+    block.appendChild(header);
+
+    const ul = document.createElement('ul');
+    ul.className = 'mhx-cat-rules-active-rules';
+    for (const { rule } of applicable) {
+      const rLi = document.createElement('li');
+      rLi.textContent = `${rule.emoji} ${rule.sourceName} tb em ${rule.targetName} (${rule.sourceCode} \u2794 ${rule.targetCode})`;
+      ul.appendChild(rLi);
+    }
+    block.appendChild(ul);
+    activeArea.appendChild(block);
+    return;
+  }
+
+  // Default placeholder when nothing with rules is selected
+  const defaultP = document.createElement('p');
+  defaultP.className = 'mhx-cat-rules-hint';
+  defaultP.textContent =
+    '💡 Clique numa categoria na árvore ou selecione artigos para ver as regras "tb em". Clique em "Todas as regras Notion" acima para consultar todo o índice.';
+  activeArea.appendChild(defaultP);
 }
 /**
- * "Default Category" is the store root, not a real choice â€” a mass update
+ * "Default Category" is the store root, not a real choice — a mass update
  * with it unchecked saves a broken category set. So it stays checked,
  * always: every render, every operator change, every re-scan, even when
  * nothing else is checked. The tick goes through Magento's own checkbox + a
@@ -1604,15 +1842,20 @@ function injectStyles(): void {
 }
 
 /**
- * Collapse Update Attributes trees; idempotent for the debounced scan.
- * First sight: everything collapsed except the root item ("Default
- * Category" â€” always open, no toggle) and branches holding a checked box.
- * "Collapse all" is a pure collapse: it stays collapsed, checked or not.
+ * Enhance Update Attributes trees; idempotent for the debounced scan.
+ * Native category rows and lists remain visible on first sight; collapsing is
+ * only performed when the operator uses the collapse control.
  */
 export function enhanceCategoryTrees(): number {
   let count = 0;
   for (const tree of findCategoryTrees()) {
     const root = rootItemOf(tree);
+    watchTreeUiVisibility(tree);
+    const signature = treeSignature(tree);
+    if (treeSignatures.get(tree) === signature) {
+      ensureRootChecked(tree);
+      continue;
+    }
     const isNew = tree.getAttribute(TREE_MARK) !== '1';
     for (const node of branchNodesIn(tree)) {
       if (node === root) continue; // root item gets no toggle
@@ -1645,26 +1888,28 @@ export function enhanceCategoryTrees(): number {
     logBadgeCoverage();
     logBadgeOrder(tree);
     if (isNew) {
-      if (root) setCollapsed(root, false);
-      collapseTree(tree);
-      revealChecked(tree);
+      for (const li of Array.from(tree.querySelectorAll<HTMLLIElement>('li'))) {
+        setLiVisible(li, true);
+      }
+      restoreExtensionCollapsedLists(tree);
       count += 1;
     }
     addToolbar(tree);
     renderPills(tree);
+    treeSignatures.set(tree, treeSignature(tree));
   }
   if (count > 0) injectStyles();
   return count;
 }
 
 /**
- * Every colour is a layer-1 page token (`--mhx-pg-*`) â€” never one from the
+ * Every colour is a layer-1 page token (`--mhx-pg-*`) — never one from the
  * extension palette, which describes the side panel and stays the LIGHT palette
  * unless our own dark admin is enabled. These tokens derive from the page
  * (`currentColor`/`color-mix`, plus the measured `data-mhx-page` floors), so the
  * toolbar follows a light admin, Magento's own dark one and our themed dark one
  * alike instead of staying a light island. G6 enforces the distinction.
- * The selectors are our own classes only â€” nothing Magento renders is styled
+ * The selectors are our own classes only — nothing Magento renders is styled
  * from here except the tree's item labels.
  */
 const CATEGORY_TREE_STYLES = `
@@ -1698,12 +1943,31 @@ const CATEGORY_TREE_STYLES = `
 .mhx-cat-sel-x{padding:0 4px;border:0;background:transparent;color:var(--mhx-pg-muted);cursor:pointer;border-radius:2px;line-height:1;}
 .mhx-cat-sel-x:hover{background:var(--mhx-pg-fill);color:var(--mhx-pg-accent-strong);}
 .mhx-cat-rules-panel{margin-top:8px;padding:10px 12px;border:1px solid var(--mhx-pg-line);border-radius:4px;background:var(--mhx-pg-fill);font:12px/1.4 system-ui,"Segoe UI",Arial,sans-serif;color:var(--mhx-pg-ink);display:block !important;}
-.mhx-cat-rules-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600;font-size:12px;color:var(--mhx-pg-ink);}
-.mhx-cat-rules-content p{margin:0 0 6px 0;line-height:1.45;}
-.mhx-cat-rules-intro{color:var(--mhx-pg-ink);font-weight:500;}
-.mhx-cat-rules-hint{color:var(--mhx-pg-muted);font-style:italic;}
-.mhx-cat-rules-list{margin:4px 0 0 0;padding:0;list-style:none;}
-.mhx-cat-rules-list li{margin-bottom:5px;line-height:1.4;padding:4px 8px;border-radius:3px;background:var(--mhx-pg-fill-hover);border-left:3px solid var(--mhx-pg-accent);}
-.mhx-cat-rules-clear{cursor:pointer;color:var(--mhx-pg-muted);font-weight:bold;font-size:11px;padding:2px 6px;border-radius:3px;background:var(--mhx-pg-fill-hover);line-height:1;}
-.mhx-cat-rules-clear:hover{color:var(--mhx-pg-accent);background:var(--mhx-pg-line);}
+.mhx-cat-rules-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+.mhx-cat-rules-title-wrap{display:flex;align-items:center;gap:6px;}
+.mhx-cat-rules-title{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.04em;color:var(--mhx-pg-ink);}
+.mhx-cat-rules-toggle-catalog{font-size:11px;padding:2px 6px;}
+.mhx-cat-rules-active{margin-bottom:4px;}
+.mhx-cat-rules-active-block{display:flex;flex-direction:column;gap:4px;}
+.mhx-cat-rules-active-title{font-weight:600;font-size:12px;color:var(--mhx-pg-accent-strong);}
+.mhx-cat-rules-intro{margin:0 0 4px 0;font-weight:500;color:var(--mhx-pg-ink);}
+.mhx-cat-rules-bullet-list{margin:0;padding-left:18px;}
+.mhx-cat-rules-bullet-list li{margin-bottom:3px;}
+.mhx-cat-rules-active-rules{margin:4px 0 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;}
+.mhx-cat-rules-active-rules li{padding:4px 8px;border-radius:3px;background:var(--mhx-pg-fill-hover);border-left:3px solid var(--mhx-pg-accent);font-size:11.5px;}
+.mhx-cat-rules-hint{margin:0;font-style:italic;color:var(--mhx-pg-muted);font-size:11.5px;}
+.mhx-cat-rules-catalog{margin-top:8px;padding-top:8px;border-top:1px dashed var(--mhx-pg-line);}
+.mhx-cat-rules-filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.mhx-cat-rules-search{flex:1;padding:4px 8px;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill);color:var(--mhx-pg-ink);font:11.5px system-ui,"Segoe UI",Arial,sans-serif;}
+.mhx-cat-rules-search:focus{outline:none;border-color:var(--mhx-pg-accent);}
+.mhx-cat-rules-count-badge{font-size:11px;color:var(--mhx-pg-muted);white-space:nowrap;}
+.mhx-cat-rules-list-wrap{max-height:220px;overflow-y:auto;border:1px solid var(--mhx-pg-line);border-radius:3px;background:var(--mhx-pg-fill-hover);}
+.mhx-cat-rules-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;}
+.mhx-cat-rules-item{display:flex;align-items:baseline;gap:8px;padding:5px 8px;border-bottom:1px solid var(--mhx-pg-line);cursor:pointer;font-size:11px;}
+.mhx-cat-rules-item:last-child{border-bottom:none;}
+.mhx-cat-rules-item:hover{background:var(--mhx-pg-fill);}
+.mhx-cat-rule-sec{font-weight:600;color:var(--mhx-pg-muted);white-space:nowrap;min-width:130px;}
+.mhx-cat-rule-text{flex:1;color:var(--mhx-pg-ink);}
+.mhx-cat-rule-badge{padding:1px 5px;border-radius:2px;background:var(--mhx-pg-line);color:var(--mhx-pg-ink);font:10px ui-monospace,monospace;white-space:nowrap;}
+.mhx-cat-rules-empty{padding:12px;text-align:center;color:var(--mhx-pg-muted);font-style:italic;font-size:11px;}
 `;

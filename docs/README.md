@@ -27,6 +27,7 @@ never has to read a UI doc to find out what it may touch.
 - [RUN-AUDIT-OPTIMIZATION-VISION.md](automation/RUN-AUDIT-OPTIMIZATION-VISION.md) — the vision (model) stage.
 
 **shared/**
+- [PROJECT-HANDOFF-2026-11-05.md](shared/PROJECT-HANDOFF-2026-11-05.md) — current project state, maintenance freeze, verification, and AI handoff.
 - [PROJECT-STATE-ANALYSIS-2026-10-27.md](shared/PROJECT-STATE-ANALYSIS-2026-10-27.md) — whole-project state.
 - [PERFORMANCE-CODE-AUDIT.md](shared/PERFORMANCE-CODE-AUDIT.md) — cross-cutting performance review.
 - [RUN-AUDIT-OPTIMIZATION-PLAN.md](shared/RUN-AUDIT-OPTIMIZATION-PLAN.md) — the plan spanning audit + automation.

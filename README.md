@@ -5,6 +5,9 @@ This repository is the active BestOfGifts helper extension: **TypeScript strict
 historical and is not the implementation target. Notion API calls run from the
 background service worker; the Magento content script does not call Notion.
 
+Current project status and the temporary feature freeze are documented in
+[the project handoff](docs/shared/PROJECT-HANDOFF-2026-11-05.md).
+
 The current product structure is one side panel and one dashboard page. Audit
 sections are integrated into the dashboard; there is no separate Audit page or
 extension Options page in the current build. This README is maintained against

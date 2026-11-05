@@ -353,12 +353,18 @@ async function waitForTabUrl(
   timeoutMs = 20_000,
 ): Promise<void> {
   const wanted = expected.replace(/\/+$/, '').toLowerCase();
+  const targetId = expected.match(/\/catalog\/product\/edit\/id\/(\d+)/i)?.[1];
+  const targetPath = targetId ? `/catalog/product/edit/id/${targetId}`.toLowerCase() : '';
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     const tab = await chrome.tabs.get(tabId).catch(() => null);
     if (!tab) throw new Error('the admin tab was closed');
     const url = (tab.url ?? tab.pendingUrl ?? '').toLowerCase();
-    if (tab.status === 'complete' && url.includes(wanted)) return;
+    if (url.includes('/admin/auth/login') || url.includes('/admin/index/index')) {
+      throw new Error('the Magento admin session has expired; sign in to admin');
+    }
+    const matched = targetPath ? url.includes(targetPath) : url.includes(wanted);
+    if (tab.status === 'complete' && matched) return;
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
   throw new Error('the admin page did not finish loading');
@@ -378,6 +384,28 @@ async function readMatrixTab(
   request: SearchMagentoRequest,
   reuseTabId: number,
 ): Promise<SearchMagentoResponse | null> {
+  // If an open admin tab is already sitting on this product's edit page,
+  // read from it directly without opening or navigating any tabs.
+  if (reuseTabId === 0) {
+    try {
+      const allTabs = await chrome.tabs.query({});
+      const targetPath = `/catalog/product/edit/id/${productId}`.toLowerCase();
+      const existingTab = allTabs.find((t) =>
+        (t.url ?? '').toLowerCase().includes(targetPath),
+      );
+      if (existingTab?.id) {
+        return await sendToTab<SearchMagentoResponse>(existingTab.id, {
+          ...request,
+          parentId: productId,
+          expand: true,
+          readFacts: true,
+        });
+      }
+    } catch {
+      // Non-fatal: fallback to creating a background tab.
+    }
+  }
+
   const editUrl = adminEditUrl(base, productId);
   let tabId = reuseTabId;
   const borrowed = tabId === 0;
@@ -394,8 +422,10 @@ async function readMatrixTab(
       ...request,
       parentId: productId,
       expand: true,
+      readFacts: true,
     });
-  } catch {
+  } catch (err) {
+    console.warn('[readMatrixTab] Failed to read admin edit tab:', err);
     return null;
   } finally {
     if (borrowed) await chrome.tabs.remove(tabId).catch(() => undefined);
@@ -1206,7 +1236,7 @@ export async function resolveSkuForDashboard(
     availability,
     categoryCheck,
     duplicates,
-    magento_facts: magentoFacts,
+    magento_facts: magentoFacts ?? resolver?.magento_facts,
     stale: resolver?.stale,
     ageDays: resolver?.age_days ?? null,
     resolutionError:

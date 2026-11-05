@@ -631,6 +631,7 @@ function ResolverResult({
   onDownloadMakitoImages,
   findBusy,
   onFindProduct,
+  facts,
   factsBusy,
   onReadFacts,
   linkDraft,
@@ -659,6 +660,7 @@ function ResolverResult({
   onDownloadMakitoImages: () => void;
   findBusy: boolean;
   onFindProduct: () => void;
+  facts?: ResolverMagentoFacts | null;
   factsBusy: boolean;
   onReadFacts: () => void;
   linkDraft: string;
@@ -835,7 +837,7 @@ function ResolverResult({
       <CategoryCard r={r} notion={notion} check={categoryCheck} />
 
       <MagentoFactsCard
-        facts={r.magento_facts}
+        facts={facts ?? r.magento_facts}
         storefrontPrice={r.storefront_price}
         busy={factsBusy}
         onRead={onReadFacts}
@@ -1577,6 +1579,7 @@ export function Resolver({
             onDownloadMakitoImages={() => void downloadMakitoImages()}
             findBusy={findBusy}
             onFindProduct={onFindProduct}
+            facts={magentoFacts ?? result.magento_facts ?? result.resolver?.magento_facts}
             factsBusy={factsBusy}
             onReadFacts={() => void run(true, true)}
             linkDraft={linkDraft}
@@ -1585,12 +1588,6 @@ export function Resolver({
             onLinkDraft={setLinkDraft}
             onSaveLink={() => void changeSupplierLink('set')}
             onClearLink={() => void changeSupplierLink('clear')}
-          />
-          <MagentoFactsCard
-            facts={magentoFacts ?? result.magento_facts}
-            storefrontPrice={result.storefront_price}
-            busy={factsBusy}
-            onRead={() => void run(true, true)}
           />
         </>
       ) : null}

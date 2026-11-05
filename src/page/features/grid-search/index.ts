@@ -5,6 +5,7 @@ import type {
   SearchMagentoResponse,
 } from '../../../core/messages';
 import { findConfigSection, isCollapsed } from '../../shared/config-section';
+import { readPageSku } from '../../shared/magentoForm';
 import { readAdminFacts } from './adminFacts';
 
 function sleep(ms: number): Promise<void> {
@@ -243,10 +244,19 @@ function readPageStatus(): string {
   const el = document.querySelector<HTMLSelectElement>(
     'select#status, select[name="product[status]"]',
   );
-  if (!el) return '';
-  const text = (el.options[el.selectedIndex]?.text ?? '').trim();
-  if (!text) return '';
-  return /disab|inactiv|desactiv/i.test(text) ? 'Disabled' : 'Enabled';
+  if (el) {
+    const text = (el.options[el.selectedIndex]?.text ?? '').trim();
+    if (text) return /disab|inactiv|desactiv/i.test(text) ? 'Disabled' : 'Enabled';
+  }
+  const chk = document.querySelector<HTMLInputElement>(
+    'input[name="product[status]"], input#status',
+  );
+  if (chk) {
+    if (chk.type === 'checkbox') return chk.checked ? 'Enabled' : 'Disabled';
+    if (chk.value === '1') return 'Enabled';
+    if (chk.value === '0') return 'Disabled';
+  }
+  return '';
 }
 
 /** The product edit page's own `type_id`, without trusting a default. */
@@ -602,30 +612,36 @@ export async function handleSearchMagento(
   // The parent's own edit page is the best possible source: the Configurations
   // matrix lists every assigned child whether enabled or disabled, with labels,
   // and it needs neither a grid query nor a route secret key.
-  if (parentId) {
-    const open = location.pathname.match(/\/catalog\/product\/edit\/id\/(\d+)/);
-    if (open && open[1] === parentId) {
-      const matrix = await readConfigurableChildren(parentId, expand);
-      // PP and categories are not in the matrix, but they are on the same page.
-      // Reading them here means a disabled SKU gets real Magento values instead
-      // of a Notion-only guess.
-      const facts = readFacts
-        ? await readAdminFacts({ activateCategoryTab: expand, expandPricing: expand })
-        : null;
-      if (matrix.children.length > 0 || facts) {
-        return {
-          found: true,
-          productId: parentId,
-          sku,
-          // The edit page knows the parent's own status; the grid is not the
-          // only witness, and for a disabled SKU this is the only one we get.
-          status: readPageStatus(),
-          productType: readPageType() || (matrix.children.length > 0 ? 'configurable' : ''),
-          children: matrix.children,
-          childrenReason: matrix.children.length > 0 ? '' : matrix.reason,
-          magentoFacts: facts ?? undefined,
-        };
-      }
+  const open = location.pathname.match(/\/catalog\/product\/edit\/id\/(\d+)/);
+  const openId = open?.[1];
+  const pageSku = readPageSku();
+  const isTargetPage =
+    openId &&
+    ((parentId && openId === parentId) ||
+      (!parentId && pageSku && pageSku.toUpperCase() === sku.toUpperCase()));
+
+  if (isTargetPage) {
+    const targetId = parentId || openId;
+    const matrix = await readConfigurableChildren(targetId, expand);
+    // PP and categories are not in the matrix, but they are on the same page.
+    // Reading them here means a disabled SKU gets real Magento values instead
+    // of a Notion-only guess.
+    const facts = readFacts
+      ? await readAdminFacts({ activateCategoryTab: expand, expandPricing: expand })
+      : null;
+    if (matrix.children.length > 0 || facts) {
+      return {
+        found: true,
+        productId: targetId,
+        sku: pageSku || sku,
+        // The edit page knows the parent's own status; the grid is not the
+        // only witness, and for a disabled SKU this is the only one we get.
+        status: readPageStatus(),
+        productType: readPageType() || (matrix.children.length > 0 ? 'configurable' : ''),
+        children: matrix.children,
+        childrenReason: matrix.children.length > 0 ? '' : matrix.reason,
+        magentoFacts: facts ?? undefined,
+      };
     }
   }
 

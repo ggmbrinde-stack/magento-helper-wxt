@@ -593,8 +593,17 @@ function onProductEditPage(): boolean {
  * only exist once the page is complete.
  */
 async function waitForEditForm(): Promise<void> {
-  const commercial =
-    'input[name="product[price]"], input#price, select[name="product[status]"], select#status';
+  const commercial = [
+    'input[name="product[price]"]',
+    'input#price',
+    'select[name="product[status]"]',
+    'select#status',
+    'input[name="product[status]"]',
+    'input[name="product[sku]"]',
+    'input[name="product[name]"]',
+    'input[name="attribute-set-name"]',
+    'select[name="product[attribute_set_id]"]',
+  ].join(', ');
   const ready = (): boolean =>
     document.readyState !== 'loading' &&
     document.querySelector(PRODUCT_FORM) !== null &&

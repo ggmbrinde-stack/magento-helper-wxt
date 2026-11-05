@@ -243,7 +243,17 @@ export function readVisibility(): string {
 }
 
 export function readStatus(): string {
-  return fieldValue(STATUS_SELECTOR);
+  const selectVal = fieldValue(STATUS_SELECTOR);
+  if (selectVal) return selectVal;
+  const chk = document.querySelector<HTMLInputElement>(
+    'input[name="product[status]"], input#status',
+  );
+  if (chk) {
+    if (chk.type === 'checkbox') return chk.checked ? 'Enabled' : 'Disabled';
+    if (chk.value === '1') return 'Enabled';
+    if (chk.value === '0') return 'Disabled';
+  }
+  return '';
 }
 
 function labelOf(box: HTMLInputElement): string {
