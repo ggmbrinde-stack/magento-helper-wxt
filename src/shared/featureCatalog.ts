@@ -26,6 +26,7 @@ export type FeatureKey =
   | 'tierPrices'
   | 'navToggle'
   | 'rowActions'
+  | 'assocBulk'
   | 'massactions'
   | 'paging'
   | 'activeFilters'
@@ -134,6 +135,17 @@ export const FEATURE_CATALOG: readonly FeatureMeta[] = [
     defaultOn: true,
     available: ENHANCE_ROW_ACTIONS,
     detect: (doc) => has(doc, GRID),
+  },
+  {
+    id: 'assocBulk',
+    label: 'Bulk select by SKU',
+    description:
+      'Paste SKUs into the "Select Associated Product" window and they get ticked, including rows off the current page.',
+    group: 'Grid',
+    defaultOn: true,
+    available: true,
+    detect: (doc) =>
+      has(doc, 'aside[class*="configurable_associated_product_modal"]'),
   },
   {
     id: 'massactions',

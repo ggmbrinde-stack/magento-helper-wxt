@@ -11,6 +11,8 @@
 
 import type { LaneRouter } from '../../../core/messages';
 
+import { selectAssociatedSkus } from '../../../page/features/assoc-bulk/page';
+
 export const handleUiMessage: LaneRouter = (message, ctx) => {
   if (message?.type === 'OPEN_TAB_GROUP') {
     const urls = (message.urls ?? []) as string[];
@@ -45,6 +47,90 @@ export const handleUiMessage: LaneRouter = (message, ctx) => {
       }
     })();
     // Outer return keeps the channel open for the async response.
+    return true;
+  }
+
+  if (message?.type === 'SELECT_ASSOCIATED_SKUS') {
+    const tabId = ctx.senderTabId;
+    const skus = (message.skus ?? []) as string[];
+
+    if (typeof tabId !== 'number') {
+      ctx.sendResponse({
+        ok: false,
+        reason: 'No sender tab.',
+        requested: 0,
+        found: 0,
+        missing: [],
+        added: 0,
+        selectedBefore: 0,
+        selectedAfter: 0,
+        totalSelected: null,
+        tickedOnScreen: 0,
+        filterPasses: 0,
+      });
+      return true;
+    }
+    if (skus.length === 0) {
+      ctx.sendResponse({
+        ok: false,
+        reason: 'No SKUs provided.',
+        requested: 0,
+        found: 0,
+        missing: [],
+        added: 0,
+        selectedBefore: 0,
+        selectedAfter: 0,
+        totalSelected: null,
+        tickedOnScreen: 0,
+        filterPasses: 0,
+      });
+      return true;
+    }
+
+    void (async () => {
+      try {
+        // The injected function is the page-world implementation in the feature
+        // module. `executeScript` with a bundled file runs in MAIN world, so it
+        // can read `ko`/`window.require`/the observables that the content script
+        // cannot reach. Its run returns the report through `injection.result`.
+        const [injection] =
+          await chrome.scripting.executeScript({
+            target: { tabId },
+            world: 'MAIN',
+            func: selectAssociatedSkus,
+            args: [skus],
+          });
+        ctx.sendResponse(
+          (injection && injection.result) ?? {
+            ok: false,
+            reason: 'The page did not return a report.',
+            requested: skus.length,
+            found: 0,
+            missing: [],
+            added: 0,
+            selectedBefore: 0,
+            selectedAfter: 0,
+            totalSelected: null,
+            tickedOnScreen: 0,
+            filterPasses: 0,
+          },
+        );
+      } catch (err) {
+        ctx.sendResponse({
+          ok: false,
+          reason: String((err && (err as Error).message) || err),
+          requested: skus.length,
+          found: 0,
+          missing: [],
+          added: 0,
+          selectedBefore: 0,
+          selectedAfter: 0,
+          totalSelected: null,
+          tickedOnScreen: 0,
+          filterPasses: 0,
+        });
+      }
+    })();
     return true;
   }
 

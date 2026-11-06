@@ -28,6 +28,7 @@ import { maybeRequestErrorMarkup } from './error-markup';
 import { addOptionsCompanion } from './options-companion';
 import { enhanceOptionsItems } from './options-items';
 import { renderTierPricesButtons } from './tier-prices';
+import { enhanceAssocBulk } from './assoc-bulk';
 
 /** Every key except the master switch, which gates the whole run. */
 export type MountableFeatureKey = Exclude<FeatureKey, 'extensionEnabled'>;
@@ -62,4 +63,5 @@ export const FEATURE_MOUNTS: Record<MountableFeatureKey, () => void> = {
   errorMarkup: maybeRequestErrorMarkup,
   optionsCompanion: addOptionsCompanion,
   optionsItems: enhanceOptionsItems,
+  assocBulk: enhanceAssocBulk,
 };

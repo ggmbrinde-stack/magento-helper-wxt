@@ -80,3 +80,29 @@ export interface GetSkuRequest {
 export interface GetSkuResponse {
   sku: string;
 }
+
+/**
+ * Bulk-select SKUs in the open "Select Associated Product" modal.
+ *
+ * The request is sent by the content script's panel. The response is the report
+ * produced by the injected page-world function in
+ * `src/page/features/assoc-bulk/page.ts`.
+ */
+export interface SelectAssociatedSkusRequest {
+  type: 'SELECT_ASSOCIATED_SKUS';
+  skus: string[];
+}
+
+export interface SelectAssociatedSkusResponse {
+  ok: boolean;
+  reason?: string;
+  requested: number;
+  found: number;
+  missing: string[];
+  added: number;
+  selectedBefore: number;
+  selectedAfter: number;
+  totalSelected: number | null;
+  tickedOnScreen: number;
+  filterPasses: number;
+}
