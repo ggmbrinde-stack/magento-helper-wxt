@@ -358,16 +358,24 @@ export async function selectAssociatedSkus(skus: string[]): Promise<AssocBulkRep
     // 2a. the variations matrix component, wherever it is registered.
     try {
       const registry = await new Promise<any>((resolve) => {
+        const start = Date.now();
+        const finish = (value: any): void => {
+          clearInterval(timer);
+          resolve(value);
+        };
+        const timer = setInterval(() => {
+          if (stopped() || Date.now() - start >= 9000) finish(null);
+        }, 100);
         try {
           (
             requireFn as (names: string[], ok: (m: any) => void, fail: (e: any) => void) => void
           )(
             ['uiRegistry'],
-            (mod: any) => resolve(mod),
-            () => resolve(null),
+            (mod: any) => finish(mod),
+            () => finish(null),
           );
         } catch (err) {
-          resolve(null);
+          finish(null);
         }
       });
       if (registry && typeof registry.filter === 'function') {
@@ -558,7 +566,20 @@ export async function selectAssociatedSkus(skus: string[]): Promise<AssocBulkRep
   // restore pass ignores the cancel flag.
   if (cancelled || stopped()) cancelled = true;
   if (squash(skuInput.value) !== initialFilter) {
-    await applyFilter(initialFilter, false);
+    if (!(await applyFilter(initialFilter, false))) {
+      return {
+        ...empty('Could not confirm the grid filter was restored. No selection was applied; check the grid before retrying.'),
+        found: found.length,
+        missing,
+        already,
+        filterPasses,
+        cancelled: cancelled || stopped(),
+        selectedBefore: selection().length,
+        selectedAfter: selection().length,
+        totalSelected:
+          typeof col.totalSelected === 'function' ? col.totalSelected.peek() : null,
+      };
+    }
     log(initialFilter ? `filter restored (${initialFilter})` : 'filter cleared');
   }
 

@@ -41,6 +41,7 @@ test('the catalog still declares every storage key with its default', () => {
     tierPrices: true,
     navToggle: true,
     rowActions: true,
+    assocBulk: true,
     massactions: true,
     paging: true,
     activeFilters: true,
