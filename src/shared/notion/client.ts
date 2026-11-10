@@ -13,16 +13,24 @@ async function fetchWithTimeout(
   input: string,
   init?: RequestInit,
 ): Promise<Response> {
+  const retrySafe = isReadOnlyNotionRequest(init?.method ?? 'GET', input);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), NOTION_REQUEST_TIMEOUT_MS);
   try {
-    return await fetch(input, { ...init, signal: controller.signal });
+    const response = await fetch(input, { ...init, signal: controller.signal });
+    // A failed response can arrive after a mutation was already accepted.
+    if (!retrySafe && (response.status === 408 || response.status >= 500)) {
+      throw await notionApiError(response, 'write', false);
+    }
+    return response;
   } catch (err) {
     if (controller.signal.aborted) {
       throw new NotionApiError(
         408,
         'timeout',
         `Notion request timed out after ${NOTION_REQUEST_TIMEOUT_MS / 1000}s`,
+        0,
+        retrySafe,
       );
     }
     throw err;
@@ -63,13 +71,15 @@ export class NotionApiError extends Error {
   readonly status: number;
   readonly code: string;
   readonly retryAfter: number;
+  readonly retryable: boolean;
 
-  constructor(status: number, code: string, message: string, retryAfter = 0) {
+  constructor(status: number, code: string, message: string, retryAfter = 0, retryable = true) {
     super(message || `Notion API error ${status}`);
     this.name = 'NotionApiError';
     this.status = status;
     this.code = code;
     this.retryAfter = retryAfter;
+    this.retryable = retryable;
   }
 }
 
@@ -77,6 +87,7 @@ export class NotionApiError extends Error {
 export async function notionApiError(
   response: Response,
   context: string,
+  retryable = true,
 ): Promise<NotionApiError> {
   const retryHeader = Number(response.headers.get('retry-after'));
   const retryAfter = Number.isFinite(retryHeader) && retryHeader > 0 ? retryHeader : 0;
@@ -95,12 +106,14 @@ export async function notionApiError(
     code,
     message || `${context} failed (${response.status})`,
     retryAfter,
+    retryable,
   );
 }
 
 /** True when a failed response is transient and worth retrying. */
 function isRetryable(error: unknown): boolean {
   if (error instanceof NotionApiError) {
+    if (!error.retryable) return false;
     return (
       error.status === 408 ||
       error.status === 429 ||
