@@ -1340,7 +1340,7 @@ function cascadeDescendantUnchecks(box: HTMLInputElement, tree: Element): void {
   for (let hops = 0; li && hops < 50; hops += 1) {
     const parent = parentBranchItem(li);
     if (!parent || parent === root) return;
-    if (subtreeHasChecked(parent)) return;
+    if (descendantsHaveChecked(parent)) return;
     const parentBox = parent.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
     if (!parentBox || parentBox.disabled || !parentBox.checked) {
       li = parent;
@@ -1374,12 +1374,9 @@ function descendantLis(branch: HTMLLIElement): HTMLLIElement[] {
 }
 
 /**
- * True when the branch item's subtree holds any checked box: its own box, or
- * any box in a descendant li (sibling model — see `descendantLis`).
+ * True when a descendant is checked, excluding the parent being reconsidered.
  */
-function subtreeHasChecked(branch: HTMLLIElement): boolean {
-  const own = branch.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
-  if (own?.checked) return true;
+function descendantsHaveChecked(branch: HTMLLIElement): boolean {
   for (const item of descendantLis(branch)) {
     const box = item.querySelector<HTMLInputElement>(TREE_BOX_SELECTOR);
     if (box?.checked) return true;
