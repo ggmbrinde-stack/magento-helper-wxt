@@ -1,5 +1,6 @@
 import { h, Fragment } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { browser } from 'wxt/browser';
 // Sections are grouped by the lane that owns them: an audit screen and an
 // automation screen never sit in the same folder, so two agents can work on
 // them without touching one file. `ui/` is the extension's own surfaces.
@@ -141,7 +142,7 @@ export function Dashboard() {
           ))}
         </nav>
         <div class="db-side-foot">
-          v0.2.0 — Listing Errors create-only · Library updates enabled
+          v{browser.runtime.getManifest().version} · Listing Errors create-only · Library updates enabled
         </div>
       </aside>
 

@@ -1,0 +1,12 @@
+# Project instructions
+
+- Use English by default, Portuguese from Portugal when requested or needed. Never use em dashes. Keep replies concise and prefer chat; do not switch modes automatically.
+- Read [the handoff](docs/shared/PROJECT-HANDOFF-2026-11-05.md), [documentation index](docs/README.md), and the relevant lane documentation. Inspect current branch, base commit, and working changes before work. Preserve user changes and scratch files, including `tmp/` and `scripts/probe-associated-products.js`.
+- Feature freeze: maintenance only. No new product features, redesigns, broad refactors, or expanded automation/write behavior without explicit approval. Audits produce findings, not product fixes.
+- Preserve Magento native controls, handlers, forms, tabs, menus, and save behavior. Keep the actual `Default Category` root checked and enabled. Diagnostics must not save or change Magento data.
+- Keep existing Notion writer guards and explicit confirmations. Source code is authoritative for implementation; documentation records intent and contracts and may need verification. No Notion writes, commits, pushes, merges, releases, or external messages unless explicitly requested. Never include credentials in handoffs.
+- Only the designated coordinator chat plans, delegates, reconciles evidence, and reports. Specialist persistent chats execute their assigned role and do not delegate recursively. Use the six roles and task brief in [AGENT-WORKFLOW.md](docs/shared/AGENT-WORKFLOW.md). The coordinator delegates only roles needed for the request, normally one or two workers, at most three.
+- The coordinator reads specialist summaries. Automatic cross-chat replies require direct human authorization and inherited permission; a coordinator message alone does not authorize them.
+- Give each worker a base commit, scope, allowed files, mode, acceptance checks, and dependencies. Simultaneous code writers need separate worktrees; otherwise use one writer. Shared contracts need one named owner and sequential integration.
+- Require independent review before accepting changes or publishing audit findings. Instructions and role labels are not security boundaries; inherited permissions still apply.
+- Make the smallest complete change. Reuse existing patterns, avoid new dependencies and speculative abstractions, and check affected callers. Run targeted checks appropriate to the work and report omissions and risks. Do not claim authenticated Magento behavior was verified without a live check.

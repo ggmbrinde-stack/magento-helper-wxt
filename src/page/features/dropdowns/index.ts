@@ -86,6 +86,7 @@ export function readOptions(select: HTMLSelectElement): EnhancedOption[] {
 
 /** Write a value into a native <select> the way its component listeners expect. */
 export function writeNativeValue(select: HTMLSelectElement, value: string): void {
+  if (select.matches(':disabled')) return;
   const descriptor = Object.getOwnPropertyDescriptor(
     HTMLSelectElement.prototype,
     'value',

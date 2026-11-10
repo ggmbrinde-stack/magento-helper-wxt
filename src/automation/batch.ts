@@ -10,6 +10,7 @@ import type { ModelVerdict } from './modelSort';
 import type { MediaSource } from '../audit';
 import { BATCH_MANIFEST_KEY } from './mirrorManifest';
 import { BATCH_AVAILABILITY_KEY } from '../audit';
+import { requireSettledBatch, withBatchState } from './batchState';
 
 export const BATCH_JOB_KEY = 'batchJob';
 export const BATCH_PAYLOADS_KEY = 'batchPayloads';
@@ -225,18 +226,25 @@ export async function patchBatchJob(
 }
 
 export async function clearBatch(): Promise<void> {
-  await chrome.storage.local.remove([
-    BATCH_JOB_KEY,
-    BATCH_PAYLOADS_KEY,
-    BATCH_LIBRARY_KEY,
-    BATCH_ANOMALIES_KEY,
-    BATCH_MODEL_VERDICTS_KEY,
-    BATCH_DOSSIER_KEY,
-    BATCH_EVIDENCE_KEY,
-    BATCH_PUSHED_KEY,
-    BATCH_MANIFEST_KEY,
-    BATCH_AVAILABILITY_KEY,
-  ]);
+  return withBatchState(async () => {
+    requireSettledBatch();
+    const job = await loadBatchJob();
+    if (job?.status === 'running') {
+      throw new Error('Pause or cancel the batch before clearing results.');
+    }
+    await chrome.storage.local.remove([
+      BATCH_JOB_KEY,
+      BATCH_PAYLOADS_KEY,
+      BATCH_LIBRARY_KEY,
+      BATCH_ANOMALIES_KEY,
+      BATCH_MODEL_VERDICTS_KEY,
+      BATCH_DOSSIER_KEY,
+      BATCH_EVIDENCE_KEY,
+      BATCH_PUSHED_KEY,
+      BATCH_MANIFEST_KEY,
+      BATCH_AVAILABILITY_KEY,
+    ]);
+  });
 }
 
 /**

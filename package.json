@@ -1,12 +1,15 @@
 {
   "name": "magento-helper-wxt",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Magento Helper extension on the plan stack (TypeScript strict, WXT, Zod). Migration target; sku-copy-button/ stays the working extension.",
   "type": "module",
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
+    "zip": "wxt zip -b chrome",
+    "prezip": "npm run prebuild",
+    "postinstall": "wxt prepare",
     "typecheck": "tsc --noEmit",
     "predev": "node scripts/sync-toolkit.mjs --check && node scripts/check-lanes.mjs && node scripts/check-features.mjs",
     "prebuild": "node scripts/sync-toolkit.mjs --check && node scripts/check-lanes.mjs && node scripts/check-features.mjs",
@@ -24,7 +27,11 @@
     "test:makito": "npx esbuild src/audit/__tests__/makitoImages.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/makito-images-test.mjs --log-level=warning && node --test .output/makito-images-test.mjs",
     "test:enable": "npx esbuild src/audit/__tests__/enableFlow.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/enable-flow-test.mjs --log-level=warning && node --test .output/enable-flow-test.mjs",
     "test:facts": "npx esbuild src/audit/__tests__/adminFacts.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/admin-facts-test.mjs --log-level=warning && node --test .output/admin-facts-test.mjs",
-    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features",
+    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features && npm run test:batch && npm run test:ui && npm run test:notion-retry && npm run test:enable-freshness",
+    "test:batch": "node --test src/automation/__tests__/batchRunner.test.mjs",
+    "test:ui": "npx esbuild tests/uiControls.test.ts tests/assocBulk.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outdir=.output/ui-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/ui-tests/uiControls.test.mjs .output/ui-tests/assocBulk.test.mjs",
+    "test:notion-retry": "npx esbuild scripts/__tests__/notionRetry.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outfile=.output/notion-retry-test.mjs --log-level=warning && node --test .output/notion-retry-test.mjs",
+    "test:enable-freshness": "npx esbuild scripts/__tests__/enableFlowFreshness.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outfile=.output/enable-flow-freshness-test.mjs --log-level=warning && node --test .output/enable-flow-freshness-test.mjs",
     "test:features": "npx esbuild src/shared/__tests__/features.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/features-test.mjs --log-level=warning && node --test .output/features-test.mjs",
     "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs"
   },
@@ -33,6 +40,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "esbuild": "^0.25.12",
+    "jsdom": "^24.0.0",
     "typescript": "^5.6.3",
     "wxt": "^0.19.9"
   }

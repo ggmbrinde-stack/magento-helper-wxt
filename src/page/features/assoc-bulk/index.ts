@@ -14,6 +14,7 @@ import { button } from '../../../ui';
 const PANEL_ATTR = 'data-mhx-assoc-bulk-panel';
 const STATUS_ATTR = 'data-mhx-assoc-bulk-status';
 const PROGRESS_EVENT = 'mhx-assoc-bulk-progress';
+const CANCEL_ATTR = 'data-mhx-assoc-bulk-cancel';
 
 /** The modal is an `aside` whose class carries the UI component name. */
 const MODAL_SELECTOR =
@@ -22,6 +23,11 @@ const MODAL_SELECTOR =
 // The text the operator last typed, so a re-mount from an AJAX grid refresh
 // does not throw their draft away.
 let lastValue = '';
+
+// True while the page-world run is in flight. Shared so a panel remounted by
+// the grid's own re-render still shows the run as busy, and so Stop is only
+// offered when there is something to stop.
+let running = false;
 
 // Shared style block, injected once per page.
 let stylesInjected = false;
@@ -34,26 +40,26 @@ function injectStyles(): void {
     .mhx-assoc-bulk-panel{
       display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;
       margin:8px 0;padding:8px 10px;box-sizing:border-box;
-      border:1px solid var(--mhx-border-2,#c6c6c6);border-radius:6px;
-      background:var(--mhx-surface,#fff);
+      border:1px solid var(--mhx-pg-line);border-radius:6px;
+      background:var(--mhx-pg-fill);
     }
     .mhx-assoc-bulk-field{display:flex;flex-direction:column;gap:4px;}
     .mhx-assoc-bulk-actions{display:flex;gap:6px;align-items:center;}
-    .mhx-assoc-bulk-field label{font-size:11px;color:var(--mhx-ink-2,#3a3a3a);font-weight:600;letter-spacing:.02em;text-transform:uppercase;}
+    .mhx-assoc-bulk-field label{font-size:11px;color:var(--mhx-pg-muted);font-weight:600;letter-spacing:.02em;text-transform:uppercase;}
     textarea.mhx-assoc-bulk-input{
-      width:260px;height:54px;font:inherit;color:var(--mhx-ink,#222);
-      background:var(--mhx-surface,#fff);border:1px solid var(--mhx-border-2,#c6c6c6);
+      width:260px;height:54px;font:inherit;color:var(--mhx-pg-ink);
+      background:var(--mhx-pg-fill);border:1px solid var(--mhx-pg-line);
       border-radius:6px;padding:6px 8px;resize:vertical;line-height:1.35;
       font-family:inherit;font-size:13px;
     }
     textarea.mhx-assoc-bulk-input:focus{
-      outline:none;border-color:var(--mhx-accent,var(--mhx-pg-accent,#3761d8));
-      box-shadow:0 0 0 3px var(--mhx-on-accent,#eae4ff);
+      outline:none;border-color:var(--mhx-pg-accent);
+      box-shadow:0 0 0 3px var(--mhx-pg-accent);
     }
-    [${STATUS_ATTR}]{font-size:12px;color:var(--mhx-muted,#6b6b6b);line-height:1.4;flex:1 1 220px;min-width:180px;white-space:normal;}
-    [${STATUS_ATTR}][data-tone="ok"]{color:var(--mhx-pg-ok,#1c7a3c);}
-    [${STATUS_ATTR}][data-tone="warn"]{color:var(--mhx-pg-warn,#b56a00);}
-    [${STATUS_ATTR}][data-tone="err"]{color:var(--mhx-pg-danger,#b3261e);}
+    [${STATUS_ATTR}]{font-size:12px;color:var(--mhx-pg-muted);line-height:1.4;flex:1 1 220px;min-width:180px;white-space:normal;}
+    [${STATUS_ATTR}][data-tone="ok"]{color:var(--mhx-pg-ok);}
+    [${STATUS_ATTR}][data-tone="warn"]{color:var(--mhx-pg-warn);}
+    [${STATUS_ATTR}][data-tone="err"]{color:var(--mhx-pg-danger);}
   `;
   (document.head ?? document.documentElement).appendChild(style);
 }
@@ -134,17 +140,58 @@ function attachToModal(modal: HTMLElement): void {
   runBtn.disabled = false;
   actions.appendChild(runBtn);
 
+  const stopBtn = button({
+    label: 'Stop',
+    title: 'Stop after the current SKU and leave the selection unchanged',
+    onClick: () => {
+      // The page-world function cannot see this module's variables, so the
+      // signal travels as an attribute on the document element.
+      document.documentElement.setAttribute(CANCEL_ATTR, '1');
+      const statusEl = panel.querySelector(`div[${STATUS_ATTR}]`);
+      if (statusEl instanceof HTMLElement) {
+        setStatus(statusEl, 'Stopping after the current SKU…', 'warn');
+      }
+    },
+  });
+  stopBtn.setAttribute('data-mhx-stop', '1');
+  stopBtn.disabled = true;
+  actions.appendChild(stopBtn);
+
   panel.appendChild(field);
   panel.appendChild(actions);
   panel.appendChild(status);
 
   host.insertBefore(panel, host.firstChild);
+
+  // A grid re-render can re-mount this panel mid-run; keep its controls honest.
+  setRunningState(panel, running);
 }
 
 function setStatus(el: HTMLElement, text: string, tone?: 'ok' | 'warn' | 'err'): void {
   el.textContent = text;
   el.removeAttribute('data-tone');
   if (tone) el.setAttribute('data-tone', tone);
+}
+
+/** Reflect the shared run state on one panel's buttons. */
+function setRunningState(panel: HTMLElement, on: boolean): void {
+  const runBtn = panel.querySelector('button[data-mhx-btn]');
+  if (runBtn instanceof HTMLButtonElement) runBtn.disabled = on;
+  const stopBtn = panel.querySelector('button[data-mhx-stop]');
+  if (stopBtn instanceof HTMLButtonElement) stopBtn.disabled = !on;
+}
+
+/** Every panel, including ones re-mounted by the grid mid-run. */
+function setAllPanelsRunning(on: boolean): void {
+  running = on;
+  const panels: NodeListOf<HTMLElement> = document.querySelectorAll(`[${PANEL_ATTR}]`);
+  panels.forEach((panel) => setRunningState(panel, on));
+  if (on) {
+    // Clear any stale "stop" from a previous run before the new one starts.
+    document.documentElement.setAttribute(CANCEL_ATTR, '0');
+  } else {
+    document.documentElement.removeAttribute(CANCEL_ATTR);
+  }
 }
 
 // ---- progress listener (one per tab) --------------------------------------
@@ -159,6 +206,8 @@ function attachProgress(): void {
       const parsed: { done?: number; total?: number; sku?: string } =
         JSON.parse(detail);
       if (!parsed.done || !parsed.total) return;
+      // Do not overwrite the "Stopping..." line while the page finishes up.
+      if (document.documentElement.getAttribute(CANCEL_ATTR) === '1') return;
       const targets = document.querySelectorAll(
         `div[${STATUS_ATTR}]`,
       ) as NodeListOf<HTMLElement>;
@@ -190,12 +239,12 @@ function attachProgress(): void {
 
 // ---- the clickable run ---------------------------------------------------
 async function run(panel: HTMLElement): Promise<void> {
+  if (running) return;
+
   const textareaEl = panel.querySelector('textarea.mhx-assoc-bulk-input');
   const textarea = textareaEl instanceof HTMLTextAreaElement ? textareaEl : null;
   const statusEl = panel.querySelector(`div[${STATUS_ATTR}]`);
   const status = statusEl instanceof HTMLElement ? statusEl : null;
-  const runBtnEl = panel.querySelector('button[data-mhx-btn]');
-  const runBtn = runBtnEl instanceof HTMLButtonElement ? runBtnEl : null;
 
   const skus = parseSkus(textarea?.value ?? '');
   if (skus.length === 0) {
@@ -204,67 +253,98 @@ async function run(panel: HTMLElement): Promise<void> {
   }
   if (skus.length > 100) lastValue = skus.slice(0, 100).join('\n');
 
-  if (runBtn) runBtn.disabled = true;
+  setAllPanelsRunning(true);
   if (status) {
-    setStatus(status, `Resolving ${skus.length} SKU(s)…`, 'ok');
+    setStatus(status, `Resolving ${skus.length} SKU(s)… Press Stop to cancel.`, 'ok');
   }
 
-  let response: { ok?: boolean; reason?: string; requested?: number; found?: number; missing?: string[]; added?: number; selectedBefore?: number; selectedAfter?: number; totalSelected?: number | null; tickedOnScreen?: number; filterPasses?: number } | undefined;
   try {
-    response = (await chrome.runtime.sendMessage({
-      type: 'SELECT_ASSOCIATED_SKUS',
-      skus: skus,
-    })) as typeof response;
-  } catch (err) {
-    // Content script injected after settings saved, but maybe not in the
-    // background listener yet — treat a silent drop as "did nothing".
-    response = { ok: false, reason: 'The background did not answer.' };
-  }
-
-  if (!response) {
-    if (status) setStatus(status, 'The background did not answer.', 'err');
-    if (runBtn) runBtn.disabled = false;
-    return;
-  }
-  if (!response.ok) {
-    if (status) setStatus(status, String(response.reason || 'The run did not start.'), 'err');
-    if (runBtn) runBtn.disabled = false;
-    return;
-  }
-
-  const total = response.requested ?? skus.length;
-  const found = response.found ?? 0;
-  const missing = response.missing ?? [];
-  const added = response.added ?? 0;
-  const tickedOnScreen = response.tickedOnScreen ?? 0;
-  const tb = response.totalSelected;
-  const tone: 'ok' | 'warn' | 'err' = found === total ? 'ok' : 'warn';
-  const lines: string[] = [];
-
-  if (found === 0) {
-    lines.push('No pasted SKU matched this listing.');
-  } else if (added === 0) {
-    lines.push(`${found} already selected, nothing to add.`);
-    if (tb !== null) lines.push(`Header total: ${tb}.`);
-    lines.push('Press Done to apply the selection.');
-  } else {
-    lines.push(`Selected ${added} of ${total}.`);
-    const offPage = Math.max(0, added - tickedOnScreen);
-    if (offPage > 0) {
-      lines.push(
-        `${offPage} are not on this page, so they have no tick: the header count holds them.`,
-      );
+    let response:
+      | {
+          ok?: boolean;
+          reason?: string;
+          requested?: number;
+          found?: number;
+          missing?: string[];
+          already?: string[];
+          cancelled?: boolean;
+          added?: number;
+          selectedBefore?: number;
+          selectedAfter?: number;
+          totalSelected?: number | null;
+          tickedOnScreen?: number;
+          filterPasses?: number;
+        }
+      | undefined;
+    try {
+      response = (await chrome.runtime.sendMessage({
+        type: 'SELECT_ASSOCIATED_SKUS',
+        skus: skus,
+      })) as typeof response;
+    } catch (err) {
+      // Content script injected after settings saved, but maybe not in the
+      // background listener yet: treat a silent drop as "did nothing".
+      response = { ok: false, reason: 'The background did not answer.' };
     }
-    if (tb !== null) lines.push(`Header total: ${tb}.`);
-    lines.push('Press Done to apply the selection.');
-  }
-  if (missing.length) lines.push(`Not found: ${missing.join(', ')}.`);
-  if (status) setStatus(status, lines.join(' '), tone);
-  if (runBtn) runBtn.disabled = false;
 
-  if (skus.length > 100) {
-    textarea && (textarea.value = skus.slice(0, 100).join('\n'));
-    lastValue = textarea ? textarea.value : '';
+    if (!response) {
+      if (status) setStatus(status, 'The background did not answer.', 'err');
+      return;
+    }
+    if (!response.ok) {
+      if (status) setStatus(status, String(response.reason || 'The run did not start.'), 'err');
+      return;
+    }
+
+    if (response.cancelled) {
+      if (status) {
+        setStatus(
+          status,
+          'Stopped. Nothing was selected and the grid filter was put back.',
+          'warn',
+        );
+      }
+      return;
+    }
+
+    const total = response.requested ?? skus.length;
+    const found = response.found ?? 0;
+    const missing = response.missing ?? [];
+    const already = response.already ?? [];
+    const added = response.added ?? 0;
+    const tickedOnScreen = response.tickedOnScreen ?? 0;
+    const tb = response.totalSelected;
+    const newTotal = Math.max(0, total - already.length);
+    const tone: 'ok' | 'warn' | 'err' = missing.length > 0 ? 'warn' : 'ok';
+    const lines: string[] = [];
+
+    if (found === 0 && already.length === 0) {
+      lines.push('No pasted SKU matched this listing.');
+    } else if (added === 0) {
+      if (already.length) lines.push(`${already.length} already associated, skipped.`);
+      if (found > 0) lines.push('Nothing new to add.');
+      if (tb !== null) lines.push(`Header total: ${tb}.`);
+    } else {
+      lines.push(`Selected ${added} of ${newTotal} new SKU(s).`);
+      const offPage = Math.max(0, added - tickedOnScreen);
+      if (offPage > 0) {
+        lines.push(
+          `${offPage} are not on this page, so they have no tick: the header count holds them.`,
+        );
+      }
+      if (tb !== null) lines.push(`Header total: ${tb}.`);
+      lines.push('Press Done to apply the selection.');
+    }
+    if (already.length) lines.push(`Already associated: ${already.join(', ')}.`);
+    if (missing.length) lines.push(`Not found: ${missing.join(', ')}.`);
+    if (status) setStatus(status, lines.join(' '), tone);
+
+    if (skus.length > 100) {
+      if (textarea) textarea.value = skus.slice(0, 100).join('\n');
+      lastValue = textarea ? textarea.value : '';
+    }
+  } finally {
+    setAllPanelsRunning(false);
   }
 }
 

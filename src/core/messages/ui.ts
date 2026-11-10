@@ -99,6 +99,10 @@ export interface SelectAssociatedSkusResponse {
   requested: number;
   found: number;
   missing: string[];
+  /** SKUs that were already children of this configurable, so they were skipped. */
+  already: string[];
+  /** True when the operator stopped the run; no selection was applied. */
+  cancelled: boolean;
   added: number;
   selectedBefore: number;
   selectedAfter: number;

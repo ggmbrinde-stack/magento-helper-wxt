@@ -38,7 +38,7 @@ const STATUS_CLASS: Record<string, string> = {
 };
 
 function ackKey(sku: string): string {
-  return `mhx:enable:${sku}`;
+  return `mhx:enable:${sku.trim().toUpperCase()}`;
 }
 
 interface StoredAcks {
@@ -209,6 +209,11 @@ export function EnableFlow({
     setError(null);
     setNote(null);
     try {
+      if (force) {
+        setReport(null);
+        setAcked({});
+        await browser.storage.local.remove(ackKey(trimmed));
+      }
       const res = (await browser.runtime.sendMessage({
         type: 'LOAD_ENABLE_FLOW',
         sku: trimmed,

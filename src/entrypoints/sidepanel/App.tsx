@@ -96,7 +96,7 @@ export function App() {
           >
             Dashboard
           </button>
-          <span class="mhx-badge">v0.2.0</span>
+          <span class="mhx-badge">v{browser.runtime.getManifest().version}</span>
         </div>
       </header>
 

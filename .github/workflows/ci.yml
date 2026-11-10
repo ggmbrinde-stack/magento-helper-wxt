@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop, 'codex/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run check:ui
+      - run: npm run check:notion
+      - name: Build and package Chrome candidate
+        run: npm run zip
+      - name: Read candidate version
+        id: candidate
+        run: node -p "'version=' + require('./package.json').version" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: bog-helper-${{ steps.candidate.outputs.version }}-${{ github.sha }}
+          path: .output/magento-helper-wxt-${{ steps.candidate.outputs.version }}-chrome.zip
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
