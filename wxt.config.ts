@@ -8,7 +8,6 @@ export default defineConfig({
     name: 'BOG Helper',
     description:
       'BestOfGifts admin helper: reads Notion fix data and assists Magento listing fixes.',
-    version: '0.2.0',
     permissions: [
       'alarms',
       'clipboardWrite',

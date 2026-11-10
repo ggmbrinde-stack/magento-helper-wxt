@@ -27,6 +27,7 @@ never has to read a UI doc to find out what it may touch.
 - [RUN-AUDIT-OPTIMIZATION-VISION.md](automation/RUN-AUDIT-OPTIMIZATION-VISION.md) — the vision (model) stage.
 
 **shared/**
+- [RELEASE-WORKFLOW.md](shared/RELEASE-WORKFLOW.md) - branches, validação, piloto Chrome em ZIP e recuperação.
 - [AGENT-WORKFLOW.md](shared/AGENT-WORKFLOW.md) - on-demand roles, task briefs, isolated ownership, independent review, and native agent configuration.
 - [AGENT-CHATS.md](shared/AGENT-CHATS.md) - persistent project chat IDs, recorded settings, and the dated assignment snapshot.
 - [FOUR-PILLAR-MAP.md](shared/FOUR-PILLAR-MAP.md) - current business workflow map, boundaries, coverage and next analyses.
