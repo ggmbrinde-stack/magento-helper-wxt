@@ -40,26 +40,26 @@ function injectStyles(): void {
     .mhx-assoc-bulk-panel{
       display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;
       margin:8px 0;padding:8px 10px;box-sizing:border-box;
-      border:1px solid var(--mhx-border-2,#c6c6c6);border-radius:6px;
-      background:var(--mhx-surface,#fff);
+      border:1px solid var(--mhx-pg-line);border-radius:6px;
+      background:var(--mhx-pg-fill);
     }
     .mhx-assoc-bulk-field{display:flex;flex-direction:column;gap:4px;}
     .mhx-assoc-bulk-actions{display:flex;gap:6px;align-items:center;}
-    .mhx-assoc-bulk-field label{font-size:11px;color:var(--mhx-ink-2,#3a3a3a);font-weight:600;letter-spacing:.02em;text-transform:uppercase;}
+    .mhx-assoc-bulk-field label{font-size:11px;color:var(--mhx-pg-muted);font-weight:600;letter-spacing:.02em;text-transform:uppercase;}
     textarea.mhx-assoc-bulk-input{
-      width:260px;height:54px;font:inherit;color:var(--mhx-ink,#222);
-      background:var(--mhx-surface,#fff);border:1px solid var(--mhx-border-2,#c6c6c6);
+      width:260px;height:54px;font:inherit;color:var(--mhx-pg-ink);
+      background:var(--mhx-pg-fill);border:1px solid var(--mhx-pg-line);
       border-radius:6px;padding:6px 8px;resize:vertical;line-height:1.35;
       font-family:inherit;font-size:13px;
     }
     textarea.mhx-assoc-bulk-input:focus{
-      outline:none;border-color:var(--mhx-accent,var(--mhx-pg-accent,#3761d8));
-      box-shadow:0 0 0 3px var(--mhx-on-accent,#eae4ff);
+      outline:none;border-color:var(--mhx-pg-accent);
+      box-shadow:0 0 0 3px var(--mhx-pg-accent);
     }
-    [${STATUS_ATTR}]{font-size:12px;color:var(--mhx-muted,#6b6b6b);line-height:1.4;flex:1 1 220px;min-width:180px;white-space:normal;}
-    [${STATUS_ATTR}][data-tone="ok"]{color:var(--mhx-pg-ok,#1c7a3c);}
-    [${STATUS_ATTR}][data-tone="warn"]{color:var(--mhx-pg-warn,#b56a00);}
-    [${STATUS_ATTR}][data-tone="err"]{color:var(--mhx-pg-danger,#b3261e);}
+    [${STATUS_ATTR}]{font-size:12px;color:var(--mhx-pg-muted);line-height:1.4;flex:1 1 220px;min-width:180px;white-space:normal;}
+    [${STATUS_ATTR}][data-tone="ok"]{color:var(--mhx-pg-ok);}
+    [${STATUS_ATTR}][data-tone="warn"]{color:var(--mhx-pg-warn);}
+    [${STATUS_ATTR}][data-tone="err"]{color:var(--mhx-pg-danger);}
   `;
   (document.head ?? document.documentElement).appendChild(style);
 }
