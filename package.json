@@ -27,7 +27,8 @@
     "test:makito": "npx esbuild src/audit/__tests__/makitoImages.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/makito-images-test.mjs --log-level=warning && node --test .output/makito-images-test.mjs",
     "test:enable": "npx esbuild src/audit/__tests__/enableFlow.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/enable-flow-test.mjs --log-level=warning && node --test .output/enable-flow-test.mjs",
     "test:facts": "npx esbuild src/audit/__tests__/adminFacts.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/admin-facts-test.mjs --log-level=warning && node --test .output/admin-facts-test.mjs",
-    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features",
+    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features && npm run test:batch",
+    "test:batch": "node --test src/automation/__tests__/batchRunner.test.mjs",
     "test:features": "npx esbuild src/shared/__tests__/features.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/features-test.mjs --log-level=warning && node --test .output/features-test.mjs",
     "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs"
   },

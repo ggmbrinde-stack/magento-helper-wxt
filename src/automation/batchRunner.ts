@@ -55,6 +55,7 @@ import {
 } from './modelBridge';
 import { scoreSkuImages } from './modelSort';
 import { modelVerdictPayloads } from './modelFindings';
+import { batchRuntime, requireSettledBatch, withBatchState } from './batchState';
 import type { LibraryCells } from '../audit';
 import type { ListingErrorPayload } from '../audit';
 import type { ModelBridgeConfig } from './modelBridge';
@@ -329,8 +330,6 @@ async function runSku(
   };
 }
 
-let pumping = false;
-
 // The SKU in flight, so pause/cancel can stop its network work immediately.
 let activeRun: AbortController | null = null;
 
@@ -389,41 +388,45 @@ async function clearAlarm(): Promise<void> {
  * repeatedly; overlapping calls collapse into the one in flight.
  */
 export async function pump(): Promise<void> {
-  if (pumping) return;
-  pumping = true;
+  if (batchRuntime.pumping) return;
+  batchRuntime.pumping = true;
   try {
     for (;;) {
-      const job = await loadBatchJob();
-      if (!job || job.status !== 'running') {
+      const step = await withBatchState(async () => {
+        const job = await loadBatchJob();
+        if (!job || job.status !== 'running') return null;
+        if (job.cursor >= job.items.length) {
+          job.status = 'done';
+          job.message = `done: ${job.totals.payloads} payload(s)`;
+          await saveBatchJob(job);
+          return null;
+        }
+        await ensureAlarm();
+        const index = job.cursor;
+        const item = job.items[index];
+        if (!item) {
+          job.cursor = index + 1;
+          await saveBatchJob(job);
+          return { job, index, item, controller: null };
+        }
+        item.status = 'running';
+        item.stage = 'resolve';
+        job.message = `resolving ${index + 1}/${job.items.length}: ${item.sku}`;
+        await saveBatchJob(job);
+        const controller = new AbortController();
+        activeRun = controller;
+        return { job, index, item, controller };
+      });
+      if (!step) {
+        const job = await loadBatchJob();
         if (job && (job.status === 'done' || job.status === 'cancelled')) {
           await clearAlarm();
           await endBridgeSession();
         }
         return;
       }
-      if (job.cursor >= job.items.length) {
-        job.status = 'done';
-        job.message = `done \u2014 ${job.totals.payloads} payload(s)`;
-        await saveBatchJob(job);
-        await clearAlarm();
-        await endBridgeSession();
-        return;
-      }
-
-      await ensureAlarm();
-
-      const index = job.cursor;
-      const item = job.items[index];
-      if (!item) {
-        job.cursor = index + 1;
-        await saveBatchJob(job);
-        continue;
-      }
-
-      item.status = 'running';
-      item.stage = 'resolve';
-      job.message = `resolving ${index + 1}/${job.items.length} \u2014 ${item.sku}`;
-      await saveBatchJob(job);
+      const { job, index, item, controller } = step;
+      if (!item || !controller) continue;
 
       const started = Date.now();
       const jobId = job.id;
@@ -431,16 +434,15 @@ export async function pump(): Promise<void> {
 
       // Stage markers are best-effort: a stage write must never abort an audit.
       const markStage = async (stage: BatchStage): Promise<void> => {
-        const live = await loadBatchJob();
-        if (!live || live.id !== jobId || live.status !== 'running') return;
-        const target = live.items[index];
-        if (!target) return;
-        target.stage = stage;
-        await saveBatchJob(live);
+        await withBatchState(async () => {
+          const live = await loadBatchJob();
+          if (controller.signal.aborted || !live || live.id !== jobId || live.status !== 'running') return;
+          const target = live.items[index];
+          if (!target) return;
+          target.stage = stage;
+          await saveBatchJob(live);
+        });
       };
-
-      const controller = new AbortController();
-      activeRun = controller;
       let timer: ReturnType<typeof setTimeout> | undefined;
       const timeout = new Promise<never>((_, reject) => {
         timer = setTimeout(() => {
@@ -453,6 +455,7 @@ export async function pump(): Promise<void> {
           runSku(item.sku, job.options, controller.signal, markStage),
           timeout,
         ]);
+        if (controller.signal.aborted) throw new Error('Batch interrupted');
         // Persist the audit first: model scoring must never be able to lose it.
         await setSkuPayloads(item.sku, result.payloads);
         await setSkuLibraryCells(item.sku, result.library);
@@ -494,6 +497,7 @@ export async function pump(): Promise<void> {
               Math.min(MODEL_TIMEOUT_MS, perSkuMs),
               item.sku,
             );
+            if (controller.signal.aborted) throw new Error('Batch interrupted');
             await setSkuModelVerdict(item.sku, verdict);
             modelFlags = verdict.flags.length;
 
@@ -522,58 +526,65 @@ export async function pump(): Promise<void> {
         }
         await setSkuAnomalies(item.sku, anomalies);
 
-        const current = await loadBatchJob();
-        // A new batch may have replaced this one: never mark its items by index.
-        if (!current || current.id !== jobId) return;
-        const target = current.items[index];
-        if (target) {
-          target.status = 'ok';
-          target.stage = 'done';
-          target.payloadCount = result.payloads.length;
-          target.anomalyCount = anomalies.length;
-          target.reviewFlagCount = result.reviewFlags;
-          target.modelFlagCount = modelFlags;
-          target.ms = Date.now() - started;
-          target.stageMs = result.stageMs;
-        }
-        current.cursor = index + 1;
-        current.totals = recountTotals(current.items);
-        await saveBatchJob(current);
-        // Pause/cancel pressed while this SKU ran: keep the result, do no more.
-        if (current.status !== 'running') return;
-      } catch (err) {
-        const current = await loadBatchJob();
-        if (!current || current.id !== jobId) return;
-        const target = current.items[index];
-        if (current.status === 'paused' || current.status === 'cancelled') {
-          // The run was stopped on purpose: do not count it as a failure.
+        const continued = await withBatchState(async () => {
+          const current = await loadBatchJob();
+          // A new batch may have replaced this one: never mark its items by index.
+          if (!current || current.id !== jobId) return;
+          if (current.status !== 'running') throw new Error('Batch interrupted');
+          const target = current.items[index];
           if (target) {
-            const paused = current.status === 'paused';
-            target.status = paused ? 'pending' : 'cancelled';
-            target.stage = paused ? 'pending' : 'cancelled';
-            target.error = paused ? undefined : 'cancelled';
+            target.status = 'ok';
+            target.stage = 'done';
+            target.payloadCount = result.payloads.length;
+            target.anomalyCount = anomalies.length;
+            target.reviewFlagCount = result.reviewFlags;
+            target.modelFlagCount = modelFlags;
             target.ms = Date.now() - started;
+            target.stageMs = result.stageMs;
           }
+          current.cursor = index + 1;
           current.totals = recountTotals(current.items);
           await saveBatchJob(current);
-          return;
-        }
-        if (target) {
-          target.status = 'failed';
-          target.stage = 'failed';
-          target.error = (err as Error).message ?? 'unknown error';
-          target.ms = Date.now() - started;
-        }
-        current.cursor = index + 1;
-        current.totals = recountTotals(current.items);
-        await saveBatchJob(current);
+          return true;
+        });
+        if (!continued) return;
+      } catch (err) {
+        const continued = await withBatchState(async () => {
+          const current = await loadBatchJob();
+          if (!current || current.id !== jobId) return;
+          const target = current.items[index];
+          if (current.status === 'paused' || current.status === 'cancelled') {
+            // The run was stopped on purpose: do not count it as a failure.
+            if (target) {
+              const paused = current.status === 'paused';
+              target.status = paused ? 'pending' : 'cancelled';
+              target.stage = paused ? 'pending' : 'cancelled';
+              target.error = paused ? undefined : 'cancelled';
+              target.ms = Date.now() - started;
+            }
+            current.totals = recountTotals(current.items);
+            await saveBatchJob(current);
+            return;
+          }
+          if (target) {
+            target.status = 'failed';
+            target.stage = 'failed';
+            target.error = (err as Error).message ?? 'unknown error';
+            target.ms = Date.now() - started;
+          }
+          current.cursor = index + 1;
+          current.totals = recountTotals(current.items);
+          await saveBatchJob(current);
+          return true;
+        });
+        if (!continued) return;
       } finally {
         if (timer) clearTimeout(timer);
         if (activeRun === controller) activeRun = null;
       }
     }
   } finally {
-    pumping = false;
+    batchRuntime.pumping = false;
   }
 }
 
@@ -581,60 +592,70 @@ export async function startBatch(args: {
   skus: string[];
   options?: Partial<BatchOptions>;
 }): Promise<BatchJob> {
-  const skus = args.skus
-    .map((s) => String(s).trim().toUpperCase())
-    .filter(Boolean);
-  if (skus.length === 0) throw new Error('No SKUs to run');
-  // The UI disables Start while a batch runs; keep the same rule at the API so
-  // an in-flight SKU can never be recorded against a replacement job.
-  const existing = await loadBatchJob();
-  if (existing?.status === 'running') {
-    throw new Error('A batch is already running - pause or cancel it first.');
-  }
-  // A new batch starts empty: never let an earlier run's payloads reach a push.
-  await resetBatchResults();
-  resetModelQuotaLatch();
-  const job = makeBatchJob(skus, normalizeOptions(args.options));
-  await saveBatchJob(job);
-  void pump();
-  return job;
+  return withBatchState(async () => {
+    const skus = args.skus
+      .map((s) => String(s).trim().toUpperCase())
+      .filter(Boolean);
+    if (skus.length === 0) throw new Error('No SKUs to run');
+    // The UI disables Start while a batch runs; keep the same rule at the API so
+    // an in-flight SKU can never be recorded against a replacement job.
+    const existing = await loadBatchJob();
+    if (existing?.status === 'running') {
+      throw new Error('A batch is already running - pause or cancel it first.');
+    }
+    requireSettledBatch();
+    // A new batch starts empty: never let an earlier run's payloads reach a push.
+    await resetBatchResults();
+    resetModelQuotaLatch();
+    const job = makeBatchJob(skus, normalizeOptions(args.options));
+    await saveBatchJob(job);
+    void pump();
+    return job;
+  });
 }
 
 export async function pauseBatch(): Promise<BatchJob | null> {
-  const job = await loadBatchJob();
-  if (!job) return null;
-  if (job.status === 'running') {
-    job.status = 'paused';
-    job.message = 'paused';
-    await saveBatchJob(job);
-    // Stop the SKU in flight: the pump resets it to pending so Resume re-runs it.
-    activeRun?.abort();
-  }
-  return job;
+  return withBatchState(async () => {
+    const job = await loadBatchJob();
+    if (!job) return null;
+    if (job.status === 'running') {
+      job.status = 'paused';
+      job.message = 'paused';
+      await saveBatchJob(job);
+      // Stop the SKU in flight: the pump resets it to pending so Resume re-runs it.
+      activeRun?.abort();
+    }
+    return job;
+  });
 }
 
 export async function resumeBatch(): Promise<BatchJob | null> {
-  const job = await loadBatchJob();
-  if (!job) return null;
-  if (job.status === 'paused') {
-    job.status = 'running';
-    job.message = 'resuming';
-    await saveBatchJob(job);
-    void pump();
-  }
-  return job;
+  return withBatchState(async () => {
+    const job = await loadBatchJob();
+    if (!job) return null;
+    if (job.status === 'paused') {
+      requireSettledBatch();
+      job.status = 'running';
+      job.message = 'resuming';
+      await saveBatchJob(job);
+      void pump();
+    }
+    return job;
+  });
 }
 
 export async function cancelBatch(): Promise<BatchJob | null> {
-  const job = await loadBatchJob();
-  if (!job) return null;
-  job.status = 'cancelled';
-  job.message = 'cancelled';
-  await saveBatchJob(job);
-  activeRun?.abort();
-  await clearAlarm();
-  await endBridgeSession();
-  return job;
+  return withBatchState(async () => {
+    const job = await loadBatchJob();
+    if (!job) return null;
+    job.status = 'cancelled';
+    job.message = 'cancelled';
+    await saveBatchJob(job);
+    activeRun?.abort();
+    await clearAlarm();
+    await endBridgeSession();
+    return job;
+  });
 }
 
 /** Called on startup and on the alarm tick: re-enter the pump if a job stalls. */
