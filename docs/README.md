@@ -27,6 +27,9 @@ never has to read a UI doc to find out what it may touch.
 - [RUN-AUDIT-OPTIMIZATION-VISION.md](automation/RUN-AUDIT-OPTIMIZATION-VISION.md) — the vision (model) stage.
 
 **shared/**
+- [AGENT-WORKFLOW.md](shared/AGENT-WORKFLOW.md) - on-demand roles, task briefs, isolated ownership, independent review, and native agent configuration.
+- [AGENT-CHATS.md](shared/AGENT-CHATS.md) - persistent project chat IDs, recorded settings, and the dated assignment snapshot.
+- [FOUR-PILLAR-MAP.md](shared/FOUR-PILLAR-MAP.md) - current business workflow map, boundaries, coverage and next analyses.
 - [PROJECT-HANDOFF-2026-11-05.md](shared/PROJECT-HANDOFF-2026-11-05.md) — current project state, maintenance freeze, verification, and AI handoff.
 - [PROJECT-STATE-ANALYSIS-2026-10-27.md](shared/PROJECT-STATE-ANALYSIS-2026-10-27.md) — whole-project state.
 - [PERFORMANCE-CODE-AUDIT.md](shared/PERFORMANCE-CODE-AUDIT.md) — cross-cutting performance review.
