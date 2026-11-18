@@ -11,6 +11,9 @@ export interface SettingsValues {
   skuLibraryDb: string;
   listingErrorsDb: string;
   adminBaseUrl: string;
+  drimeEnabled: boolean;
+  drimeApiToken: string;
+  drimeWorkspaceId: number;
 }
 
 interface Props {
@@ -43,7 +46,7 @@ export function SettingsForm(props: Props) {
 
   function update<K extends keyof SettingsValues>(
     key: K,
-    value: string,
+    value: SettingsValues[K],
   ): void {
     setForm((prev) => ({ ...prev, [key]: value }));
     setState('idle');
@@ -57,6 +60,9 @@ export function SettingsForm(props: Props) {
       skuLibraryDb: form.skuLibraryDb.trim(),
       listingErrorsDb: form.listingErrorsDb.trim(),
       adminBaseUrl: form.adminBaseUrl.trim(),
+      drimeEnabled: form.drimeEnabled,
+      drimeApiToken: form.drimeApiToken.trim(),
+      drimeWorkspaceId: form.drimeWorkspaceId,
     };
     setState('saving');
     setError('');
@@ -68,12 +74,18 @@ export function SettingsForm(props: Props) {
         'skuLibraryDb',
         'listingErrorsDb',
         'adminBaseUrl',
+        'drimeEnabled',
+        'drimeApiToken',
+        'drimeWorkspaceId',
       ]);
       const persisted: SettingsValues = {
         notionToken: (stored.notionToken as string) ?? '',
         skuLibraryDb: (stored.skuLibraryDb as string) ?? '',
         listingErrorsDb: (stored.listingErrorsDb as string) ?? '',
         adminBaseUrl: (stored.adminBaseUrl as string) ?? '',
+        drimeEnabled: (stored.drimeEnabled as boolean) ?? false,
+        drimeApiToken: (stored.drimeApiToken as string) ?? '',
+        drimeWorkspaceId: (stored.drimeWorkspaceId as number) ?? 0,
       };
       if (persisted.notionToken !== next.notionToken) {
         throw new Error('Value did not persist to storage.');
@@ -91,6 +103,40 @@ export function SettingsForm(props: Props) {
     !form.skuLibraryDb && props.defaults.skuLibraryDb.length > 0;
   const showingErrorsDefault =
     !form.listingErrorsDb && props.defaults.listingErrorsDb.length > 0;
+
+  async function testDrimeConnection(): Promise<void> {
+    const resultEl = document.getElementById('drime-test-result');
+    if (!resultEl) return;
+    
+    if (!form.drimeApiToken) {
+      resultEl.textContent = 'Enter API token first';
+      resultEl.style.color = 'var(--destructive)';
+      return;
+    }
+    
+    resultEl.textContent = 'Testing…';
+    resultEl.style.color = 'var(--muted-foreground)';
+    
+    try {
+      const response = await fetch('https://app.drime.cloud/api/v1/users/me', {
+        headers: {
+          'Authorization': `Bearer ${form.drimeApiToken}`,
+        },
+      });
+      
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || `HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      resultEl.textContent = `✓ Connected as ${data.user?.email || data.user?.display_name || 'user'}`;
+      resultEl.style.color = 'var(--success)';
+    } catch (err) {
+      resultEl.textContent = `✗ ${(err as Error).message}`;
+      resultEl.style.color = 'var(--destructive)';
+    }
+  }
 
   return (
     <main class="mhx-content">
@@ -137,6 +183,56 @@ export function SettingsForm(props: Props) {
           onInput={(e) => update('adminBaseUrl', e.currentTarget.value)}
         />
       </label>
+      <hr class="mhx-divider" />
+      <div class="mhx-drime-section">
+        <strong>Drime Cloud Storage</strong>
+        <p class="mhx-note">
+          Store product images in Drime Cloud (20 GB free).{' '}
+          <a href="https://app.drime.cloud/account-settings#developers" target="_blank" rel="noopener">
+            Get API token
+          </a>
+        </p>
+        <label class="mhx-panel-field">
+          <input
+            type="checkbox"
+            checked={form.drimeEnabled}
+            onChange={(e) => setForm((prev) => ({ ...prev, drimeEnabled: e.currentTarget.checked }))}
+          />
+          <span>Enable Drime Cloud storage</span>
+        </label>
+        <label class="mhx-panel-field mhx-panel-field--block">
+          <span>API Token</span>
+          <input
+            type="password"
+            value={form.drimeApiToken}
+            placeholder="drime_…"
+            autocomplete="off"
+            onInput={(e) => update('drimeApiToken', e.currentTarget.value)}
+            disabled={!form.drimeEnabled}
+          />
+        </label>
+        <label class="mhx-panel-field mhx-panel-field--block">
+          <span>Workspace ID</span>
+          <input
+            type="number"
+            value={form.drimeWorkspaceId || ''}
+            placeholder="0 (personal)"
+            onInput={(e) => update('drimeWorkspaceId', e.currentTarget.value === '' ? 0 : parseInt(e.currentTarget.value, 10))}
+            disabled={!form.drimeEnabled}
+          />
+        </label>
+        <div class="mhx-row">
+          <button
+            type="button"
+            class="mhx-secondary"
+            disabled={!form.drimeEnabled || !form.drimeApiToken || state === 'saving'}
+            onClick={testDrimeConnection}
+          >
+            Test Connection
+          </button>
+          <span id="drime-test-result" class="mhx-note"></span>
+        </div>
+      </div>
       <div class="mhx-feature-toggles">
         <strong>Features</strong>
         {FEATURE_GROUPS.map((group) => {

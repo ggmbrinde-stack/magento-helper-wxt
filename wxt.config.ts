@@ -57,6 +57,8 @@ export default defineConfig({
       'https://integrate.api.nvidia.com/*',
       'https://api.mistral.ai/*',
       'https://api.openai.com/*',
+      // Drime Cloud API for BOG Studio image storage
+      'https://app.drime.cloud/*',
     ],
     optional_host_permissions: ['https://*/*', 'http://*/*'],
     // The single UI-toolkit stylesheet, loaded as a <link> by ensureUi()

@@ -12,6 +12,9 @@ const EMPTY_SETTINGS: SettingsValues = {
   skuLibraryDb: '',
   listingErrorsDb: '',
   adminBaseUrl: '',
+  drimeEnabled: false,
+  drimeApiToken: '',
+  drimeWorkspaceId: 0,
 };
 
 /**
@@ -34,12 +37,18 @@ export function App() {
         'skuLibraryDb',
         'listingErrorsDb',
         'adminBaseUrl',
+        'drimeEnabled',
+        'drimeApiToken',
+        'drimeWorkspaceId',
       ]);
       setSettings({
         notionToken: (data.notionToken as string) ?? '',
         skuLibraryDb: (data.skuLibraryDb as string) ?? '',
         listingErrorsDb: (data.listingErrorsDb as string) ?? '',
         adminBaseUrl: (data.adminBaseUrl as string) ?? '',
+        drimeEnabled: (data.drimeEnabled as boolean) ?? false,
+        drimeApiToken: (data.drimeApiToken as string) ?? '',
+        drimeWorkspaceId: (data.drimeWorkspaceId as number) ?? 0,
       });
       setSettingsLoaded(true);
     })();
@@ -58,6 +67,9 @@ export function App() {
         'skuLibraryDb',
         'listingErrorsDb',
         'adminBaseUrl',
+        'drimeEnabled',
+        'drimeApiToken',
+        'drimeWorkspaceId',
       ];
       if (!tracked.some((k) => k in changes)) return;
       setSettings((prev) => ({
@@ -73,6 +85,15 @@ export function App() {
         adminBaseUrl:
           (changes.adminBaseUrl?.newValue as string | undefined) ??
           prev.adminBaseUrl,
+        drimeEnabled:
+          (changes.drimeEnabled?.newValue as boolean | undefined) ??
+          prev.drimeEnabled,
+        drimeApiToken:
+          (changes.drimeApiToken?.newValue as string | undefined) ??
+          prev.drimeApiToken,
+        drimeWorkspaceId:
+          (changes.drimeWorkspaceId?.newValue as number | undefined) ??
+          prev.drimeWorkspaceId,
       }));
     };
     browser.storage.onChanged.addListener(listener);
