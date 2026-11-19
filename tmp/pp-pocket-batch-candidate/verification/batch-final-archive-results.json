@@ -1,0 +1,34 @@
+{
+  "zip_sha256": "eda2a152cff1c2f2efe865f532dcbb9479665ac7ffdeaa887235045d7c839f09",
+  "manifest_sha256": "1ebcd45769d1f9cc433a8423a3fc8ef90cece951e535f9395c46e8324e76cc15",
+  "python_passed": 99,
+  "node_passed": 10,
+  "self_contained": true,
+  "extracted_and_frozen_hashes_unchanged": true,
+  "results": [
+    {
+      "check": "batch-final-archive-python",
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-I",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ]
+    },
+    {
+      "check": "batch-final-archive-node",
+      "exit_code": 0,
+      "command": [
+        "node",
+        "--test",
+        "tests/test_session_bridge.cjs"
+      ]
+    }
+  ]
+}

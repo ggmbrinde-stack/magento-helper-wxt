@@ -1,0 +1,191 @@
+diff --git a/importar_pp.py b/importar_pp.py
+--- a/importar_pp.py
++++ b/importar_pp.py
+@@ -207,12 +207,15 @@
+     def close(self):
+         self.z.close()
+ 
+-    def separator(self, cell):
++    def separator(self, cell, *, allow_automatic=False):
+         style = self.styles[cell.get("style", 0)]
+         top = self.borders[int(style.get("borderId", "0"))].find("s:top", NS)
+         color = top.find("s:color", NS) if top is not None else None
+-        if color is None or not top.get("style"):
++        if top is None or not top.get("style"):
+             return False
++        if color is None or color.get("indexed") == "64" or color.get("auto") == "1":
++            # Automatic border colours are only boundary evidence on a labelled location row.
++            return allow_automatic
+         if color.get("theme") == "0":
+             return float(color.get("tint", "0")) <= -0.3
+         rgb = color.get("rgb", "")[-6:]
+@@ -352,7 +355,9 @@
+                     for row in range(start + 1, end + 1):
+                         local = value(code_col + 2, row)
+                         opt = value(code_col + 3, row)
+-                        sep = any(book.separator(cells.get((col, row), {})) for col in (code_col + 2, code_col + 3))
++                        sep = any(book.separator(cells.get((col, row), {}),
++                                                 allow_automatic=bool(local and local.upper() not in HEADERS))
++                                  for col in (code_col + 2, code_col + 3))
+                         if sep and group["options"]:
+                             groups.append(group)
+                             group = {"locals": [], "options": [], "start_row": row}
+@@ -406,7 +411,8 @@
+                                     "description": desc, "notes": notes,
+                                     "source": source, "groups": groups, "images": image_entries,
+                                     "comments": comments, "raw": raw,
+-                                    "review_flags": list(dict.fromkeys(flags)), "blocked": blocked})
++                                    "review_flags": list(dict.fromkeys(flags)),
++                                    "blocked": list(dict.fromkeys(blocked + assignment_issues(groups)))})
+         duplicates = collections.defaultdict(list)
+         for record in records:
+             duplicates[record["code"]].append(record)
+@@ -425,6 +431,20 @@
+         }
+     finally:
+         book.close()
++
++
++def assignment_issues(groups):
++    issues = []
++    if not groups or any(len(group["locals"]) != 1 for group in groups):
++        issues.append("Distribuição das opções por local por confirmar")
++    if any(not group["options"] for group in groups):
++        issues.append("Local sem opções detalhadas; confirmar antes de importar")
++    return issues
++
++
++def verify_source(plan):
++    if digest(plan["source"]["path"]) != plan["source"]["sha256"]:
++        raise ValueError("O Excel mudou desde a preparação. Gerar um novo plano.")
+ 
+ 
+ def schema_options(plan):
+@@ -601,21 +621,32 @@
+     return patch
+ 
+ 
+-def prepare_options(api, plan):
++def prepare_options(api, plan, journal_path=None):
++    verify_source(plan)
++    journal_path = Path(journal_path) if journal_path is not None else None
++    journal = json.loads(journal_path.read_text(encoding="utf8")) if journal_path is not None and journal_path.exists() else {}
++    if journal and journal.get("status") != "concluido":
++        raise ValueError("Preparação anterior de opções por confirmar. Reconciliar o auxiliar antes de repetir.")
+     source_id = str(uuid.UUID(plan["data_source_id"]))
+     schema = api.request("GET", f"data_sources/{source_id}")
+     patch = option_patch(schema, schema_options(plan))
+     small = {name: prop for name, prop in patch.items() if len(prop["multi_select"]["options"]) <= 100}
++    if any(name not in small for name in patch) and journal_path is None:
++        raise ValueError("A preparação de opções com auxiliar exige um diário local.")
+     if small:
+         api.request("PATCH", f"data_sources/{source_id}", {"properties": small})
+     large = {name: prop for name, prop in patch.items() if name not in small}
+     if large:
+         # Page writes add new option names without replacing the schema's existing list.
++        write_json(journal_path, {"status": "a_criar", "data_source_id": source_id,
++                                  "source_sha256": plan["source"]["sha256"]})
+         helper = api.request("POST", "pages", {
+             "parent": {"type": "data_source_id", "data_source_id": source_id},
+             "properties": {"PP": {"title": rich("Preparação temporária de opções — importador Excel")}},
+         })
+         helper_id = str(uuid.UUID(helper["id"]))
++        write_json(journal_path, {"status": "criado", "page_id": helper_id,
++                                  "data_source_id": source_id, "source_sha256": plan["source"]["sha256"]})
+         try:
+             for name, prop in large.items():
+                 missing = [o for o in prop["multi_select"]["options"] if "id" not in o]
+@@ -624,25 +655,34 @@
+                         name: {"multi_select": missing[index:index + 100]}}})
+         finally:
+             api.request("PATCH", f"pages/{helper_id}", {"in_trash": True})
++            write_json(journal_path, {"status": "concluido", "page_id": helper_id,
++                                      "data_source_id": source_id, "source_sha256": plan["source"]["sha256"]})
+     updated = api.request("GET", f"data_sources/{source_id}")
+     if option_patch(updated, schema_options(plan)):
+         raise RuntimeError("A preparação das opções não foi confirmada")
+ 
+ 
+ def import_records(api, plan, selected, journal_path):
+-    if digest(plan["source"]["path"]) != plan["source"]["sha256"]:
+-        raise ValueError("O Excel mudou desde a preparação. Gerar um novo plano.")
++    verify_source(plan)
++    codes = [record.get("code") for record in plan["records"]]
++    if any(not isinstance(code, str) or not code.isdigit() for code in codes):
++        raise ValueError("Código em falta ou inválido no plano; gerar um novo plano.")
++    if len(codes) != len(set(codes)):
++        raise ValueError("Há códigos repetidos no plano; resolver antes da importação.")
+     source_id = str(uuid.UUID(plan["data_source_id"]))
+     chosen = [r for r in plan["records"] if not selected or r["code"] in selected]
+     if selected - {r["code"] for r in chosen}:
+         raise ValueError("Código selecionado não encontrado no plano")
+-    if selected and any(r["blocked"] for r in chosen):
+-        blocked = sorted({r["code"] for r in chosen if r["blocked"]})
++    held = {r["code"] for r in chosen if r["blocked"] or assignment_issues(r["groups"])}
++    if selected and held:
++        blocked = sorted(held)
+         raise ValueError("Resolver os bloqueios no plano antes de importar: " + ", ".join(blocked))
+-    blocked_count = sum(bool(r["blocked"]) for r in chosen)
++    blocked_count = len(held)
+     if blocked_count:
+         print(f"{blocked_count} blocos com bloqueios excluídos; consultar revisao.csv.")
+-        chosen = [r for r in chosen if not r["blocked"]]
++        chosen = [r for r in chosen if r["code"] not in held]
++    if not chosen:
++        return
+     index = collections.defaultdict(list)
+     for page in api.pages(source_id):
+         code = "".join(t.get("plain_text", t.get("text", {}).get("content", "")) for t in page["properties"].get("Código PP", {}).get("rich_text", []))
+@@ -650,14 +690,22 @@
+             index[code].append(page["id"])
+     if any(len(rows) > 1 for rows in index.values()):
+         raise ValueError("Há códigos repetidos no Notion. Resolver antes da importação.")
+-    prepare_options(api, plan)
+     journal = json.loads(journal_path.read_text(encoding="utf8")) if journal_path.exists() else {}
++    pending = []
++    for record in chosen:
++        code = record["code"]
++        if code in index:
++            print(f"{code}: já existe; preservado")
++        elif code in journal:
++            raise ValueError(f"PP {code}: criação anterior não reconciliada; confirmar no Notion antes de repetir.")
++        else:
++            pending.append(record)
++    if not pending:
++        return
++    prepare_options(api, plan, journal_path.with_name("opcoes_estado.json"))
+     with zipfile.ZipFile(plan["source"]["path"]) as z:
+-        for record in chosen:
++        for record in pending:
+             code = record["code"]
+-            if code in index:
+-                print(f"{code}: já existe; preservado")
+-                continue
+             uploaded = [api.upload(f"PP{code}_{i + 1}{Path(entry).suffix.lower()}", z.read(entry)) for i, entry in enumerate(record["images"])]
+             props = properties(record)
+             payload = {"parent": {"type": "data_source_id", "data_source_id": source_id},
+@@ -667,12 +715,12 @@
+                 payload["cover"] = {"type": "file_upload", "file_upload": {"id": uploaded[0]}}
+             if len(payload["children"]) > 100 or len(json.dumps(payload).encode()) > 500_000:
+                 raise ValueError(f"PP {code}: excede os limites de um pedido; rever o bloco")
+-            journal[code] = {"status": "a_criar", "source_sha256": plan["source"]["sha256"]}
++            journal[code] = {"status": "a_criar", "data_source_id": source_id, "source_sha256": plan["source"]["sha256"]}
+             write_json(journal_path, journal)
+-            # A create is never automatically retried after a timeout/5xx: query the code on the next run.
++            # An uncertain create stays held if the next query cannot reconcile its code.
+             page = api.request("POST", "pages", payload)
+             index[code] = [page["id"]]
+-            journal[code] = {"status": "criado", "page_id": page["id"], "source_sha256": plan["source"]["sha256"]}
++            journal[code] = {"status": "criado", "page_id": page["id"], "data_source_id": source_id, "source_sha256": plan["source"]["sha256"]}
+             write_json(journal_path, journal)
+             check = api.request("GET", f"pages/{page['id']}")
+             actual = "".join(t.get("plain_text", "") for t in check["properties"]["Código PP"]["rich_text"])
+@@ -728,7 +776,7 @@
+         file.write(str(os.getpid()))
+     try:
+         if args.command == "opcoes":
+-            prepare_options(api, plan)
++            prepare_options(api, plan, args.plano.parent / "opcoes_estado.json")
+             print("Opções preparadas e confirmadas; etiquetas existentes preservadas.")
+         else:
+             import_records(api, plan, set(args.codigo), args.plano.parent / "importacao_estado.json")

@@ -1,0 +1,113 @@
+{
+  "full": {
+    "canonical_plan_sha256": "fa2a8f3c34575a32f94d5aeffe1d072d8a653f7e5a421babd717fa24c52c178e",
+    "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
+    "source": {
+      "page_id": "417b6705ae1f81aabd8bf1130a9b991c",
+      "source_edited_at": "2026-11-18T14:30:39.044Z",
+      "section_sha256": "50b68776d8ceaed06111772ae703f7986983356773d02757aaace9fc87d25371"
+    },
+    "pages": [
+      {
+        "code": "430",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "body_operations": 2,
+        "property_operations": 1
+      },
+      {
+        "code": "558",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo"
+        ],
+        "body_operations": 1,
+        "property_operations": 1
+      },
+      {
+        "code": "661",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "body_operations": 2,
+        "property_operations": 0
+      },
+      {
+        "code": "662",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "body_operations": 2,
+        "property_operations": 1
+      }
+    ]
+  },
+  "pilot": {
+    "canonical_plan_sha256": "11f0555bc14cfa54039db1f0c419a83f0bd3023ec81ccd7656dbfc3188dfbd33",
+    "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
+    "source": {
+      "page_id": "417b6705ae1f81aabd8bf1130a9b991c",
+      "source_edited_at": "2026-11-18T14:30:39.044Z",
+      "section_sha256": "50b68776d8ceaed06111772ae703f7986983356773d02757aaace9fc87d25371"
+    },
+    "pages": [
+      {
+        "code": "430",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "body_operations": 2,
+        "property_operations": 1
+      }
+    ]
+  },
+  "rest": {
+    "canonical_plan_sha256": "dbf3d075863991eb5a648509261b0a4e6e127a436ce051294bcd0df0db76902a",
+    "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
+    "source": {
+      "page_id": "417b6705ae1f81aabd8bf1130a9b991c",
+      "source_edited_at": "2026-11-18T14:30:39.044Z",
+      "section_sha256": "50b68776d8ceaed06111772ae703f7986983356773d02757aaace9fc87d25371"
+    },
+    "pages": [
+      {
+        "code": "558",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo"
+        ],
+        "body_operations": 1,
+        "property_operations": 1
+      },
+      {
+        "code": "661",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "body_operations": 2,
+        "property_operations": 0
+      },
+      {
+        "code": "662",
+        "status": "READY_FOR_REVIEW",
+        "locations": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "body_operations": 2,
+        "property_operations": 1
+      }
+    ]
+  }
+}

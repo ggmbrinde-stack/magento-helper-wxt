@@ -1,0 +1,38 @@
+{
+  "zip_sha256": "f42252f39e1dc1c2ce3763342c419c953a215a0ff92b9e9925391eecd9ce50fd",
+  "manifest_sha256": "77fe404dce20965623a275daa07836b90b35ab26f82234a47b159601ca8ca8dc",
+  "python_passed": 80,
+  "node_passed": 8,
+  "archive_integrity": true,
+  "extracted_and_frozen_files_unchanged": true,
+  "runtime_identical_to_v1": true,
+  "system_temp_resolves_MAX_PATH": true,
+  "results": [
+    {
+      "check": "pocket-v2-final-archive-python",
+      "command": [
+        "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-I",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-method-final-candidate\\verification\\pocket-v2-final-archive-extracted\\source",
+      "exit_code": 0
+    },
+    {
+      "check": "pocket-v2-final-archive-node",
+      "command": [
+        "node",
+        "--test",
+        "tests/test_session_bridge.cjs"
+      ],
+      "cwd": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-method-final-candidate\\verification\\pocket-v2-final-archive-extracted\\source",
+      "exit_code": 0
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "captures": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-run\\fresh-captures",
+  "codes": [
+    "39"
+  ],
+  "index": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-candidate\\review-full-v1\\input\\workbook-index.json",
+  "inventory": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-candidate\\review-full-v1\\input\\inventory-current.json",
+  "plan": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-run\\fresh39.json",
+  "script": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-candidate\\review-full-v1\\source\\batch_cli.py",
+  "workbook": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-candidate\\review-full-v1\\input\\workbook.xlsx"
+}

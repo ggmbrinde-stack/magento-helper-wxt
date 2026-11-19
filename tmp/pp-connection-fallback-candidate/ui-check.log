@@ -1,0 +1,5 @@
+
+> magento-helper-wxt@0.2.1 check:ui
+> node scripts/check-ui.mjs
+
+UI guardrails passed (G1-G6); G6 checked 118 page-chrome files

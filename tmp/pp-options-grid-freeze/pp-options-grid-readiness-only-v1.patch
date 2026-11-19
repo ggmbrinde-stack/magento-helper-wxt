@@ -1,0 +1,1085 @@
+diff --git a/package.json b/package.json
+index cc64fe2..a21a192 100644
+--- a/package.json
++++ b/package.json
+@@ -37,7 +37,7 @@
+     "test:pp-catalog": "esbuild tests/ppCatalog.test.ts tests/ppCatalogUi.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outdir=.output/pp-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/pp-tests/ppCatalog.test.mjs .output/pp-tests/ppCatalogUi.test.mjs",
+     "test:pp-scan": "npx esbuild tests/ppScan.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/pp-scan-test.mjs --log-level=warning && node --test .output/pp-scan-test.mjs",
+     "test:pp-preview": "esbuild tests/ppPreview.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --external:node:test --external:jsdom --loader:.json=json --outfile=.output/pp-preview-test.mjs --log-level=warning && node --test .output/pp-preview-test.mjs",
+-    "test:pp-selection": "esbuild tests/ppCatalogSelection.test.ts tests/ppFreshForm.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --external:node:test --external:jsdom --loader:.json=json --outdir=.output/pp-selection-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/pp-selection-tests/ppCatalogSelection.test.mjs .output/pp-selection-tests/ppFreshForm.test.mjs"
++    "test:pp-selection": "esbuild tests/ppCatalogSelection.test.ts tests/ppFreshForm.test.ts tests/ppReadiness.test.ts tests/ppGrid.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --external:node:test --external:jsdom --loader:.json=json --outdir=.output/pp-selection-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/pp-selection-tests/ppCatalogSelection.test.mjs .output/pp-selection-tests/ppFreshForm.test.mjs .output/pp-selection-tests/ppReadiness.test.mjs .output/pp-selection-tests/ppGrid.test.mjs"
+   },
+   "dependencies": {
+     "preact": "^10.29.8",
+diff --git a/src/core/messages/ui.ts b/src/core/messages/ui.ts
+index db150ac..9fc5f8a 100644
+--- a/src/core/messages/ui.ts
++++ b/src/core/messages/ui.ts
+@@ -182,9 +182,41 @@ export type ReadPpPreviewDraftResponse =
+   | { ok: true; tab: PpPreviewTab; snapshot: ScanPpDraftResponse }
+   | { ok: false; reason: string };
+ 
+-export interface ReadPpFreshFormRequest { type: 'READ_PP_FRESH_FORM'; requestId: string; entityId: string }
++export type PpReferenceSource = 'options-grid' | 'exact-record';
++export interface ReadPpFreshFormRequest { type: 'READ_PP_FRESH_FORM'; requestId: string; entityId: string; referenceSource?: PpReferenceSource }
+ export interface CancelPpFreshFormRequest { type: 'CANCEL_PP_FRESH_FORM'; requestId: string }
+ export interface GetPpFreshFormStateRequest { type: 'GET_PP_FRESH_FORM_STATE' }
++export interface PpReadinessCheckpoint {
++  document: 'loading' | 'interactive' | 'complete' | 'unknown';
++  stage: 'document-loading' | 'route-mismatch' | 'registry-unavailable' | 'provider-unavailable' |
++    'data-unavailable' | 'identity-missing' | 'identity-invalid' | 'identity-mismatch' | 'ready' | 'read-error';
++  registry: 'unknown' | 'available' | 'unavailable';
++  provider: 'unknown' | 'available' | 'unavailable';
++  data: 'unknown' | 'available' | 'unavailable';
++  identity: 'unknown' | 'missing' | 'invalid' | 'matching' | 'mismatched';
++  blockedAccessor: boolean;
++}
++export type PpScanWarningCode = 'registry-unavailable' | 'provider-unavailable' | 'data-unavailable' |
++  'identity-missing' | 'identity-mismatch' | 'route-mismatch' | 'partial-fields' | 'scan-error' |
++  'no-scan-result' | 'invalid-scan-result' | 'wrong-frame' | 'injection-error';
++export interface PpFreshReadiness {
++  elapsedMs: number;
++  checks: number;
++  extractions: number;
++  last?: PpReadinessCheckpoint;
++  lastScanStatus?: ScanPpDraftResponse['status'] | 'no-result' | 'invalid-result' | 'injection-error';
++  warningCodes: PpScanWarningCode[];
++}
++export interface PpGridCoverage {
++  status: 'found' | 'duplicate' | 'invalid-link' | 'loading' | 'error' | 'not-in-loaded-results' |
++    'incomplete' | 'unavailable' | 'changed' | 'ambiguous-source';
++  freshness: 'loaded-unverified';
++  loadedRows?: number;
++  totalRows?: number;
++  page?: number;
++  pageSize?: number;
++  filtered?: boolean;
++}
+ export interface PpFreshFormResponse {
+   source: 'fresh-magento-form-load';
+   requestId: string;
+@@ -197,6 +229,8 @@ export interface PpFreshFormResponse {
+   snapshot?: ScanPpDraftResponse;
+   leftoverTabId?: number;
+   cleanupRequestId?: string;
++  readiness?: PpFreshReadiness;
++  reference?: { kind: PpReferenceSource; grid?: PpGridCoverage };
+ }
+ export interface PpFreshFormState {
+   status: 'idle' | 'reading' | 'cleanup-failed';
+diff --git a/src/dashboard/sections/ui/PpPreview.tsx b/src/dashboard/sections/ui/PpPreview.tsx
+index c410687..45d3cc3 100644
+--- a/src/dashboard/sections/ui/PpPreview.tsx
++++ b/src/dashboard/sections/ui/PpPreview.tsx
+@@ -1,6 +1,6 @@
+ import { h, Fragment } from 'preact';
+ import { useEffect, useRef, useState } from 'preact/hooks';
+-import type { PpFreshFormResponse, PpFreshFormState } from '../../../core/messages';
++import type { PpFreshFormResponse, PpFreshFormState, PpReferenceSource } from '../../../core/messages';
+ import { PP_CATALOG_DATABASE, PpCatalogResponseSchema, type PpCatalogResponse, type PpCatalogIndexRow } from '../../../shared/ppCatalog';
+ import { isPpDraftScanResponse } from '../../../entrypoints/background/ppPreview';
+ import { attributeSetConsistency, catalogProblems, loadPpIndex, ppPreviewRows, type PpIndexLoad } from './ppPreviewModel';
+@@ -14,6 +14,7 @@ export function PpPreview() {
+   const [loading, setLoading] = useState(false), [filter, setFilter] = useState('');
+   const [checked, setChecked] = useState<string[]>([]), [activeId, setActiveId] = useState('');
+   const [entityId, setEntityId] = useState(''), [paired, setPaired] = useState(false);
++  const [referenceSource, setReferenceSource] = useState<PpReferenceSource>('options-grid');
+   const [busy, setBusy] = useState(false), [notice, setNotice] = useState('Load Notion V2 summaries, check PPs, then choose one to preview.');
+   const [helper, setHelper] = useState<PpFreshFormState>({ status: 'idle' });
+   const [result, setResult] = useState<{ desired: PpCatalogResponse; current?: PpFreshFormResponse } | null>(null);
+@@ -127,7 +128,7 @@ export function PpPreview() {
+       const desired = parsed.data;
+       if (!['found', 'partial'].includes(desired.status) || !desired.definition) { setResult({ desired }); setNotice(desired.reason); return; }
+       job.phase = 'form'; helperGeneration.current++; setHelper({ status: 'reading', requestId: job.id }); setNotice('Loading a fresh Magento form in a temporary helper tab…');
+-      const response = await chrome.runtime.sendMessage({ type: 'READ_PP_FRESH_FORM', requestId: job.id, entityId }) as PpFreshFormResponse;
++      const response = await chrome.runtime.sendMessage({ type: 'READ_PP_FRESH_FORM', requestId: job.id, entityId, referenceSource }) as PpFreshFormResponse;
+       rememberCleanup(response);
+       if (!current()) return;
+       if (!response || response.source !== 'fresh-magento-form-load' || response.requestId !== job.id || response.entityId !== entityId ||
+@@ -135,6 +136,7 @@ export function PpPreview() {
+         typeof response.reason !== 'string' || !['closed', 'failed', 'not-created'].includes(response.cleanup)) {
+         setNotice('The fresh-form response was invalid. Check helper status before retrying.'); return;
+       }
++      if (response.reference && response.reference.kind !== referenceSource) { setNotice('The returned address source does not match the selected source. No snapshot accepted.'); return; }
+       if ((['ok', 'partial'].includes(response.status) && (!response.snapshot || response.snapshot.status !== response.status ||
+         typeof response.readAt !== 'number' || !Number.isFinite(response.readAt))) ||
+         (response.snapshot && (!isPpDraftScanResponse(response.snapshot) || response.snapshot.entityId !== entityId ||
+@@ -174,7 +176,7 @@ export function PpPreview() {
+   const rows = desired && draft ? ppPreviewRows(desired, draft) : [];
+   return <div class="db-stack">
+     <section class="db-card"><h2>PP Preview <span class="db-badge">Read-only</span></h2>
+-      <p class="db-note">Choose Notion V2 records. Preview one selected PP at a time. Temporarily keep one edit tab open for that exact Magento record. Only its native address is used privately to load a fresh helper; your draft is not read or changed. A general admin tab is not sufficient.</p>
++      <p class="db-note">Choose Notion V2 records. Preview one selected PP at a time. Keep one Options Grid open with the exact target entity in its loaded results, or explicitly choose an exact-record edit tab as the address source. Your edit draft is not read or changed.</p>
+       <div class="db-actions"><button type="button" class="db-btn" disabled={loading} onClick={() => void load()}>Load PP catalogue</button>
+         <button type="button" class="db-btn" disabled={!loading} onClick={stopLoad}>Stop catalogue load</button></div>
+       <p role="status" aria-live="polite">Catalogue: {index.coverage}. {index.reason} Rows: {index.rows.length}. Read: {time(index.checkedAt)}</p>
+@@ -186,11 +188,17 @@ export function PpPreview() {
+       </tbody></table></div>
+     </section>
+     <section class="db-card"><h2>Preview one selected PP</h2>
++      <label class="db-field"><span>Magento address source</span><select value={referenceSource} onChange={event => { invalidate(); setReferenceSource(event.currentTarget.value as PpReferenceSource); }}>
++        <option value="options-grid">Options Grid: loaded results only</option><option value="exact-record">Exact-record edit tab</option>
++      </select></label>
++      <p class="db-note">{referenceSource === 'options-grid'
++        ? 'Only already-loaded Grid rows are read. Load the exact entity with native filters/paging yourself. The helper does not change the Grid or fetch more pages. Grid freshness and in-flight state are not verified.'
++        : 'Keep one edit tab open for the exact Magento entity. Only its native address is copied privately into a fresh helper; the user draft is not read, navigated or reloaded. A general admin tab is not sufficient.'}</p>
+       <label class="db-field"><span>Selected Notion record</span><select value={activeId} onChange={event => { invalidate(); setActiveId(event.currentTarget.value); setEntityId(''); }}><option value="">Choose a checked PP explicitly</option>
+         {index.rows.filter(row => row.pageId && checked.includes(row.pageId)).map(row => <option key={row.pageId!} value={row.pageId!}>{row.code} · {row.name}</option>)}
+       </select></label>
+       <label class="db-field"><span>Exact Magento custom-option entity ID</span><input inputMode="numeric" value={entityId} maxLength={16} onInput={event => { invalidate(); setEntityId(event.currentTarget.value); }} />
+-        <em>Enter the actual record ID separately. It is not the business code or Attribute Set ID. The reference tab must match that exact entity and the configured allowed HTTPS admin base. Do not paste a URL or session key.</em></label>
++        <em>Enter the actual record ID separately. It is not the business code or Attribute Set ID. The selected source must match that exact entity and configured allowed HTTPS admin base. Do not paste a URL or session key.</em></label>
+       <label><input type="checkbox" checked={paired} disabled={!chosen || !!chosenProblem || !/^[1-9]\d{0,15}$/.test(entityId)} onChange={event => { generation.current++; setResult(null); stopPreview(); setPaired(event.currentTarget.checked); }} /> I manually pair this Notion record with this Magento entity for this preview. The association is not verified.</label>
+       <div class="db-actions"><button type="button" class="db-btn db-btn--primary" disabled={busy || helper.status !== 'idle' || !chosen || !!chosenProblem || !paired} aria-busy={busy} onClick={() => void read()}>{busy ? 'Reading selected PP…' : 'Preview selected PP'}</button>
+         <button type="button" class="db-btn" disabled={!busy && helper.status === 'idle'} onClick={() => void stopOrClose()}>Stop preview / close helper tab</button></div>
+@@ -200,6 +208,18 @@ export function PpPreview() {
+     {result ? <div class="db-grid">
+       <section class="db-card"><h2>Current: FRESH MAGENTO FORM LOAD</h2>
+         <p>Status: {form?.status ?? 'not read'}. Helper cleanup: {form?.cleanup ?? 'not created'}</p><p>{form?.reason ?? 'No Magento read was started.'}</p>
++        {form?.reference ? <p class="db-note">Address source: {form.reference.kind}.
++          {form.reference.grid ? <> Loaded Grid: {form.reference.grid.status}; rows {form.reference.grid.loadedRows ?? 'unknown'} of {form.reference.grid.totalRows ?? 'unknown'};
++            page {form.reference.grid.page ?? 'unknown'}, page size {form.reference.grid.pageSize ?? 'unknown'}.
++            Loaded data only, freshness unverified; filters/paging may hide other records.</> : null}</p> : null}
++        {form?.readiness ? <div class="db-note">
++          <p>Readiness checks: {form.readiness.checks}. Full reads: {form.readiness.extractions}. Elapsed: {(form.readiness.elapsedMs / 1000).toFixed(1)}s.</p>
++          <p>Last checkpoint: {form.readiness.last?.stage ?? 'none'}. Document: {form.readiness.last?.document ?? 'unknown'}.
++            Registry: {form.readiness.last?.registry ?? 'unknown'}. Provider: {form.readiness.last?.provider ?? 'unknown'}.
++            Data: {form.readiness.last?.data ?? 'unknown'}. Identity: {form.readiness.last?.identity ?? 'unknown'}.</p>
++          <p>Last scan: {form.readiness.lastScanStatus ?? 'not attempted'}. Warning codes: {form.readiness.warningCodes.join(', ') || 'none'}.
++            {form.readiness.last?.blockedAccessor ? ' An accessor was blocked.' : ''}</p>
++        </div> : null}
+         <p class="db-note">Not an existing user draft and not a certified saved-server snapshot. Authentication, route support and initial provider state still need human live validation.</p>
+         {draft ? <><p>Host: {form?.host}. Entity ID: {draft.entityId}. Read: {time(form?.readAt)}</p>
+           <p>Provider entity: {show(draft.providerEntityId)}. Provider Attribute Set: {show(draft.providerAttributeSetId)}. General Attribute Set IDs: {show(draft.generalAttributeSetId)}</p>
+diff --git a/src/entrypoints/background/ppFreshForm.ts b/src/entrypoints/background/ppFreshForm.ts
+index ebc659e..4f245c9 100644
+--- a/src/entrypoints/background/ppFreshForm.ts
++++ b/src/entrypoints/background/ppFreshForm.ts
+@@ -1,15 +1,19 @@
+-import type { PpFreshFormResponse, PpFreshFormState } from '../../core/messages';
++import type { PpFreshFormResponse, PpFreshFormState, PpFreshReadiness, PpReadinessCheckpoint, ScanPpDraftResponse, PpReferenceSource, PpGridCoverage } from '../../core/messages';
+ import { scanCurrentPpDraft, ppRoutePathFromUrl } from '../../page/features/pp-scan/page';
++import { readPpReadiness } from '../../page/features/pp-scan/readiness';
++import { readLoadedPpGrid, type PpLoadedGridRead } from '../../page/features/pp-scan/grid';
+ import { isPpDraftScanResponse } from './ppPreview';
+ 
+ const HOSTS = new Set(['bestofgifts.pt', 'bestofgifts.eu', 'bestofgifts.es', 'bestofgifts.fr', 'bestofgifts-pt-qa.toogas.net']);
+ const BASE_RULE = 'Use https on bestofgifts.pt, bestofgifts.eu, bestofgifts.es, bestofgifts.fr or bestofgifts-pt-qa.toogas.net, with one admin path segment such as /admin_xxx, and no port, query, key or extra path.';
+ const MAX_WAIT = 30_000, MAX_INJECTIONS = 10;
++const POLL_MS = 500, EXTRACTION_GAP = (MAX_WAIT - 1000) / (MAX_INJECTIONS - 1);
+ interface ReadJob {
+-  id: string; entityId: string; owner: number | undefined; cancelled: boolean;
++  id: string; entityId: string; owner: number | undefined; cancelled: boolean; referenceSource: PpReferenceSource;
+   tabId?: number; close?: Promise<boolean>; done: Promise<PpFreshFormResponse>;
+   removed?: boolean; onRemoved?: (tabId: number) => void;
+   closeInFlight?: boolean;
++  cancelWait?: () => void;
+ }
+ let active: ReadJob | null = null;
+ let leftover: ReadJob | null = null;
+@@ -64,10 +68,19 @@ async function closeOwned(job: ReadJob): Promise<boolean> {
+   return job.close;
+ }
+ 
+-function bounded<T>(promise: Promise<T>, milliseconds: number): Promise<T> {
++function bounded<T>(promise: Promise<T>, milliseconds: number, job?: ReadJob): Promise<T> {
+   return new Promise((resolve, reject) => {
+-    const timer = setTimeout(() => reject(new Error('Read timed out')), Math.max(1, milliseconds));
+-    promise.then(value => { clearTimeout(timer); resolve(value); }, error => { clearTimeout(timer); reject(error); });
++    let finished = false;
++    const finish = (ok: boolean, value: unknown): void => {
++      if (finished) return;
++      finished = true; clearTimeout(timer);
++      if (job?.cancelWait === cancel) job.cancelWait = undefined;
++      if (ok) resolve(value as T); else reject(value);
++    };
++    const cancel = (): void => finish(false, new Error('Read cancelled'));
++    const timer = setTimeout(() => finish(false, new Error('Read timed out')), Math.max(1, milliseconds));
++    if (job) { job.cancelWait = cancel; if (job.cancelled) cancel(); }
++    promise.then(value => finish(true, value), error => finish(false, error));
+   });
+ }
+ 
+@@ -77,8 +90,99 @@ export function freshFormState(owner: number | undefined): PpFreshFormState {
+   return { status: 'idle' };
+ }
+ 
++function safeReadiness(value: unknown): PpReadinessCheckpoint | undefined {
++  if (!value || typeof value !== 'object') return undefined;
++  const c = value as PpReadinessCheckpoint;
++  if (!['loading', 'interactive', 'complete', 'unknown'].includes(c.document) ||
++    !['document-loading', 'route-mismatch', 'registry-unavailable', 'provider-unavailable', 'data-unavailable', 'identity-missing', 'identity-invalid', 'identity-mismatch', 'ready', 'read-error'].includes(c.stage) ||
++    ![c.registry, c.provider, c.data].every(state => ['unknown', 'available', 'unavailable'].includes(state)) ||
++    !['unknown', 'missing', 'invalid', 'matching', 'mismatched'].includes(c.identity) || typeof c.blockedAccessor !== 'boolean') return undefined;
++  return { document: c.document, stage: c.stage, registry: c.registry, provider: c.provider, data: c.data,
++    identity: c.identity, blockedAccessor: c.blockedAccessor };
++}
++
++function classifyScanWarnings(result: ScanPpDraftResponse): PpFreshReadiness['warningCodes'] {
++  const codes: PpFreshReadiness['warningCodes'] = [];
++  const known: [PpFreshReadiness['warningCodes'][number], string][] = [
++    ['registry-unavailable', 'The already-loaded Magento registry is unavailable.'],
++    ['provider-unavailable', 'The Magento custom-option provider is not loaded.'],
++    ['data-unavailable', 'The Magento provider data is unavailable.'],
++    ['identity-mismatch', 'The route entity and provider entity do not match.'],
++    ['route-mismatch', 'This is not a recognized custom-option edit route.'],
++    ['scan-error', 'The provider could not be read safely. Retry the scan after Magento finishes loading.'],
++  ];
++  for (const [code, warning] of known) if (result.warnings.includes(warning)) codes.push(code);
++  if (result.scannedAt !== undefined && result.providerEntityId === undefined) codes.push('identity-missing');
++  if (result.status === 'partial') codes.push('partial-fields');
++  if (result.status === 'unavailable' && !codes.length) codes.push('scan-error');
++  return [...new Set(codes)];
++}
++
++function safeGridCoverage(value: unknown): PpGridCoverage | undefined {
++  if (!value || typeof value !== 'object') return undefined;
++  const c = value as PpGridCoverage;
++  if (!['found', 'duplicate', 'invalid-link', 'loading', 'error', 'not-in-loaded-results', 'incomplete', 'unavailable', 'changed', 'ambiguous-source'].includes(c.status) ||
++    c.freshness !== 'loaded-unverified' ||
++    [c.loadedRows, c.totalRows, c.page, c.pageSize].some(n => n !== undefined && (typeof n !== 'number' || !Number.isSafeInteger(n) || n < 0)) ||
++    (c.loadedRows !== undefined && c.loadedRows > 500) || (c.pageSize !== undefined && (c.pageSize < 1 || c.pageSize > 500)) ||
++    (c.page !== undefined && c.page < 1) || (c.filtered !== undefined && typeof c.filtered !== 'boolean')) return undefined;
++  if (c.status === 'found' && [c.loadedRows, c.totalRows, c.page, c.pageSize].some(n => n === undefined)) return undefined;
++  return { status: c.status, freshness: 'loaded-unverified', loadedRows: c.loadedRows, totalRows: c.totalRows,
++    page: c.page, pageSize: c.pageSize, filtered: c.filtered };
++}
++
++async function gridReference(job: ReadJob, target: string): Promise<{ grid: PpGridCoverage; reason: string; url?: string }> {
++  const empty = (status: PpGridCoverage['status'], reason: string) => ({ grid: { status, freshness: 'loaded-unverified' as const }, reason });
++  const wanted = new URL(target), gridPath = wanted.pathname.replace(/\/edit\/attributesetcustomoptions_id\/\d+\/$/, '/index/');
++  const gridTarget = wanted.origin + gridPath;
++  try {
++    const tabs = (await chrome.tabs.query({ url: [gridTarget.replace(/\/$/, ''), gridTarget + '*'] }))
++      .filter(tab => typeof tab.id === 'number' && Number.isInteger(tab.id) && tab.id >= 0 && tab.status === 'complete' &&
++        !tab.pendingUrl && isNativePpReference(tab.url, gridTarget));
++    if (job.cancelled) return empty('unavailable', 'Preview cancelled.');
++    if (!tabs.length) return empty('unavailable', 'Open one Magento Options Grid for the configured admin base and load the target record, or explicitly choose the exact-record reference source.');
++    if (tabs.length !== 1) return empty('ambiguous-source', 'Keep one Options Grid tab open for the configured admin base. No address selected.');
++    const source = tabs[0]!, before = await chrome.tabs.get(source.id!);
++    if (job.cancelled) return empty('unavailable', 'Preview cancelled.');
++    if (before.status !== 'complete' || before.pendingUrl || before.url !== source.url || !isNativePpReference(before.url, gridTarget)) return empty('changed', 'Options Grid navigation changed. Wait for it to finish, then retry.');
++    let previous: PpLoadedGridRead | undefined, coverage: PpGridCoverage | undefined;
++    const reasons: Record<PpGridCoverage['status'], string> = {
++      found: 'Native Edit address read from loaded grid data; grid freshness and in-flight state are not verified.',
++      duplicate: 'Multiple loaded grid rows exactly match this entity. No address selected.',
++      'invalid-link': 'The exact loaded row has no valid native Edit address. No address selected.',
++      loading: 'Options Grid is still loading. Wait, load the target record manually, then retry.',
++      error: 'Options Grid reports an error. Resolve it manually before retrying.',
++      'not-in-loaded-results': 'The exact entity is not in the loaded grid results. Filters or paging may hide it; load the appropriate filter/page manually, then retry. This is not a global not-found result.',
++      incomplete: 'Loaded Options Grid coverage or parameters are incomplete or unsupported. Load a supported page manually, then retry.',
++      unavailable: 'The already-loaded Options Grid provider is unavailable. Load the grid manually, then retry.',
++      changed: 'Options Grid data, parameters or Edit address changed during the read. Wait and retry.',
++      'ambiguous-source': 'Options Grid source is ambiguous. Keep one matching grid tab open.',
++    };
++    for (let check = 0; check < 2; check++) {
++      const [injection] = await bounded(chrome.scripting.executeScript({
++        target: { tabId: source.id!, frameIds: [0] }, world: 'MAIN', func: readLoadedPpGrid,
++        args: [job.entityId, wanted.origin, gridPath],
++      }), 5000, job);
++      if (job.cancelled) return empty('unavailable', 'Preview cancelled.');
++      const after = await chrome.tabs.get(source.id!);
++      if (after.url !== before.url || after.pendingUrl || after.status !== 'complete') return empty('changed', reasons.changed);
++      const result = injection?.result;
++      coverage = safeGridCoverage(result);
++      if (injection?.frameId !== 0 || !coverage) return empty('unavailable', 'The grid did not return a valid main-frame loaded-data snapshot.');
++      if (coverage.status !== 'found') return { grid: coverage, reason: reasons[coverage.status] };
++      if (!result || typeof result.nativeUrl !== 'string' || !isNativePpReference(result.nativeUrl, target)) return { grid: { ...coverage, status: 'invalid-link' }, reason: reasons['invalid-link'] };
++      if (typeof result.stamp !== 'string' || result.stamp.length > 32_000) return { grid: { ...coverage, status: 'incomplete' }, reason: reasons.incomplete };
++      if (previous && (previous.stamp !== result.stamp || previous.nativeUrl !== result.nativeUrl)) return { grid: { ...coverage, status: 'changed' }, reason: reasons.changed };
++      previous = result;
++    }
++    return { grid: coverage!, reason: reasons.found, url: previous!.nativeUrl };
++  } catch { return empty('unavailable', 'Loaded Options Grid data could not be read safely. Wait and retry or explicitly choose an exact-record reference.'); }
++}
++
+ async function run(job: ReadJob): Promise<PpFreshFormResponse> {
+   let response = reply(job.id, job.entityId, 'unavailable', 'The fresh Magento form could not be read. Check the admin session and target entity.');
++  let readiness: PpFreshReadiness | undefined, started = 0;
++  let reference: PpFreshFormResponse['reference'];
+   try {
+     const settings = await chrome.storage.local.get(['adminBaseUrl']);
+     const target = freshFormUrl(settings.adminBaseUrl, job.entityId);
+@@ -88,22 +192,33 @@ async function run(job: ReadJob): Promise<PpFreshFormResponse> {
+     }
+     if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
+     const wanted = new URL(target), safePath = ppRoutePathFromUrl(target)!;
+-    const references = (await chrome.tabs.query({ url: [target.replace(/\/$/, ''), `${target}*`] }))
+-      .filter(tab => typeof tab.id === 'number' && Number.isInteger(tab.id) && tab.id >= 0 &&
+-        tab.status === 'complete' && !tab.pendingUrl && isNativePpReference(tab.url, target));
+-    if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
+-    if (!references.length) return reply(job.id, job.entityId, 'unavailable',
+-      `Open Magento record ${job.entityId} as a reference tab, then retry. Its address is used privately; your draft remains untouched.`);
+-    if (references.length !== 1) return reply(job.id, job.entityId, 'unavailable',
+-      `Keep only one reference edit tab for Magento record ${job.entityId} open, then retry. No helper was opened.`);
+-    const reference = references[0]!;
+-    const current = await chrome.tabs.get(reference.id!);
+-    if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
+-    if (current.status !== 'complete' || current.pendingUrl || current.url !== reference.url || !isNativePpReference(current.url, target)) {
+-      return reply(job.id, job.entityId, 'unavailable', 'The exact-record reference tab changed. Reopen the target record and retry; its draft was not read.');
++    reference = { kind: job.referenceSource };
++    let nativeUrl: string;
++    if (job.referenceSource === 'options-grid') {
++      const selected = await gridReference(job, target);
++      reference.grid = selected.grid;
++      if (job.cancelled) return { ...reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.'), reference };
++      if (!selected.url) return { ...reply(job.id, job.entityId, 'unavailable', selected.reason), reference };
++      nativeUrl = selected.url;
++    } else {
++      const references = (await chrome.tabs.query({ url: [target.replace(/\/$/, ''), `${target}*`] }))
++        .filter(tab => typeof tab.id === 'number' && Number.isInteger(tab.id) && tab.id >= 0 &&
++          tab.status === 'complete' && !tab.pendingUrl && isNativePpReference(tab.url, target));
++      if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
++      if (!references.length) return reply(job.id, job.entityId, 'unavailable',
++        `Open Magento record ${job.entityId} as a reference tab, then retry. Its address is used privately; your draft remains untouched.`);
++      if (references.length !== 1) return reply(job.id, job.entityId, 'unavailable',
++        `Keep only one reference edit tab for Magento record ${job.entityId} open, then retry. No helper was opened.`);
++      const reference = references[0]!;
++      const current = await chrome.tabs.get(reference.id!);
++      if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
++      if (current.status !== 'complete' || current.pendingUrl || current.url !== reference.url || !isNativePpReference(current.url, target)) {
++        return reply(job.id, job.entityId, 'unavailable', 'The exact-record reference tab changed. Reopen the target record and retry; its draft was not read.');
++      }
++      nativeUrl = current.url;
+     }
+     // Only the owned helper loads this unchanged, private native address.
+-    const created = await chrome.tabs.create({ url: current.url, active: false });
++    const created = await chrome.tabs.create({ url: nativeUrl, active: false });
+     if (typeof created.id !== 'number') throw new Error('No owned tab');
+     job.tabId = created.id;
+     job.onRemoved = id => {
+@@ -113,10 +228,12 @@ async function run(job: ReadJob): Promise<PpFreshFormResponse> {
+       if (job.onRemoved) chrome.tabs.onRemoved.removeListener(job.onRemoved);
+     };
+     chrome.tabs.onRemoved.addListener(job.onRemoved);
+-    const deadline = Date.now() + MAX_WAIT;
+-    let attempts = 0;
++    started = Date.now();
++    const deadline = started + MAX_WAIT;
++    readiness = { elapsedMs: 0, checks: 0, extractions: 0, warningCodes: [] };
++    let nextExtractionAt = started;
+     while (Date.now() < deadline && !job.cancelled) {
+-      const before = await bounded(chrome.tabs.get(job.tabId), deadline - Date.now());
++      const before = await bounded(chrome.tabs.get(job.tabId), deadline - Date.now(), job);
+       if (job.cancelled) break;
+       if (before.status === 'complete' && !before.pendingUrl) {
+         const url = new URL(before.url ?? '');
+@@ -126,37 +243,72 @@ async function run(job: ReadJob): Promise<PpFreshFormResponse> {
+         if (url.origin !== wanted.origin || ppRoutePathFromUrl(url.href) !== safePath) {
+           response = reply(job.id, job.entityId, 'unavailable', 'Magento redirected away from the requested PP entity. No snapshot accepted.'); break;
+         }
+-        attempts++;
+-        const [injection] = await bounded(chrome.scripting.executeScript({
+-          target: { tabId: job.tabId, frameIds: [0] }, world: 'MAIN', func: scanCurrentPpDraft,
+-        }), deadline - Date.now());
++        readiness.checks++;
++        let checkpoint: PpReadinessCheckpoint | undefined;
++        try {
++          const [probe] = await bounded(chrome.scripting.executeScript({
++            target: { tabId: job.tabId, frameIds: [0] }, world: 'MAIN', func: readPpReadiness, args: [job.entityId],
++          }), deadline - Date.now(), job);
++          if (probe && probe.frameId !== 0) { readiness.warningCodes = ['wrong-frame']; response.reason = 'Readiness check returned from an unexpected frame. No snapshot accepted.'; break; }
++          checkpoint = safeReadiness(probe?.result);
++        } catch { checkpoint = undefined; }
++        readiness.last = checkpoint ?? { document: 'unknown', stage: 'read-error', registry: 'unknown', provider: 'unknown', data: 'unknown', identity: 'unknown', blockedAccessor: false };
+         if (job.cancelled) break;
+-        const after = await bounded(chrome.tabs.get(job.tabId), deadline - Date.now());
+-        const result: unknown = injection?.result;
+-        if (after.url !== before.url || after.pendingUrl || after.status !== 'complete' || injection?.frameId !== 0 ||
+-          !isPpDraftScanResponse(result) || result.entityId !== job.entityId || result.routePath !== safePath) {
++        const afterProbe = await bounded(chrome.tabs.get(job.tabId), deadline - Date.now(), job);
++        if (afterProbe.url !== before.url || afterProbe.pendingUrl || afterProbe.status !== 'complete') {
+           response = reply(job.id, job.entityId, 'unavailable', 'The helper document changed or returned an invalid identity. No snapshot accepted.'); break;
+         }
+-        if (result.status === 'identity-mismatch' || (result.providerEntityId !== undefined && String(result.providerEntityId) !== job.entityId)) {
+-          response = reply(job.id, job.entityId, 'unavailable', 'The Magento route and provider entity do not match. No snapshot accepted.'); break;
++        if (checkpoint?.stage === 'route-mismatch' || checkpoint?.identity === 'mismatched' || checkpoint?.identity === 'invalid') {
++          response = reply(job.id, job.entityId, 'unavailable', 'The readiness check found an invalid or mismatched route/provider identity. No snapshot accepted.'); break;
+         }
+-        if ((result.status === 'ok' || result.status === 'partial') && String(result.providerEntityId) === job.entityId) {
+-          response = { ...reply(job.id, job.entityId, result.status, 'Fresh Magento form load. This is not a certified saved-server snapshot or an existing user draft.'),
+-            host: wanted.hostname, readAt: Date.now(), snapshot: { ...result,
+-              routePath: `/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${job.entityId}` } };
+-          break;
++        if (readiness.extractions < MAX_INJECTIONS && Date.now() >= nextExtractionAt && Date.now() < deadline) {
++          readiness.extractions++;
++          nextExtractionAt = started + readiness.extractions * EXTRACTION_GAP;
++          let injection: chrome.scripting.InjectionResult<unknown> | undefined, extractionFailed = false;
++          try {
++            [injection] = await bounded(chrome.scripting.executeScript({
++              target: { tabId: job.tabId, frameIds: [0] }, world: 'MAIN', func: scanCurrentPpDraft,
++            }), deadline - Date.now(), job);
++          } catch { extractionFailed = true; readiness.lastScanStatus = 'injection-error'; readiness.warningCodes = ['injection-error']; }
++          if (job.cancelled) break;
++          const after = await bounded(chrome.tabs.get(job.tabId), deadline - Date.now(), job);
++          if (after.url !== before.url || after.pendingUrl || after.status !== 'complete') {
++            response = reply(job.id, job.entityId, 'unavailable', 'The helper document changed during extraction. No snapshot accepted.'); break;
++          }
++          if (injection && injection.frameId !== 0) { readiness.warningCodes = ['wrong-frame']; response.reason = 'Extraction returned from an unexpected frame. No snapshot accepted.'; break; }
++          const result: unknown = injection?.result;
++          if (!injection || result == null) {
++            if (!extractionFailed) { readiness.lastScanStatus = 'no-result'; readiness.warningCodes = ['no-scan-result']; }
++          } else if (!isPpDraftScanResponse(result)) {
++            readiness.lastScanStatus = 'invalid-result'; readiness.warningCodes = ['invalid-scan-result'];
++            response.reason = 'The helper returned an invalid snapshot. No snapshot accepted.'; break;
++          } else {
++            readiness.lastScanStatus = result.status;
++            readiness.warningCodes = classifyScanWarnings(result);
++            if (result.entityId !== job.entityId || result.routePath !== safePath || result.status === 'identity-mismatch' ||
++              (result.providerEntityId !== undefined && String(result.providerEntityId) !== job.entityId)) {
++              readiness.warningCodes = ['identity-mismatch'];
++              response = reply(job.id, job.entityId, 'unavailable', 'The Magento route and provider entity do not match. No snapshot accepted.'); break;
++            }
++            if ((result.status === 'ok' || result.status === 'partial') && String(result.providerEntityId) === job.entityId) {
++              response = { ...reply(job.id, job.entityId, result.status, 'Fresh Magento form load. This is not a certified saved-server snapshot or an existing user draft.'),
++                host: wanted.hostname, readAt: Date.now(), snapshot: { ...result,
++                  routePath: `/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${job.entityId}` } };
++              break;
++            }
++          }
+         }
+-        if (attempts >= MAX_INJECTIONS) {
+-          response = reply(job.id, job.entityId, 'unavailable', 'The PP provider did not become available with a matching entity within the bounded read attempts.'); break;
+-        }
+-      }
+-      await new Promise(resolve => setTimeout(resolve, 500));
++      } else readiness.last = { document: 'unknown', stage: 'document-loading', registry: 'unknown', provider: 'unknown', data: 'unknown', identity: 'unknown', blockedAccessor: false };
++      await new Promise(resolve => setTimeout(resolve, Math.min(POLL_MS, Math.max(0, deadline - Date.now()))));
+     }
++    if (response.status === 'unavailable' && Date.now() >= deadline) response.reason = 'The fresh form did not yield a matching snapshot within the 30-second readiness budget. See the last readiness checkpoint.';
+     if (job.cancelled) response = reply(job.id, job.entityId, 'cancelled', 'Preview cancelled. No further reads will run.');
+   } catch {
+     response = reply(job.id, job.entityId, job.cancelled ? 'cancelled' : 'unavailable',
+       job.cancelled ? 'Preview cancelled.' : 'The fresh Magento form read failed or timed out. Retry explicitly.');
+   } finally {
++    if (reference) response.reference = reference;
++    if (readiness) { readiness.elapsedMs = Math.max(0, Date.now() - started); response.readiness = readiness; }
+     const closed = await closeOwned(job);
+     if (closed && job.onRemoved) chrome.tabs.onRemoved.removeListener(job.onRemoved);
+     if (job.tabId !== undefined) {
+@@ -172,8 +324,9 @@ async function run(job: ReadJob): Promise<PpFreshFormResponse> {
+   return response;
+ }
+ 
+-export function readFreshForm(id: unknown, entityId: unknown, owner: number | undefined): Promise<PpFreshFormResponse> {
+-  if (typeof id !== 'string' || !/^[a-z0-9-]{1,80}$/i.test(id) || typeof entityId !== 'string' || !/^[1-9]\d{0,15}$/.test(entityId)) {
++export function readFreshForm(id: unknown, entityId: unknown, owner: number | undefined, referenceSource: unknown = 'exact-record'): Promise<PpFreshFormResponse> {
++  if (typeof id !== 'string' || !/^[a-z0-9-]{1,80}$/i.test(id) || typeof entityId !== 'string' || !/^[1-9]\d{0,15}$/.test(entityId) ||
++    (referenceSource !== 'options-grid' && referenceSource !== 'exact-record')) {
+     return Promise.resolve(reply('', '', 'invalid', 'Invalid preview identity. Enter the exact positive Magento entity ID.'));
+   }
+   if (stoppedBeforeStart.has(id) && stoppedBeforeStart.get(id) === owner) {
+@@ -183,7 +336,7 @@ export function readFreshForm(id: unknown, entityId: unknown, owner: number | un
+   if (leftover) return Promise.resolve({ ...reply(id, entityId, 'cleanup-failed', `Helper tab ${leftover.tabId} still needs closing before another preview.`),
+     cleanup: 'failed', leftoverTabId: leftover.tabId, cleanupRequestId: leftover.id });
+   if (active) return Promise.resolve(reply(id, entityId, 'busy', 'Another helper read is still running or closing. Stop it or wait before retrying.'));
+-  const job: ReadJob = { id, entityId, owner, cancelled: false, done: undefined! };
++  const job: ReadJob = { id, entityId, owner, cancelled: false, referenceSource, done: undefined! };
+   active = job; job.done = run(job); return job.done;
+ }
+ 
+@@ -197,6 +350,7 @@ export async function cancelFreshForm(id: unknown, owner: number | undefined): P
+     return reply('', '', 'unavailable', 'No matching helper read to stop or close.');
+   }
+   job.cancelled = true;
++  job.cancelWait?.();
+   if (job === leftover) {
+     if (!job.closeInFlight) job.close = undefined;
+     const closed = await closeOwned(job);
+diff --git a/src/entrypoints/background/routers/ui.ts b/src/entrypoints/background/routers/ui.ts
+index 0749006..7fe1d68 100644
+--- a/src/entrypoints/background/routers/ui.ts
++++ b/src/entrypoints/background/routers/ui.ts
+@@ -47,7 +47,7 @@ export const handleUiMessage: LaneRouter = (message, ctx) => {
+         cleanup: 'not-created', reason: 'Open PP Preview in the extension dashboard.' });
+     } else if (message.type === 'GET_PP_FRESH_FORM_STATE') ctx.sendResponse(freshFormState(ctx.senderTabId));
+     else void (message.type === 'READ_PP_FRESH_FORM'
+-      ? readFreshForm(message.requestId, message.entityId, ctx.senderTabId)
++      ? readFreshForm(message.requestId, message.entityId, ctx.senderTabId, message.referenceSource)
+       : cancelFreshForm(message.requestId, ctx.senderTabId)).then(ctx.sendResponse);
+     return true;
+   }
+diff --git a/src/page/features/pp-scan/grid.ts b/src/page/features/pp-scan/grid.ts
+new file mode 100644
+index 0000000..668a390
+--- /dev/null
++++ b/src/page/features/pp-scan/grid.ts
+@@ -0,0 +1,91 @@
++import type { PpGridCoverage } from '../../../core/messages';
++
++/** Internal result: nativeUrl/stamp may only be consumed privately by the worker. */
++export interface PpLoadedGridRead extends PpGridCoverage { nativeUrl?: string; stamp?: string }
++
++/** Serialized MAIN-world read of already-loaded Options Grid data; never loads or modifies it. */
++export function readLoadedPpGrid(expectedEntityId: string, expectedOrigin: string, expectedPath: string): PpLoadedGridRead {
++  const result: PpLoadedGridRead = { status: 'unavailable', freshness: 'loaded-unverified' };
++  let blocked = false;
++  const own = (source: unknown, key: string): unknown => {
++    if (!source || (typeof source !== 'object' && typeof source !== 'function')) return undefined;
++    const d = Object.getOwnPropertyDescriptor(source, key);
++    if (!d) return undefined;
++    if (!('value' in d)) { blocked = true; return undefined; }
++    return d.value;
++  };
++  const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
++  const integer = (value: unknown, min: number, max: number): value is number => typeof value === 'number' && Number.isInteger(value) && value >= min && value <= max;
++  const escape = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
++  try {
++    if (!/^[1-9]\d{0,15}$/.test(expectedEntityId) || window.location.origin !== expectedOrigin ||
++      !new RegExp(`^${escape(expectedPath.replace(/\/$/, ''))}(?:/key/[A-Za-z0-9_-]{1,256})?/?$`).test(window.location.pathname)) return result;
++    const requireFn = own(window, 'require');
++    const defined = own(own(own(own(requireFn, 's'), 'contexts'), '_'), 'defined');
++    const registry = own(defined, 'Magento_Ui/js/lib/registry/registry');
++    let get: unknown, prototype = registry;
++    for (let depth = 0; prototype && depth < 4 && (typeof prototype === 'object' || typeof prototype === 'function'); depth++) {
++      const d = Object.getOwnPropertyDescriptor(prototype, 'get');
++      if (d) { if ('value' in d) get = d.value; else blocked = true; break; }
++      prototype = Object.getPrototypeOf(prototype);
++    }
++    if (typeof get !== 'function' || blocked) return result;
++    const namespace = 'toogas_attributesetcustomoptions_attributesetcustomoptions_listing';
++    const providerName = namespace + '.' + namespace + '_data_source';
++    const provider = get.call(registry, providerName);
++    if (!provider) return result;
++    const firstLoad = own(provider, 'firstLoad'), lastError = own(provider, 'lastError'), message = own(provider, 'message');
++    if (lastError === true || (typeof message === 'string' && message.length > 0)) { result.status = 'error'; return result; }
++    if (firstLoad !== false) { result.status = 'loading'; return result; }
++    if (lastError !== false) return result;
++    const data = own(provider, 'data'), params = own(provider, 'params');
++    if (!record(data) || !record(params) || own(params, 'namespace') !== namespace) return result;
++    const items = own(data, 'items'), total = own(data, 'totalRecords'), paging = own(params, 'paging'), filters = own(params, 'filters'), sorting = own(params, 'sorting');
++    if (!Array.isArray(items) || items.length > 500 || !integer(total, 0, Number.MAX_SAFE_INTEGER) ||
++      !record(paging) || !record(filters) || !record(sorting)) { result.status = 'incomplete'; return result; }
++    const page = own(paging, 'current'), pageSize = own(paging, 'pageSize'), filterId = own(filters, 'attributesetcustomoptions_id'), placeholder = own(filters, 'placeholder');
++    const sortField = own(sorting, 'field'), sortDirection = own(sorting, 'direction');
++    if (!integer(page, 1, 1_000_000) || !integer(pageSize, 1, 500) || items.length > pageSize || items.length > total ||
++      (filterId !== undefined && (typeof filterId !== 'string' || filterId.length > 128)) ||
++      (placeholder !== undefined && typeof placeholder !== 'boolean') ||
++      Object.keys(filters).some(key => !['placeholder', 'attributesetcustomoptions_id'].includes(key)) ||
++      typeof sortField !== 'string' || sortField.length > 128 || typeof sortDirection !== 'string' || !['asc', 'desc'].includes(sortDirection)) {
++      result.status = 'incomplete'; return result;
++    }
++    result.loadedRows = items.length; result.totalRows = total; result.page = page; result.pageSize = pageSize; result.filtered = filterId !== undefined && filterId !== '';
++    const ids: string[] = [], matches: unknown[] = [];
++    for (let i = 0; i < items.length; i++) {
++      const row = own(items, String(i)), id = own(row, 'attributesetcustomoptions_id');
++      if (!((typeof id === 'string' && /^\d{1,16}$/.test(id)) || (typeof id === 'number' && Number.isSafeInteger(id) && id >= 0))) { result.status = 'incomplete'; return result; }
++      const exactId = String(id); ids.push(exactId);
++      if (exactId === expectedEntityId) matches.push(row);
++    }
++    if (blocked) { result.status = 'incomplete'; return result; }
++    if (matches.length > 1) { result.status = 'duplicate'; return result; }
++    if (!matches.length) { result.status = 'not-in-loaded-results'; return result; }
++    const nativeUrl = own(own(own(matches[0], 'actions'), 'edit'), 'href');
++    if (typeof nativeUrl !== 'string' || nativeUrl.length > 2048 || /[?#]/.test(nativeUrl)) { result.status = 'invalid-link'; return result; }
++    let url: URL;
++    try { url = new URL(nativeUrl); } catch { result.status = 'invalid-link'; return result; }
++    const editPath = expectedPath.replace(/\/index\/?$/, '/edit/attributesetcustomoptions_id/' + expectedEntityId);
++    if (url.href !== nativeUrl || url.origin !== expectedOrigin || url.username || url.password ||
++      !new RegExp(`^${escape(editPath)}(?:/key/[A-Za-z0-9_-]{1,256})?/?$`).test(url.pathname)) { result.status = 'invalid-link'; return result; }
++    if (blocked) { result.status = 'incomplete'; return result; }
++    if (get.call(registry, providerName) !== provider || own(provider, 'data') !== data || own(provider, 'params') !== params ||
++      own(data, 'items') !== items || own(data, 'totalRecords') !== total || own(provider, 'firstLoad') !== firstLoad || own(provider, 'lastError') !== lastError ||
++      own(provider, 'message') !== message || own(params, 'namespace') !== namespace || items.length !== ids.length ||
++      own(params, 'paging') !== paging || own(params, 'filters') !== filters || own(params, 'sorting') !== sorting ||
++      own(paging, 'current') !== page || own(paging, 'pageSize') !== pageSize || own(filters, 'attributesetcustomoptions_id') !== filterId ||
++      own(filters, 'placeholder') !== placeholder || Object.keys(filters).some(key => !['placeholder', 'attributesetcustomoptions_id'].includes(key)) ||
++      own(sorting, 'field') !== sortField || own(sorting, 'direction') !== sortDirection ||
++      own(own(own(matches[0], 'actions'), 'edit'), 'href') !== nativeUrl) { result.status = 'changed'; return result; }
++    for (let i = 0; i < ids.length; i++) {
++      const id = own(own(items, String(i)), 'attributesetcustomoptions_id');
++      if ((typeof id !== 'string' && typeof id !== 'number') || String(id) !== ids[i]) { result.status = 'changed'; return result; }
++    }
++    if (blocked) { result.status = 'incomplete'; return result; }
++    result.status = 'found'; result.nativeUrl = nativeUrl;
++    result.stamp = JSON.stringify({ namespace, page, pageSize, filterId, placeholder, sortField, sortDirection, total, ids, nativeUrl });
++    return result;
++  } catch { result.status = 'error'; return result; }
++}
+diff --git a/src/page/features/pp-scan/readiness.ts b/src/page/features/pp-scan/readiness.ts
+new file mode 100644
+index 0000000..904b845
+--- /dev/null
++++ b/src/page/features/pp-scan/readiness.ts
+@@ -0,0 +1,50 @@
++import type { PpReadinessCheckpoint } from '../../../core/messages';
++
++/** Serialized MAIN-world probe: fixed status values only, no provider content. */
++export function readPpReadiness(expectedEntityId: string): PpReadinessCheckpoint {
++  const result: PpReadinessCheckpoint = { document: 'unknown', stage: 'read-error',
++    registry: 'unknown', provider: 'unknown', data: 'unknown', identity: 'unknown', blockedAccessor: false };
++  const own = (source: unknown, key: string): unknown => {
++    if (source === null || (typeof source !== 'object' && typeof source !== 'function')) return undefined;
++    const descriptor = Object.getOwnPropertyDescriptor(source, key);
++    if (!descriptor) return undefined;
++    if (!('value' in descriptor)) { result.blockedAccessor = true; return undefined; }
++    return descriptor.value;
++  };
++  try {
++    const state = document.readyState;
++    if (state === 'loading' || state === 'interactive' || state === 'complete') result.document = state;
++    const route = window.location.pathname.match(/\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/(\d+)(?:\/|$)/i);
++    if (route?.[1] !== expectedEntityId) { result.stage = 'route-mismatch'; return result; }
++    if (state === 'loading') { result.stage = 'document-loading'; return result; }
++    const requireFn = own(window, 'require');
++    const defined = own(own(own(own(requireFn, 's'), 'contexts'), '_'), 'defined');
++    const registry = own(defined, 'Magento_Ui/js/lib/registry/registry');
++    let get: unknown, prototype = registry;
++    for (let depth = 0; prototype && depth < 4 && (typeof prototype === 'object' || typeof prototype === 'function'); depth++) {
++      const descriptor = Object.getOwnPropertyDescriptor(prototype, 'get');
++      if (descriptor) {
++        if ('value' in descriptor) get = descriptor.value;
++        else result.blockedAccessor = true;
++        break;
++      }
++      prototype = Object.getPrototypeOf(prototype);
++    }
++    if (typeof get !== 'function') { result.registry = 'unavailable'; result.stage = 'registry-unavailable'; return result; }
++    result.registry = 'available';
++    const provider = get.call(registry, 'toogas_attributesetcustomoptions_attributesetcustomoptions_form.attributesetcustomoptions_form_data_source');
++    if (!provider) { result.provider = 'unavailable'; result.stage = 'provider-unavailable'; return result; }
++    result.provider = 'available';
++    const data = own(provider, 'data');
++    if (!data || typeof data !== 'object') { result.data = 'unavailable'; result.stage = 'data-unavailable'; return result; }
++    result.data = 'available';
++    const id = own(data, 'attributesetcustomoptions_id');
++    if (id === undefined || id === null || id === '') { result.identity = 'missing'; result.stage = 'identity-missing'; return result; }
++    if (!((typeof id === 'string' && /^\d{1,16}$/.test(id)) || (typeof id === 'number' && Number.isSafeInteger(id) && id >= 0))) {
++      result.identity = 'invalid'; result.stage = 'identity-invalid'; return result;
++    }
++    result.identity = String(id) === expectedEntityId ? 'matching' : 'mismatched';
++    result.stage = result.identity === 'matching' ? 'ready' : 'identity-mismatch';
++    return result;
++  } catch { result.stage = 'read-error'; return result; }
++}
+diff --git a/tests/ppCatalogSelection.test.ts b/tests/ppCatalogSelection.test.ts
+index 911d609..b86818c 100644
+--- a/tests/ppCatalogSelection.test.ts
++++ b/tests/ppCatalogSelection.test.ts
+@@ -117,7 +117,7 @@ test('multi-selection survives filtering, exact selected details precede the fre
+   const f = fixture();
+   try {
+     assert.equal(f.pending.length, 0); assert.equal(f.button('Preview selected PP').disabled, true);
+-    assert.match(f.root.textContent!, /exact Magento record|general admin tab is not sufficient/);
++    assert.match(f.root.textContent!, /Keep one Options Grid open/);
+     assert.doesNotMatch(f.root.textContent!, /No existing Magento edit tab is needed/);
+     await f.prepare(); assert.match(f.root.textContent!, /2 selected/);
+     f.change('Search loaded codes or titles', '50'); assert.match(f.root.textContent!, /2 selected · 1 visible/);
+@@ -128,6 +128,7 @@ test('multi-selection survives filtering, exact selected details precede the fre
+     await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
+     const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
+     assert.equal(request.entityId, '966'); assert.equal('tabId' in request, false);
++    assert.equal(request.referenceSource, 'options-grid');
+     await f.resolve('READ_PP_FRESH_FORM', fresh(request.requestId));
+     assert.match(f.root.textContent!, /FRESH MAGENTO FORM LOAD/); assert.match(f.root.textContent!, /not a certified saved-server snapshot/);
+     assert.match(f.root.textContent!, /Fresh native title/); assert.match(f.root.textContent!, /A rever/); assert.match(f.root.textContent!, /Blocked:/);
+@@ -215,3 +216,34 @@ test('a mismatched fresh-form snapshot is rejected without rendering either asso
+     assert.doesNotMatch(f.root.textContent!, /Fresh native title|Desired: Notion/);
+   } finally { f.close(); }
+ });
++
++test('address source is explicit and switching to the exact-record reader clears the old pairing', async () => {
++  const f = fixture();
++  try {
++    await f.prepare(); f.change('Magento address source', 'exact-record');
++    assert.equal(f.button('Preview selected PP').disabled, true); assert.match(f.root.textContent!, /2 selected/);
++    assert.match(f.root.textContent!, /Only its native address is copied privately/);
++    f.pair(); f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
++    assert.equal(request.referenceSource, 'exact-record');
++    await f.resolve('READ_PP_FRESH_FORM', { ...fresh(request.requestId), reference: { kind: 'exact-record' } });
++    assert.match(f.root.textContent!, /Address source: exact-record/);
++  } finally { f.close(); }
++});
++
++test('grid failure and readiness checkpoints render safe diagnostics without a comparison or automatic source switch', async () => {
++  const f = fixture();
++  try {
++    await f.prepare(); f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
++    await f.resolve('READ_PP_FRESH_FORM', { source: 'fresh-magento-form-load', requestId: request.requestId, entityId: '966', status: 'unavailable', cleanup: 'closed',
++      reason: 'No matching snapshot within the readiness budget', reference: { kind: 'options-grid', grid: { status: 'found', loadedRows: 20, totalRows: 20, page: 1, pageSize: 200, filtered: true, freshness: 'loaded-unverified' } },
++      readiness: { checks: 60, extractions: 10, elapsedMs: 30000, lastScanStatus: 'unavailable', warningCodes: ['provider-unavailable'],
++        last: { document: 'complete', stage: 'provider-unavailable', registry: 'available', provider: 'unavailable', data: 'unknown', identity: 'unknown', blockedAccessor: false } } });
++    assert.match(f.root.textContent!, /Readiness checks: 60/); assert.match(f.root.textContent!, /Elapsed: 30.0s/);
++    assert.match(f.root.textContent!, /provider-unavailable/); assert.match(f.root.textContent!, /freshness unverified/);
++    assert.equal(f.root.querySelectorAll('table').length, 1, 'only the catalogue table, no unsupported comparison');
++    assert.equal(f.pending.filter(p => p.message.type === 'READ_PP_FRESH_FORM').length, 1);
++    assert.equal((Array.from(f.root.querySelectorAll('label')).find(label => label.textContent!.startsWith('Magento address source'))!.querySelector('select')!).value, 'options-grid');
++  } finally { f.close(); }
++});
+diff --git a/tests/ppFreshForm.test.ts b/tests/ppFreshForm.test.ts
+index eec4a79..fb6db82 100644
+--- a/tests/ppFreshForm.test.ts
++++ b/tests/ppFreshForm.test.ts
+@@ -4,6 +4,7 @@ import { runInNewContext } from 'node:vm';
+ import { freshFormUrl, freshFormIssue, isNativePpReference, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
+ import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
+ import type { PpFreshFormResponse } from '../src/core/messages';
++import { readPpReadiness } from '../src/page/features/pp-scan/readiness';
+ 
+ const base = 'https://bestofgifts.pt/admin_fixture';
+ const full = base + '/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/PRIVATE_SESSION/';
+@@ -15,17 +16,22 @@ async function settle<T>(t: TestContext, promise: Promise<T>): Promise<T> {
+   await flush(); assert.equal(done, true, 'bounded lifecycle completed'); return promise;
+ }
+ 
+-function fixture(t: TestContext, config: { scenario?: string; removeFail?: boolean; createWait?: Promise<any>; injectionWait?: Promise<any>; queryWait?: Promise<any>; referenceWait?: Promise<any> } = {}) {
++function fixture(t: TestContext, config: { scenario?: string; removeFail?: boolean; createWait?: Promise<any>; injectionWait?: Promise<any>; queryWait?: Promise<any>; referenceWait?: Promise<any>; providerReadyAfterMs?: number } = {}) {
+   t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_900_000_000_000 });
++  const started = Date.now();
+   const previous = globals.chrome, removedListeners = new Set<(id: number) => void>();
+-  const created: any[] = [], removed: number[] = [], injected: any[] = [], queries: any[] = [], sourceGets: number[] = [];
++  const created: any[] = [], removed: number[] = [], injected: any[] = [], probes: any[] = [], queries: any[] = [], sourceGets: number[] = [], extractionAt: number[] = [];
+   let gets = 0, loaderCalls = 0;
+   const nativeData: any = { attributesetcustomoptions_id: '966', attribute_set_id: '479', general: { option_title: 'Fresh native form', attribute_set_id: ['479'] },
+     options: { sub_options: { sub_options: [] }, sub_options_items: { sub_options_items: [] } } };
+   if (config.scenario === 'identity') nativeData.attributesetcustomoptions_id = '49';
+   if (config.scenario === 'partial') delete nativeData.options.sub_options_items;
+-  const registry = Object.create({ get: () => config.scenario === 'provider' ? undefined : { data: nativeData } });
++  if (config.scenario === 'missing-id') delete nativeData.attributesetcustomoptions_id;
++  if (config.scenario === 'invalid-id') nativeData.attributesetcustomoptions_id = { toString: () => assert.fail('never coerce unknown identity') };
++  const provider: any = config.scenario === 'missing-data' ? {} : { data: nativeData };
++  const registry = Object.create({ get: () => config.scenario === 'provider' || Date.now() - started < (config.providerReadyAfterMs ?? 0) ? undefined : provider });
+   const requireFn = Object.assign(() => { loaderCalls++; }, { s: { contexts: { _: { defined: { 'Magento_Ui/js/lib/registry/registry': registry } } } } });
++  if (config.scenario === 'missing-registry') delete (requireFn.s.contexts._.defined as any)['Magento_Ui/js/lib/registry/registry'];
+   globals.chrome = { runtime: { getURL: () => 'chrome-extension://fixture/dashboard.html' },
+     storage: { local: { get: async (keys: string[]) => { assert.deepEqual(keys, ['adminBaseUrl']); return { adminBaseUrl: config.scenario === 'base' ? 'https://example.org/admin' : config.scenario === 'no-base' ? '' : base }; } } },
+     tabs: { create: async (options: any) => { created.push(options); if (config.scenario === 'create') throw new Error('PRIVATE_SESSION'); return config.createWait ?? { id: 77 }; },
+@@ -56,13 +62,23 @@ function fixture(t: TestContext, config: { scenario?: string; removeFail?: boole
+         if (config.scenario === 'source-pending') return [{ ...source, pendingUrl: full }];
+         return [source];
+       }, update: () => { throw new Error('No tab navigation'); } },
+-    scripting: { executeScript: async (options: any) => { injected.push(options); assert.deepEqual(options.target, { tabId: 77, frameIds: [0] }); assert.equal(options.world, 'MAIN');
+-      if (config.injectionWait) return config.injectionWait;
++    scripting: { executeScript: async (options: any) => {
++      const probe = options.func === readPpReadiness;
++      (probe ? probes : injected).push(options); assert.deepEqual(options.target, { tabId: 77, frameIds: [0] }); assert.equal(options.world, 'MAIN');
++      if (!probe) extractionAt.push(Date.now() - started);
++      if (!probe && config.injectionWait) return config.injectionWait;
++      if (probe && config.scenario === 'no-checkpoint') return [];
++      if (!probe && config.scenario === 'no-result') return [{ frameId: 0 }];
++      if (!probe && config.scenario === 'invalid-result') return [{ frameId: 0, result: { unexpected: 'SYNTHETIC_PRIVATE/key/secret' } }];
++      if (!probe && config.scenario === 'scan-throws') throw new Error('SYNTHETIC_PRIVATE/key/secret');
++      const result = runInNewContext('(' + options.func.toString() + ')(...args)', { args: options.args ?? [], document: { readyState: 'complete' }, window: { location: { pathname: new URL(full).pathname }, require: requireFn } });
++      if (probe) result.extraUrl = 'SYNTHETIC_PRIVATE/key/secret';
++      if (!probe && config.scenario === 'unknown-warning') { result.status = 'unavailable'; result.warnings = ['SYNTHETIC_PRIVATE/key/secret']; }
+       return [{ frameId: config.scenario === 'frame' ? 2 : 0,
+-        result: runInNewContext('(' + options.func.toString() + ')()', { window: { location: { pathname: new URL(full).pathname }, require: requireFn } }) }];
++        result }];
+     } } };
+   t.after(() => { globals.chrome = previous; });
+-  return { config, created, removed, injected, queries, sourceGets, nativeData, loaderCalls: () => loaderCalls, manualClose: () => { for (const fn of [...removedListeners]) fn(77); }, listeners: removedListeners };
++  return { config, created, removed, injected, probes, extractionAt, queries, sourceGets, nativeData, elapsed: () => Date.now() - started, loaderCalls: () => loaderCalls, manualClose: () => { for (const fn of [...removedListeners]) fn(77); }, listeners: removedListeners };
+ }
+ 
+ test('fresh target accepts only a configured allowed HTTPS admin base and exact positive entity', () => {
+@@ -138,6 +154,59 @@ test('fresh load uses a new inactive tab and serialized inherited-registry reade
+   assert.doesNotMatch(JSON.stringify(response), /PRIVATE|admin_fixture|key\//);
+ });
+ 
++test('a provider initialized after twenty seconds still gets the documented readiness budget', async t => {
++  const f = fixture(t, { providerReadyAfterMs: 20_000 });
++  const response = await settle(t, readFreshForm('late-provider', '966', 1));
++  assert.equal(response.status, 'ok', 'provider became ready inside the thirty-second budget');
++  assert.ok(f.elapsed() >= 20_000 && f.elapsed() <= 31_000);
++  assert.equal(response.cleanup, 'closed');
++});
++
++test('an unavailable provider uses the readiness window rather than stopping after five seconds', async t => {
++  const f = fixture(t, { scenario: 'provider' });
++  const response = await settle(t, readFreshForm('full-readiness-window', '966', 1));
++  assert.equal(response.status, 'unavailable');
++  assert.ok(f.elapsed() >= 29_000, 'elapsed readiness time: ' + f.elapsed());
++  assert.ok(f.elapsed() <= 31_000); assert.equal(response.cleanup, 'closed');
++  assert.ok(f.probes.length <= 61); assert.ok(f.injected.length <= 10);
++  assert.ok(f.extractionAt.at(-1)! - f.extractionAt[0]! >= 28_000, 'extraction attempts span the readiness budget');
++  assert.equal(response.readiness!.last!.stage, 'provider-unavailable'); assert.equal(response.readiness!.lastScanStatus, 'unavailable');
++  assert.ok(response.readiness!.warningCodes.includes('provider-unavailable'));
++});
++
++for (const [scenario, stage, scan] of [
++  ['missing-registry', 'registry-unavailable', 'unavailable'], ['missing-data', 'data-unavailable', 'unavailable'],
++  ['missing-id', 'identity-missing', 'ok'], ['invalid-id', 'identity-invalid', undefined],
++  ['no-result', 'ready', 'no-result'], ['invalid-result', 'ready', 'invalid-result'],
++  ['scan-throws', 'ready', 'injection-error'], ['unknown-warning', 'ready', 'unavailable'],
++] as const) {
++  test('safe helper diagnostics distinguish ' + scenario, async t => {
++    const f = fixture(t, { scenario });
++    const response = await settle(t, readFreshForm('diagnostic-' + scenario, '966', 1));
++    assert.equal(response.status, 'unavailable'); assert.equal(response.readiness!.last!.stage, stage); assert.equal(response.readiness!.lastScanStatus, scan);
++    assert.equal(response.snapshot, undefined); assert.equal(response.cleanup, 'closed');
++    assert.doesNotMatch(JSON.stringify(response), /SYNTHETIC|PRIVATE|key\//);
++    if (scenario === 'missing-id') assert.ok(response.readiness!.warningCodes.includes('identity-missing'));
++    if (scenario === 'no-result') assert.deepEqual(response.readiness!.warningCodes, ['no-scan-result']);
++    if (scenario === 'unknown-warning') assert.deepEqual(response.readiness!.warningCodes, ['scan-error']);
++    assert.ok(f.injected.length <= 10);
++  });
++}
++
++test('a missing diagnostic-probe result does not disable the original full scanner', async t => {
++  fixture(t, { scenario: 'no-checkpoint' });
++  const response = await settle(t, readFreshForm('probe-unavailable', '966', 1));
++  assert.equal(response.status, 'ok'); assert.equal(response.readiness!.last!.stage, 'read-error'); assert.equal(response.readiness!.lastScanStatus, 'ok');
++});
++
++test('cancelling a never-settling extraction promptly closes only the helper and releases the reader', async t => {
++  const f = fixture(t, { injectionWait: new Promise(() => {}) });
++  const pending = readFreshForm('cancel-hung-extraction', '966', 1); await flush();
++  const response = await settle(t, cancelFreshForm('cancel-hung-extraction', 1));
++  assert.equal(response.status, 'cancelled'); assert.equal(response.cleanup, 'closed'); assert.ok(f.elapsed() < 2000);
++  assert.deepEqual(f.removed, [77]); assert.equal((await pending).status, 'cancelled');
++});
++
+ for (const scenario of ['base', 'no-base', 'create', 'login', 'redirect', 'entity-route', 'identity', 'provider', 'timeout', 'stale', 'frame', 'partial']) {
+   test(`fresh lifecycle: ${scenario} is explicit and always cleans up created tabs`, async t => {
+     const f = fixture(t, { scenario });
+diff --git a/tests/ppGrid.test.ts b/tests/ppGrid.test.ts
+new file mode 100644
+index 0000000..854e2e2
+--- /dev/null
++++ b/tests/ppGrid.test.ts
+@@ -0,0 +1,179 @@
++import test, { type TestContext } from 'node:test';
++import assert from 'node:assert/strict';
++import { runInNewContext } from 'node:vm';
++import { readLoadedPpGrid } from '../src/page/features/pp-scan/grid';
++import { readFreshForm, cancelFreshForm } from '../src/entrypoints/background/ppFreshForm';
++
++const origin = 'https://bestofgifts.pt', base = origin + '/admin_fixture';
++const controller = '/toogas_attributesetcustomoptions/attributesetcustomoptions';
++const gridPath = '/admin_fixture' + controller + '/index/';
++const gridUrl = origin + gridPath + 'key/SYNTHETIC_GRID/';
++const editUrl = base + controller + '/edit/attributesetcustomoptions_id/42/key/SYNTHETIC_EDIT/';
++const namespace = 'toogas_attributesetcustomoptions_attributesetcustomoptions_listing';
++const providerName = namespace + '.' + namespace + '_data_source';
++const moduleName = 'Magento_Ui/js/lib/registry/registry';
++const row = (id: string | number): any => ({ attributesetcustomoptions_id: id,
++  actions: { delete: { href: base + controller + '/delete/' }, duplicate: { href: base + controller + '/duplicate/' },
++    edit: { href: editUrl.replace('/42/', '/' + id + '/') } } });
++
++function gridFixture() {
++  const provider: any = { firstLoad: false, lastError: false, message: '',
++    data: { items: [row(420), row(42), row(142)], totalRecords: 20 },
++    params: { namespace, filters: { placeholder: true, attributesetcustomoptions_id: '42' }, paging: { pageSize: 200, current: 1 },
++      sorting: { field: 'attributesetcustomoptions_id', direction: 'asc' } },
++    reload: () => assert.fail('never reload'), set: () => assert.fail('never set grid parameters') };
++  let loaderCalls = 0, gets = 0;
++  let onGet = (): void => {};
++  const registry: any = Object.create({ get: (name: string) => { assert.equal(name, providerName); gets++; onGet(); return provider; } });
++  const context: any = { URL, window: { location: { origin, pathname: new URL(gridUrl).pathname },
++    require: Object.assign(() => { loaderCalls++; assert.fail('never load modules'); }, { s: { contexts: { _: { defined: { [moduleName]: registry } } } } }) } };
++  const run = () => runInNewContext('(' + readLoadedPpGrid.toString() + ')(...args)', { ...context, args: ['42', origin, gridPath] });
++  return { provider, registry, context, run, counts: () => ({ gets, loaderCalls }), onGet: (fn: () => void) => { onGet = fn; } };
++}
++
++test('serialized loaded-grid reader selects exact 42 among substring matches and only the named Edit action', () => {
++  const f = gridFixture(), before = JSON.stringify(f.provider), result = f.run();
++  assert.equal(result.status, 'found'); assert.equal(result.nativeUrl, editUrl); assert.equal(result.loadedRows, 3); assert.equal(result.totalRows, 20);
++  assert.equal(result.page, 1); assert.equal(result.pageSize, 200); assert.equal(result.filtered, true); assert.equal(result.freshness, 'loaded-unverified');
++  assert.equal(JSON.stringify(f.provider), before); assert.equal(f.counts().loaderCalls, 0);
++  assert.ok(result.stamp.includes('42')); assert.doesNotMatch(result.nativeUrl, /delete|duplicate/);
++});
++
++for (const scenario of ['missing', 'duplicate', 'loading', 'error', 'message', 'namespace', 'oversized', 'malformed-id', 'unknown-filter', 'wrong-route', 'wrong-origin']) {
++  test('loaded-grid status: ' + scenario, () => {
++    const f = gridFixture();
++    if (scenario === 'missing') f.provider.data.items = [row(420), row(142)];
++    if (scenario === 'duplicate') f.provider.data.items.push(row('42'));
++    if (scenario === 'loading') f.provider.firstLoad = true;
++    if (scenario === 'error') f.provider.lastError = true;
++    if (scenario === 'message') f.provider.message = 'SYNTHETIC_PRIVATE/key/secret';
++    if (scenario === 'namespace') f.provider.params.namespace = 'other_listing';
++    if (scenario === 'oversized') f.provider.data.items = Array.from({ length: 501 }, () => row(42));
++    if (scenario === 'malformed-id') f.provider.data.items.push({});
++    if (scenario === 'unknown-filter') f.provider.params.filters.unobserved = 'SYNTHETIC_PRIVATE';
++    if (scenario === 'wrong-route') f.context.window.location.pathname = new URL(editUrl).pathname;
++    if (scenario === 'wrong-origin') f.context.window.location.origin = 'https://example.org';
++    const result = f.run();
++    const expected = scenario === 'missing' ? 'not-in-loaded-results' : scenario === 'duplicate' ? 'duplicate' : scenario === 'loading' ? 'loading' :
++      ['error', 'message'].includes(scenario) ? 'error' : ['namespace', 'wrong-route', 'wrong-origin'].includes(scenario) ? 'unavailable' : 'incomplete';
++    assert.equal(result.status, expected); assert.equal(result.nativeUrl, undefined); assert.equal(result.stamp, undefined);
++    assert.doesNotMatch(JSON.stringify(result), /SYNTHETIC|key\//);
++  });
++}
++
++test('loaded-grid rejects wrong action/record/host/query/hash and missing native Edit link', () => {
++  for (const bad of [editUrl.replace('/edit/', '/delete/'), editUrl.replace('/42/', '/420/'), editUrl.replace('bestofgifts.pt', 'example.org'),
++    editUrl + '?private=SYNTHETIC', editUrl + '#SYNTHETIC', '/relative/edit/42/', 'not a URL', undefined]) {
++    const f = gridFixture(); f.provider.data.items[1].actions.edit.href = bad;
++    const result = f.run(); assert.equal(result.status, 'invalid-link'); assert.equal(result.nativeUrl, undefined);
++  }
++});
++
++test('grid own reads avoid getters/coercion and reject data/params/link identity changes', () => {
++  const f = gridFixture(); let called = 0;
++  Object.defineProperty(f.provider.data.items[1].actions, 'edit', { get: () => { called++; return {}; } });
++  assert.equal(f.run().status, 'invalid-link'); assert.equal(called, 0);
++  const invalidSort = gridFixture(); invalidSort.provider.params.sorting.direction = { toString: () => assert.fail('no arbitrary coercion') };
++  assert.equal(invalidSort.run().status, 'incomplete');
++  for (const kind of ['data', 'params', 'link', 'id']) {
++    const current = gridFixture();
++    current.onGet(() => { if (current.counts().gets !== 2) return;
++      if (kind === 'data') current.provider.data = { ...current.provider.data };
++      if (kind === 'params') current.provider.params = { ...current.provider.params };
++      if (kind === 'link') current.provider.data.items[1].actions.edit.href = editUrl.replace('SYNTHETIC_EDIT', 'CHANGED');
++      if (kind === 'id') current.provider.data.items[1].attributesetcustomoptions_id = '43';
++    });
++    assert.equal(current.run().status, 'changed');
++  }
++});
++
++test('grid provider fields remain own-property reads and inherited/accessor registry methods are guarded', () => {
++  const f = gridFixture(); const data = f.provider.data; delete f.provider.data; Object.setPrototypeOf(f.provider, { data });
++  assert.equal(f.run().status, 'unavailable');
++  f.provider.data = data;
++  let called = 0; Object.defineProperty(f.registry, 'get', { get: () => { called++; return () => f.provider; } });
++  assert.equal(f.run().status, 'unavailable'); assert.equal(called, 0);
++});
++
++const flush = async () => { for (let i = 0; i < 40; i++) await Promise.resolve(); };
++async function settle<T>(t: TestContext, pending: Promise<T>): Promise<T> {
++  let done = false; void pending.then(() => { done = true; }, () => { done = true; });
++  for (let i = 0; i < 90 && !done; i++) { await flush(); t.mock.timers.tick(500); }
++  await flush(); assert.equal(done, true); return pending;
++}
++function workerFixture(t: TestContext, config: { scenario?: string; gridWait?: Promise<any> } = {}) {
++  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_900_000_000_000 });
++  const old = (globalThis as any).chrome, f = gridFixture(), created: any[] = [], removed: number[] = [], listeners = new Set<(id: number) => void>();
++  const injections: number[] = [], queries: any[] = []; let gridReads = 0, sourceGets = 0;
++  if (config.scenario === 'duplicate') f.provider.data.items.push(row(42));
++  if (config.scenario === 'missing') f.provider.data.items = [row(420)];
++  if (config.scenario === 'invalid-link') f.provider.data.items[1].actions.edit.href = editUrl.replace('/edit/', '/delete/');
++  if (config.scenario === 'loading') f.provider.firstLoad = true;
++  const formProvider = { data: { attributesetcustomoptions_id: '42', general: { option_title: 'Fresh helper form' },
++    options: { sub_options: { sub_options: [] }, sub_options_items: { sub_options_items: [] } } } };
++  const formRequire = Object.assign(() => assert.fail('No module load'), { s: { contexts: { _: { defined: { [moduleName]: Object.create({ get: () => formProvider }) } } } } });
++  (globalThis as any).chrome = { storage: { local: { get: async (keys: string[]) => { assert.deepEqual(keys, ['adminBaseUrl']); return { adminBaseUrl: base }; } } },
++    tabs: { query: async (options: any) => { queries.push(options); assert.deepEqual(options, { url: [origin + gridPath.replace(/\/$/, ''), origin + gridPath + '*'] });
++      if (config.scenario === 'no-grid') return [];
++      const source = { id: 88, url: gridUrl, status: 'complete' }; return config.scenario === 'multiple-grids' ? [source, { ...source, id: 89 }] : [source]; },
++      get: async (id: number) => {
++        if (id === 88) { sourceGets++; return { id, url: config.scenario === 'source-moved' && sourceGets > 1 ? editUrl : gridUrl, status: 'complete' }; }
++        assert.equal(id, 77); return { id, url: config.scenario === 'helper-redirect' ? base + '/admin/dashboard/index/' : editUrl, status: 'complete' };
++      }, create: async (options: any) => { created.push(options); assert.deepEqual(options, { url: editUrl, active: false }); return { id: 77 }; },
++      remove: async (id: number) => { assert.equal(id, 77); removed.push(id); for (const fn of [...listeners]) fn(id); },
++      update: () => assert.fail('Never change a reference grid'), onRemoved: { addListener: (fn: any) => listeners.add(fn), removeListener: (fn: any) => listeners.delete(fn) } },
++    scripting: { executeScript: async (options: any) => {
++      assert.equal(options.world, 'MAIN'); assert.deepEqual(options.target.frameIds, [0]); injections.push(options.target.tabId);
++      if (options.target.tabId === 88) {
++        assert.equal(options.func, readLoadedPpGrid); gridReads++;
++        if (config.gridWait) return config.gridWait;
++        if (config.scenario === 'between-probes' && gridReads === 2) f.provider.params.paging.current = 2;
++        const result = f.run(); (result as any).extraUrl = 'SYNTHETIC_PRIVATE/key/secret';
++        return [{ frameId: 0, result }];
++      }
++      assert.equal(options.target.tabId, 77);
++      return [{ frameId: 0, result: runInNewContext('(' + options.func.toString() + ')(...args)', { args: options.args ?? [], document: { readyState: 'complete' },
++        window: { location: { pathname: new URL(editUrl).pathname }, require: formRequire } }) }];
++    } } };
++  t.after(() => { (globalThis as any).chrome = old; });
++  return { created, removed, injections, queries, config, grid: f };
++}
++
++test('worker rechecks loaded grid identity, copies the exact whole native URL privately and scans only its owned helper', async t => {
++  const f = workerFixture(t), before = JSON.stringify(f.grid.provider);
++  const response = await settle(t, readFreshForm('grid-positive', '42', 1, 'options-grid'));
++  assert.equal(response.status, 'ok'); assert.equal(response.cleanup, 'closed'); assert.equal(response.snapshot!.general.option_title, 'Fresh helper form');
++  assert.equal(response.reference!.grid!.status, 'found'); assert.equal(response.reference!.grid!.loadedRows, 3); assert.equal(response.reference!.grid!.totalRows, 20);
++  assert.deepEqual(f.injections.slice(0, 2), [88, 88]); assert.equal(f.created.length, 1); assert.deepEqual(f.removed, [77]);
++  assert.equal(JSON.stringify(f.grid.provider), before);
++  assert.doesNotMatch(JSON.stringify(response), /SYNTHETIC|nativeUrl|stamp|admin_fixture|key\//);
++});
++
++for (const scenario of ['no-grid', 'multiple-grids', 'duplicate', 'missing', 'invalid-link', 'loading', 'between-probes', 'source-moved', 'helper-redirect']) {
++  test('worker grid reference blocks ' + scenario + ' without silent exact-record fallback', async t => {
++    const f = workerFixture(t, { scenario });
++    const response = await settle(t, readFreshForm('grid-' + scenario, '42', 1, 'options-grid'));
++    assert.equal(response.status, 'unavailable');
++    assert.equal(f.created.length, scenario === 'helper-redirect' ? 1 : 0); assert.equal(f.removed.length, scenario === 'helper-redirect' ? 1 : 0);
++    assert.equal(f.queries.length, 1); assert.doesNotMatch(JSON.stringify(response), /SYNTHETIC|nativeUrl|stamp|key\//);
++    if (scenario === 'missing') { assert.equal(response.reference!.grid!.status, 'not-in-loaded-results'); assert.match(response.reason, /not a global not-found/); }
++    if (scenario === 'between-probes' || scenario === 'source-moved') assert.equal(response.reference!.grid!.status, 'changed');
++  });
++}
++
++test('cancelling a pending grid read never opens a helper or changes/closes the user grid', async t => {
++  let resolve!: (value: any) => void;
++  const f = workerFixture(t, { gridWait: new Promise(done => { resolve = done; }) });
++  const pending = readFreshForm('grid-cancel', '42', 1, 'options-grid'); await flush();
++  const stopped = cancelFreshForm('grid-cancel', 1); resolve([{ frameId: 0, result: f.grid.run() }]);
++  assert.equal((await settle(t, pending)).status, 'cancelled'); await stopped;
++  assert.equal(f.created.length, 0); assert.equal(f.removed.length, 0);
++});
++
++test('cancelling a grid read releases a never-settling injected probe without changing the grid', async t => {
++  const f = workerFixture(t, { gridWait: new Promise(() => {}) });
++  const pending = readFreshForm('grid-cancel-hung', '42', 1, 'options-grid'); await flush();
++  const response = await settle(t, cancelFreshForm('grid-cancel-hung', 1));
++  assert.equal(response.status, 'cancelled'); assert.equal((await pending).status, 'cancelled');
++  assert.equal(f.created.length, 0); assert.equal(f.removed.length, 0);
++});
+diff --git a/tests/ppReadiness.test.ts b/tests/ppReadiness.test.ts
+new file mode 100644
+index 0000000..153b876
+--- /dev/null
++++ b/tests/ppReadiness.test.ts
+@@ -0,0 +1,58 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { runInNewContext } from 'node:vm';
++import { readPpReadiness } from '../src/page/features/pp-scan/readiness';
++
++const route = '/admin_fixture/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/SYNTHETIC/';
++const providerName = 'toogas_attributesetcustomoptions_attributesetcustomoptions_form.attributesetcustomoptions_form_data_source';
++function fixture() {
++  let loaderCalls = 0, getCalls = 0, accessorCalls = 0;
++  const data: any = { attributesetcustomoptions_id: '966', private: 'SYNTHETIC_PRIVATE' };
++  const provider: any = { data };
++  const get = (name: string) => { getCalls++; assert.equal(name, providerName); return provider; };
++  const registry: any = Object.create({ get });
++  const defined: any = { 'Magento_Ui/js/lib/registry/registry': registry };
++  const requireFn = Object.assign(() => { loaderCalls++; throw new Error('No module loads'); }, { s: { contexts: { _: { defined } } } });
++  const context: any = { document: { readyState: 'complete' }, window: { location: { pathname: route }, require: requireFn } };
++  return { data, provider, registry, defined, context, accessor: () => { accessorCalls++; return data; },
++    calls: () => ({ loaderCalls, getCalls, accessorCalls }),
++    run: () => runInNewContext('(' + readPpReadiness.toString() + ')(' + JSON.stringify('966') + ')', context) };
++}
++
++test('serialized readiness probe resolves inherited registry get and returns only fixed checkpoint fields', () => {
++  const f = fixture(), before = JSON.stringify(f.data), result = f.run();
++  assert.equal(result.stage, 'ready'); assert.equal(result.identity, 'matching'); assert.equal(result.document, 'complete');
++  assert.equal(result.registry, 'available'); assert.equal(result.provider, 'available'); assert.equal(result.data, 'available');
++  assert.deepEqual(Object.keys(result).sort(), ['blockedAccessor', 'data', 'document', 'identity', 'provider', 'registry', 'stage']);
++  assert.equal(f.calls().loaderCalls, 0); assert.equal(JSON.stringify(f.data), before);
++  assert.doesNotMatch(JSON.stringify(result), /SYNTHETIC|private|key\//);
++});
++
++for (const stage of ['document-loading', 'route-mismatch', 'registry-unavailable', 'provider-unavailable', 'data-unavailable', 'identity-missing', 'identity-invalid', 'identity-mismatch', 'read-error']) {
++  test('readiness checkpoint: ' + stage, () => {
++    const f = fixture();
++    if (stage === 'document-loading') f.context.document.readyState = 'loading';
++    if (stage === 'route-mismatch') f.context.window.location.pathname = route.replace('/966/', '/49/');
++    if (stage === 'registry-unavailable') delete f.defined['Magento_Ui/js/lib/registry/registry'];
++    if (stage === 'provider-unavailable') f.registry.get = () => undefined;
++    if (stage === 'data-unavailable') delete f.provider.data;
++    if (stage === 'identity-missing') delete f.data.attributesetcustomoptions_id;
++    if (stage === 'identity-invalid') f.data.attributesetcustomoptions_id = { toString: () => assert.fail('never coerce arbitrary provider identity') };
++    if (stage === 'identity-mismatch') f.data.attributesetcustomoptions_id = '49';
++    if (stage === 'read-error') f.registry.get = () => { throw new Error('SYNTHETIC_PRIVATE/key/secret'); };
++    const result = f.run(); assert.equal(result.stage, stage); assert.equal(f.calls().loaderCalls, 0);
++    assert.doesNotMatch(JSON.stringify(result), /SYNTHETIC|secret|key\//);
++  });
++}
++
++test('readiness accessors are never invoked and provider fields remain own-property reads', () => {
++  const f = fixture();
++  delete f.provider.data; Object.setPrototypeOf(f.provider, { data: f.data });
++  assert.equal(f.run().stage, 'data-unavailable');
++  Object.defineProperty(f.provider, 'data', { get: f.accessor, configurable: true });
++  const blocked = f.run(); assert.equal(blocked.stage, 'data-unavailable'); assert.equal(blocked.blockedAccessor, true);
++  assert.equal(f.calls().accessorCalls, 0);
++  delete f.provider.data; f.provider.data = f.data;
++  Object.defineProperty(f.registry, 'get', { get: f.accessor });
++  assert.equal(f.run().stage, 'registry-unavailable'); assert.equal(f.calls().accessorCalls, 0);
++});

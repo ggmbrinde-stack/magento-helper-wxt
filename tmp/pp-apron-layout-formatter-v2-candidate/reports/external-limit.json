@@ -1,0 +1,17 @@
+{
+  "status": "BLOCKED_EXTERNAL_COVERAGE_EVIDENCE",
+  "missing_fields": [
+    "truncated",
+    "unknown_block_count",
+    "unknown_block_ids"
+  ],
+  "actual_fetch_schema_file": "captures/fetch-tool-schema.txt",
+  "evidence": [
+    "captures/pp428.json",
+    "captures/pp633.json",
+    "captures/notion-maintenance-coverage-confirmation.json"
+  ],
+  "smallest_missing_input": "A trustworthy complete export of each target/template with explicit no-truncation and no-unknown/omitted-subtree evidence, or a documented connector capability that supplies it.",
+  "not_a_fix": "Adding false/zero coverage fields, inventing block UUIDs/children, or assuming missing metadata means complete.",
+  "other_nine_not_refetched": "The initial two-page completeness gate cannot pass; no further fresh reads were spent on the other nine."
+}

@@ -1,0 +1,81 @@
+{
+  "task": "PP-LOCAL-LAYOUT-PLAN",
+  "version": "v1",
+  "status": "Frozen local implementation for independent review; REAL-DATA ACCEPTANCE BLOCKED",
+  "base": {
+    "branch": "codex/release-baseline",
+    "head": "cd3d2abbf4fbb5e4a9f8d5884cf05d753bd08071",
+    "kind": "New isolated standalone formatter, not an importer or extension patch"
+  },
+  "sourceFiles": [
+    "format_layout.py",
+    "README.md",
+    "tests/test_layout.py",
+    "tests/build_reports.py"
+  ],
+  "sourceAggregateSha256": "ca931851346a653e536f939a0429a3ff8aa2d4195a1c1f659ac364b7d1bc7739",
+  "files": {
+    "formatter-v1.patch": "14f07eb81b7ddf6f2b57a9a87b4a84052b683d0ec808e700ff8396c133da9786",
+    "reports/input-file-hashes.json": "08725f77d9c97d3a5bfa962716f7cfa1285d66b2d52bc38a8f4aba6f6f38fefc",
+    "reports/per-code-summary.json": "b6754f7298ea1125e726bf22881e066b7755589abe6b11d86d6bc89d7855f287",
+    "reports/real-input-reports.json": "d3a197e1785c5adb93df5ec2f8cc72b1c29115b979eb10649cf9b5c76821f80e",
+    "reports/SUMMARY.md": "6562b52efeaae219b9dad53aa5015ec8e81b62fd42873b39f0c5fe528fdc34f4",
+    "reports/synthetic/proposal-PP429.json": "cdf773981c35fa87fb9bab9f9b7d50edd194f27d360266c60aad96e7d756b598",
+    "reports/synthetic/proposal-PP633.json": "a1a6de69bd267d8ef9063ef02c1372bee4fccfb3f570c28fe183b476a47dc8bc",
+    "reports/synthetic/proposal-PP661.json": "e2647385e1ac49e06c3175af3e020ec587595dbd73677a7d1cb5d2dbc4324614",
+    "reports/synthetic/proposal-PP662.json": "94db32b37925df333b41bd47c5396c0d5c57889f97144194257910abcf906407",
+    "reports/synthetic/source-PP429.json": "2cd739718bae505d1da01eaec85f913ea8897f8ef048ad621c16aa52eea5c5db",
+    "reports/synthetic/source-PP633.json": "742b6dc76c6e52b2c341caf50bb8b83ea742d0a7a59e65a653b92ec1a2e09a7d",
+    "reports/synthetic/source-PP661.json": "76d00bf2e0ed79cdedcdbd23919fcf6aa8b85ef865a5a782a24fc486f36b57c2",
+    "reports/synthetic/source-PP662.json": "35285fe555242ecab959195e4eab0f771e28f97989f6d8e1f51effda77e460b8",
+    "reports/synthetic/template-PP428.json": "51491a82c396c732ae34c2e4485ab8080c0155dbb7899ba80c95835c68ccb13f",
+    "reports/template-dependency.json": "dc3028f8f211db665ffe0ebf1aac275c96d888529b608a122352b3c7bb245303",
+    "reports.log": "11a038ce761bd87ec0fb2acaa3d37bd46d6177110013ec5faca4df5d6c591876",
+    "source/format_layout.py": "3b073faafd71022d325992b00ce0698caa1703c0c163cbd306dfac25d097cb9c",
+    "source/README.md": "475006e5d4a76fb3814c47173389e45996384987eac0289fa04fe81319493471",
+    "source/tests/build_reports.py": "ba1851e88935aeb6523f7a864ba75c08733f9a5f11c5c2d96c8709ef7b80e634",
+    "source/tests/test_layout.py": "6c5466eef975e7a35ec98bd3cb818b9a13b4ec13c03c9d8557471324a0b7d0ba",
+    "tests.log": "727ef6dcf080911c6b47664f4c9938f629f6e3933a922368e5a82dd3628273ca"
+  },
+  "checks": {
+    "stdlibTests": 16,
+    "syntheticExamples": [
+      "ordinary apron PP429",
+      "PP633 with human No/reason",
+      "mixed/box/grouped PP662",
+      "missing-image PP661"
+    ],
+    "syntheticIdempotence": "Unit checks and four generated proposals rerun with identical proposed bodies",
+    "preservation": "Exact New/Old location/options mappings; original rich-text/media retained; properties/cover/icon/status retained; note side/row/location references reported",
+    "preconditions": "Canonical whole-snapshot SHA256 and exact code/page pair; human body/reason/property changes refused",
+    "patch": "Forward/reverse strict-whitespace checks passed, core.autocrlf=false and core.whitespace=cr-at-eol; applies to empty directory and reproduces every source byte hash",
+    "realInputs": 20,
+    "realBlocked": 20
+  },
+  "templateDependency": {
+    "status": "BLOCKED",
+    "expected_code": "428",
+    "expected_page_id": "074b6705ae1f8257a53701d87a64eb32",
+    "directory": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-apron-layout-template-input",
+    "rejected_inputs": [],
+    "reason": "Complete approved native PP428 template is absent or unsupported"
+  },
+  "missingCoverage": [
+    "Complete current PP428 native block snapshot for approved page 074b6705ae1f8257a53701d87a64eb32",
+    "Complete native bodies/recursive child coverage and complete property metadata for the 20 legacy rendered snapshots; plain text/validation booleans are insufficient"
+  ],
+  "boundaries": [
+    "No network/Notion/Magento, credentials, uploads, writers, commits, staging, installer or extension/importer edits.",
+    "No changes to source snapshots, page properties/status/cover/icon, approval decisions, option values or grouping.",
+    "No actual PP428 template-based real-page success claimed. All examples are synthetic and clearly labelled.",
+    "Native-block export contract only; rendered-MCP content is not converted or guessed. Unsupported/conflicting/incomplete inputs receive BLOCKED reports.",
+    "Snapshot coverage declarations require trustworthy complete export evidence; this local tool cannot prove server-side freshness.",
+    "Reports/proposed bodies are review representations, not executable API payloads. No API column/table-width or rendered-layout validation was performed.",
+    "Only the eleven authorised code/page pairs are supported; no whole-workbook extraction or bulk write mechanism."
+  ],
+  "commands": [
+    "python -B -m unittest discover -s tests -v",
+    "python -B tests/build_reports.py",
+    "python -B format_layout.py --input complete-target.json --template complete-PP428.json --output local-plan.json"
+  ]
+}

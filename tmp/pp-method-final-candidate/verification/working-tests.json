@@ -1,0 +1,25 @@
+[
+  {
+    "check": "python-working",
+    "command": [
+      "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tmp\\pp-method-final-candidate\\tests",
+      "-v"
+    ],
+    "exit_code": 0
+  },
+  {
+    "check": "node-working",
+    "command": [
+      "node",
+      "--test",
+      "tmp\\pp-method-final-candidate\\tests\\test_session_bridge.cjs"
+    ],
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "check": "python-tests",
+    "exit_code": 0
+  },
+  {
+    "check": "bridge-tests",
+    "exit_code": 0
+  },
+  {
+    "check": "cli-inspect",
+    "exit_code": 0
+  }
+]

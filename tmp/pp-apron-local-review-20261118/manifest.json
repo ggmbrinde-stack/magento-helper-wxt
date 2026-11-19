@@ -1,0 +1,104 @@
+{
+  "source_plan": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-apron-batch-v4\\review-v4\\plans\\batch.json",
+  "source_plan_file_sha256": "ab3926ad7955f2983b322d94fed4e9abb820ba9c995c4345e70055c42f14d5d9",
+  "snapshot_kind": "exported visible bodies and proposed layout, not complete server backup",
+  "page_count": 11,
+  "pages": [
+    {
+      "code": "428",
+      "page_id": "074b6705ae1f8257a53701d87a64eb32",
+      "status_in_plan": "NO_OP",
+      "before_sha256": "50863094a6a175574c9fe561cb5377a0cb45e5065e16beb464a88113c3537615",
+      "proposed_sha256": "50863094a6a175574c9fe561cb5377a0cb45e5065e16beb464a88113c3537615",
+      "technical_unresolved": []
+    },
+    {
+      "code": "429",
+      "page_id": "137b6705ae1f82048ef1810070095cf0",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "c121c5b0b314f24d11c5146c42d847c6cf41b404ad0bf8678c671bb74dbbbebb",
+      "proposed_sha256": "a03cbe47116ac201b5cc516b499dd73f7fedd4ada164f39e89f0a939b4132820",
+      "technical_unresolved": []
+    },
+    {
+      "code": "430",
+      "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "d0227d28fb1624f8f6479fc2e7db15f0a19f0d15bfce67ff8406373a073def09",
+      "proposed_sha256": "3a774188b61b36a9b0d710f6582ee7766dc51c63a50082d6ed779e69fa1d0bcc",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "467",
+      "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "1a95d836935deb5507e0da4795d764da89f7e01906ea013577b7d3d4a576d18b",
+      "proposed_sha256": "e085536892ca89ab18bd6a189b834e5735aca5da2cc762331d0bf818e7e06074",
+      "technical_unresolved": []
+    },
+    {
+      "code": "558",
+      "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "afd8021e29caa5245fa76c2996c4eeff59e31b7b219ec73585d627ae181ff5fc",
+      "proposed_sha256": "8a8c1afd7564f077627d746cf57efe7dfc4622b116cdf5e5f0847d46262b7412",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "612",
+      "page_id": "e48b6705ae1f83ddafb501a2ea781406",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "3179dbac22cd6e27f2f11c42f6e78f268c2a9c3a342c65e36c20d5adfdc1ea25",
+      "proposed_sha256": "a0674556de665ff20772c91ca6904d7bc04f5c612c2f45d104d4af6f09586b6e",
+      "technical_unresolved": []
+    },
+    {
+      "code": "633",
+      "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "2342df33c02ef99de4ea63e840f0e2264b254972930a85f40bd7ff560b50319a",
+      "proposed_sha256": "bc7537d6f15b59d75cf02b6d4c336ccd828fa8fbe3a25a678a8259c6030981fa",
+      "technical_unresolved": []
+    },
+    {
+      "code": "661",
+      "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "db9df72dcd3d274b4cad33bd1921519db934f280f4c7f10ef35bcee419a6737c",
+      "proposed_sha256": "2ee5edbe03fb3419d3f605f9eb35f74dc7a0f9e36b56184f9231c6fb78e0e4d8",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "662",
+      "page_id": "ddbb6705ae1f820cb837013a1864964a",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "8ea0c2095b88deb5e4cfb360ff739b5e03056477b98a3d39021588c2db6ff6e3",
+      "proposed_sha256": "f9b31f689a8d76dd7487fb965519823f5d35b2d4f25c06705ebe566fea676db0",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "786",
+      "page_id": "d00b6705ae1f835cb7440191c545e56b",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "3349a8cdeb2650bdd08c8268f672bd9502d09e4b803bb0d4b290b4557df8143e",
+      "proposed_sha256": "3770182279824d6814ee1d41fe90c877ae9f064137c60731b1754b6e590a2e42",
+      "technical_unresolved": []
+    },
+    {
+      "code": "840",
+      "page_id": "bacb6705ae1f8296839b01585f6e5e8e",
+      "status_in_plan": "BLOCKED",
+      "before_sha256": "b537355eb81cb12bcfe2b4eaea51096e48c101342deb515d3d0f239a66829ef9",
+      "proposed_sha256": "4cc7f9fe59ca4fa096924e9b234a891149281d53692e1eea0b762699bf387b57",
+      "technical_unresolved": []
+    }
+  ]
+}

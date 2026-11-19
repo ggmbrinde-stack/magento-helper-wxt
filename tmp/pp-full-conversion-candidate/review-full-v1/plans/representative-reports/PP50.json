@@ -1,0 +1,253 @@
+{
+  "category": "GENERAL",
+  "code": "50",
+  "completion_binding": {
+    "excel_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "full_scope_sha256": "4a3b253a1db44058f65843131c11e50794dc374c5c91106d78402ce3ff18033d",
+    "implementation_sha256": "37a14565f13e4dfa5df6e8c3e4a2f7941b9ad4067c84a97726da38ff2d124cf3",
+    "index_sha256": "67eaf0e09c9f48a324f3521d81f35bf52e6a5ef6074d7c0a0185e3b858679f0c",
+    "rules_sha256": "db70aa0fb673c5217b8763b7c916d3682cb1963e047b014cbd70051da233e704",
+    "scope": "PP_FULL_CONVERSION_V1",
+    "source_state_sha256": "74e62b64397f7e4810ae0fd3383a865c1ee79786d2f55a4a81f703a43570a2a5",
+    "template_sha256": "71b26c8bf2c2f899e88dc73b2310d7eda841cfd63299248a83fc4bbdb5e699f3"
+  },
+  "completion_status_operation": {
+    "eligible": true,
+    "id": "50-full-review-status",
+    "kind": "success_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "c30b6705ae1f82969dec8191a0d8efef",
+      "properties": {
+        "Estado": "Para revisão"
+      }
+    }
+  },
+  "desired_body": "<image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n\nEx: XDP514.02\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Tipo de artigo por classificar; consultar descrição e imagem\n- Família por classificar\n\n<callout icon=\"📝\">\n<b>Revisão do PP 50</b>\n\n- [ ] Sim, aprovo a configuração New do PP 50.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nFace 1<br />Face 2\n</td>\n<td>\nTampografia 2 Cores\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nFace 1<br />Face 2\n</td>\n<td>\nTampografia 2 Cores\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nOld: Face 1<br />Face 2\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n- Face 1 / Face 2: Tampografia 2 cores: decisão de negócio ainda pendente\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDES!C28:F33<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| C28 | 50 |\n| D28 | BRINDES Tampografia (2C-2F) |\n| E28 | LOCAL |\n| F28 | PERS. |\n| E29 | Face 1 |\n| F29 | Tampografia 2 Cores |\n| D30 | Ex:  XDP514.02 |\n| E30 | Face 2 |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 4a3b253a1db44058f65843131c11e50794dc374c5c91106d78402ce3ff18033d\n\n<toggle>\nOrigem Excel verificada\n\nPPs BRINDES!C28:F33\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC28\n</td>\n<td>\n50\n</td>\n</tr>\n<tr>\n<td>\nD28\n</td>\n<td>\nBRINDES Tampografia (2C-2F)\n</td>\n</tr>\n<tr>\n<td>\nE28\n</td>\n<td>\nLOCAL\n</td>\n</tr>\n<tr>\n<td>\nF28\n</td>\n<td>\nPERS.\n</td>\n</tr>\n<tr>\n<td>\nE29\n</td>\n<td>\nFace 1\n</td>\n</tr>\n<tr>\n<td>\nF29\n</td>\n<td>\nTampografia 2 Cores\n</td>\n</tr>\n<tr>\n<td>\nD30\n</td>\n<td>\nEx:  XDP514.02\n</td>\n</tr>\n<tr>\n<td>\nE30\n</td>\n<td>\nFace 2\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1<br />Face 2 | Tampografia 2 Cores | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: XDP514.02\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Tipo de artigo por classificar; consultar descrição e imagem\n- Família por classificar\n</toggle>\n</toggle>",
+  "diff": "--- 50-before\n+++ 50-after\n@@ -1,22 +1,87 @@\n-## Locais e personalização\n-\n-| Face / local | Opções completas e especificações | Notas |\n-| --- | --- | --- |\n-| Face 1<br />Face 2 | Tampografia 2 Cores | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n-\n-## Imagens\n-\n <image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n \n-## Descrição e notas do perfil\n-\n Ex: XDP514.02\n-\n-## Notas\n \n - Grupo com vários locais ou sem local: confirmar a distribuição das opções\n - Tipo de artigo por classificar; consultar descrição e imagem\n - Família por classificar\n+\n+<callout icon=\"📝\">\n+<b>Revisão do PP 50</b>\n+\n+- [ ] Sim, aprovo a configuração New do PP 50.\n+- [ ] Não, são necessárias correções.\n+\n+<b>Se não, porquê?</b>\n+<p />\n+</callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Face 1<br />Face 2\n+</td>\n+<td>\n+Tampografia 2 Cores\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Face 1<br />Face 2\n+</td>\n+<td>\n+Tampografia 2 Cores\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+Old: Face 1<br />Face 2\n+\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</toggle>\n+\n+- Face 1 / Face 2: Tampografia 2 cores: decisão de negócio ainda pendente\n+</toggle>\n \n <toggle>\n Fonte e original do Excel\n@@ -33,4 +98,119 @@\n | F29 | Tampografia 2 Cores |\n | D30 | Ex:  XDP514.02 |\n | E30 | Face 2 |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+PP_FULL_CONVERSION_V1 4a3b253a1db44058f65843131c11e50794dc374c5c91106d78402ce3ff18033d\n+\n+<toggle>\n+Origem Excel verificada\n+\n+PPs BRINDES!C28:F33\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Célula\n+</td>\n+<td>\n+Texto original\n+</td>\n+</tr>\n+<tr>\n+<td>\n+C28\n+</td>\n+<td>\n+50\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D28\n+</td>\n+<td>\n+BRINDES Tampografia (2C-2F)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E28\n+</td>\n+<td>\n+LOCAL\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F28\n+</td>\n+<td>\n+PERS.\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E29\n+</td>\n+<td>\n+Face 1\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F29\n+</td>\n+<td>\n+Tampografia 2 Cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D30\n+</td>\n+<td>\n+Ex:  XDP514.02\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E30\n+</td>\n+<td>\n+Face 2\n+</td>\n+</tr>\n+</table>\n+</toggle>\n+\n+<toggle>\n+Apresentação anterior preservada\n+\n+## Locais e personalização\n+\n+| Face / local | Opções completas e especificações | Notas |\n+| --- | --- | --- |\n+| Face 1<br />Face 2 | Tampografia 2 Cores | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+\n+## Imagens\n+\n+<image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n+\n+## Descrição e notas do perfil\n+\n+Ex: XDP514.02\n+\n+## Notas\n+\n+- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n+- Tipo de artigo por classificar; consultar descrição e imagem\n+- Família por classificar\n+</toggle>\n </toggle>",
+  "excel": {
+    "area": "Brindes",
+    "article_types": [],
+    "blocked": [
+      "Distribuição das opções por local por confirmar"
+    ],
+    "code": "50",
+    "comments": [],
+    "description": "",
+    "families": [],
+    "groups": [
+      {
+        "locals": [
+          "Face 1",
+          "Face 2"
+        ],
+        "options": [
+          {
+            "cell": "F29",
+            "name": "Tampografia — 2 cores",
+            "original": "Tampografia 2 Cores"
+          }
+        ],
+        "start_row": 29
+      }
+    ],
+    "images": [
+      "xl/media/image279.jpeg"
+    ],
+    "notes": [
+      "Ex: XDP514.02"
+    ],
+    "raw": [
+      {
+        "cell": "C28",
+        "value": "50"
+      },
+      {
+        "cell": "D28",
+        "value": "BRINDES Tampografia (2C-2F)"
+      },
+      {
+        "cell": "E28",
+        "value": "LOCAL"
+      },
+      {
+        "cell": "F28",
+        "value": "PERS."
+      },
+      {
+        "cell": "E29",
+        "value": "Face 1"
+      },
+      {
+        "cell": "F29",
+        "value": "Tampografia 2 Cores"
+      },
+      {
+        "cell": "D30",
+        "value": "Ex:  XDP514.02"
+      },
+      {
+        "cell": "E30",
+        "value": "Face 2"
+      }
+    ],
+    "review_flags": [
+      "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+      "Tipo de artigo por classificar; consultar descrição e imagem",
+      "Família por classificar"
+    ],
+    "source": "PPs BRINDES!C28:F33",
+    "title": "BRINDES Tampografia (2C-2F)"
+  },
+  "failure_status_operation": {
+    "eligible": true,
+    "id": "50-full-error-status",
+    "kind": "error_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "c30b6705ae1f82969dec8191a0d8efef",
+      "properties": {
+        "Estado": "Erro"
+      }
+    }
+  },
+  "method_complete": false,
+  "new_groups": [
+    {
+      "locations": [
+        "Face 1",
+        "Face 2"
+      ],
+      "options": [
+        "Tampografia 2 Cores"
+      ],
+      "shared_source_group": true
+    }
+  ],
+  "operations": [
+    {
+      "eligible": true,
+      "id": "50-full-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n\nEx: XDP514.02\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Tipo de artigo por classificar; consultar descrição e imagem\n- Família por classificar\n\n<callout icon=\"📝\">\n<b>Revisão do PP 50</b>\n\n- [ ] Sim, aprovo a configuração New do PP 50.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nFace 1<br />Face 2\n</td>\n<td>\nTampografia 2 Cores\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nFace 1<br />Face 2\n</td>\n<td>\nTampografia 2 Cores\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nOld: Face 1<br />Face 2\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n- Face 1 / Face 2: Tampografia 2 cores: decisão de negócio ainda pendente\n</toggle>\n\n",
+            "old_str": "## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1<br />Face 2 | Tampografia 2 Cores | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: XDP514.02\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Tipo de artigo por classificar; consultar descrição e imagem\n- Família por classificar\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "c30b6705ae1f82969dec8191a0d8efef"
+      },
+      "region_evidence": {
+        "basis": "EXACT_TOP_LEVEL_SUPPORTED_LEAVES",
+        "bounded_observations": [],
+        "eligible": true,
+        "global_export_claimed": false,
+        "new_sha256": "8a9aae5e240a2841d9473b50fd986457f71857909dacb71058cae17c0c2d6083",
+        "old_sha256": "7494495c633a2de22234d543a09be9eea61dc587880a00300161fe1c80474416",
+        "prefix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "suffix_sha256": "90c5a185113dbc7786d8cd3a0ce71214c37416fd4bdd0ba9fdf524dc2d875bf0"
+      }
+    },
+    {
+      "eligible": true,
+      "id": "50-full-body-2",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 4a3b253a1db44058f65843131c11e50794dc374c5c91106d78402ce3ff18033d\n\n<toggle>\nOrigem Excel verificada\n\nPPs BRINDES!C28:F33\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC28\n</td>\n<td>\n50\n</td>\n</tr>\n<tr>\n<td>\nD28\n</td>\n<td>\nBRINDES Tampografia (2C-2F)\n</td>\n</tr>\n<tr>\n<td>\nE28\n</td>\n<td>\nLOCAL\n</td>\n</tr>\n<tr>\n<td>\nF28\n</td>\n<td>\nPERS.\n</td>\n</tr>\n<tr>\n<td>\nE29\n</td>\n<td>\nFace 1\n</td>\n</tr>\n<tr>\n<td>\nF29\n</td>\n<td>\nTampografia 2 Cores\n</td>\n</tr>\n<tr>\n<td>\nD30\n</td>\n<td>\nEx:  XDP514.02\n</td>\n</tr>\n<tr>\n<td>\nE30\n</td>\n<td>\nFace 2\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1<br />Face 2 | Tampografia 2 Cores | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: XDP514.02\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Tipo de artigo por classificar; consultar descrição e imagem\n- Família por classificar\n</toggle>\n</toggle>",
+        "page_id": "c30b6705ae1f82969dec8191a0d8efef",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "append_sha256": "5f9eea33416b39ff305830116d804ac7d99be76096af2c159037b9a9e0a84663",
+        "basis": "APPEND_WITHOUT_CHANGING_EXISTING_BLOCKS",
+        "body_sha256": "3f54faaecf86bf76af237f8f0c6215370b59acdcb51075ab4e14a6180c67b990",
+        "eligible": true,
+        "global_export_claimed": false
+      }
+    }
+  ],
+  "page_id": "c30b6705ae1f82969dec8191a0d8efef",
+  "preservation": {
+    "idempotent": false,
+    "marker": "PP_FULL_CONVERSION_V1 4a3b253a1db44058f65843131c11e50794dc374c5c91106d78402ce3ff18033d",
+    "notes": [
+      {
+        "location": "Face 1<br />Face 2",
+        "side": "Old",
+        "text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+      }
+    ]
+  },
+  "property_operations": [],
+  "reasons": [],
+  "rule_changes": [],
+  "source_body": "## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1<br />Face 2 | Tampografia 2 Cores | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://a03b6705-ae1f-831b-bfdd-815e61f2d20c/a1d14445-ae30-4e65-8876-1991c7892926?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP50_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: XDP514.02\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Tipo de artigo por classificar; consultar descrição e imagem\n- Família por classificar\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDES!C28:F33<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| C28 | 50 |\n| D28 | BRINDES Tampografia (2C-2F) |\n| E28 | LOCAL |\n| F28 | PERS. |\n| E29 | Face 1 |\n| F29 | Tampografia 2 Cores |\n| D30 | Ex:  XDP514.02 |\n| E30 | Face 2 |\n</toggle>",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a1d14445-ae30-4e65-8876-1991c7892926/PP50_1.jpeg"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "50",
+      "Estado": "A rever",
+      "Faces": [
+        "Face 1",
+        "Face 2"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a1d14445-ae30-4e65-8876-1991c7892926/PP50_1.jpeg"
+      ],
+      "Notas": "NPP",
+      "Número de faces": 2,
+      "Número de locais possíveis": 2,
+      "Opções de personalização": [
+        "Tampografia — 2 cores"
+      ],
+      "PP": "50 — BRINDES Tampografia (2C-2F)",
+      "SKU / referência do fornecedor": "Ex: XDP514.02",
+      "Técnicas": [
+        "Tampografia"
+      ],
+      "url": "https://app.notion.com/p/c30b6705ae1f82969dec8191a0d8efef",
+      "Área": "Brindes"
+    }
+  },
+  "source_state_sha256": "74e62b64397f7e4810ae0fd3383a865c1ee79786d2f55a4a81f703a43570a2a5",
+  "status": "LAYOUT_ONLY_PENDING_BUSINESS",
+  "synthetic_capture": false,
+  "technical_unresolved": [
+    "Face 1 / Face 2: Tampografia 2 cores: decisão de negócio ainda pendente"
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "existing_containers": "PRESERVE_OR_EXACT_REVIEWED_UI_REGION",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "leaf_contract": "MCP_MARKDOWN_INLINE_TABLE_CELLS_AND_LEAF_BLOCKS",
+    "name": "PP_FULL_CONVERSION",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  },
+  "wanted_properties": {
+    "Faces": [
+      "Face 1",
+      "Face 2"
+    ],
+    "Número de locais possíveis": 2,
+    "Opções de personalização": [
+      "Tampografia — 2 cores"
+    ],
+    "Técnicas": [
+      "Tampografia"
+    ]
+  }
+}

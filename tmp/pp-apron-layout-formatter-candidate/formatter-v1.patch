@@ -1,0 +1,810 @@
+diff --git a/format_layout.py b/format_layout.py
+new file mode 100644
+--- /dev/null
++++ b/format_layout.py
+@@ -0,0 +1,425 @@
++"""Offline Notion PP body-layout proposals. No writer, API or token handling."""
++import argparse
++import collections
++import copy
++import hashlib
++import json
++from pathlib import Path
++import re
++import uuid
++
++PAGES = dict(zip(
++    ('428', '429', '430', '467', '558', '612', '633', '661', '662', '786', '840'),
++    ('074b6705ae1f8257a53701d87a64eb32', '137b6705ae1f82048ef1810070095cf0',
++     '3cab6705ae1f820dab27015d0d5e85ea', 'f06b6705ae1f82ad871e01420cf67ecb',
++     '1dcb6705ae1f83c6bfb181c13c9a7d19', 'e48b6705ae1f83ddafb501a2ea781406',
++     'f7bb6705ae1f826b848d819549bc3c03', '4e5b6705ae1f835ea3fc81290bfd0d16',
++     'ddbb6705ae1f820cb837013a1864964a', 'd00b6705ae1f835cb7440191c545e56b',
++     'bacb6705ae1f8296839b01585f6e5e8e')))
++TYPES = {'paragraph', 'heading_1', 'heading_2', 'heading_3', 'image', 'callout',
++         'to_do', 'toggle', 'column_list', 'column', 'table', 'table_row',
++         'bulleted_list_item', 'numbered_list_item', 'quote', 'divider', 'code',
++         'bookmark', 'file', 'video', 'audio', 'pdf', 'equation'}
++MEDIA = {'image', 'file', 'video', 'audio', 'pdf'}
++TECH = 'Pontos técnicos a confirmar'
++HISTORY = 'Histórico de apresentação'
++SOURCE = 'Fonte e original do Excel'
++
++
++class Blocked(ValueError):
++    pass
++
++
++def canonical(value):
++    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
++
++
++def digest(value):
++    return hashlib.sha256(canonical(value).encode('utf-8')).hexdigest()
++
++
++def text(rich):
++    if not isinstance(rich, list):
++        raise Blocked('Unsupported rich-text representation')
++    result = []
++    for item in rich:
++        if not isinstance(item, dict) or item.get('type', 'text') != 'text' or not isinstance(item.get('text', {}).get('content'), str):
++            raise Blocked('Unsupported or incomplete rich-text item')
++        result.append(item['text']['content'])
++    return ''.join(result)
++
++
++def label(block):
++    return text(block[block['type']].get('rich_text', []))
++
++
++def children(block):
++    return block[block['type']].get('children', [])
++
++
++def walk(blocks):
++    for block in blocks:
++        yield block
++        yield from walk(children(block))
++
++
++def identity(snapshot):
++    if not isinstance(snapshot, dict):
++        raise Blocked('Snapshot must be a page object')
++    page = snapshot.get('page', snapshot)
++    if not isinstance(page, dict) or not isinstance(page.get('properties'), dict):
++        raise Blocked('Missing complete page properties')
++    if page is not snapshot and any(k in snapshot and snapshot[k] != page.get(k) for k in ('id', 'url', 'properties', 'cover', 'icon')):
++        raise Blocked('Conflicting page metadata representations')
++    props = page.get('properties', {})
++    value = props.get('Código PP')
++    if isinstance(value, dict):
++        value = text(value.get('rich_text', []))
++    if value not in PAGES or snapshot.get('code', value) != value or page.get('code', value) != value:
++        raise Blocked('Missing, conflicting or out-of-scope actual PP code')
++    title = props.get('PP', page.get('title', snapshot.get('title')))
++    if isinstance(title, dict):
++        title = text(title.get('title', []))
++    if title is not None:
++        if not isinstance(title, str):
++            raise Blocked('Unsupported page title representation')
++        title_code = re.match(r'^(\d+)\b', title)
++        if title_code and title_code[1] != value:
++            raise Blocked('Page title conflicts with the actual PP code')
++    raw_id = page.get('id')
++    if raw_id is None:
++        match = re.fullmatch(r'https://app\.notion\.com/(?:p/)?([a-fA-F0-9-]{32,36})', page.get('url', ''))
++        raw_id = match[1] if match else ''
++    try:
++        page_id = uuid.UUID(raw_id).hex
++    except (ValueError, TypeError, AttributeError):
++        raise Blocked('Missing or unsupported page UUID') from None
++    if page_id != PAGES[value]:
++        raise Blocked('Page UUID does not match the authorised code/page pair')
++    if 'url' in page and page.get('id'):
++        match = re.fullmatch(r'https://app\.notion\.com/(?:p/)?([a-fA-F0-9-]{32,36})', page['url'])
++        if not match or uuid.UUID(match[1]).hex != page_id:
++            raise Blocked('Conflicting page UUID and URL')
++    return value, page_id, page
++
++
++def validate(snapshot):
++    code, page_id, page = identity(snapshot)
++    coverage = snapshot.get('coverage', {})
++    if (not isinstance(coverage, dict) or coverage.get('complete') is not True or coverage.get('properties_complete') is not True
++            or coverage.get('truncated') is not False or coverage.get('has_more') is not False
++            or coverage.get('omitted_children') != [] or coverage.get('unsupported_blocks') != []):
++        raise Blocked('Missing complete body/properties coverage evidence; rendered text alone is insufficient')
++    if snapshot.get('fetchError') or page.get('archived') or page.get('in_trash') or 'cover' not in page or 'icon' not in page:
++        raise Blocked('Incomplete page metadata or failed fetch')
++    if snapshot.get('content'):
++        raise Blocked('Mixed rendered/native body representations require an unambiguous complete export')
++    blocks = snapshot.get('blocks')
++    if not isinstance(blocks, list) or not blocks:
++        raise Blocked('Complete expanded native blocks are required; no content-to-block guessing')
++    ids = set()
++
++    def check(nodes, depth=0):
++        if depth > 32 or not isinstance(nodes, list):
++            raise Blocked('Unsupported nesting or children list')
++        for block in nodes:
++            if not isinstance(block, dict) or block.get('type') not in TYPES:
++                raise Blocked('Unsupported native block type')
++            if block.get('archived') or block.get('in_trash'):
++                raise Blocked('Archived block cannot be restored by a layout proposal')
++            bid = block.get('id')
++            try:
++                bid = uuid.UUID(bid).hex
++            except (ValueError, TypeError, AttributeError):
++                raise Blocked('Missing native block identity') from None
++            if bid in ids or len(ids) >= 5000:
++                raise Blocked('Duplicate block identity or unsupported body size')
++            ids.add(bid)
++            kind = block['type']
++            payload = block.get(kind)
++            if not isinstance(payload, dict) or not isinstance(block.get('has_children'), bool):
++                raise Blocked('Incomplete block payload or child-presence flag')
++            if 'children' in block or block.get('has_more') or block.get('truncated'):
++                raise Blocked('Unsupported or incomplete child representation')
++            if block['has_children']:
++                if block.get('children_complete') is not True or not payload.get('children'):
++                    raise Blocked('Omitted or unproved child coverage')
++            elif payload.get('children'):
++                raise Blocked('Conflicting child-presence evidence')
++            if 'rich_text' in payload:
++                text(payload['rich_text'])
++            if kind in MEDIA:
++                media_type = payload.get('type')
++                if media_type not in ('file', 'external', 'file_upload') or not isinstance(payload.get(media_type), dict):
++                    raise Blocked('Incomplete native media representation')
++                reference = payload[media_type].get('id' if media_type == 'file_upload' else 'url')
++                if not isinstance(reference, str) or not reference:
++                    raise Blocked('Missing stable media reference')
++            if kind == 'table_row':
++                if not isinstance(payload.get('cells'), list):
++                    raise Blocked('Missing table-row cells')
++                for cell in payload['cells']:
++                    text(cell)
++            check(children(block), depth + 1)
++    check(blocks)
++    return code, page_id, page, blocks
++
++
++def node(code, name, kind, payload):
++    result = {'object': 'block', 'id': str(uuid.uuid5(uuid.UUID(PAGES[code]), 'pp-layout-v1/' + name)),
++              'type': kind, kind: payload, 'has_children': bool(payload.get('children'))}
++    if result['has_children']:
++        result['children_complete'] = True
++    return result
++
++
++def rich(value):
++    return [{'type': 'text', 'text': {'content': value}}] if value else []
++
++
++def review_info(block, code):
++    if block['type'] != 'callout':
++        return None
++    todos = [b for b in children(block) if b['type'] == 'to_do']
++    if not todos:
++        return None
++    if len(todos) != 2 or not re.match(r'^(Sim|Yes)\b', label(todos[0])) or not re.match(r'^(Não|No)\b', label(todos[1])):
++        raise Blocked('Unsupported review choices')
++    if any(not isinstance(b['to_do'].get('checked'), bool) for b in todos) or all(b['to_do']['checked'] for b in todos):
++        raise Blocked('Conflicting or missing human review decision')
++    if any(number != code for number in re.findall(r'\bPP\s*(\d+)\b', label(block))):
++        raise Blocked('Review callout belongs to another PP')
++    if not any('Se não, porquê?' in label(b) for b in children(block) if 'rich_text' in b[b['type']]):
++        raise Blocked('Missing editable review-reason area')
++    return {'yes': todos[0]['to_do']['checked'], 'no': todos[1]['to_do']['checked'],
++            'callout_sha256': digest(block)}
++
++
++def template_shape(snapshot):
++    code, _, _, blocks = validate(snapshot)
++    if code != '428':
++        raise Blocked('The complete approved PP428 template is required')
++    reviews = [b for b in blocks if review_info(b, code) is not None]
++    columns = [b for b in blocks if b['type'] == 'column_list']
++    if len(reviews) != 1 or len(columns) != 1 or len(children(columns[0])) != 2:
++        raise Blocked('Template lacks a unique native review callout and two-column layout')
++    cols = children(columns[0])
++    for column, name in zip(cols, ('New (proposta)', 'Old (original)')):
++        if column['type'] != 'column' or not children(column) or label(children(column)[0]) != name:
++            raise Blocked('Template column identity is unsupported')
++    ratios = [c['column'].get('width_ratio', 0.5) for c in cols]
++    if ratios != [0.5, 0.5]:
++        raise Blocked('Template columns are not equal 50/50')
++    tech = [i for i, b in enumerate(blocks) if b['type'] == 'toggle' and label(b) == TECH]
++    source = [i for i, b in enumerate(blocks) if b['type'] == 'toggle' and label(b) == SOURCE and children(b)]
++    if len(tech) != 1 or len(source) != 1 or not blocks.index(reviews[0]) < blocks.index(columns[0]) < tech[0] < source[0]:
++        raise Blocked('Template omits or misorders technical notes and full source/history')
++    return reviews[0], cols
++
++
++def atoms(blocks):
++    result = collections.Counter()
++    for block in walk(blocks):
++        payload = block[block['type']]
++        if payload.get('rich_text'):
++            result[('rich', canonical(payload['rich_text']))] += 1
++        for cell in payload.get('cells', []):
++            if cell:
++                result[('rich', canonical(cell))] += 1
++        if block['type'] in MEDIA:
++            result[('media', canonical(payload))] += 1
++    return result
++
++
++def format_body(blocks, code, template):
++    template_review, template_columns = template
++    sides = {'New': [], 'Old': []}
++    headings, images, description, sources, historic, technical = {}, [], [], [], [], []
++    review, old_history, old_tech = None, None, None
++    associations = []
++    mappings = []
++
++    def consume(nodes, side=None):
++        nonlocal review, old_history, old_tech
++        for original in nodes:
++            block = copy.deepcopy(original)
++            kind, title = block['type'], label(block)
++            if kind.startswith('heading_'):
++                if title in ('New (proposta)', 'Old (original)'):
++                    side = title.split()[0]
++                    if side in headings:
++                        raise Blocked('Conflicting repeated New/Old section')
++                    headings[side] = block
++                elif 'nova configuração (proposta)' in title or title.startswith('Antes '):
++                    side = 'New' if 'nova configuração (proposta)' in title else 'Old'
++                    historic.append(block)
++                elif title == 'Imagens':
++                    side = 'Images'
++                    images.append(block)
++                elif title in ('Descrição e notas do perfil', 'Notas'):
++                    side = 'Description'
++                    description.append(block)
++                else:
++                    historic.append(block)
++                continue
++            if kind == 'column_list':
++                cols = children(block)
++                if len(cols) != 2 or any(c['type'] != 'column' for c in cols):
++                    raise Blocked('Unsupported existing columns')
++                for col in cols:
++                    consume(children(col))
++                side = None
++            elif review_info(block, code) is not None:
++                if review is not None:
++                    raise Blocked('Multiple review callouts require manual reconciliation')
++                review = block
++            elif kind == 'toggle' and title == SOURCE:
++                sources.append(block)
++                side = None
++            elif kind == 'toggle' and title == HISTORY:
++                if old_history is not None:
++                    raise Blocked('Conflicting presentation histories')
++                old_history = block
++            elif kind == 'toggle' and title == TECH:
++                if old_tech is not None:
++                    raise Blocked('Conflicting technical sections')
++                old_tech = block
++            elif kind == 'table' and side in sides:
++                width, rows = block['table'].get('table_width'), children(block)
++                if width not in (2, 3) or not rows or any(r['type'] != 'table_row' or len(r['table_row']['cells']) != width for r in rows):
++                    raise Blocked('Unsupported or incomplete New/Old table')
++                header = rows[0]['table_row']['cells']
++                if text(header[0]).casefold() != 'face / local' or not text(header[1]).casefold().startswith(('opções', 'options')):
++                    raise Blocked('Unrecognised location/options table header')
++                mappings.append({'side': side, 'table_id': block['id'], 'cells': [copy.deepcopy(r['table_row']['cells'][:2]) for r in rows]})
++                if width == 3:
++                    if text(rows[0]['table_row']['cells'][2]) not in ('Nota', 'Notas'):
++                        raise Blocked('Third table column is not a known note column')
++                    technical.append(node(code, block['id'] + '/note-heading', 'paragraph', {'rich_text': copy.deepcopy(rows[0]['table_row']['cells'][2])}))
++                    for row in rows[1:]:
++                        cells = row['table_row']['cells']
++                        associations.append({'side': side, 'table_id': block['id'], 'row_id': row['id'], 'location': copy.deepcopy(cells[0]), 'note': copy.deepcopy(cells[2])})
++                        if cells[2]:
++                            technical.append(node(code, row['id'] + '/note', 'toggle', {'rich_text': rich(side + ': ') + copy.deepcopy(cells[0]), 'children': [node(code, row['id'] + '/note-text', 'paragraph', {'rich_text': copy.deepcopy(cells[2])})]}))
++                    for row in rows:
++                        row['table_row']['cells'] = row['table_row']['cells'][:2]
++                    block['table']['table_width'] = 2
++                sides[side].append(block)
++            elif kind == 'image' and side in (None, 'Images'):
++                images.append(block)
++            elif kind in MEDIA and side in sides:
++                raise Blocked('Scoped media needs an explicit supported location association')
++            elif kind == 'to_do':
++                raise Blocked('Review choice outside its callout requires manual reconciliation')
++            elif side == 'Description':
++                description.append(block)
++            elif kind == 'toggle' and side in sides:
++                technical.append(node(code, block['id'] + '/context', 'toggle', {'rich_text': rich(side), 'children': [block]}))
++            else:
++                historic.append(node(code, block['id'] + '/history-context', 'toggle', {'rich_text': rich(side), 'children': [block]}) if side in sides else block)
++    consume(blocks)
++    source_reviews = [b for b in walk(blocks) if review_info(b, code) is not None]
++    if len(source_reviews) > 1 or (source_reviews and (review is None or source_reviews[0]['id'] != review['id'])):
++        raise Blocked('Review decision is duplicated or nested in an unsupported context')
++    had_review = review is not None
++    if not sources or not all(sides.values()):
++        raise Blocked('Missing complete New/Old tables or full Excel source/history')
++    if review is None:
++        payload = {'rich_text': rich('Revisão do PP ' + code), 'children': [
++            node(code, 'review/yes', 'to_do', {'rich_text': rich('Sim, aprovo a configuração New do PP ' + code + '.'), 'checked': False}),
++            node(code, 'review/no', 'to_do', {'rich_text': rich('Não, são necessárias correções.'), 'checked': False}),
++            node(code, 'review/reason-label', 'paragraph', {'rich_text': rich('Se não, porquê?')}),
++            node(code, 'review/reason', 'paragraph', {'rich_text': []})]}
++        if template_review['callout'].get('icon', {}).get('type') == 'emoji':
++            payload['icon'] = copy.deepcopy(template_review['callout']['icon'])
++        review = node(code, 'review', 'callout', payload)
++    cols = []
++    for i, side in enumerate(sides):
++        heading = headings.get(side) or node(code, side + '/heading', 'heading_2', {'rich_text': rich(side + (' (proposta)' if side == 'New' else ' (original)'))})
++        payload = {'children': [heading, *sides[side]]}
++        if 'width_ratio' in template_columns[i]['column']:
++            payload['width_ratio'] = template_columns[i]['column']['width_ratio']
++        cols.append(node(code, side + '/column', 'column', payload))
++    after = [*images, *description, review, node(code, 'columns', 'column_list', {'children': cols})]
++    tech = old_tech or node(code, 'technical', 'toggle', {'rich_text': rich(TECH), 'children': []})
++    tech['toggle']['children'] = children(tech) + technical
++    tech['has_children'] = bool(children(tech))
++    if tech['has_children']:
++        tech['children_complete'] = True
++    after.append(tech)
++    after.extend(sources)
++    if old_history or historic:
++        history = old_history or node(code, 'history', 'toggle', {'rich_text': rich(HISTORY), 'children': []})
++        history['toggle']['children'] = children(history) + historic
++        history.update(has_children=True, children_complete=True)
++        after.append(history)
++    if atoms(blocks) - atoms(after):
++        raise Blocked('Preservation check failed: original rich text/media would be lost')
++    decision = review_info(review, code)
++    decision['origin'] = 'preserved-existing' if had_review else 'unchecked-no-prior-decision'
++    return after, associations, decision, mappings
++
++
++def plan(snapshot, template):
++    report = {'status': 'BLOCKED', 'apply_allowed': False, 'source_snapshot_sha256': digest(snapshot), 'template_snapshot_sha256': digest(template) if template is not None else None,
++              'synthetic_fixture': bool(snapshot.get('synthetic_fixture')) if isinstance(snapshot, dict) else False}
++    try:
++        code, page_id, _ = identity(snapshot)
++        report.update(code=code, page_id=page_id)
++        code, page_id, page, blocks = validate(snapshot)
++        if template is None:
++            raise Blocked('Complete approved PP428 template snapshot is missing')
++        shape = template_shape(template)
++        after, notes, decision, mappings = format_body(blocks, code, shape)
++        before_mapping = {side: [{'table_id': item['table_id'], 'cells': item['cells']} for item in mappings if item['side'] == side] for side in ('New', 'Old')}
++        columns = next(b for b in after if b['type'] == 'column_list')
++        after_mapping = {side: [{'table_id': b['id'], 'cells': [r['table_row']['cells'] for r in children(b)]} for b in children(col) if b['type'] == 'table'] for side, col in zip(('New', 'Old'), children(columns))}
++        if before_mapping != after_mapping:
++            raise Blocked('Exact New/Old location/options preservation check failed')
++        candidate = copy.deepcopy(snapshot)
++        candidate['blocks'] = after
++        validate(candidate)
++        report.update(status='PROPOSED_LOCAL_ONLY', proposed_body=after, note_associations=notes,
++                      review=decision, before_body_sha256=digest(blocks), after_body_sha256=digest(after),
++                      original_new_old_mappings=mappings,
++                      unchanged_page_metadata={k: copy.deepcopy(page[k]) for k in ('properties', 'cover', 'icon')},
++                      preservation={'original_rich_text_and_media_retained': True,
++                                    'page_metadata_unchanged': True, 'table_width_intent_only': [80, 350],
++                                    'before_new_old_mapping_sha256': digest(before_mapping),
++                                    'after_new_old_mapping_sha256': digest(after_mapping),
++                                    'page_metadata_sha256': digest({k: page[k] for k in ('properties', 'cover', 'icon')})})
++    except (Blocked, KeyError, TypeError, ValueError) as error:
++        report['reason'] = str(error) if isinstance(error, Blocked) else 'Unsupported or conflicting snapshot structure'
++    return report
++
++
++def verify_precondition(proposal, snapshot):
++    try:
++        code, page_id, _ = identity(snapshot)
++    except (Blocked, TypeError, ValueError):
++        return False
++    return (proposal.get('status') == 'PROPOSED_LOCAL_ONLY' and proposal.get('code') == code
++            and proposal.get('page_id') == page_id and proposal.get('source_snapshot_sha256') == digest(snapshot))
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--input', required=True, type=Path, nargs='+')
++    parser.add_argument('--template', type=Path)
++    parser.add_argument('--output', required=True, type=Path)
++    args = parser.parse_args()
++    if args.output.resolve() in {p.resolve() for p in [*args.input, *([args.template] if args.template else [])]}:
++        parser.error('Output must not overwrite any input or template snapshot')
++    def load(path):
++        if path.stat().st_size > 8_000_000:
++            raise ValueError('Snapshot exceeds supported local size')
++        return json.loads(path.read_text(encoding='utf-8-sig'))
++    template = load(args.template) if args.template else None
++    results = [{'input': str(path), **plan(load(path), template)} for path in args.input]
++    args.output.parent.mkdir(parents=True, exist_ok=True)
++    args.output.write_text(json.dumps(results, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
++    print('Local reports: ' + str(len(results)) + '; blocked: ' + str(sum(r['status'] == 'BLOCKED' for r in results)))
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/README.md b/README.md
+new file mode 100644
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,73 @@
++# Offline PP body-layout formatter
++
++Implementation candidate for independent review. This is a local proposal generator, with no writer, API, tokens, uploads or `--aplicar` mode. It does not change the importer or the extension.
++
++## Current real-data blocker
++
++The 20 `before/after` snapshots for the ten non-template apron codes contain rendered Notion text. They do not contain complete expanded native block trees or proof of child coverage. All 20 are therefore BLOCKED. Their page UUID/code pairs are checked from actual properties and page URLs, never file names.
++
++The complete approved PP428 snapshot is also missing from `tmp/pp-apron-layout-template-input` at the time of this candidate. No old after-snapshot or synthetic template substitutes for it. A concrete proposal based on the real PP428 template has not been validated.
++
++`reports/SUMMARY.md` and `reports/per-code-summary.json` disclose all eleven codes and the missing inputs. Synthetic examples are explicitly labelled and are not real-page proposals.
++
++## Local commands
++
++From a working copy of this candidate:
++
++```powershell
++python -B -m unittest discover -s tests -v
++python -B tests/build_reports.py
++python -B format_layout.py --input complete-target.json --template complete-PP428.json --output local-plan.json
++```
++
++The last command requires real complete inputs in the supported shape. It produces a BLOCKED report when completeness or identity cannot be established. Output cannot overwrite the input/template snapshot. Regenerate reports in a working copy, not the frozen review folder. No network or full-workbook extraction is needed.
++
++## Supported complete export contract
++
++A snapshot has `blocks`, `coverage` and page metadata. Metadata may be flat at the root or under `page`, without conflicting duplicate representations:
++
++```json
++{
++  "code": "429",
++  "page": {
++    "id": "137b6705ae1f82048ef1810070095cf0",
++    "properties": {"Código PP": "429", "Estado": "A rever"},
++    "cover": null,
++    "icon": null
++  },
++  "coverage": {
++    "complete": true,
++    "properties_complete": true,
++    "truncated": false,
++    "has_more": false,
++    "omitted_children": [],
++    "unsupported_blocks": []
++  },
++  "blocks": []
++}
++```
++
++This illustrates the envelope only: an empty body is rejected. Every body block needs its actual UUID, native `type`, matching native payload and `has_children`. A parent must include all children under `block[block.type].children`, with `children_complete: true`. Every descendant is checked. Native table rows carry complete rich-text `cells`. `Código PP` may instead use its native rich-text property object. Page URL and title, if provided, must not contradict the actual identity.
++
++Coverage declarations must come from a verified complete export, not be added to an old snapshot to bypass checks. Rendered `content` is not parsed into an assumed native tree. Mixed rendered/native body representations, missing children, pagination, unsupported blocks/rich-text items, duplicate identities, archived content and conflicting decisions are refused. Unsupported content is never silently discarded.
++
++The approved template must be the exact PP428 page `074b6705ae1f8257a53701d87a64eb32`, with a native review callout, two equal native columns headed New/Old, technical notes and full source/history in the required order. It is used for layout structure only. Its choices, reasons, profile options and technical content are never copied to other PPs.
++
++## Proposal behaviour and preservation
++
++- Images and existing description/reference sections come first. Missing-image PP661 receives no invented image.
++- Existing Yes/No choices and the editable `Se não, porquê?` area remain intact. Contradictory, duplicated or unsupported decision placement is blocked. Only a profile with no prior decision gets new unchecked choices.
++- Native New (proposta) and Old (original) columns contain the profile's own tables. Two equal columns are intended; table widths around 80/350 are review intent only. No unsupported API/rendered-width guarantee is made.
++- Third columns explicitly labelled Nota/Notas move into native technical-note toggles. Reports retain side, table UUID, row UUID, exact location and note rich text. Grouped locations and option text remain unchanged.
++- Original headings and old callouts that leave the main layout are retained in collapsed presentation history. Full Excel source/history remains below the comparison. Every supported child and media reference is preserved.
++- Properties, cover, icon and status are not proposed for updates. Their complete unchanged values/hash are included as preservation evidence.
++
++Reports compare exact New/Old location/options mappings and retain original rich-text/media counts. Synthetic tests check PP633, grouped/mixed PP662, PP661 without images, existing Yes/No/reasons, deterministic output, semantic idempotence and stale-source refusal.
++
++`verify_precondition(plan, current_snapshot)` checks the exact PP code/page pair and canonical full-snapshot SHA256. Any changed human reason, property, body or snapshot metadata fails the precondition. This strict guard can reject a new export whose metadata alone changed. It is not a server-side atomic write guard.
++
++`proposed_body` is a review representation with existing identities and native objects. It is not an executable REST request or a bulk-write system. Any future application needs separately authorised fresh reads, a reviewed application method and the existing confirmations. This candidate makes no live Notion validation claim.
++
++## Scope
++
++Only codes 428, 429, 430, 467, 558, 612, 633, 661, 662, 786 and 840 are allowed, with the fixed page UUID pairs in the module. This changes layout only: no source repair, option mapping, approval change, schema/property sync, New/Old business transformation, price/PDF rules, DTF renaming or Magento work.
+diff --git a/tests/test_layout.py b/tests/test_layout.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_layout.py
+@@ -0,0 +1,217 @@
++import copy
++import importlib.util
++import json
++from pathlib import Path
++import unittest
++import tempfile
++from unittest.mock import patch
++import io
++
++ROOT = Path(__file__).resolve().parents[1]
++spec = importlib.util.spec_from_file_location('formatter', ROOT / 'format_layout.py')
++f = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(f)
++
++
++def fixture(code='429', template=False, reviewed=False, image=True, grouped=False, box=False):
++    counter = 0
++    def b(kind, content='', children=None, **extra):
++        nonlocal counter
++        counter += 1
++        payload = {'rich_text': f.rich(content), **extra}
++        if children is not None:
++            payload['children'] = children
++        return f.node(code, 'fixture/' + str(counter), kind, payload)
++    def table(side):
++        locations = ['Peito', 'Bolso'] + (['Caixa'] if box else [])
++        if grouped:
++            locations = ['\n'.join(locations)]
++        rows = [b('table_row', cells=[f.rich('Face / local'), f.rich('Opções ' + side), f.rich('Notas')])]
++        for loc in locations:
++            rows.append(b('table_row', cells=[f.rich(loc), f.rich(side + ': original DTF A4\nunknown option unchanged'), f.rich(loc + ': exact technical reason')]))
++        return b('table', children=rows, table_width=3, has_column_header=True, has_row_header=False)
++    new, old = table('New'), table('Old')
++    desc = [b('heading_2', 'Descrição e notas do perfil'), b('paragraph', 'Original description / Ex: REF-' + code)]
++    source = b('toggle', f.SOURCE, [b('paragraph', 'Full source cells, original notes and history ' + code)])
++    review = b('callout', 'Revisão do PP ' + code, [
++        b('to_do', 'Sim, aprovo a configuração New do PP ' + code + '.', checked=False),
++        b('to_do', 'Não, são necessárias correções.', checked=reviewed),
++        b('paragraph', 'Se não, porquê?'),
++        b('paragraph', 'TEMPLATE REJECTION DO NOT COPY' if template else 'Human No: keep this exact reason ' + code)], icon={'type': 'emoji', 'emoji': '📝'})
++    images = [b('image', type='file', file={'url': 'notion-file-block://stable-original-' + code}, caption=f.rich('Original caption'))] if image else []
++    if template:
++        for table in (new, old):
++            table['table']['table_width'] = 2
++            for row in f.children(table):
++                row['table_row']['cells'] = row['table_row']['cells'][:2]
++        cols = [b('column', children=[b('heading_2', side + title), table], width_ratio=0.5)
++                for side, title, table in [('New', ' (proposta)', new), ('Old', ' (original)', old)]]
++        blocks = [*images, *desc, review, b('column_list', children=cols), b('toggle', f.TECH, [b('paragraph', 'Template technical issue do not copy')]), source]
++    else:
++        blocks = [b('heading_2', 'Locais e personalização: nova configuração (proposta)'),
++                  b('callout', 'Old proposal uncertainty: do not remove'), new,
++                  b('toggle', 'Pendências técnicas', [b('paragraph', 'Exact existing location note: Bolso')]),
++                  b('heading_2', 'Antes da alteração: tabela original integral'), old,
++                  b('heading_2', 'Imagens'), *images, *desc, source]
++        if reviewed:
++            blocks.insert(0, review)
++    return {'synthetic_fixture': True, 'code': code, 'page': {'id': f.PAGES[code], 'properties': {'Código PP': code, 'Estado': 'A rever', 'Human': 'No and original reason'}, 'cover': {'type': 'file', 'file': {'url': 'original-cover'}}, 'icon': None},
++            'coverage': {'complete': True, 'properties_complete': True, 'truncated': False, 'has_more': False, 'omitted_children': [], 'unsupported_blocks': []},
++            'blocks': blocks}
++
++
++class Tests(unittest.TestCase):
++    def setUp(self):
++        self.template = fixture('428', template=True, reviewed=True)
++    def propose(self, snapshot):
++        result = f.plan(snapshot, self.template)
++        self.assertEqual(result['status'], 'PROPOSED_LOCAL_ONLY', result.get('reason'))
++        return result
++    def test_ordinary_apron_preserves_every_original_atom_and_metadata(self):
++        source = fixture(); before = copy.deepcopy(source)
++        result = self.propose(source)
++        self.assertEqual(source, before)
++        self.assertFalse(f.atoms(source['blocks']) - f.atoms(result['proposed_body']))
++        self.assertEqual(result['unchanged_page_metadata'], {k: source['page'][k] for k in ('properties', 'cover', 'icon')})
++        cols = next(b for b in result['proposed_body'] if b['type'] == 'column_list')
++        self.assertEqual([c['column']['width_ratio'] for c in f.children(cols)], [0.5, 0.5])
++        self.assertEqual([f.label(f.children(c)[0]) for c in f.children(cols)], ['New (proposta)', 'Old (original)'])
++        self.assertTrue(all(b['table']['table_width'] == 2 for b in f.walk([cols]) if b['type'] == 'table'))
++        self.assertEqual(len(result['note_associations']), 4)
++    def test_pp633_own_options_and_decision_preserved(self):
++        source = fixture('633', reviewed=True)
++        result = self.propose(source)
++        self.assertTrue(result['review']['no']); self.assertFalse(result['review']['yes'])
++        original = next(b for b in source['blocks'] if f.review_info(b, '633') is not None)
++        after = next(b for b in result['proposed_body'] if f.review_info(b, '633') is not None)
++        self.assertEqual(original, after)
++        self.assertNotIn('TEMPLATE REJECTION', json.dumps(result))
++    def test_pp662_box_mixed_and_grouped_rows_not_split_or_remapped(self):
++        for grouped in [False, True]:
++            source = fixture('662', box=True, grouped=grouped)
++            result = self.propose(source)
++            cols = next(b for b in result['proposed_body'] if b['type'] == 'column_list')
++            tables_before = [b for b in source['blocks'] if b['type'] == 'table']
++            tables_after = [b for b in f.walk([cols]) if b['type'] == 'table']
++            self.assertEqual([[r['table_row']['cells'][:2] for r in f.children(t)] for t in tables_before],
++                             [[r['table_row']['cells'] for r in f.children(t)] for t in tables_after])
++    def test_pp661_missing_image_does_not_invent_media(self):
++        result = self.propose(fixture('661', image=False))
++        self.assertFalse(any(b['type'] == 'image' for b in f.walk(result['proposed_body'])))
++    def test_template_rejection_and_choices_never_copied(self):
++        result = self.propose(fixture())
++        self.assertFalse(result['review']['yes']); self.assertFalse(result['review']['no'])
++        self.assertNotIn('TEMPLATE REJECTION', json.dumps(result))
++    def test_existing_yes_is_retained(self):
++        source = fixture(reviewed=True)
++        review = next(b for b in source['blocks'] if f.review_info(b, '429') is not None)
++        choices = [b for b in f.children(review) if b['type'] == 'to_do']
++        choices[0]['to_do']['checked'] = True; choices[1]['to_do']['checked'] = False
++        result = self.propose(source)
++        self.assertTrue(result['review']['yes']); self.assertFalse(result['review']['no'])
++    def test_idempotence_and_deterministic_proposals(self):
++        source = fixture('633', reviewed=True)
++        first = self.propose(source)
++        self.assertEqual(first, self.propose(source))
++        rerun = copy.deepcopy(source); rerun['blocks'] = first['proposed_body']
++        second = self.propose(rerun)
++        self.assertEqual(first['proposed_body'], second['proposed_body'])
++        self.assertEqual(first['after_body_sha256'], second['after_body_sha256'])
++    def test_changed_source_precondition_catches_human_reason_or_property_edits(self):
++        source = fixture(reviewed=True); result = self.propose(source)
++        self.assertTrue(f.verify_precondition(result, source))
++        wrong_plan = copy.deepcopy(result); wrong_plan['page_id'] = f.PAGES['633']
++        self.assertFalse(f.verify_precondition(wrong_plan, source))
++        for edit in ['property', 'body']:
++            changed = copy.deepcopy(source)
++            if edit == 'property': changed['page']['properties']['Human'] = 'Changed human reason'
++            else: changed['blocks'][0]['callout']['rich_text'] = f.rich('Changed human reason')
++            self.assertFalse(f.verify_precondition(result, changed))
++    def test_scope_identity_and_wrong_template_refused(self):
++        for mode in ['wrong-id', 'wrong-code', 'out-of-scope', 'conflicting-url', 'title']:
++            source = fixture()
++            if mode == 'wrong-id': source['page']['id'] = f.PAGES['633']
++            if mode == 'wrong-code': source['code'] = '633'
++            if mode == 'title': source['page']['title'] = '633 - wrong title'
++            if mode == 'out-of-scope': source['page']['properties']['Código PP'] = '827'
++            if mode == 'conflicting-url': source['page']['url'] = 'https://app.notion.com/p/' + f.PAGES['633']
++            self.assertEqual(f.plan(source, self.template)['status'], 'BLOCKED')
++        self.assertEqual(f.plan(fixture(), fixture('633', template=True))['status'], 'BLOCKED')
++    def test_missing_template_and_rendered_only_exports_blocked(self):
++        self.assertEqual(f.plan(fixture(), None)['status'], 'BLOCKED')
++        source = fixture(); del source['blocks']; source['content'] = '<content>Looks complete</content>'
++        self.assertEqual(f.plan(source, self.template)['status'], 'BLOCKED')
++    def test_incomplete_truncated_unsupported_or_omitted_children_refused(self):
++        for mode in ['coverage', 'truncated', 'pagination', 'child-omitted', 'child-unproved', 'unsupported', 'duplicate-id', 'archived', 'mixed-rendered']:
++            source = fixture()
++            if mode == 'coverage': del source['coverage']
++            if mode == 'truncated': source['coverage']['truncated'] = True
++            if mode == 'pagination': source['coverage']['has_more'] = True
++            if mode == 'child-omitted': del source['blocks'][2]['table']['children']
++            if mode == 'child-unproved': del source['blocks'][2]['children_complete']
++            if mode == 'unsupported': source['blocks'][0]['type'] = 'unsupported'
++            if mode == 'archived': source['blocks'][0]['archived'] = True
++            if mode == 'mixed-rendered': source['content'] = 'Conflicting or unproved alternate body'
++            if mode == 'duplicate-id': source['blocks'][0]['id'] = source['blocks'][1]['id']
++            result = f.plan(source, self.template)
++            self.assertEqual(result['status'], 'BLOCKED', mode)
++            self.assertNotIn('proposed_body', result)
++    def test_conflicting_review_and_repeated_sections_refused(self):
++        source = fixture(reviewed=True)
++        review = source['blocks'][0]
++        for todo in f.children(review):
++            if todo['type'] == 'to_do': todo['to_do']['checked'] = True
++        self.assertEqual(f.plan(source, self.template)['status'], 'BLOCKED')
++        source = fixture(); source['blocks'].insert(0, f.node('429', 'extra-New', 'heading_2', {'rich_text': f.rich('New (proposta)')}))
++        source['blocks'].insert(1, f.node('429', 'extra-New-2', 'heading_2', {'rich_text': f.rich('New (proposta)')}))
++        self.assertEqual(f.plan(source, self.template)['status'], 'BLOCKED')
++
++    def test_uncontained_choices_and_incomplete_media_are_blocked(self):
++        source = fixture()
++        source['blocks'].append(f.node('429', 'outside-choice', 'to_do', {'rich_text': f.rich('No'), 'checked': True}))
++        self.assertEqual(f.plan(source, self.template)['status'], 'BLOCKED')
++        source = fixture()
++        image = next(b for b in source['blocks'] if b['type'] == 'image')
++        del image['image']['file']['url']
++        self.assertEqual(f.plan(source, self.template)['status'], 'BLOCKED')
++        source = fixture()
++        source['blocks'] = [b for b in source['blocks'] if not (b['type'].startswith('heading_') and f.label(b) == 'Imagens')]
++        self.assertEqual(f.plan(source, self.template)['status'], 'BLOCKED')
++        for bad in [[], None, {'page': []}]:
++            self.assertEqual(f.plan(bad, self.template)['status'], 'BLOCKED')
++    def test_notes_remain_associated_with_exact_original_location_rich_text(self):
++        source = fixture('662', box=True, grouped=True)
++        result = self.propose(source)
++        tech = next(b for b in result['proposed_body'] if b['type'] == 'toggle' and f.label(b) == f.TECH)
++        for association in result['note_associations']:
++            self.assertIn('Caixa', f.text(association['location']))
++            self.assertTrue(any(b.get('paragraph', {}).get('rich_text') == association['note'] for b in f.walk([tech])))
++        self.assertNotIn('Template technical issue', json.dumps(result))
++    def test_empty_canonical_technical_toggle_is_still_idempotent(self):
++        source = fixture('429', template=True)
++        tech = next(b for b in source['blocks'] if b['type'] == 'toggle' and f.label(b) == f.TECH)
++        tech['toggle']['children'] = []; tech['has_children'] = False; tech.pop('children_complete')
++        first = self.propose(source)
++        source['blocks'] = first['proposed_body']
++        self.assertEqual(first['proposed_body'], self.propose(source)['proposed_body'])
++
++    def test_cli_is_plan_only_and_cannot_overwrite_source_snapshot(self):
++        import sys
++        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
++            path = Path(directory) / 'snapshot.json'
++            path.write_text(json.dumps(fixture()), encoding='utf-8')
++            original = path.read_bytes()
++            with patch.object(sys, 'argv', ['format_layout.py', '--input', str(path), '--output', str(path)]), patch('sys.stderr', io.StringIO()), self.assertRaises(SystemExit):
++                f.main()
++            self.assertEqual(path.read_bytes(), original)
++            output = Path(directory) / 'report.json'
++            with patch.object(sys, 'argv', ['format_layout.py', '--input', str(path), '--output', str(output)]), patch('sys.stdout', io.StringIO()):
++                f.main()
++            self.assertEqual(json.loads(output.read_text(encoding='utf-8'))[0]['status'], 'BLOCKED')
++            self.assertEqual(path.read_bytes(), original)
++            with patch.object(sys, 'argv', ['format_layout.py', '--aplicar']), patch('sys.stderr', io.StringIO()), self.assertRaises(SystemExit):
++                f.main()
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tests/build_reports.py b/tests/build_reports.py
+new file mode 100644
+--- /dev/null
++++ b/tests/build_reports.py
+@@ -0,0 +1,75 @@
++"""Build offline evidence; synthetic proposals never stand in for real pages."""
++import copy
++import json
++from pathlib import Path
++import sys
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++from test_layout import ROOT, f, fixture
++
++
++def write(path, value):
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
++
++
++def main():
++    output = ROOT / 'reports'
++    template_dir = ROOT.parent / 'pp-apron-layout-template-input'
++    template_errors, templates = [], []
++    for path in sorted(template_dir.rglob('*.json')) if template_dir.exists() else []:
++        try:
++            value = json.loads(path.read_text(encoding='utf-8-sig'))
++            f.template_shape(value)
++            templates.append((path, value))
++        except (ValueError, TypeError, KeyError) as error:
++            template_errors.append({'input': str(path), 'reason': str(error)})
++    unique = {f.digest(value): (path, value) for path, value in templates}
++    template = next(iter(unique.values()))[1] if len(unique) == 1 else None
++    dependency = {'status': 'AVAILABLE' if template is not None else 'BLOCKED',
++                  'expected_code': '428', 'expected_page_id': f.PAGES['428'],
++                  'directory': str(template_dir), 'rejected_inputs': template_errors,
++                  'reason': None if template is not None else ('Conflicting complete templates' if len(unique) > 1 else 'Complete approved native PP428 template is absent or unsupported')}
++    reports, input_hashes = [], {}
++    for path in sorted((ROOT.parent / 'notion-apron-layout-20261117').glob('*-PP*.json')):
++        data = json.loads(path.read_text(encoding='utf-8-sig'))
++        input_hashes[str(path)] = f.hashlib.sha256(path.read_bytes()).hexdigest()
++        report = {'input': str(path), **f.plan(data, template)}
++        report['missing_native_fields'] = [name for name in ('coverage', 'blocks') if name not in data]
++        report['template_dependency'] = dependency['status']
++        reports.append(report)
++    if template is not None:
++        reports.append({'input': 'complete PP428 template snapshot', **f.plan(template, template)})
++    write(output / 'real-input-reports.json', reports)
++    write(output / 'template-dependency.json', dependency)
++    summary = []
++    for code, page_id in f.PAGES.items():
++        matching = [r for r in reports if r.get('code') == code]
++        summary.append({'code': code, 'expected_page_id': page_id, 'verified_inputs': len(matching),
++                        'status': 'MISSING_INPUT' if not matching else ('BLOCKED' if any(r['status'] == 'BLOCKED' for r in matching) else 'PROPOSED_LOCAL_ONLY'),
++                        'reasons': sorted({r.get('reason', 'Local proposal only') for r in matching}) if matching else ['No complete PP428 snapshot available'],
++                        'apply_allowed': False})
++    write(output / 'per-code-summary.json', summary)
++    write(output / 'input-file-hashes.json', input_hashes)
++    synthetic_template = fixture('428', template=True, reviewed=True)
++    write(output / 'synthetic/template-PP428.json', synthetic_template)
++    for code, options in [('429', {}), ('633', {'reviewed': True}), ('662', {'box': True, 'grouped': True}), ('661', {'image': False})]:
++        source = fixture(code, **options)
++        proposal = f.plan(source, synthetic_template)
++        assert proposal['status'] == 'PROPOSED_LOCAL_ONLY', proposal.get('reason')
++        second = copy.deepcopy(source)
++        second['blocks'] = proposal['proposed_body']
++        assert f.plan(second, synthetic_template)['proposed_body'] == proposal['proposed_body']
++        write(output / ('synthetic/source-PP' + code + '.json'), source)
++        write(output / ('synthetic/proposal-PP' + code + '.json'), proposal)
++    lines = ['# Local layout evidence', '', 'Synthetic examples are test data, not proposals for actual Notion pages.', '',
++             '| Code | Verified real inputs | Result |', '| --- | ---: | --- |']
++    lines += ['| ' + r['code'] + ' | ' + str(r['verified_inputs']) + ' | ' + r['status'] + ' |' for r in summary]
++    lines += ['', 'The legacy before/after JSON files contain rendered text, no expanded native block tree and no complete child-coverage declaration. Their UUID/code pairs are verified from actual properties and page URLs. A file name is never identity evidence.', '',
++              'Template dependency: ' + dependency['status'] + '. ' + (dependency['reason'] or 'One complete approved native PP428 template verified.')]
++    (output / 'SUMMARY.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
++    print('Real inputs: ' + str(len(reports)) + '; blocked: ' + str(sum(r['status'] == 'BLOCKED' for r in reports)) + '; template: ' + dependency['status'])
++
++
++if __name__ == '__main__':
++    main()

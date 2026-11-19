@@ -1,0 +1,1760 @@
+--- a/README.md
++++ b/README.md
+@@ -1,100 +1,108 @@
+-# Lote de aventais V3
+-
+-Candidato executável para os PP 428, 429, 430, 467, 558, 612, 633, 661, 662, 786 e 840. Não aprovado para aplicação real. Não foi feita nenhuma escrita no Notion.
+-
+-O Python prepara os planos e mantém o estado; não se liga ao MCP. `session_bridge.js` corre numa sessão com ferramentas e utiliza o conector já disponível: `mcp__codex_apps__notion_fetch`, `mcp__codex_apps__notion_notion_get_comments` e `mcp__codex_apps__notion_notion_update_page`. Usa `exec_command` para o motor local e `apply_patch` para ficheiros temporários de resposta. Não necessita de credenciais adicionais nem de dependências externas. Requer Python 3.11 ou posterior; os testes da ponte usam Node.
+-
+-## Estado e preservação
+-
+-PP428 permanece sem alterações, incluindo a escolha «Não» e o motivo. É referência visual, não fonte das escolhas técnicas dos outros perfis. Old é reconstruído pelos grupos/células confirmados no Excel. PP633 fica com Peito 3 opções e Bolso 2. Os grupos partilhados mantêm-se partilhados; PP786 tem três locais e duas opções, e P55 contém espaços.
+-
+-Cada página mantém o próprio New, revisão/motivo, imagem, origem e metadados. O conteúdo anterior fica também no histórico. Notas repetidas são consolidadas por lado, local e texto; casos ambíguos são preservados. O histórico de texto não preserva, por si só, os comentários ligados a blocos.
+-
+-As propriedades são propostas separadamente, apenas nos campos/opções existentes. Propostas incompletas não originam operações aplicáveis. Não há alterações ao esquema. As operações de corpo substituem secções completas e únicas com `update_content`, `replace_all_matches:false`, ou acrescentam histórico no fim. Consultar o conteúdo integral das operações: uma secção pode conter tabelas, colunas e toggles. Nunca se substitui a página inteira.
+-
+-As onze leituras actuais omitem `truncated`, `unknown_block_count` e `unknown_block_ids`. As consultas de comentários dos PP428 e PP633 devolvem apenas `upgrade_required`; as restantes não foram repetidas após essa falha de capacidade. Isto não prova ausência de comentários ou sugestões. As dez páginas que necessitam de alterações estão bloqueadas.
+-
+-É necessária prova fiável de completude da região afectada ou um contrato documentado de edição que preserve conteúdo omitido, além de prova de preservação dos comentários e das ligações aos blocos. Não foi encontrado esse contrato. Actualmente, o motor admite apenas a via conservadora de exportação explicitamente completa e comentários/sugestões explicitamente vazios, sem marcadores de discussão. A via positiva foi testada com dados sintéticos, não observada no conector real. Uma via contratual alternativa exige alteração e nova revisão do código. Não acrescentar indicadores às capturas nem alterar a elegibilidade manualmente.
+-
+-## Preparar e rever
+-
+-Trabalhar no candidato ou numa cópia, nunca dentro de `review-v3`. Estes comandos são locais:
+-
+-```powershell
+-Set-Location 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v3'
+-python -B batch_cli.py prepare --captures captures/current --workbook 'C:/Users/user/Desktop/CLEAN__Perfis de Personalização.xlsx' --evidence captures/current/excel-evidence.json --output plans/batch.json
+-python -B batch_cli.py inspect --plan plans/batch.json
+-python -B -m unittest discover -s tests
+-node --test tests/test_session_bridge.cjs
+-```
+-
+-`prepare` valida o hash do livro, a folha, códigos, títulos, células/grupos, Working Copy e fonte de dados. Gera `plans/batch.json` e diferenças/provas por página em `plans/reports/`, com propriedades propostas e dúvidas técnicas. Os mesmos ficheiros produzem o mesmo plano. As leituras actuais estão em `captures/current/`; as restantes capturas e os testes herdados são regressões históricas.
+-
+-Rever todas as operações e diferenças, grupos Excel, New específico, revisão/motivo, conteúdo exterior às secções, origem, histórico, imagens, notas e propriedades. O hash canónico apresentado por `inspect` não é o hash dos bytes do JSON. O hash da implementação inclui os oito ficheiros de execução. O manifesto contém também hashes dos bytes de todos os ficheiros do pacote.
+-
+-## Aprovação imutável e piloto
+-
+-1. Obter revisão independente do candidato e resolver falhas. A opinião de adequação da sessão Notion Manutenção não equivale a revisão integral.
+-2. Resolver as provas externas em falta, obter novas capturas reais e preparar/rever um novo plano. Não inventar correcções para escolhas «por confirmar».
+-3. Após autorização humana explícita, seleccionar uma única página elegível para piloto. PP428, sem escrita, não valida esse caminho. Rever o resultado antes de autorizar o resto do lote.
+-4. Copiar `approval.example.json`. Preencher hash canónico do plano, hash da implementação, referência da revisão, códigos e IDs de operações autorizados. Só após autorização real usar `EXPLICIT_HUMAN_APPROVAL`. O exemplo é deliberadamente inválido.
+-
+-A aprovação inclui todas as operações de corpo das páginas seleccionadas. Operações de propriedades resolvidas são opcionais, com os respectivos IDs explícitos. Operações bloqueadas não podem ser aprovadas. Qualquer alteração ao plano/implementação exige nova revisão. O livro e a prova Excel têm caminhos absolutos e hashes verificados em execução; uma mudança de localização exige preparar/rever um novo plano.
+-
+-## Ponte na sessão
+-
+-A sessão precisa das cinco ferramentas acima. Carregar o código local revisto e confirmar o hash contra `review-v3/manifest-v3.json`, campo `files["source/session_bridge.js"]`. Exemplo para `functions.exec`, com o hash retirado do manifesto revisto:
+-
+-```javascript
+-const loaded = await tools.exec_command({
+-  cmd: "python -B 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v3/review-v3/source/batch_cli.py' bridge-source",
+-  max_output_tokens: 8000
+-});
+-if (loaded.exit_code !== 0) throw new Error('Falha ao carregar a ponte');
+-const bridge = JSON.parse(loaded.output);
+-if (bridge.sha256 !== '<SHA256 DO MANIFESTO REVISTO>') throw new Error('Ponte alterada');
+-const run = eval(bridge.source);
+-text(await run({
+-  script: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v3/review-v3/source/batch_cli.py',
+-  plan: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v3/plans/batch.json'
+-}, tools));
+-```
+-
+-Sem `apply:true`, só há inspecção local, sem conector nem criação de execução. O exemplo usa um plano de trabalho fora do congelamento. Para aplicação explicitamente autorizada, usar o novo plano realmente revisto e acrescentar à configuração:
+-
+-```javascript
+-apply: true,
+-approval: 'C:/caminho/autorizado/approval.json',
+-approvedPlanSha: '<HASH CANÓNICO DO PLANO APROVADO>'
+-```
+-
+-Isto não torna o plano actual elegível. A execução recusa páginas bloqueadas, dados sintéticos, hashes divergentes e aprovações incompletas. Não aplicar com base apenas neste documento.
+-
+-Respostas do conector passam por ficheiros JSON locais, com consultas HTTPS assinadas removidas. O caminho, não o corpo, vai na linha de comando, evitando o limite do Windows. Os ficheiros `<plano>.event-<nonce>.json` são eliminados após processamento; uma interrupção pode deixá-los para diagnóstico. Referências assinadas no corpo são recusadas. Capturas/registos continuam privados.
+-
+-## Resultado incerto e recuperação
+-
+-`session-start`, `session-step` e `session-reconcile` são o protocolo da ponte. Todos exigem `--plan`, `--approval`, `--approved-plan-sha` e `--apply`; sem `--apply`, só inspeccionam. `session-step` recebe `--event-file` ou `--event-base64` para eventos pequenos. Não usar o protocolo para enviar operações manuais.
+-
+-O registo fica em `plans/runs/<hash-canónico>/journal.json`. A barreira `plans/runs/.batch-apply-active.json` impede outra execução nesse directório. Usar uma única cópia operacional e um escritor; a barreira não coordena outros directórios/utilizadores.
+-
+-Antes de cada escrita, o motor confirma identidade, conteúdo, revisão, propriedades, tempo de edição, completude, comentários e, quando necessário, esquema. Persiste a intenção antes de devolver a operação. Uma leitura posterior confirma corpo/metadados exactos antes da operação seguinte. Estes controlos locais não são uma condição atómica no servidor: alterações humanas entre leitura e escrita continuam a ser um risco. Evitar escritores concorrentes durante um eventual piloto.
+-
+-Falha de transporte, erro do conector ou divergência posterior pára a execução. Não reiniciar, repetir o pedido, apagar a barreira/registo nem restaurar conteúdo antigo automaticamente. Pode haver operações anteriores concluídas; consultar `receipts` no registo.
+-
+-Para reconciliar, carregar a mesma ponte com a mesma aprovação/configuração, `apply:true` e `reconcileOnly:true`. Esta via só lê:
+-
+-| Resultado | Passo seguinte |
+-|---|---|
+-| `RECONCILED_STOPPED` | Estado novo confirmado; não repetir. Preparar/rever o restante trabalho. |
+-| `NOT_APPLIED_CONFIRMED` | Estado antigo confirmado; não repetir automaticamente. Preparar/rever novo plano. |
+-| `RECONCILIATION_CONFLICT` | Estado parcial ou alteração humana; preservar e investigar. A barreira permanece. |
+-| `UNCERTAIN` | Leitura inconclusiva; resolver antes de continuar. A barreira permanece. |
+-
+-Uma interrupção em `WRITE_PENDING` ou `VERIFY_PAGE` exige reconciliação. Nenhum resultado é retomado automaticamente. Normalização benigna de Markdown pode falhar a comparação estrita; investigar/rever, sem enfraquecer o controlo durante a execução. Um `.step.lock` residual só deve ser removido depois de confirmar ausência de processo activo e inspeccionar a fase persistida. Nunca apagar uma barreira de escrita incerta para forçar outra execução.
+-
+-## Evidência e limites
+-
+-`review-v3` contém código, testes, capturas, planos, diferenças, resultados e manifesto para revisão independente. Os congelamentos anteriores da V2 e do importador mantêm os hashes originais. `catalog_names.py` reutiliza apenas funções determinísticas de nomes do importador, sem o escritor.
+-
++# Lote de aventais V4
++
++Candidato executável para os PP 428, 429, 430, 467, 558, 612, 633, 661, 662, 786 e 840. Não aprovado para aplicação real. Não foi feita nenhuma escrita no Notion.
++
++O Python prepara os planos e mantém o estado; não se liga ao MCP. `session_bridge.js` corre numa sessão com ferramentas e utiliza o conector já disponível: `mcp__codex_apps__notion_fetch`, `mcp__codex_apps__notion_notion_get_comments` e `mcp__codex_apps__notion_notion_update_page`. Usa `exec_command` para o motor local e `apply_patch` para ficheiros temporários de resposta. Não necessita de credenciais adicionais nem de dependências externas. Requer Python 3.11 ou posterior; os testes da ponte usam Node.
++
++## Estado e preservação
++
++PP428 permanece sem alterações, incluindo a escolha «Não» e o motivo. É referência visual, não fonte das escolhas técnicas dos outros perfis. Old é reconstruído pelos grupos/células confirmados no Excel. PP633 fica com Peito 3 opções e Bolso 2. Os grupos partilhados mantêm-se partilhados; PP786 tem três locais e duas opções, e P55 contém espaços.
++
++Cada página mantém o próprio New, revisão/motivo, imagem, origem e metadados. O conteúdo anterior fica também no histórico. Notas repetidas são consolidadas por lado, local e texto; casos ambíguos são preservados. O histórico de texto não preserva, por si só, os comentários ligados a blocos.
++
++As propriedades são propostas separadamente, apenas nos campos/opções existentes. Propostas incompletas não originam operações aplicáveis. Não há alterações ao esquema. As operações de corpo substituem secções completas e únicas com `update_content`, `replace_all_matches:false`, ou acrescentam histórico no fim. Consultar o conteúdo integral das operações: uma secção pode conter tabelas, colunas e toggles. Nunca se substitui a página inteira.
++
++As onze leituras actuais omitem `truncated`, `unknown_block_count` e `unknown_block_ids`. As consultas de comentários dos PP428 e PP633 devolvem apenas `upgrade_required`; as restantes não foram repetidas após essa falha de capacidade. Isto não prova ausência de comentários ou sugestões. As dez páginas que necessitam de alterações estão bloqueadas.
++
++É necessária prova fiável de completude da região afectada ou um contrato documentado de edição que preserve conteúdo omitido, além de prova de preservação dos comentários e das ligações aos blocos. Não foi encontrado esse contrato. Actualmente, o motor admite apenas a via conservadora de exportação explicitamente completa e comentários/sugestões explicitamente vazios, sem marcadores de discussão. A via positiva foi testada com dados sintéticos, não observada no conector real. Uma via contratual alternativa exige alteração e nova revisão do código. Não acrescentar indicadores às capturas nem alterar a elegibilidade manualmente.
++
++## Preparar e rever
++
++Trabalhar no candidato ou numa cópia, nunca dentro de `review-v4`. Estes comandos são locais:
++
++```powershell
++Set-Location 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4'
++python -B batch_cli.py prepare --captures captures/current --workbook 'C:/Users/user/Desktop/CLEAN__Perfis de Personalização.xlsx' --evidence captures/current/excel-evidence.json --output plans/batch.json
++python -B batch_cli.py inspect --plan plans/batch.json
++python -B -m unittest discover -s tests
++node --test tests/test_session_bridge.cjs
++```
++
++`prepare` valida o hash do livro, a folha, códigos, títulos, células/grupos, Working Copy e fonte de dados. Gera `plans/batch.json` e diferenças/provas por página em `plans/reports/`, com propriedades propostas e dúvidas técnicas. Os mesmos ficheiros produzem o mesmo plano. As leituras actuais estão em `captures/current/`; as restantes capturas e os testes herdados são regressões históricas.
++
++Rever todas as operações e diferenças, grupos Excel, New específico, revisão/motivo, conteúdo exterior às secções, origem, histórico, imagens, notas e propriedades. O hash canónico apresentado por `inspect` não é o hash dos bytes do JSON. O hash da implementação inclui os oito ficheiros de execução. O manifesto contém também hashes dos bytes de todos os ficheiros do pacote.
++
++## Aprovação imutável e piloto
++
++1. Obter revisão independente do candidato e resolver falhas. A opinião de adequação da sessão Notion Manutenção não equivale a revisão integral.
++2. Resolver as provas externas em falta, obter novas capturas reais e preparar/rever um novo plano. Não inventar correcções para escolhas «por confirmar».
++3. Após autorização humana explícita, seleccionar uma única página elegível para piloto. PP428, sem escrita, não valida esse caminho. Rever o resultado antes de autorizar o resto do lote.
++4. Copiar `approval.example.json`. Preencher hash canónico do plano, hash da implementação, referência da revisão, códigos e IDs de operações autorizados. Só após autorização real usar `EXPLICIT_HUMAN_APPROVAL`. O exemplo é deliberadamente inválido.
++
++A aprovação inclui todas as operações de corpo das páginas seleccionadas. Operações de propriedades resolvidas são opcionais, com os respectivos IDs explícitos. Operações bloqueadas não podem ser aprovadas. Qualquer alteração ao plano/implementação exige nova revisão. O livro e a prova Excel têm caminhos absolutos e hashes verificados em execução; uma mudança de localização exige preparar/rever um novo plano.
++
++## Ponte na sessão
++
++A sessão precisa das cinco ferramentas acima. Carregar o código local revisto e confirmar o hash contra `review-v4/manifest-v3.json`, campo `files["source/session_bridge.js"]`. Exemplo para `functions.exec`, com o hash retirado do manifesto revisto:
++
++```javascript
++const loaded = await tools.exec_command({
++  cmd: "python -B 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4/review-v4/source/batch_cli.py' bridge-source",
++  max_output_tokens: 8000
++});
++if (loaded.exit_code !== 0) throw new Error('Falha ao carregar a ponte');
++const bridge = JSON.parse(loaded.output);
++if (bridge.sha256 !== '<SHA256 DO MANIFESTO REVISTO>') throw new Error('Ponte alterada');
++const run = eval(bridge.source);
++text(await run({
++  script: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4/review-v4/source/batch_cli.py',
++  plan: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4/plans/batch.json'
++}, tools));
++```
++
++Sem `apply:true`, só há inspecção local, sem conector nem criação de execução. O exemplo usa um plano de trabalho fora do congelamento. Para aplicação explicitamente autorizada, usar o novo plano realmente revisto e acrescentar à configuração:
++
++```javascript
++apply: true,
++approval: 'C:/caminho/autorizado/approval.json',
++approvedPlanSha: '<HASH CANÓNICO DO PLANO APROVADO>'
++```
++
++Isto não torna o plano actual elegível. A execução recusa páginas bloqueadas, dados sintéticos, hashes divergentes e aprovações incompletas. Não aplicar com base apenas neste documento.
++
++Respostas do conector passam por ficheiros JSON locais, com consultas HTTPS assinadas removidas. O caminho, não o corpo, vai na linha de comando, evitando o limite do Windows. Os ficheiros `<plano>.event-<nonce>.json` são eliminados após processamento; uma interrupção pode deixá-los para diagnóstico. Referências assinadas no corpo são recusadas. Capturas/registos continuam privados.
++
++## Resultado incerto e recuperação
++
++`session-start`, `session-step` e `session-reconcile` são o protocolo da ponte. Todos exigem `--plan`, `--approval`, `--approved-plan-sha` e `--apply`; sem `--apply`, só inspeccionam. `session-step` recebe `--event-file` ou `--event-base64` para eventos pequenos. Não usar o protocolo para enviar operações manuais.
++
++O registo fica em `plans/runs/<hash-canónico>/journal.json`. A barreira `plans/runs/.batch-apply-active.json` impede outra execução nesse directório. Usar uma única cópia operacional e um escritor; a barreira não coordena outros directórios/utilizadores.
++
++Antes de cada escrita, o motor confirma identidade, conteúdo, revisão, propriedades, tempo de edição, completude, comentários e, quando necessário, esquema. Persiste a intenção antes de devolver a operação. Uma leitura posterior confirma corpo/metadados exactos antes da operação seguinte. Estes controlos locais não são uma condição atómica no servidor: alterações humanas entre leitura e escrita continuam a ser um risco. Evitar escritores concorrentes durante um eventual piloto.
++
++Falha de transporte, erro do conector ou divergência posterior pára a execução. Não reiniciar, repetir o pedido, apagar a barreira/registo nem restaurar conteúdo antigo automaticamente. Pode haver operações anteriores concluídas; consultar `receipts` no registo.
++
++Para reconciliar, carregar a mesma ponte com a mesma aprovação/configuração, `apply:true` e `reconcileOnly:true`. Esta via só lê:
++
++| Resultado | Passo seguinte |
++|---|---|
++| `RECONCILED_STOPPED` | Estado novo confirmado; não repetir. Preparar/rever o restante trabalho. |
++| `NOT_APPLIED_CONFIRMED` | Estado antigo confirmado; não repetir automaticamente. Preparar/rever novo plano. |
++| `RECONCILIATION_CONFLICT` | Estado parcial ou alteração humana; preservar e investigar. A barreira permanece. |
++| `UNCERTAIN` | Leitura inconclusiva; resolver antes de continuar. A barreira permanece. |
++
++Uma interrupção em `WRITE_PENDING` ou `VERIFY_PAGE` exige reconciliação. Nenhum resultado é retomado automaticamente. Normalização benigna de Markdown pode falhar a comparação estrita; investigar/rever, sem enfraquecer o controlo durante a execução. Um `.step.lock` residual só deve ser removido depois de confirmar ausência de processo activo e inspeccionar a fase persistida. Nunca apagar uma barreira de escrita incerta para forçar outra execução.
++
++## Evidência e limites
++
++`review-v4` contém código, testes, capturas, planos, diferenças, resultados e manifesto para revisão independente. Os congelamentos anteriores da V2 e do importador mantêm os hashes originais. `catalog_names.py` reutiliza apenas funções determinísticas de nomes do importador, sem o escritor.
++
+ Os testes positivos usam conector simulado e completude sintética. Não demonstram capacidades reais do serviço, estabilidade dos blocos, preservação de comentários, apresentação visual ou comportamento autenticado. Não houve piloto, aplicação real, alteração Magento, commit, push ou publicação. Revisão independente, provas aplicáveis e autorização humana continuam em falta.
++
++## Correcções da V4 e teste isolado
++
++A validação de comentários compara as representações estruturada e textual quando ambas existem. Uma contradição, erro, formato desconhecido, omissão ou paginação impede a prova de ausência de comentários. Aceita apenas os formatos completos conhecidos: objecto estruturado, objecto JSON textual ou XML textual com estado explícito, e representações duplas JSON iguais. Indicadores XML e externos de sugestões também têm de concordar. Metadados adicionais desconhecidos são recusados até serem documentados e revistos.
++
++Os 20 ficheiros em `fixtures/historical/` estão incluídos no pacote e identificados no manifesto. São regressões históricas, nunca prova de estado actual. Copiar ou extrair `source/` para uma pasta de trabalho e executar os testes a partir daí. Os testes não requerem o Excel real nem pastas vizinhas. Apenas a preparação operacional do plano exige o livro e a prova Excel nos caminhos indicados. Os geradores de relatórios herdados não fazem parte da bateria nem da preparação V4; `tests/build_reports.py` conserva referências antigas a entradas nativas externas e não é um comando de verificação deste pacote.
++
++A V3 permanece imutável. Os resultados de testes da V3 no ambiente de desenvolvimento não demonstravam que o seu pacote incluía todas as entradas; a V4 documenta explicitamente os testes executados a partir de uma cópia isolada e de um arquivo extraído. Os bloqueios externos e a necessidade de revisão independente/piloto mantêm-se.
+--- a/batch_cli.py
++++ b/batch_cli.py
+@@ -45,7 +45,7 @@
+         for op in page['operations']:body,meta=a.apply_model(body,meta,op['payload'])
+         if body!=page['desired_body']:raise ValueError('Exact executable operations do not reproduce reviewed body')
+         pages.append(page)
+-    bundle={'version':3,'apply_allowed_now':False,'synthetic':any(c.get('capture',{}).get('synthetic') for c in inputs.values()),
++    bundle={'version':4,'apply_allowed_now':False,'synthetic':any(c.get('capture',{}).get('synthetic') for c in inputs.values()),
+             'working_copy':b.HOME,'collection':b.COLLECTION,'excel':proof,'evidence_path':str(Path(evidence).resolve()),
+             'schema_state':schema,'schema_state_sha256':r.digest(schema),'implementation_sha256':b.implementation_sha(),
+             'template_capture_sha256':r.digest(inputs['428']),'pages':pages}
+--- a/batch_plan.py
++++ b/batch_plan.py
+@@ -72,27 +72,38 @@
+ 
+ def comments_proof(response):
+     if response is None: return {'empty':False,'reason':'Comment discovery unavailable after initial capability failure'}
+-    if response.get('isError'): return {'empty':False,'reason':'Comment fetch failed'}
+-    value=response.get('structuredContent')
+-    raw=response.get('content',[])
+-    text=raw[0].get('text','') if len(raw)==1 else ''
+-    if value is None:
+-        try: value=json.loads(text)
+-        except ValueError: value={}
+-    if isinstance(value,dict) and value.get('suggested_edits_status')=='upgrade_required':
++    refused={'empty':False,'reason':'Conflicting, failed, unsupported or incomplete discussion response'}
++    if not isinstance(response,dict) or set(response)-{'content','structuredContent','isError'} or response.get('isError',False) is not False:
++        return refused
++    value=response.get('structuredContent');raw=response.get('content',[])
++    if not isinstance(raw,list): return refused
++    if raw:
++        if len(raw)!=1 or not isinstance(raw[0],dict) or set(raw[0])!={'type','text'} or raw[0]['type']!='text' or not isinstance(raw[0]['text'],str):
++            return refused
++        text=raw[0]['text']
++        try: displayed=json.loads(text)
++        except ValueError: displayed={'text':text}
++        if value is not None and value!=displayed: return refused
++        value=displayed
++    if not isinstance(value,dict) or set(value)-{'text','suggested_edits_status','isError'} or value.get('isError',False) is not False:
++        return refused
++    if value.get('suggested_edits_status')=='upgrade_required':
+         return {'empty':False,'reason':'Connector comment/suggested-edit discovery returns upgrade_required'}
+-    # Only documented explicit zero counts establish an empty discussion set.
+-    xml=value.get('text',text) if isinstance(value,dict) else text
++    xml=value.get('text')
++    if not isinstance(xml,str) or '<!' in xml or '<?' in xml: return refused
+     try:
+         import xml.etree.ElementTree as ET
+         root=ET.fromstring(xml)
+-        status=value.get('suggested_edits_status',root.get('suggested_edits_status'))
+-        empty=(root.tag=='discussions' and root.get('shown-count')=='0' and root.get('total-count')=='0' and status=='available'
+-               and not any('omitted' in e.tag or e.get('next-cursor') or e.get('omitted-truncated')=='true' or e.get('reactions-truncated')=='true' for e in root.iter())
+-               and not list(root))
++        statuses=[s for s in (value.get('suggested_edits_status'),root.get('suggested_edits_status')) if s is not None]
++        attributes={'shown-count','total-count','suggested_edits_status','omitted-truncated','reactions-truncated'}
++        empty=(root.tag=='discussions' and root.get('shown-count')=='0' and root.get('total-count')=='0'
++               and bool(statuses) and all(s=='available' for s in statuses)
++               and not set(root.attrib)-attributes
++               and all(root.get(k,'false')=='false' for k in ('omitted-truncated','reactions-truncated'))
++               and not list(root) and not (root.text or '').strip())
+         return {'empty':empty,'reason':None if empty else 'Complete empty comments/suggestions were not established'}
+-    except (ValueError,TypeError):
+-        return {'empty':False,'reason':'Unsupported or incomplete discussion response'}
++    except (ValueError,TypeError,ET.ParseError):
++        return refused
+ 
+ 
+ def old_rows(record):
+--- /dev/null
++++ b/fixtures/historical/after-PP429.json
+@@ -0,0 +1,63 @@
++{
++  "code": "429",
++  "title": "429 — AVENTAL grande sem bolso - 1F",
++  "url": "https://app.notion.com/p/137b6705ae1f82048ef1810070095cf0",
++  "pageLastEditedAt": "2026-11-17T13:50:15.616Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M21425\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n<callout icon=\"📝\">\n<b>Revisão do PP 429</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 429.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>",
++  "properties": {
++    "Código PP": "429",
++    "Estado": "A rever",
++    "Faces": [
++      "Face 1"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png"
++    ],
++    "Notas": "",
++    "Número de faces": 1,
++    "Número de locais possíveis": 1,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 4 cores",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²"
++    ],
++    "PP": "429 — AVENTAL grande sem bolso - 1F",
++    "SKU / referência do fornecedor": "Ex: M21425",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Bordado"
++    ],
++    "url": "https://app.notion.com/p/137b6705ae1f82048ef1810070095cf0",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png",
++      "expiry_time": "2026-11-17T13:56:03.604Z"
++    }
++  },
++  "validation": {
++    "code": "429",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP430.json
+@@ -0,0 +1,67 @@
++{
++  "code": "430",
++  "title": "430 — AVENTAL grande vários bolsos - 3F",
++  "url": "https://app.notion.com/p/3cab6705ae1f820dab27015d0d5e85ea",
++  "pageLastEditedAt": "2026-11-17T13:50:34.521Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M6295\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 430</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 430.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n\n<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M41:P51<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M41 | 430 |\n| N41 | AVENTAL grande vários bolsos - 3F |\n| O42 | Peito |\n| P42 | Estamparia - Até A4 - 4 Cores |\n| N43 | Ex: M6295 |\n| P43 | DTF - Até A5 (14,8x21,0 cm) |\n| P44 | DTF - Até A4 (21x29,7cm) |\n| N45 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P45 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P46 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P47 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O48 | Bolso Esquerdo |\n| P48 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O49 | Bolso Direito |\n| P49 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
++  "properties": {
++    "Código PP": "430",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 4 cores",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7"
++    ],
++    "PP": "430 — AVENTAL grande vários bolsos - 3F",
++    "SKU / referência do fornecedor": "Ex: M6295",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Bordado",
++      "Transfer"
++    ],
++    "url": "https://app.notion.com/p/3cab6705ae1f820dab27015d0d5e85ea",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png",
++      "expiry_time": "2026-11-17T13:56:03.107Z"
++    }
++  },
++  "validation": {
++    "code": "430",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP467.json
+@@ -0,0 +1,64 @@
++{
++  "code": "467",
++  "title": "467 — CONJ CRIANÇA Avental c\\ bolso Non-Woven + chapéu",
++  "url": "https://app.notion.com/p/f06b6705ae1f82ad871e01420cf67ecb",
++  "pageLastEditedAt": "2026-11-17T13:50:35.474Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://ee2b6705-ae1f-83d7-a458-81ecfb8a7db1/f9529b3b-6361-413b-a9d3-46d35d8ec584?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP467_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: M4754\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 467</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 467.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M95:P104<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M95 | 467 |\n| N95 | CONJ CRIANÇA Avental c\\\\ bolso Non-Woven + chapéu |\n| N96 | Ex: M4754 |\n| O96 | Peito |\n| P96 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P97 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P98 | DTF - Até A6 (10,5x14,8 cm) |\n| P99 | DTF - Até A5 (14,8x21,0 cm) |\n| O100 | Bolso |\n| P100 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P101 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O102 | Chapéu |\n| P102 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P103 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P104 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
++  "properties": {
++    "Código PP": "467",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso",
++      "Chapéu"
++    ],
++    "Família": [
++      "Conjuntos"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/f9529b3b-6361-413b-a9d3-46d35d8ec584/PP467_1.jpeg"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 57 cm² — 1 cor",
++      "Transfer — até 126 cm² — 1 cor",
++      "DTF — até A6",
++      "DTF — até A5",
++      "DTF — até A7",
++      "Transfer — até 12 cm² — 2 cores",
++      "Transfer — até 57 cm² — 2 cores"
++    ],
++    "PP": "467 — CONJ CRIANÇA Avental c\\\\ bolso Non-Woven + chapéu",
++    "SKU / referência do fornecedor": "Ex: M4754",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/f06b6705ae1f82ad871e01420cf67ecb",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/f9529b3b-6361-413b-a9d3-46d35d8ec584/PP467_1.jpeg",
++      "expiry_time": "2026-11-17T13:56:03.297Z"
++    }
++  },
++  "validation": {
++    "code": "467",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP558.json
+@@ -0,0 +1,58 @@
++{
++  "code": "558",
++  "title": "558 — AVENTAL C\\ 2 Bolsos",
++  "url": "https://app.notion.com/p/1dcb6705ae1f83c6bfb181c13c9a7d19",
++  "pageLastEditedAt": "2026-11-17T13:50:36.538Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://666b6705-ae1f-82eb-a2db-01c72ffb3c35/47c82593-bafe-48fd-8115-de7a86731733?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP558_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: R9123\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 558</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 558.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado no Excel; confirmar viabilidade |\n\n<toggle>\nPendências técnicas\n\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New\n- Bolso Direito: DTF A7 registado no Excel; confirmar viabilidade\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M105:P116<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M105 | 558 |\n| N105 | AVENTAL C\\\\ 2 Bolsos |\n| O106 | Bolso Esquerdo |\n| P106 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| N107 | Ex: R9123 |\n| O107 | Bolso Direito |\n| P107 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
++  "properties": {
++    "Código PP": "558",
++    "Estado": "A rever",
++    "Faces": [
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/47c82593-bafe-48fd-8115-de7a86731733/PP558_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 2,
++    "Opções de personalização": [
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7"
++    ],
++    "PP": "558 — AVENTAL C\\\\ 2 Bolsos",
++    "SKU / referência do fornecedor": "Ex: R9123",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/1dcb6705ae1f83c6bfb181c13c9a7d19",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/47c82593-bafe-48fd-8115-de7a86731733/PP558_1.png",
++      "expiry_time": "2026-11-17T13:56:03.182Z"
++    }
++  },
++  "validation": {
++    "code": "558",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP612.json
+@@ -0,0 +1,61 @@
++{
++  "code": "612",
++  "title": "612 — AVENTAL Criança c\\ bolso",
++  "url": "https://app.notion.com/p/e48b6705ae1f83ddafb501a2ea781406",
++  "pageLastEditedAt": "2026-11-17T13:50:37.413Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://c6bb6705-ae1f-8340-a445-010b33084d7a/bff4920e-df68-4f68-951a-2e445266ec1a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP612_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: A99826\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 612</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 612.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Proposta por face baseada no IMP → New e no histórico. Confirmar material, técnicas e áreas antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: confirmar área de referência |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Grupo original com locais diferentes: distribuição da proposta por confirmar\n- Peito: DTF A5: confirmar área de referência\n- Bolso: DTF A7: confirmar área de referência\n- Bolso: Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New\n- Bolso: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M117:P125<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M117 | 612 |\n| N117 | AVENTAL Criança c\\\\ bolso |\n| N118 | Ex: A99826 |\n| O118 | Peito |\n| P118 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P119 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P120 | DTF - Até A6 (10,5x14,8 cm) |\n| P121 | DTF - Até A5 (14,8x21,0 cm) |\n| O122 | Bolso |\n| P122 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P123 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
++  "properties": {
++    "Código PP": "612",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/bff4920e-df68-4f68-951a-2e445266ec1a/PP612_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 2,
++    "Opções de personalização": [
++      "Transfer — até 57 cm² — 2 cores",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A6",
++      "DTF — até A5",
++      "DTF — até A7"
++    ],
++    "PP": "612 — AVENTAL Criança c\\\\ bolso",
++    "SKU / referência do fornecedor": "Ex: A99826",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/e48b6705ae1f83ddafb501a2ea781406",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/bff4920e-df68-4f68-951a-2e445266ec1a/PP612_1.png",
++      "expiry_time": "2026-11-17T13:56:03.165Z"
++    }
++  },
++  "validation": {
++    "code": "612",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP633.json
+@@ -0,0 +1,62 @@
++{
++  "code": "633",
++  "title": "633 — AVENTAL Non-woven grande com bolso - 2F",
++  "url": "https://app.notion.com/p/f7bb6705ae1f826b848d819549bc3c03",
++  "pageLastEditedAt": "2026-11-17T13:50:38.403Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://a9cb6705-ae1f-83b6-9f4b-816c3a038e52/e75de3c8-39e8-4152-b3b1-4ea9b37c946c?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP633_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M3897\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 633</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 633.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M21:P32<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M21 | 633 |\n| N21 | AVENTAL Non-woven grande com bolso - 2F |\n| N22 | Aventais com bolso apx 100cm altura |\n| O22 | Peito |\n| P22 | Estamparia - Até A4 - 1 Cor |\n| N23 | Ex: M3897 |\n| P23 | DTF - Até A5 (14,8x21,0 cm) |\n| P24 | DTF - Até A4 (21x29,7cm) |\n| N25 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| O25 | Bolso |\n| P25 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P26 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
++  "properties": {
++    "Código PP": "633",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 2,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 1 cor",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Transfer — até 126 cm² — 1 cor",
++      "DTF — até A7"
++    ],
++    "PP": "633 — AVENTAL Non-woven grande com bolso - 2F",
++    "SKU / referência do fornecedor": "Ex: M3897",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Transfer"
++    ],
++    "url": "https://app.notion.com/p/f7bb6705ae1f826b848d819549bc3c03",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png",
++      "expiry_time": "2026-11-17T13:56:03.111Z"
++    }
++  },
++  "validation": {
++    "code": "633",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP661.json
+@@ -0,0 +1,58 @@
++{
++  "code": "661",
++  "title": "661 — AVENTAL grande Canhamo vários bolsos - 3F",
++  "url": "https://app.notion.com/p/4e5b6705ae1f835ea3fc81290bfd0d16",
++  "pageLastEditedAt": "2026-11-17T13:50:39.295Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Descrição e notas do perfil\n\nEx: MO6164\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Sem imagem ancorada dentro do bloco\n\n<callout icon=\"📝\">\n<b>Revisão do PP 661</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 661.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New\n- Bolso Esquerdo: Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New\n- Bolso Direito: DTF A7 registado na origem; confirmar técnica em cânhamo\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M63:P73<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M63 | 661 |\n| N63 | AVENTAL grande Canhamo vários bolsos - 3F |\n| O64 | Peito |\n| P64 | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm) |\n| N65 | Ex: MO6164 |\n| P65 | Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm) |\n| P66 | DTF - Até A5 (14,8x21,0 cm) |\n| N67 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P67 | DTF - Até A4 (21x29,7cm) |\n| P68 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P69 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P70 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O71 | Bolso Esquerdo |\n| P71 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| O72 | Bolso Direito |\n| P72 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
++  "properties": {
++    "Código PP": "661",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 280 cm² — 1 cor",
++      "Transfer — até 560 cm² — 1 cor",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²",
++      "Transfer — até 126 cm² — 1 cor",
++      "DTF — até A7"
++    ],
++    "PP": "661 — AVENTAL grande Canhamo vários bolsos - 3F",
++    "SKU / referência do fornecedor": "Ex: MO6164",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF",
++      "Bordado"
++    ],
++    "url": "https://app.notion.com/p/4e5b6705ae1f835ea3fc81290bfd0d16",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": null,
++  "validation": {
++    "code": "661",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP662.json
+@@ -0,0 +1,79 @@
++{
++  "code": "662",
++  "title": "662 — AVENTAL grande vários bolsos (3F) + Caixa",
++  "url": "https://app.notion.com/p/ddbb6705ae1f820cb837013a1864964a",
++  "pageLastEditedAt": "2026-11-17T13:50:40.263Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://150b6705-ae1f-8395-af57-81d591e234b2/182f8a51-2cf2-4893-ab80-7178b89130e2?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP662_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: MO6260\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 662</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 662.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M74:P94<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M74 | 662 |\n| N74 | AVENTAL grande vários bolsos (3F) + Caixa |\n| O75 | Peito |\n| P75 | Estamparia - Até A4 - 4 Cores |\n| N76 | Ex: MO6260 |\n| P76 | DTF - Até A5 (14,8x21,0 cm) |\n| P77 | DTF - Até A4 (21x29,7cm) |\n| N78 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P78 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P79 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P80 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O81 | Bolso Esquerdo |\n| P81 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O82 | Bolso Direito |\n| P82 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O83 | Caixa |\n| P83 | Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores |\n| P84 | Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores |\n| P85 | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) |\n| P86 | UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS) |\n| P87 | UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.) |\n| P88 | Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm) |\n| P89 | Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc) |\n| P90 | Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) |\n</toggle>",
++  "properties": {
++    "Código PP": "662",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito",
++      "Caixa"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/182f8a51-2cf2-4893-ab80-7178b89130e2/PP662_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 4,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 4 cores",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7",
++      "Serigrafia — até 120 cm² — 2 cores",
++      "Serigrafia — > 120 cm² — 2 cores",
++      "UV — até 100 cm²",
++      "UV — até 200 cm²",
++      "UV — até 300 cm²",
++      "Laser CO2 (Madeira) — até 120 cm²",
++      "Laser CO2 (Madeira) — até 250 cm²",
++      "Laser CO2 (Madeira) — até 360 cm²"
++    ],
++    "PP": "662 — AVENTAL grande vários bolsos (3F) + Caixa",
++    "SKU / referência do fornecedor": "Ex: MO6260",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Bordado",
++      "Transfer",
++      "Serigrafia",
++      "UV",
++      "Laser CO2"
++    ],
++    "url": "https://app.notion.com/p/ddbb6705ae1f820cb837013a1864964a",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/182f8a51-2cf2-4893-ab80-7178b89130e2/PP662_1.png",
++      "expiry_time": "2026-11-17T13:56:03.176Z"
++    }
++  },
++  "validation": {
++    "code": "662",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP786.json
+@@ -0,0 +1,59 @@
++{
++  "code": "786",
++  "title": "786 — AVENTAL 3 bolsos - 3F",
++  "url": "https://app.notion.com/p/d00b6705ae1f835cb7440191c545e56b",
++  "pageLastEditedAt": "2026-11-17T13:50:41.131Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M22096\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 786</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 786.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n<table header-row=\"true\">\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM52\n</td>\n<td>\n786\n</td>\n</tr>\n<tr>\n<td>\nN52\n</td>\n<td>\nAVENTAL 3 bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO53\n</td>\n<td>\nBolso Peito\n</td>\n</tr>\n<tr>\n<td>\nP53\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nN54\n</td>\n<td>\nEx: M22096 \n</td>\n</tr>\n<tr>\n<td>\nO54\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP54\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nO55\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n</table>\n</toggle>",
++  "properties": {
++    "Código PP": "786",
++    "Estado": "A rever",
++    "Faces": [
++      "Bolso Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7"
++    ],
++    "PP": "786 — AVENTAL 3 bolsos - 3F",
++    "SKU / referência do fornecedor": "Ex: M22096",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/d00b6705ae1f835cb7440191c545e56b",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png",
++      "expiry_time": "2026-11-17T13:56:03.549Z"
++    }
++  },
++  "validation": {
++    "code": "786",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/after-PP840.json
+@@ -0,0 +1,63 @@
++{
++  "code": "840",
++  "title": "840 — CONJ CRIANÇA Avental c\\ bolso + chapéu",
++  "url": "https://app.notion.com/p/bacb6705ae1f8296839b01585f6e5e8e",
++  "pageLastEditedAt": "2026-11-17T13:50:42.072Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "content": "## Imagens\n\n<image source=\"notion-file-block://e79b6705-ae1f-82b4-8b63-81d67914222e/a3b63178-46ef-4da8-a4c6-25dd96cffcf1?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP840_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: TTK884\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 840</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 840.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir de IMP → New e do perfil original. Validar áreas, técnicas e material antes de aprovar. Histórico original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: tamanho proposto por confirmar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação |\n\n<toggle>\nPendências técnicas\n\n- Atribuição de técnicas aos locais agrupados no Excel por confirmar\n- Peito: DTF A5: tamanho proposto por confirmar\n- Bolso: DTF A7: tamanho proposto por confirmar\n- Bolso: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n- Bolso: Confirmar área de impressão do bolso\n- Chapéu: DTF A7: tamanho proposto por confirmar\n- Chapéu: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M126:P369<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M126 | 840 |\n| N126 | CONJ CRIANÇA Avental c\\\\ bolso  + chapéu |\n| N127 | Ex: TTK884 |\n| O127 | Peito |\n| P127 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P128 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P129 | DTF - Até A6 (10,5x14,8 cm) |\n| P130 | DTF - Até A5 (14,8x21,0 cm) |\n| O131 | Bolso |\n| P131 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P132 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O133 | Chapéu |\n| P133 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P134 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P135 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
++  "properties": {
++    "Código PP": "840",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso",
++      "Chapéu"
++    ],
++    "Família": [
++      "Conjuntos"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 57 cm² — 2 cores",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A6",
++      "DTF — até A5",
++      "DTF — até A7",
++      "Transfer — até 12 cm² — 2 cores"
++    ],
++    "PP": "840 — CONJ CRIANÇA Avental c\\\\ bolso + chapéu",
++    "SKU / referência do fornecedor": "Ex: TTK884",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/bacb6705ae1f8296839b01585f6e5e8e",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg",
++      "expiry_time": "2026-11-17T13:56:03.136Z"
++    }
++  },
++  "validation": {
++    "code": "840",
++    "descExact": true,
++    "sourceExact": true,
++    "newExact": true,
++    "oldExact": true,
++    "afterReview": true,
++    "columns": 2
++  }
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP429.json
+@@ -0,0 +1,70 @@
++{
++  "code": "429",
++  "url": "https://app.notion.com/137b6705ae1f82048ef1810070095cf0",
++  "title": "429 — AVENTAL grande sem bolso - 1F",
++  "pageLastEditedAt": "2026-11-16T18:07:55.366Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n\n## Imagens\n\n<image source=\"notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M21425\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil"
++  ],
++  "imageRefs": [
++    "notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "429",
++    "Estado": "A rever",
++    "Faces": [
++      "Face 1"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png"
++    ],
++    "Notas": "",
++    "Número de faces": 1,
++    "Número de locais possíveis": 1,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 4 cores",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²"
++    ],
++    "PP": "429 — AVENTAL grande sem bolso - 1F",
++    "SKU / referência do fornecedor": "Ex: M21425",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Bordado"
++    ],
++    "url": "https://app.notion.com/p/137b6705ae1f82048ef1810070095cf0",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png",
++      "expiry_time": "2026-11-17T13:47:45.373Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP430.json
+@@ -0,0 +1,75 @@
++{
++  "code": "430",
++  "url": "https://app.notion.com/3cab6705ae1f820dab27015d0d5e85ea",
++  "title": "430 — AVENTAL grande vários bolsos - 3F",
++  "pageLastEditedAt": "2026-11-16T18:16:59.746Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n\n<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M6295\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M41:P51<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M41 | 430 |\n| N41 | AVENTAL grande vários bolsos - 3F |\n| O42 | Peito |\n| P42 | Estamparia - Até A4 - 4 Cores |\n| N43 | Ex: M6295 |\n| P43 | DTF - Até A5 (14,8x21,0 cm) |\n| P44 | DTF - Até A4 (21x29,7cm) |\n| N45 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P45 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P46 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P47 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O48 | Bolso Esquerdo |\n| P48 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O49 | Bolso Direito |\n| P49 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "430",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 4 cores",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7"
++    ],
++    "PP": "430 — AVENTAL grande vários bolsos - 3F",
++    "SKU / referência do fornecedor": "Ex: M6295",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Bordado",
++      "Transfer"
++    ],
++    "url": "https://app.notion.com/p/3cab6705ae1f820dab27015d0d5e85ea",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png",
++      "expiry_time": "2026-11-17T13:47:46.030Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP467.json
+@@ -0,0 +1,72 @@
++{
++  "code": "467",
++  "url": "https://app.notion.com/f06b6705ae1f82ad871e01420cf67ecb",
++  "title": "467 — CONJ CRIANÇA Avental c\\ bolso Non-Woven + chapéu",
++  "pageLastEditedAt": "2026-11-16T18:17:38.930Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://ee2b6705-ae1f-83d7-a458-81ecfb8a7db1/f9529b3b-6361-413b-a9d3-46d35d8ec584?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP467_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: M4754\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M95:P104<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M95 | 467 |\n| N95 | CONJ CRIANÇA Avental c\\\\ bolso Non-Woven + chapéu |\n| N96 | Ex: M4754 |\n| O96 | Peito |\n| P96 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P97 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P98 | DTF - Até A6 (10,5x14,8 cm) |\n| P99 | DTF - Até A5 (14,8x21,0 cm) |\n| O100 | Bolso |\n| P100 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P101 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O102 | Chapéu |\n| P102 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P103 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P104 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://ee2b6705-ae1f-83d7-a458-81ecfb8a7db1/f9529b3b-6361-413b-a9d3-46d35d8ec584?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP467_1.jpeg"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "467",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso",
++      "Chapéu"
++    ],
++    "Família": [
++      "Conjuntos"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/f9529b3b-6361-413b-a9d3-46d35d8ec584/PP467_1.jpeg"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 57 cm² — 1 cor",
++      "Transfer — até 126 cm² — 1 cor",
++      "DTF — até A6",
++      "DTF — até A5",
++      "DTF — até A7",
++      "Transfer — até 12 cm² — 2 cores",
++      "Transfer — até 57 cm² — 2 cores"
++    ],
++    "PP": "467 — CONJ CRIANÇA Avental c\\\\ bolso Non-Woven + chapéu",
++    "SKU / referência do fornecedor": "Ex: M4754",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/f06b6705ae1f82ad871e01420cf67ecb",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/f9529b3b-6361-413b-a9d3-46d35d8ec584/PP467_1.jpeg",
++      "expiry_time": "2026-11-17T13:47:45.200Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP558.json
+@@ -0,0 +1,66 @@
++{
++  "code": "558",
++  "url": "https://app.notion.com/1dcb6705ae1f83c6bfb181c13c9a7d19",
++  "title": "558 — AVENTAL C\\ 2 Bolsos",
++  "pageLastEditedAt": "2026-11-16T18:17:11.037Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado no Excel; confirmar viabilidade |\n\n<toggle>\nPendências técnicas\n\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New\n- Bolso Direito: DTF A7 registado no Excel; confirmar viabilidade\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://666b6705-ae1f-82eb-a2db-01c72ffb3c35/47c82593-bafe-48fd-8115-de7a86731733?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP558_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: R9123\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M105:P116<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M105 | 558 |\n| N105 | AVENTAL C\\\\ 2 Bolsos |\n| O106 | Bolso Esquerdo |\n| P106 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| N107 | Ex: R9123 |\n| O107 | Bolso Direito |\n| P107 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://666b6705-ae1f-82eb-a2db-01c72ffb3c35/47c82593-bafe-48fd-8115-de7a86731733?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP558_1.png"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "558",
++    "Estado": "A rever",
++    "Faces": [
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/47c82593-bafe-48fd-8115-de7a86731733/PP558_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 2,
++    "Opções de personalização": [
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7"
++    ],
++    "PP": "558 — AVENTAL C\\\\ 2 Bolsos",
++    "SKU / referência do fornecedor": "Ex: R9123",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/1dcb6705ae1f83c6bfb181c13c9a7d19",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/47c82593-bafe-48fd-8115-de7a86731733/PP558_1.png",
++      "expiry_time": "2026-11-17T13:47:45.164Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP612.json
+@@ -0,0 +1,69 @@
++{
++  "code": "612",
++  "url": "https://app.notion.com/e48b6705ae1f83ddafb501a2ea781406",
++  "title": "612 — AVENTAL Criança c\\ bolso",
++  "pageLastEditedAt": "2026-11-16T18:08:48.323Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Proposta por face baseada no IMP → New e no histórico. Confirmar material, técnicas e áreas antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: confirmar área de referência |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Grupo original com locais diferentes: distribuição da proposta por confirmar\n- Peito: DTF A5: confirmar área de referência\n- Bolso: DTF A7: confirmar área de referência\n- Bolso: Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New\n- Bolso: Confirmar área útil do bolso\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://c6bb6705-ae1f-8340-a445-010b33084d7a/bff4920e-df68-4f68-951a-2e445266ec1a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP612_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: A99826\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M117:P125<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M117 | 612 |\n| N117 | AVENTAL Criança c\\\\ bolso |\n| N118 | Ex: A99826 |\n| O118 | Peito |\n| P118 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P119 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P120 | DTF - Até A6 (10,5x14,8 cm) |\n| P121 | DTF - Até A5 (14,8x21,0 cm) |\n| O122 | Bolso |\n| P122 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P123 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://c6bb6705-ae1f-8340-a445-010b33084d7a/bff4920e-df68-4f68-951a-2e445266ec1a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP612_1.png"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "612",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/bff4920e-df68-4f68-951a-2e445266ec1a/PP612_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 2,
++    "Opções de personalização": [
++      "Transfer — até 57 cm² — 2 cores",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A6",
++      "DTF — até A5",
++      "DTF — até A7"
++    ],
++    "PP": "612 — AVENTAL Criança c\\\\ bolso",
++    "SKU / referência do fornecedor": "Ex: A99826",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/e48b6705ae1f83ddafb501a2ea781406",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/bff4920e-df68-4f68-951a-2e445266ec1a/PP612_1.png",
++      "expiry_time": "2026-11-17T13:47:45.490Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP633.json
+@@ -0,0 +1,70 @@
++{
++  "code": "633",
++  "url": "https://app.notion.com/f7bb6705ae1f826b848d819549bc3c03",
++  "title": "633 — AVENTAL Non-woven grande com bolso - 2F",
++  "pageLastEditedAt": "2026-11-16T18:17:47.225Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://a9cb6705-ae1f-83b6-9f4b-816c3a038e52/e75de3c8-39e8-4152-b3b1-4ea9b37c946c?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP633_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M3897\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M21:P32<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M21 | 633 |\n| N21 | AVENTAL Non-woven grande com bolso - 2F |\n| N22 | Aventais com bolso apx 100cm altura |\n| O22 | Peito |\n| P22 | Estamparia - Até A4 - 1 Cor |\n| N23 | Ex: M3897 |\n| P23 | DTF - Até A5 (14,8x21,0 cm) |\n| P24 | DTF - Até A4 (21x29,7cm) |\n| N25 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| O25 | Bolso |\n| P25 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P26 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://a9cb6705-ae1f-83b6-9f4b-816c3a038e52/e75de3c8-39e8-4152-b3b1-4ea9b37c946c?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP633_1.png"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "633",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 2,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 1 cor",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Transfer — até 126 cm² — 1 cor",
++      "DTF — até A7"
++    ],
++    "PP": "633 — AVENTAL Non-woven grande com bolso - 2F",
++    "SKU / referência do fornecedor": "Ex: M3897",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Transfer"
++    ],
++    "url": "https://app.notion.com/p/f7bb6705ae1f826b848d819549bc3c03",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png",
++      "expiry_time": "2026-11-17T13:47:45.205Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP661.json
+@@ -0,0 +1,63 @@
++{
++  "code": "661",
++  "url": "https://app.notion.com/4e5b6705ae1f835ea3fc81290bfd0d16",
++  "title": "661 — AVENTAL grande Canhamo vários bolsos - 3F",
++  "pageLastEditedAt": "2026-11-16T18:17:20.428Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New\n- Bolso Esquerdo: Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New\n- Bolso Direito: DTF A7 registado na origem; confirmar técnica em cânhamo\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Descrição e notas do perfil\n\nEx: MO6164\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Sem imagem ancorada dentro do bloco\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M63:P73<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M63 | 661 |\n| N63 | AVENTAL grande Canhamo vários bolsos - 3F |\n| O64 | Peito |\n| P64 | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm) |\n| N65 | Ex: MO6164 |\n| P65 | Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm) |\n| P66 | DTF - Até A5 (14,8x21,0 cm) |\n| N67 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P67 | DTF - Até A4 (21x29,7cm) |\n| P68 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P69 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P70 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O71 | Bolso Esquerdo |\n| P71 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| O72 | Bolso Direito |\n| P72 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [],
++  "discussions": null,
++  "properties": {
++    "Código PP": "661",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 280 cm² — 1 cor",
++      "Transfer — até 560 cm² — 1 cor",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²",
++      "Transfer — até 126 cm² — 1 cor",
++      "DTF — até A7"
++    ],
++    "PP": "661 — AVENTAL grande Canhamo vários bolsos - 3F",
++    "SKU / referência do fornecedor": "Ex: MO6164",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF",
++      "Bordado"
++    ],
++    "url": "https://app.notion.com/p/4e5b6705ae1f835ea3fc81290bfd0d16",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": null,
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP662.json
+@@ -0,0 +1,87 @@
++{
++  "code": "662",
++  "url": "https://app.notion.com/ddbb6705ae1f820cb837013a1864964a",
++  "title": "662 — AVENTAL grande vários bolsos (3F) + Caixa",
++  "pageLastEditedAt": "2026-11-16T18:17:29.716Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://150b6705-ae1f-8395-af57-81d591e234b2/182f8a51-2cf2-4893-ab80-7178b89130e2?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP662_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: MO6260\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M74:P94<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M74 | 662 |\n| N74 | AVENTAL grande vários bolsos (3F) + Caixa |\n| O75 | Peito |\n| P75 | Estamparia - Até A4 - 4 Cores |\n| N76 | Ex: MO6260 |\n| P76 | DTF - Até A5 (14,8x21,0 cm) |\n| P77 | DTF - Até A4 (21x29,7cm) |\n| N78 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P78 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P79 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P80 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O81 | Bolso Esquerdo |\n| P81 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O82 | Bolso Direito |\n| P82 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O83 | Caixa |\n| P83 | Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores |\n| P84 | Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores |\n| P85 | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) |\n| P86 | UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS) |\n| P87 | UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.) |\n| P88 | Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm) |\n| P89 | Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc) |\n| P90 | Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://150b6705-ae1f-8395-af57-81d591e234b2/182f8a51-2cf2-4893-ab80-7178b89130e2?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP662_1.png"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "662",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito",
++      "Caixa"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/182f8a51-2cf2-4893-ab80-7178b89130e2/PP662_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 4,
++    "Opções de personalização": [
++      "Estamparia — até A4 — 4 cores",
++      "DTF — até A5",
++      "DTF — até A4",
++      "Bordado — até 120 cm²",
++      "Bordado — até 240 cm²",
++      "Bordado — até 360 cm²",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7",
++      "Serigrafia — até 120 cm² — 2 cores",
++      "Serigrafia — > 120 cm² — 2 cores",
++      "UV — até 100 cm²",
++      "UV — até 200 cm²",
++      "UV — até 300 cm²",
++      "Laser CO2 (Madeira) — até 120 cm²",
++      "Laser CO2 (Madeira) — até 250 cm²",
++      "Laser CO2 (Madeira) — até 360 cm²"
++    ],
++    "PP": "662 — AVENTAL grande vários bolsos (3F) + Caixa",
++    "SKU / referência do fornecedor": "Ex: MO6260",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Estamparia",
++      "DTF",
++      "Bordado",
++      "Transfer",
++      "Serigrafia",
++      "UV",
++      "Laser CO2"
++    ],
++    "url": "https://app.notion.com/p/ddbb6705ae1f820cb837013a1864964a",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/182f8a51-2cf2-4893-ab80-7178b89130e2/PP662_1.png",
++      "expiry_time": "2026-11-17T13:47:45.159Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP786.json
+@@ -0,0 +1,67 @@
++{
++  "code": "786",
++  "url": "https://app.notion.com/d00b6705ae1f835cb7440191c545e56b",
++  "title": "786 — AVENTAL 3 bolsos - 3F",
++  "pageLastEditedAt": "2026-11-16T18:10:59.101Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M22096\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n<table header-row=\"true\">\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM52\n</td>\n<td>\n786\n</td>\n</tr>\n<tr>\n<td>\nN52\n</td>\n<td>\nAVENTAL 3 bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO53\n</td>\n<td>\nBolso Peito\n</td>\n</tr>\n<tr>\n<td>\nP53\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nN54\n</td>\n<td>\nEx: M22096 \n</td>\n</tr>\n<tr>\n<td>\nO54\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP54\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nO55\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n</table>\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "786",
++    "Estado": "A rever",
++    "Faces": [
++      "Bolso Peito",
++      "Bolso Esquerdo",
++      "Bolso Direito"
++    ],
++    "Família": [
++      "Aventais"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A7"
++    ],
++    "PP": "786 — AVENTAL 3 bolsos - 3F",
++    "SKU / referência do fornecedor": "Ex: M22096",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/d00b6705ae1f835cb7440191c545e56b",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png",
++      "expiry_time": "2026-11-17T13:47:45.819Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- /dev/null
++++ b/fixtures/historical/before-PP840.json
+@@ -0,0 +1,71 @@
++{
++  "code": "840",
++  "url": "https://app.notion.com/bacb6705ae1f8296839b01585f6e5e8e",
++  "title": "840 — CONJ CRIANÇA Avental c\\ bolso + chapéu",
++  "pageLastEditedAt": "2026-11-16T18:11:58.117Z",
++  "verification": {
++    "state": "unverified"
++  },
++  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
++  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir de IMP → New e do perfil original. Validar áreas, técnicas e material antes de aprovar. Histórico original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: tamanho proposto por confirmar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação |\n\n<toggle>\nPendências técnicas\n\n- Atribuição de técnicas aos locais agrupados no Excel por confirmar\n- Peito: DTF A5: tamanho proposto por confirmar\n- Bolso: DTF A7: tamanho proposto por confirmar\n- Bolso: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n- Bolso: Confirmar área de impressão do bolso\n- Chapéu: DTF A7: tamanho proposto por confirmar\n- Chapéu: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n## Imagens\n\n<image source=\"notion-file-block://e79b6705-ae1f-82b4-8b63-81d67914222e/a3b63178-46ef-4da8-a4c6-25dd96cffcf1?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP840_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: TTK884\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M126:P369<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M126 | 840 |\n| N126 | CONJ CRIANÇA Avental c\\\\ bolso  + chapéu |\n| N127 | Ex: TTK884 |\n| O127 | Peito |\n| P127 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P128 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P129 | DTF - Até A6 (10,5x14,8 cm) |\n| P130 | DTF - Até A5 (14,8x21,0 cm) |\n| O131 | Bolso |\n| P131 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P132 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O133 | Chapéu |\n| P133 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P134 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P135 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n</content>",
++  "headings": [
++    "## Locais e personalização — nova configuração (proposta)",
++    "## Antes — tabela original integral",
++    "### Locais e personalização",
++    "## Imagens",
++    "## Descrição e notas do perfil",
++    "## Notas"
++  ],
++  "imageRefs": [
++    "notion-file-block://e79b6705-ae1f-82b4-8b63-81d67914222e/a3b63178-46ef-4da8-a4c6-25dd96cffcf1?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP840_1.jpeg"
++  ],
++  "discussions": null,
++  "properties": {
++    "Código PP": "840",
++    "Estado": "A rever",
++    "Faces": [
++      "Peito",
++      "Bolso",
++      "Chapéu"
++    ],
++    "Família": [
++      "Conjuntos"
++    ],
++    "Imagem principal": [
++      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg"
++    ],
++    "Notas": "",
++    "Número de locais possíveis": 3,
++    "Opções de personalização": [
++      "Transfer — até 57 cm² — 2 cores",
++      "Transfer — até 126 cm² — 2 cores",
++      "DTF — até A6",
++      "DTF — até A5",
++      "DTF — até A7",
++      "Transfer — até 12 cm² — 2 cores"
++    ],
++    "PP": "840 — CONJ CRIANÇA Avental c\\\\ bolso + chapéu",
++    "SKU / referência do fornecedor": "Ex: TTK884",
++    "Tipos de artigo compatíveis": [
++      "Avental"
++    ],
++    "Técnicas": [
++      "Transfer",
++      "DTF"
++    ],
++    "url": "https://app.notion.com/p/bacb6705ae1f8296839b01585f6e5e8e",
++    "Área": "Brinde têxtil"
++  },
++  "icon": null,
++  "cover": {
++    "type": "file",
++    "file": {
++      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg",
++      "expiry_time": "2026-11-17T13:47:45.165Z"
++    }
++  },
++  "metadata": {
++    "type": "page"
++  },
++  "fetchError": false
++}
+--- a/tests/test_batch.py
++++ b/tests/test_batch.py
+@@ -243,5 +243,15 @@
+             response={'structuredContent':{'suggested_edits_status':'available','text':xml}}
+             self.assertFalse(b.comments_proof(response)['empty'])
+ 
++    def test_conflicting_comment_views_block_the_executor_without_writing(self):
++        for reverse in (False,True):
++            connector=self.connector()
++            structured=EMPTY['structuredContent'];unavailable={'suggested_edits_status':'upgrade_required'}
++            first,second=(unavailable,structured) if reverse else (structured,unavailable)
++            connector.comments={'structuredContent':first,'content':[{'type':'text','text':json.dumps(second)}]}
++            session=a.FileSession(self.work/'runs'/str(reverse),self.bundle,self.approval(),fake=True)
++            self.assertEqual(drive(session,connector,session.start())['status'],'BLOCKED')
++            self.assertEqual(connector.writes,[])
++
+ 
+ if __name__=='__main__':unittest.main()
+--- /dev/null
++++ b/tests/test_comments.py
+@@ -0,0 +1,57 @@
++import copy
++import json
++from pathlib import Path
++import sys
++import unittest
++
++sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
++import batch_plan as b
++
++EMPTY={'suggested_edits_status':'available','text':'<discussions shown-count="0" total-count="0" />'}
++UNAVAILABLE={'suggested_edits_status':'upgrade_required'}
++
++
++def dual(structured,displayed):
++    return {'structuredContent':structured,'content':[{'type':'text','text':json.dumps(displayed)}],'isError':False}
++
++
++class CommentProofTests(unittest.TestCase):
++    def test_exact_conflict_is_refused_in_both_directions(self):
++        for first,second in [(EMPTY,UNAVAILABLE),(UNAVAILABLE,EMPTY)]:
++            with self.subTest(structured=first):self.assertIs(b.comments_proof(dual(first,second))['empty'],False)
++
++    def test_equal_and_single_well_formed_complete_empty_representations(self):
++        xml='<discussions shown-count="0" total-count="0" suggested_edits_status="available" />'
++        for response in [dual(EMPTY,copy.deepcopy(EMPTY)),{'structuredContent':EMPTY},
++                         {'content':[{'type':'text','text':json.dumps(EMPTY)}]},
++                         {'content':[{'type':'text','text':xml}]}]:
++            with self.subTest(response=response):self.assertIs(b.comments_proof(response)['empty'],True)
++
++    def test_tool_and_embedded_errors_unknown_or_incomplete_shapes_fail_closed(self):
++        for response in [None,[],{}, {'content':None},dual(UNAVAILABLE,UNAVAILABLE),
++                         {**dual(EMPTY,EMPTY),'isError':True},
++                         {**dual(EMPTY,EMPTY),'error':'failed'},
++                         {'structuredContent':{**EMPTY,'isError':True}},
++                         {'structuredContent':{**EMPTY,'error':'failed'}},
++                         {'structuredContent':{**EMPTY,'has_more':True}},
++                         {'structuredContent':{**EMPTY,'unknown_block_count':0}},
++                         {'structuredContent':{'text':EMPTY['text']}},
++                         {'structuredContent':EMPTY,'content':[{'type':'image','text':json.dumps(EMPTY)}]}]:
++            with self.subTest(response=response):self.assertIs(b.comments_proof(response)['empty'],False)
++
++    def test_xml_pagination_omissions_errors_and_unknown_content_are_refused(self):
++        for xml in [
++            '<discussions shown-count="0" total-count="1" />',
++            '<discussions shown-count="0" total-count="0" next-cursor="next" />',
++            '<discussions shown-count="0" total-count="0" has_more="false" />',
++            '<discussions shown-count="0" total-count="0" omitted-truncated="true" />',
++            '<discussions shown-count="0" total-count="0" suggested_edits_status="upgrade_required" />',
++            '<discussions shown-count="0" total-count="0">unknown</discussions>',
++            '<discussions shown-count="0" total-count="0"><!-- omitted --></discussions>',
++            '<discussions shown-count="0" total-count="0"><error /></discussions>',
++            '<discussions shown-count="0" total-count="0">',
++        ]:
++            with self.subTest(xml=xml):self.assertIs(b.comments_proof({'structuredContent':{**EMPTY,'text':xml}})['empty'],False)
++
++
++if __name__=='__main__':unittest.main()

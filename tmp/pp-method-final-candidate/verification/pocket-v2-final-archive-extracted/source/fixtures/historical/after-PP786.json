@@ -1,0 +1,59 @@
+{
+  "code": "786",
+  "title": "786 — AVENTAL 3 bolsos - 3F",
+  "url": "https://app.notion.com/p/d00b6705ae1f835cb7440191c545e56b",
+  "pageLastEditedAt": "2026-11-17T13:50:41.131Z",
+  "verification": {
+    "state": "unverified"
+  },
+  "content": "## Imagens\n\n<image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M22096\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 786</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 786.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n<table header-row=\"true\">\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM52\n</td>\n<td>\n786\n</td>\n</tr>\n<tr>\n<td>\nN52\n</td>\n<td>\nAVENTAL 3 bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO53\n</td>\n<td>\nBolso Peito\n</td>\n</tr>\n<tr>\n<td>\nP53\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nN54\n</td>\n<td>\nEx: M22096 \n</td>\n</tr>\n<tr>\n<td>\nO54\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP54\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nO55\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n</table>\n</toggle>",
+  "properties": {
+    "Código PP": "786",
+    "Estado": "A rever",
+    "Faces": [
+      "Bolso Peito",
+      "Bolso Esquerdo",
+      "Bolso Direito"
+    ],
+    "Família": [
+      "Aventais"
+    ],
+    "Imagem principal": [
+      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png"
+    ],
+    "Notas": "",
+    "Número de locais possíveis": 3,
+    "Opções de personalização": [
+      "Transfer — até 126 cm² — 2 cores",
+      "DTF — até A7"
+    ],
+    "PP": "786 — AVENTAL 3 bolsos - 3F",
+    "SKU / referência do fornecedor": "Ex: M22096",
+    "Tipos de artigo compatíveis": [
+      "Avental"
+    ],
+    "Técnicas": [
+      "Transfer",
+      "DTF"
+    ],
+    "url": "https://app.notion.com/p/d00b6705ae1f835cb7440191c545e56b",
+    "Área": "Brinde têxtil"
+  },
+  "icon": null,
+  "cover": {
+    "type": "file",
+    "file": {
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png",
+      "expiry_time": "2026-11-17T13:56:03.549Z"
+    }
+  },
+  "validation": {
+    "code": "786",
+    "descExact": true,
+    "sourceExact": true,
+    "newExact": true,
+    "oldExact": true,
+    "afterReview": true,
+    "columns": 2
+  }
+}

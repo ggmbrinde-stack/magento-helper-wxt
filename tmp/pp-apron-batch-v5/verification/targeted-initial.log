@@ -1,0 +1,9 @@
+test_missing_global_metadata_leaf_contract_and_excluded_native_comments (test_targeted.TargetedTests.test_missing_global_metadata_leaf_contract_and_excluded_native_comments)
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-apron-batch-v5\tests\test_targeted.py", line 45, in test_missing_global_metadata_leaf_contract_and_excluded_native_comments
+    self.assertEqual(result['status'],'COMPLETE');self.assertEqual(len(connector.writes),1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'UNCERTAIN' != 'COMPLETE'
+- UNCERTAIN
++ COMPLETE
+

@@ -1,0 +1,386 @@
+{
+  "synthetic_fixture": true,
+  "code": "662",
+  "page": {
+    "id": "ddbb6705ae1f820cb837013a1864964a",
+    "properties": {
+      "Código PP": "662",
+      "Estado": "A rever",
+      "Human": "No and original reason"
+    },
+    "cover": {
+      "type": "file",
+      "file": {
+        "url": "original-cover"
+      }
+    },
+    "icon": null
+  },
+  "coverage": {
+    "complete": true,
+    "properties_complete": true,
+    "truncated": false,
+    "has_more": false,
+    "omitted_children": [],
+    "unsupported_blocks": []
+  },
+  "blocks": [
+    {
+      "object": "block",
+      "id": "130731bd-4b22-5422-a642-bcea4f2abc88",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Locais e personalização: nova configuração (proposta)"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "10ae78d6-0b9f-5217-be38-2dfa165deb45",
+      "type": "callout",
+      "callout": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Old proposal uncertainty: do not remove"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "f1e879c2-e847-5291-b83e-5bef1b3b349d",
+      "type": "table",
+      "table": {
+        "rich_text": [],
+        "table_width": 3,
+        "has_column_header": true,
+        "has_row_header": false,
+        "children": [
+          {
+            "object": "block",
+            "id": "1fffb7eb-c60b-5270-aef1-5224d2e8e080",
+            "type": "table_row",
+            "table_row": {
+              "rich_text": [],
+              "cells": [
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Face / local"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Opções New"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Notas"
+                    }
+                  }
+                ]
+              ]
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "8b22caf6-cb94-58da-9c32-77e1a276a86c",
+            "type": "table_row",
+            "table_row": {
+              "rich_text": [],
+              "cells": [
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Peito\nBolso\nCaixa"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "New: original DTF A4\nunknown option unchanged"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Peito\nBolso\nCaixa: exact technical reason"
+                    }
+                  }
+                ]
+              ]
+            },
+            "has_children": false
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    },
+    {
+      "object": "block",
+      "id": "b165ec7a-9a25-52f1-a50d-1eb20cf9244c",
+      "type": "toggle",
+      "toggle": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Pendências técnicas"
+            }
+          }
+        ],
+        "children": [
+          {
+            "object": "block",
+            "id": "812182bf-59b4-5752-85db-e031dc7b89c5",
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Exact existing location note: Bolso"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    },
+    {
+      "object": "block",
+      "id": "e38aa56e-d5ec-5596-a16f-e7661a642295",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Antes da alteração: tabela original integral"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "c2f30b14-4d6f-566f-983e-4cc303dfdad1",
+      "type": "table",
+      "table": {
+        "rich_text": [],
+        "table_width": 3,
+        "has_column_header": true,
+        "has_row_header": false,
+        "children": [
+          {
+            "object": "block",
+            "id": "57a65d9e-7f33-5af0-9146-37ba1c7c1534",
+            "type": "table_row",
+            "table_row": {
+              "rich_text": [],
+              "cells": [
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Face / local"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Opções Old"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Notas"
+                    }
+                  }
+                ]
+              ]
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "c25dc6eb-e62c-5d40-8fef-b25c81a6fc67",
+            "type": "table_row",
+            "table_row": {
+              "rich_text": [],
+              "cells": [
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Peito\nBolso\nCaixa"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Old: original DTF A4\nunknown option unchanged"
+                    }
+                  }
+                ],
+                [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Peito\nBolso\nCaixa: exact technical reason"
+                    }
+                  }
+                ]
+              ]
+            },
+            "has_children": false
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    },
+    {
+      "object": "block",
+      "id": "d48f1f1b-811d-5c84-8f23-0f85ccdce53d",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Imagens"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "a89ee071-cd64-594d-bada-2ab9a43dcb7a",
+      "type": "image",
+      "image": {
+        "rich_text": [],
+        "type": "file",
+        "file": {
+          "url": "notion-file-block://stable-original-662"
+        },
+        "caption": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Original caption"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "f8aab390-b10d-5083-b281-f14513107969",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Descrição e notas do perfil"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "0b21d3d6-6033-511a-9a9b-10a6394c90b1",
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Original description / Ex: REF-662"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "63f7c5a7-e5d4-5176-90ee-58e73c498891",
+      "type": "toggle",
+      "toggle": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Fonte e original do Excel"
+            }
+          }
+        ],
+        "children": [
+          {
+            "object": "block",
+            "id": "cf7c49f4-c158-56a8-8bd5-ce10c2480e9c",
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Full source cells, original notes and history 662"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    }
+  ]
+}

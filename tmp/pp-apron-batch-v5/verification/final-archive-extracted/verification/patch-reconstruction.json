@@ -1,0 +1,14 @@
+{
+  "exact": true,
+  "command": [
+    "git",
+    "-c",
+    "core.autocrlf=false",
+    "apply",
+    "--unsafe-paths",
+    "--directory=tmp/pp-apron-batch-v5/verification/patch-reconstructed",
+    "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-apron-batch-v5\\review-v5\\batch-v5-against-v4.patch"
+  ],
+  "source_files": 69,
+  "patch_sha256": "4d9f182400fd9d3d163e88e0b0d4590ad1ba36c0581c4a7dc46d8d57d034e0ab"
+}

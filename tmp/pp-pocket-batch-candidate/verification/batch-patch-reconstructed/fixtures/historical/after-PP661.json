@@ -1,0 +1,58 @@
+{
+  "code": "661",
+  "title": "661 — AVENTAL grande Canhamo vários bolsos - 3F",
+  "url": "https://app.notion.com/p/4e5b6705ae1f835ea3fc81290bfd0d16",
+  "pageLastEditedAt": "2026-11-17T13:50:39.295Z",
+  "verification": {
+    "state": "unverified"
+  },
+  "content": "## Descrição e notas do perfil\n\nEx: MO6164\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Sem imagem ancorada dentro do bloco\n\n<callout icon=\"📝\">\n<b>Revisão do PP 661</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 661.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New\n- Bolso Esquerdo: Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New\n- Bolso Direito: DTF A7 registado na origem; confirmar técnica em cânhamo\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M63:P73<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M63 | 661 |\n| N63 | AVENTAL grande Canhamo vários bolsos - 3F |\n| O64 | Peito |\n| P64 | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm) |\n| N65 | Ex: MO6164 |\n| P65 | Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm) |\n| P66 | DTF - Até A5 (14,8x21,0 cm) |\n| N67 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P67 | DTF - Até A4 (21x29,7cm) |\n| P68 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P69 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P70 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O71 | Bolso Esquerdo |\n| P71 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| O72 | Bolso Direito |\n| P72 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "properties": {
+    "Código PP": "661",
+    "Estado": "A rever",
+    "Faces": [
+      "Peito",
+      "Bolso Esquerdo",
+      "Bolso Direito"
+    ],
+    "Família": [
+      "Aventais"
+    ],
+    "Notas": "",
+    "Número de locais possíveis": 3,
+    "Opções de personalização": [
+      "Transfer — até 280 cm² — 1 cor",
+      "Transfer — até 560 cm² — 1 cor",
+      "DTF — até A5",
+      "DTF — até A4",
+      "Bordado — até 120 cm²",
+      "Bordado — até 240 cm²",
+      "Bordado — até 360 cm²",
+      "Transfer — até 126 cm² — 1 cor",
+      "DTF — até A7"
+    ],
+    "PP": "661 — AVENTAL grande Canhamo vários bolsos - 3F",
+    "SKU / referência do fornecedor": "Ex: MO6164",
+    "Tipos de artigo compatíveis": [
+      "Avental"
+    ],
+    "Técnicas": [
+      "Transfer",
+      "DTF",
+      "Bordado"
+    ],
+    "url": "https://app.notion.com/p/4e5b6705ae1f835ea3fc81290bfd0d16",
+    "Área": "Brinde têxtil"
+  },
+  "icon": null,
+  "cover": null,
+  "validation": {
+    "code": "661",
+    "descExact": true,
+    "sourceExact": true,
+    "newExact": true,
+    "oldExact": true,
+    "afterReview": true,
+    "columns": 2
+  }
+}

@@ -1,0 +1,419 @@
+{
+  "approved_state": "A rever; own Yes/No and why unchanged",
+  "body_protected_snapshot": [
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "c5e1925793ebbb443a33076ad7189ed797f356311b5f1fc0dc3fd912d7184c26"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "18ba3fe6c30944eb27de603092fcaaf7518b217766f0f6007831da38de80412e"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "3c800ebeab836f16aa69e3e5bd03f0e356b7d7f6cb1eafb1d01c134a2406c42d"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "callout:Revisão do PP 661"
+      ],
+      "sha256": "f7e950bd860615bfabfb24cbdfea245078e1f158cc1910a3489a33769d9ee32c"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 661"
+      ],
+      "sha256": "fb55aa92de29cc8234b0b42a965bbc0aef238191940f156b3801ae19bf613d53"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 661"
+      ],
+      "sha256": "d845f2773c4b1f1bae45a3305cb40332beac8ea361d57e815727bdfd181e2f28"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 661"
+      ],
+      "sha256": "16b6c27b8b93121ea864fd7d3f1b8759601746068c281286af685af156dec01a"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 661"
+      ],
+      "sha256": "33b7e39bb01962ec14ed89628b3f62ee5ba9f396bf772b6c0f56260c3576d3f9"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 661"
+      ],
+      "sha256": "973196cd0e67f8bc2530873e61852b1782d7d525234720bcce67c45277b1a908"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:0"
+      ],
+      "sha256": "1b69466d80163a8b86590c6f565a5979d73a6119442a8f7c4edef6e6e42c30e6"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação."
+      ],
+      "sha256": "9a4a3eff581cf44bcb810b87814291101d7e8cd9c82e14d7dd033820182091cd"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação."
+      ],
+      "sha256": "9d1bf78c9dcd79c29ad8032248717ae2532c8244cbd3e82c39189e01687bbf98"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Peito:2"
+      ],
+      "sha256": "38c17725380a9145105b1f5d91d3ec8aee3d8d51fa66753de90b3424c3034ebf"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Bolso Esquerdo:2"
+      ],
+      "sha256": "dd91ce2ec4e9350bccaf046bd3e54558feebde145d6535fce92636e828972b03"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Bolso Direito:2"
+      ],
+      "sha256": "16723360a0df9bb252f47f40c8c5f65517bbd165312d14553c6b791c5cba1163"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "9b166df5a539d5ea21e8ab1382561f964e794e4dbefb52443a3d5a187a7c98d2"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "6907badc684577c99405e175a44766e5ea630092ff3938f6ef4fddefcb16f7e5"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "54c8b06657352df16979c656bbb3dbf6739ade4da155a65689a30c7dd398921e"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "a64603c5ba8e3284d5fc14cf979d40490cef0c39587b4fc005af3344329493be"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:1",
+        "table-note:Peito<br />Bolso Esquerdo<br />Bolso Direito:2"
+      ],
+      "sha256": "c230272f23481e32a15d2ae7454a8b43271b0d55ea7b0a26a1d52ca6510c55b5"
+    },
+    {
+      "kind": "toggle",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "ebdf65d1d4b0f9458c4500969703d0f029e1e8562e01e825e9059cfc3d0463ea"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "433226947e7cf0d66612997641f78c67a53cbd15ccfa422459bdb629c820982c"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "67fb54443c8a74df8783fb4c8fdade6aaa32580952dde086fa8babff104a9926"
+    },
+    {
+      "kind": "body-comment-table",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "94586ee21a4421739cc2d78a63612746bd022231d43ece97f2ddf2b04f36467a"
+    }
+  ],
+  "category": "APRON",
+  "code": "661",
+  "desired_body": "## Descrição e notas do perfil\n\nEx: MO6164\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Sem imagem ancorada dentro do bloco\n\n<callout icon=\"📝\">\n<b>Revisão do PP 661</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 661.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |\n| Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | DTF A7 registado na origem; confirmar técnica em cânhamo |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New\n- Bolso Esquerdo: Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New\n- Bolso Direito: DTF A7 registado na origem; confirmar técnica em cânhamo\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 | Nota original conjunta (Peito<br />Bolso Esquerdo<br />Bolso Direito): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M63:P73<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M63 | 661 |\n| N63 | AVENTAL grande Canhamo vários bolsos - 3F |\n| O64 | Peito |\n| P64 | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm) |\n| N65 | Ex: MO6164 |\n| P65 | Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm) |\n| P66 | DTF - Até A5 (14,8x21,0 cm) |\n| N67 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P67 | DTF - Até A4 (21x29,7cm) |\n| P68 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P69 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P70 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O71 | Bolso Esquerdo |\n| P71 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| O72 | Bolso Direito |\n| P72 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "diff": "--- 661-before\n+++ 661-after\n@@ -30,9 +30,9 @@\n \n | Face / local | Opções propostas | Nota |\n | --- | --- | --- |\n-| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |\n+| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |\n | Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |\n-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |\n+| Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | DTF A7 registado na origem; confirmar técnica em cânhamo |\n \n <toggle>\n Pendências técnicas\n@@ -49,7 +49,8 @@\n \n | Face / local | Opções completas e especificações | Notas |\n | --- | --- | --- |\n-| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+| Peito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 | Nota original conjunta (Peito<br />Bolso Esquerdo<br />Bolso Direito): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |\n </column>\n </columns>\n \n",
+  "layout": "Existing New/Old columns and row notes retained; no whole-container rewrite or cosmetic note relocation",
+  "method_complete": false,
+  "operations": [
+    {
+      "eligible": true,
+      "id": "661-row-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Peito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 | Nota original conjunta (Peito<br />Bolso Esquerdo<br />Bolso Direito): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |",
+            "old_str": "| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "bb54141ea7317d2a053849fb7130a2c9b4fdfa077cb58a328cdc7db19e85bdf3",
+        "old_note_scopes": [
+          "Peito<br />Bolso Esquerdo<br />Bolso Direito"
+        ],
+        "old_section_sha256": "5d1f2e084fdf9c9b97ac5fd2593ab1a89e40382b292d1655c737a8ec3274905e",
+        "visible_prefix_sha256": "ddc3ad69952d5c59b8d7a5979433a4c1e5f9e99008df5f6b75c998beb58d7db9",
+        "visible_suffix_sha256": "e2172b57f2ed71ea1a846ba9734925b28b7ee25900eaea0f9330381d2cae03aa"
+      },
+      "side": "Old"
+    },
+    {
+      "eligible": true,
+      "id": "661-row-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |",
+            "old_str": "| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "6449458731a27ebd10954a7827391263e074fcd44f519e4df6c98a3b99d87830",
+        "old_note_scopes": [
+          "Peito"
+        ],
+        "old_section_sha256": "377ef04f3285858dc1a8e849557a3199888194743723d69439d68709d585aec1",
+        "visible_prefix_sha256": "5258f37cd41cd47d38b8fe7f2b7a63dc38468dc7dd3e1c44423aa688cbf28f26",
+        "visible_suffix_sha256": "66ab7179de4458fe988d04ee6e334db0cb7863c4b4c130f9a9ca2a1668d5f9cf"
+      },
+      "side": "New"
+    },
+    {
+      "eligible": true,
+      "id": "661-row-3",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | DTF A7 registado na origem; confirmar técnica em cânhamo |",
+            "old_str": "| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "69c4ecf68f0a281a815778c662b7c3bb2942a72d16ab379c529e5378879dd68a",
+        "old_note_scopes": [
+          "Bolso Direito"
+        ],
+        "old_section_sha256": "f731f52ab260bbaa0d575a122d8081fd281887ec1c7854242b3b80db70f313a7",
+        "visible_prefix_sha256": "4dd7a1854ef417250a286070feeb3e8bed39a5e5e2ec08a795dddcc523c665a4",
+        "visible_suffix_sha256": "bde558b630e2c8c99d11873a1733a62b813a5118926a8e5a02c2e50a3c7c9321"
+      },
+      "side": "New"
+    }
+  ],
+  "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16",
+  "property_operations": [],
+  "property_proposals": [
+    {
+      "before": [
+        "Transfer",
+        "DTF",
+        "Bordado"
+      ],
+      "candidate_known_subset": [
+        "DTF",
+        "Bordado"
+      ],
+      "property": "Técnicas",
+      "reasons": [
+        "New contains unresolved choices; no partial property synchronisation"
+      ],
+      "resolved": false
+    },
+    {
+      "before": [
+        "Transfer — até 280 cm² — 1 cor",
+        "Transfer — até 560 cm² — 1 cor",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Bordado — até 120 cm²",
+        "Bordado — até 240 cm²",
+        "Bordado — até 360 cm²",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A7"
+      ],
+      "candidate_known_subset": [
+        "DTF — até A4",
+        "Bordado — até 600 cm²",
+        "DTF — até A6"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [
+        "New contains unresolved choices; no partial property synchronisation"
+      ],
+      "resolved": false
+    }
+  ],
+  "reasons": [],
+  "rule_changes": [
+    {
+      "after": [
+        "DTF - Até A4 (21x29,7cm)",
+        "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4"
+      ],
+      "before": [
+        "DTF - Até A4 (21x29,7cm)",
+        "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+      ],
+      "locations": [
+        "Peito"
+      ],
+      "reference": "A4"
+    },
+    {
+      "after": [
+        "DTF - Até A6 (10,5x14,8 cm)"
+      ],
+      "before": [
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      ],
+      "locations": [
+        "Bolso Direito"
+      ],
+      "reference": "A6"
+    }
+  ],
+  "source_body": "## Descrição e notas do perfil\n\nEx: MO6164\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n- Sem imagem ancorada dentro do bloco\n\n<callout icon=\"📝\">\n<b>Revisão do PP 661</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 661.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New\n- Bolso Esquerdo: Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New\n- Bolso Direito: DTF A7 registado na origem; confirmar técnica em cânhamo\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M63:P73<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M63 | 661 |\n| N63 | AVENTAL grande Canhamo vários bolsos - 3F |\n| O64 | Peito |\n| P64 | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm) |\n| N65 | Ex: MO6164 |\n| P65 | Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm) |\n| P66 | DTF - Até A5 (14,8x21,0 cm) |\n| N67 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P67 | DTF - Até A4 (21x29,7cm) |\n| P68 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P69 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P70 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O71 | Bolso Esquerdo |\n| P71 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| O72 | Bolso Direito |\n| P72 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "source_metadata": {
+    "cover": null,
+    "icon": null,
+    "properties": {
+      "Código PP": "661",
+      "Estado": "A rever",
+      "Faces": [
+        "Peito",
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 3,
+      "Opções de personalização": [
+        "Transfer — até 280 cm² — 1 cor",
+        "Transfer — até 560 cm² — 1 cor",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Bordado — até 120 cm²",
+        "Bordado — até 240 cm²",
+        "Bordado — até 360 cm²",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A7"
+      ],
+      "PP": "661 — AVENTAL grande Canhamo vários bolsos - 3F",
+      "SKU / referência do fornecedor": "Ex: MO6164",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Transfer",
+        "DTF",
+        "Bordado"
+      ],
+      "url": "https://app.notion.com/p/4e5b6705ae1f835ea3fc81290bfd0d16",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_state_sha256": "3bd56081fe705da47e8804964df3f304e9d92ee14b5151e4eb00de3c22fdf219",
+  "status": "READY_FOR_REVIEW",
+  "technical_unresolved": [
+    "Peito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+    "Bolso Esquerdo: Por confirmar — sem opção aprovada em IMP → New",
+    "Bolso Esquerdo: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+    "Bolso Direito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+    "Por confirmar — sem opção aprovada em IMP → New"
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "contract_sha256": "f6f05377bff7a554a1fdad4d668bb9b1d7168fe883104d5b1418258e6a988dd6",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "name": "PP_METHOD_ROWS",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  }
+}

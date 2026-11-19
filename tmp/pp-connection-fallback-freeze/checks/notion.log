@@ -1,0 +1,5 @@
+
+> magento-helper-wxt@0.2.1 check:notion
+> node scripts/check-notion-readonly.mjs
+
+Notion write-safety check passed: 145 file(s) scanned; only the guarded SKU Library update, empty-body completion, and body-repair delete paths are permitted.

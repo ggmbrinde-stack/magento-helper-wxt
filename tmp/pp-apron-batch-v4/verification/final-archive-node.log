@@ -1,0 +1,13 @@
+✔ default dry-run invokes only local inspection and safely quotes paths (0.5772ms)
+✔ explicit application serialises real tool calls and UTF-8 events (1.9342ms)
+✔ lost mutation result is delivered once to the durable engine, never retried (0.1979ms)
+✔ reconciliation refuses mutations even if a malformed engine action requests one (0.1837ms)
+✔ out-of-batch targets and replace-all do not reach the connector (0.2502ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57.4903

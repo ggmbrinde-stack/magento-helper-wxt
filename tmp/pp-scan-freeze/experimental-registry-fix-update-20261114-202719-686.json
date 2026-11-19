@@ -1,0 +1,33 @@
+{
+  "channel": "experimental",
+  "name": "BOG Helper Experimental",
+  "version": "0.2.1",
+  "updatedAtUtc": "2026-11-14T20:27:20.3424879Z",
+  "destination": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\chrome-installs\\experimental",
+  "previousBuildBackup": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\experimental-before-registry-fix-20261114-202719-686",
+  "sourceCandidate": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-scan-candidate\\.output\\chrome-mv3",
+  "baseCommit": "cd3d2abbf4fbb5e4a9f8d5884cf05d753bd08071",
+  "combinedPatchSha256": "30eba47c23e2bef25db1098ce80eb372faa3e7d63cf80f54f8dd442d4ed07551",
+  "reviewManifest": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-scan-freeze\\final-manifest-v3.md",
+  "reviewManifestSha256": "757d9ca3c6eee6f0bc0e2615818701d8ebbae1963f4671695632d5fc635fc558",
+  "installedFiles": {
+    "assets/dashboard-ohl-gMng.css": "cea5f1f004f1b7828c97cf5286297a92e03e1ceb7e48c62d4f592922d09b871a",
+    "background.js": "de24cde1033d69b62207ec9bcde09241ba23d661349d46eff9999ff7102fcb19",
+    "chunks/dashboard-CIHHzG0S.js": "324aae60ced71d59b689ee32ea8e5c5e502bbdb35bfa6a404f02533d40cf334d",
+    "chunks/sidepanel-Bfz22vDl.js": "f4801f23f5d65cb8695a5391610a80f7c6a8dc39b5244c9cb0b612dfed087f39",
+    "chunks/ToolkitColors-5dxNe-SH.js": "918802b342e7cdfbb565098f381307cbce8eba4ffcbd8e64dc7c39cf3d3b7c56",
+    "content-scripts/content.js": "13045400275dd7fffeea80f41da439feecaa1d26f7afbe998c6b75e19fb90c9d",
+    "dashboard.html": "aaff699488aaefc0277ee0a8fe9a1b520337b34f8009398f5f1f4414f3a7bbd0",
+    "icon/128.png": "117cc7fb75a505a2abb09d216c38fd3151625f407cddb63771f9a230dd651de3",
+    "icon/16.png": "7dcad689786b48d6d2128f3de677f9229904e630e8d6cd3c6937b76f00950031",
+    "icon/32.png": "b9dbabc78e5c710702f638d9f506689fa7a08db98dd893da8a555a15bc8456be",
+    "icon/48.png": "8e52ecd5231ac4511a0814422552ea46315096e82d7c67b3a3e08b312d619267",
+    "icon/96.png": "e53bf3fd3d503f0e5ddf684d48cedafa40094f7876d7eb8fd997cb835e90ab35",
+    "manifest.json": "5ceeecbfeb28eb253e0446b6ff25c4c79bdf53a8644f602d31a405dce09a882a",
+    "sidepanel.html": "e286b1cf991b96de5581269b339156acadeec83fa173a8a3463494414a8bef7b",
+    "ui/toolkit.css": "41c7c3403a18359bf82be237a4634e4cd871b855adede76f72b1134f89122437"
+  },
+  "checks": "16 scanner tests;27 PP tests;typecheck;UI/Notion guards;build;independent review passed",
+  "runtime": "Not reloaded or tested in Chrome; user test required",
+  "settings": "Same fixed path; Chrome storage untouched"
+}

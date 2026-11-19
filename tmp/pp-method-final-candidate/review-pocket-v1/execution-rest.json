@@ -1,0 +1,8 @@
+{
+  "script": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-method-final-candidate\\review-pocket-v1\\source\\batch_cli.py",
+  "plan": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-method-final-candidate\\pocket-plans\\rest.json",
+  "approval": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-method-final-candidate\\pocket-approvals\\rest.json",
+  "approvedPlanSha": "dbf3d075863991eb5a648509261b0a4e6e127a436ce051294bcd0df0db76902a",
+  "apply": true,
+  "condition": "Human scope authorised; actual independent review reference required. Rest only after accepted pilot."
+}

@@ -1,0 +1,5 @@
+{
+  "threadId": "01a1e93d-198b-7c63-be03-b7286480a2e5",
+  "turnId": "01a1ea97-6e91-7ea3-a502-2f2c8922c920",
+  "answer": "No independently verified complete export for either page. The saved snapshots contain rendered Markdown, and exposed fetch options provide no documented way to request missing completeness fields. Keep BLOCKED_COVERAGE_UNKNOWN. No additional exporter evidence is available from this chat."
+}

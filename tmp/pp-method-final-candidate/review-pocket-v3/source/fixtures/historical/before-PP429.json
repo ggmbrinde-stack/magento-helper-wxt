@@ -1,0 +1,70 @@
+{
+  "code": "429",
+  "url": "https://app.notion.com/137b6705ae1f82048ef1810070095cf0",
+  "title": "429 — AVENTAL grande sem bolso - 1F",
+  "pageLastEditedAt": "2026-11-16T18:07:55.366Z",
+  "verification": {
+    "state": "unverified"
+  },
+  "path": "Resources / Guides and Reference / PP - Catalog v2 (Working Copy) / PP - Catalog v2 - Master",
+  "content": "<content>\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n\n## Imagens\n\n<image source=\"notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M21425\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>\n</content>",
+  "headings": [
+    "## Locais e personalização — nova configuração (proposta)",
+    "## Antes — tabela original integral",
+    "### Locais e personalização",
+    "## Imagens",
+    "## Descrição e notas do perfil"
+  ],
+  "imageRefs": [
+    "notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png"
+  ],
+  "discussions": null,
+  "properties": {
+    "Código PP": "429",
+    "Estado": "A rever",
+    "Faces": [
+      "Face 1"
+    ],
+    "Família": [
+      "Aventais"
+    ],
+    "Imagem principal": [
+      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png"
+    ],
+    "Notas": "",
+    "Número de faces": 1,
+    "Número de locais possíveis": 1,
+    "Opções de personalização": [
+      "Estamparia — até A4 — 4 cores",
+      "DTF — até A5",
+      "DTF — até A4",
+      "Bordado — até 120 cm²",
+      "Bordado — até 240 cm²",
+      "Bordado — até 360 cm²"
+    ],
+    "PP": "429 — AVENTAL grande sem bolso - 1F",
+    "SKU / referência do fornecedor": "Ex: M21425",
+    "Tipos de artigo compatíveis": [
+      "Avental"
+    ],
+    "Técnicas": [
+      "Estamparia",
+      "DTF",
+      "Bordado"
+    ],
+    "url": "https://app.notion.com/p/137b6705ae1f82048ef1810070095cf0",
+    "Área": "Brinde têxtil"
+  },
+  "icon": null,
+  "cover": {
+    "type": "file",
+    "file": {
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png",
+      "expiry_time": "2026-11-17T13:47:45.373Z"
+    }
+  },
+  "metadata": {
+    "type": "page"
+  },
+  "fetchError": false
+}

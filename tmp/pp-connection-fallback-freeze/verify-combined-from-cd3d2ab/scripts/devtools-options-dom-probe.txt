@@ -1,0 +1,91 @@
+// Paste this into the DevTools console on the attribute-set custom-options edit page.
+// Snippet 1: dump likely form/table/fieldset anchors around the edit UI.
+(function () {
+  'use strict';
+  const results = [];
+  const anchors = [
+    ...document.querySelectorAll('form'),
+    ...document.querySelectorAll('fieldset'),
+    ...document.querySelectorAll('table.admin__table'),
+    ...document.querySelectorAll('div[data-bind*="foreach"]'),
+    ...document.querySelectorAll('div[data-bind*="template"]'),
+    ...document.querySelectorAll('div[class*="areas"]'),
+    ...document.querySelectorAll('div[class*="options"]'),
+  ];
+  for (const node of anchors) {
+    if (!node || !document.body.contains(node)) continue;
+    results.push({
+      tag: node.tagName.toLowerCase(),
+      id: node.id || '',
+      classes: (node.className && typeof node.className === 'string' ? node.className : '')
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 8)
+        .join(' '),
+      dataBind: node.getAttribute ? (node.getAttribute('data-bind') || '') : '',
+      children: Math.max(0, node.children.length),
+      snippet: (node.textContent || '')
+        .replace(/\s+/g, ' ')
+        .slice(0, 160),
+    });
+  }
+  results.sort((a, b) => (b.children || 0) - (a.children || 0));
+  console.group('[mhx opt probe 1] form/table/fieldset anchors');
+  console.log('anchor count:', results.length);
+  console.table(
+    results.slice(0, 24).map((r) => ({
+      tag: r.tag,
+      id: r.id || '—',
+      classes: r.classes || '—',
+      dataBind: r.dataBind || '',
+      children: String(r.children),
+      snippet: r.snippet || '',
+    })),
+  );
+  console.groupEnd();
+})();
+
+/*
+ * SNIPPET 2 — optional second paste after snippet 1. It is commented out here
+ * so this file only runs one active block.
+ *
+ * // Optional second paste: list every present option-name input/select pattern.
+ * (function () {
+ *   'use strict';
+ *   const inputs = [...document.querySelectorAll('input[name]')].filter((el) =>
+ *     el.name && el.name.indexOf('options[') === 0,
+ *   );
+ *   const selects = [...document.querySelectorAll('select[name]')].filter((el) =>
+ *     el.name && el.name.indexOf('options[') === 0,
+ *   );
+ *   const seen = new Set();
+ *   const patterns = [];
+ *   for (const el of inputs.concat(selects)) {
+ *     const name = el.name;
+ *     const key = name.replace(/\[[0-9]+\]/g, '[N]');
+ *     if (seen.has(key)) continue;
+ *     seen.add(key);
+ *     patterns.push({
+ *       tag: el.tagName.toLowerCase(),
+ *       name: name,
+ *       normalized: key,
+ *       type: el.type || '',
+ *       count: inputs.concat(selects).filter((e) => e.name === name).length,
+ *     });
+ *   }
+ *   console.group('[mhx opt probe 2] option-name patterns present');
+ *   console.log('distinct option-input patterns:', patterns.length);
+ *   console.table(
+ *     patterns.slice(0, 80).map((p) => ({
+ *       tag: p.tag,
+ *       name: p.name || '—',
+ *       normalized: p.normalized || '—',
+ *       type: p.type || '—',
+ *       count: String(p.count),
+ *     })),
+ *   );
+ *   console.groupEnd();
+ * })();
+ *
+ * end of snippet 2
+ */

@@ -1,0 +1,26 @@
+
+> magento-helper-wxt@0.2.1 test:pp-preview
+> esbuild tests/ppPreview.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --external:node:test --external:jsdom --loader:.json=json --outfile=.output/pp-preview-test.mjs --log-level=warning && node --test .output/pp-preview-test.mjs
+
+✔ only the own dashboard main document can make preview requests (2.5408ms)
+✔ listing returns only matching allowed edit records with redacted identities and no auto-selection or injection (6.1714ms)
+✔ explicit selected draft read executes the self-contained inherited-registry reader only in frame zero (2.3673ms)
+✔ draft read rejects token without returning a snapshot (0.6663ms)
+✔ draft read rejects unsupported without returning a snapshot (0.3464ms)
+✔ draft read rejects before-navigation without returning a snapshot (0.4246ms)
+✔ draft read rejects after-navigation without returning a snapshot (0.4812ms)
+✔ draft read rejects pending without returning a snapshot (0.256ms)
+✔ draft read rejects frame without returning a snapshot (0.3022ms)
+✔ draft read rejects entity without returning a snapshot (0.3534ms)
+✔ draft read rejects malformed without returning a snapshot (0.2926ms)
+✔ draft read rejects throws without returning a snapshot (0.2471ms)
+✔ dashboard catalogue request reuses the V2 exact reader with no write endpoint (14.6257ms)
+✔ preview retains unknowns, raw values and blocked semantics without fabricating a diff (1.5274ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 115.3744

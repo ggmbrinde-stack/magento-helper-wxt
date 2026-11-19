@@ -1,0 +1,345 @@
+{
+  "checks": {
+    "new_mapping_unchanged": true,
+    "old_repaired": true,
+    "old_rows": [
+      [
+        "Peito",
+        "Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)"
+      ],
+      [
+        "Bolso",
+        "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)"
+      ]
+    ],
+    "technical_notes": [
+      {
+        "location": "Peito",
+        "side": "New",
+        "text": "Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven"
+      },
+      {
+        "location": "Bolso",
+        "side": "New",
+        "text": "DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso"
+      }
+    ]
+  },
+  "code": "633",
+  "comments": {
+    "empty": false,
+    "reason": "Connector comment/suggested-edit discovery returns upgrade_required"
+  },
+  "desired_body": "<image source=\"notion-file-block://a9cb6705-ae1f-83b6-9f4b-816c3a038e52/e75de3c8-39e8-4152-b3b1-4ea9b37c946c?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP633_1.png\" />\n\nAventais com bolso apx 100cm altura\n\nEx: M3897\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 633</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 633.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nTransfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n\n<p />\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nEstamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n</toggle>\n\n<toggle>\nNew: Bolso\n\nDTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M21:P32<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M21 | 633 |\n| N21 | AVENTAL Non-woven grande com bolso - 2F |\n| N22 | Aventais com bolso apx 100cm altura |\n| O22 | Peito |\n| P22 | Estamparia - Até A4 - 1 Cor |\n| N23 | Ex: M3897 |\n| P23 | DTF - Até A5 (14,8x21,0 cm) |\n| P24 | DTF - Até A4 (21x29,7cm) |\n| N25 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| O25 | Bolso |\n| P25 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P26 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M21:P32; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n<p />\n</column>\n</columns>\n</toggle>\n</toggle>",
+  "diff": "--- 633-before\n+++ 633-after\n@@ -1,16 +1,10 @@\n-## Imagens\n-\n <image source=\"notion-file-block://a9cb6705-ae1f-83b6-9f4b-816c3a038e52/e75de3c8-39e8-4152-b3b1-4ea9b37c946c?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP633_1.png\" />\n-\n-## Descrição e notas do perfil\n \n Aventais com bolso apx 100cm altura\n \n Ex: M3897\n \n No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n-\n-## Notas\n \n - Grupo com vários locais ou sem local: confirmar a distribuição das opções\n \n@@ -24,6 +18,144 @@\n \n <b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n </callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções propostas\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n+\n+<p />\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Peito\n+\n+Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n+</toggle>\n+\n+<toggle>\n+New: Bolso\n+\n+DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n+</toggle>\n+</toggle>\n+\n+<toggle>\n+Fonte e original do Excel\n+\n+AI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M21:P32<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n+\n+| Célula | Texto original |\n+| --- | --- |\n+| M21 | 633 |\n+| N21 | AVENTAL Non-woven grande com bolso - 2F |\n+| N22 | Aventais com bolso apx 100cm altura |\n+| O22 | Peito |\n+| P22 | Estamparia - Até A4 - 1 Cor |\n+| N23 | Ex: M3897 |\n+| P23 | DTF - Até A5 (14,8x21,0 cm) |\n+| P24 | DTF - Até A4 (21x29,7cm) |\n+| N25 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n+| O25 | Bolso |\n+| P25 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n+| P26 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+<toggle>\n+New\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n+</callout>\n+</toggle>\n+\n+<toggle>\n+Old\n+\n+### Locais e personalização\n+</toggle>\n+\n+## Imagens\n+\n+## Descrição e notas do perfil\n+\n+## Notas\n+\n+<toggle>\n+Original preservado antes da revisão de layout e associações Excel\n+\n+Proveniência: M21:P32; grupos e células verificados no plano.\n \n <columns>\n <column ratio=\"50\">\n@@ -57,24 +189,5 @@\n <p />\n </column>\n </columns>\n-\n-<toggle>\n-Fonte e original do Excel\n-\n-AI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M21:P32<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n-\n-| Célula | Texto original |\n-| --- | --- |\n-| M21 | 633 |\n-| N21 | AVENTAL Non-woven grande com bolso - 2F |\n-| N22 | Aventais com bolso apx 100cm altura |\n-| O22 | Peito |\n-| P22 | Estamparia - Até A4 - 1 Cor |\n-| N23 | Ex: M3897 |\n-| P23 | DTF - Até A5 (14,8x21,0 cm) |\n-| P24 | DTF - Até A4 (21x29,7cm) |\n-| N25 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n-| O25 | Bolso |\n-| P25 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n-| P26 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n+</toggle>\n </toggle>",
+  "excel": {
+    "groups": [
+      {
+        "locations": [
+          {
+            "cell": "O22",
+            "text": "Peito"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P22",
+            "text": "Estamparia - Até A4 - 1 Cor"
+          },
+          {
+            "cell": "P23",
+            "text": "DTF - Até A5 (14,8x21,0 cm)"
+          },
+          {
+            "cell": "P24",
+            "text": "DTF - Até A4 (21x29,7cm)"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "cell": "O25",
+            "text": "Bolso"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P25",
+            "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+          },
+          {
+            "cell": "P26",
+            "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          }
+        ]
+      }
+    ],
+    "range": "M21:P32",
+    "title": "AVENTAL Non-woven grande com bolso - 2F"
+  },
+  "operations": [
+    {
+      "after_region": "",
+      "before_region": "## Imagens\n\n",
+      "eligible": false,
+      "id": "633-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Imagens\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f7bb6705ae1f826b848d819549bc3c03"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Descrição e notas do perfil\n\n",
+      "eligible": false,
+      "id": "633-body-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Descrição e notas do perfil\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f7bb6705ae1f826b848d819549bc3c03"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Notas\n\n",
+      "eligible": false,
+      "id": "633-body-3",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Notas\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f7bb6705ae1f826b848d819549bc3c03"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nTransfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n\n<p />\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nEstamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n</toggle>\n\n<toggle>\nNew: Bolso\n\nDTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</toggle>\n\n",
+      "before_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n<p />\n</column>\n</columns>\n\n",
+      "eligible": false,
+      "id": "633-body-4",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nTransfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n\n<p />\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nEstamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n</toggle>\n\n<toggle>\nNew: Bolso\n\nDTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</toggle>\n\n",
+            "old_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n<p />\n</column>\n</columns>\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f7bb6705ae1f826b848d819549bc3c03"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M21:P32; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n<p />\n</column>\n</columns>\n</toggle>\n</toggle>",
+      "before_region": null,
+      "eligible": false,
+      "id": "633-body-5",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M21:P32; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n<p />\n</column>\n</columns>\n</toggle>\n</toggle>",
+        "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    }
+  ],
+  "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+  "property_operations": [
+    {
+      "after_value": [
+        "Estamparia",
+        "DTF"
+      ],
+      "before_value": [
+        "Estamparia",
+        "DTF",
+        "Transfer"
+      ],
+      "eligible": false,
+      "id": "633-property-1",
+      "kind": "properties",
+      "payload": {
+        "command": "update_properties",
+        "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+        "properties": {
+          "Técnicas": [
+            "Estamparia",
+            "DTF"
+          ]
+        }
+      }
+    },
+    {
+      "after_value": [
+        "Estamparia — até A4 — 1 cor",
+        "DTF — até A4",
+        "DTF — até A7"
+      ],
+      "before_value": [
+        "Estamparia — até A4 — 1 cor",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A7"
+      ],
+      "eligible": false,
+      "id": "633-property-2",
+      "kind": "properties",
+      "payload": {
+        "command": "update_properties",
+        "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+        "properties": {
+          "Opções de personalização": [
+            "Estamparia — até A4 — 1 cor",
+            "DTF — até A4",
+            "DTF — até A7"
+          ]
+        }
+      }
+    }
+  ],
+  "property_proposals": [
+    {
+      "after": [
+        "Estamparia",
+        "DTF"
+      ],
+      "before": [
+        "Estamparia",
+        "DTF",
+        "Transfer"
+      ],
+      "property": "Técnicas",
+      "reasons": [],
+      "resolved": true
+    },
+    {
+      "after": [
+        "Estamparia — até A4 — 1 cor",
+        "DTF — até A4",
+        "DTF — até A7"
+      ],
+      "before": [
+        "Estamparia — até A4 — 1 cor",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A7"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [],
+      "resolved": true
+    }
+  ],
+  "reasons": [
+    "Global coverage UNKNOWN; no independently attested complete target-region export. Unique/balanced text and Excel agreement do not prove absence of omitted content.",
+    "Connector comment/suggested-edit discovery returns upgrade_required"
+  ],
+  "review_callout_sha256": [
+    "d2d9ea4162eb33fe7028471ff1b32fdeecb6e3e9175e1bbb53d88dea313ef82e"
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://a9cb6705-ae1f-83b6-9f4b-816c3a038e52/e75de3c8-39e8-4152-b3b1-4ea9b37c946c?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP633_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M3897\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 633</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 633.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n\n<p />\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M21:P32<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M21 | 633 |\n| N21 | AVENTAL Non-woven grande com bolso - 2F |\n| N22 | Aventais com bolso apx 100cm altura |\n| O22 | Peito |\n| P22 | Estamparia - Até A4 - 1 Cor |\n| N23 | Ex: M3897 |\n| P23 | DTF - Até A5 (14,8x21,0 cm) |\n| P24 | DTF - Até A4 (21x29,7cm) |\n| N25 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| O25 | Bolso |\n| P25 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P26 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "source_capture_sha256": "9fab03f16d456529eadac45295e34fdcda97ae6b63c4c674c6d553bd7c448514",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "633",
+      "Estado": "A rever",
+      "Faces": [
+        "Peito",
+        "Bolso"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 2,
+      "Opções de personalização": [
+        "Estamparia — até A4 — 1 cor",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A7"
+      ],
+      "PP": "633 — AVENTAL Non-woven grande com bolso - 2F",
+      "SKU / referência do fornecedor": "Ex: M3897",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Estamparia",
+        "DTF",
+        "Transfer"
+      ],
+      "url": "https://app.notion.com/p/f7bb6705ae1f826b848d819549bc3c03",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_observed_hash": "3df7c2354703ba9c2b9b5e35ca49a950386ae22d9a4d21df931cb7de2bc89730",
+  "source_state_sha256": "f1278f768b3600848aa26629b21c654eb0fdb950f5619ac5f314693768b8b8c3",
+  "status": "BLOCKED",
+  "technical_unresolved": []
+}

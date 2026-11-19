@@ -1,0 +1,378 @@
+{
+  "checks": {
+    "new_mapping_unchanged": true,
+    "old_repaired": true,
+    "old_rows": [
+      [
+        "Peito",
+        "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)"
+      ],
+      [
+        "Bolso",
+        "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)"
+      ],
+      [
+        "Chapéu",
+        "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)"
+      ]
+    ],
+    "technical_notes": [
+      {
+        "location": "Peito",
+        "side": "New",
+        "text": "DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar"
+      },
+      {
+        "location": "Bolso",
+        "side": "New",
+        "text": "DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso"
+      },
+      {
+        "location": "Chapéu",
+        "side": "New",
+        "text": "DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar"
+      }
+    ]
+  },
+  "code": "467",
+  "comments": {
+    "empty": false,
+    "reason": "Comment discovery unavailable after initial capability failure"
+  },
+  "desired_body": "<image source=\"notion-file-block://ee2b6705-ae1f-83d7-a458-81ecfb8a7db1/f9529b3b-6361-413b-a9d3-46d35d8ec584?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP467_1.jpeg\" />\n\nEx: M4754\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 467</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 467.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nDTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nChapéu\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nChapéu\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nDTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n</toggle>\n\n<toggle>\nNew: Bolso\n\nDTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n</toggle>\n\n<toggle>\nNew: Chapéu\n\nDTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M95:P104<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M95 | 467 |\n| N95 | CONJ CRIANÇA Avental c\\\\ bolso Non-Woven + chapéu |\n| N96 | Ex: M4754 |\n| O96 | Peito |\n| P96 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P97 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P98 | DTF - Até A6 (10,5x14,8 cm) |\n| P99 | DTF - Até A5 (14,8x21,0 cm) |\n| O100 | Bolso |\n| P100 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P101 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O102 | Chapéu |\n| P102 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P103 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P104 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M95:P104; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+  "diff": "--- 467-before\n+++ 467-after\n@@ -1,12 +1,6 @@\n-## Imagens\n-\n <image source=\"notion-file-block://ee2b6705-ae1f-83d7-a458-81ecfb8a7db1/f9529b3b-6361-413b-a9d3-46d35d8ec584?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP467_1.jpeg\" />\n \n-## Descrição e notas do perfil\n-\n Ex: M4754\n-\n-## Notas\n \n - Grupo com vários locais ou sem local: confirmar a distribuição das opções\n \n@@ -25,34 +19,110 @@\n <column ratio=\"50\">\n ## New (proposta)\n \n-<callout icon=\"📝\">\n-<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n-</callout>\n-\n-| Face / local | Opções propostas | Nota |\n-| --- | --- | --- |\n-| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n-| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n-| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n-\n-<toggle>\n-Pendências técnicas\n-\n-- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n-- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n-- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n-</toggle>\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções propostas\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+DTF - Até A5 (14,8x21,0 cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Chapéu\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n </column>\n <column ratio=\"50\">\n ## Old (original)\n \n-### Locais e personalização\n-\n-| Face / local | Opções completas e especificações | Notas |\n-| --- | --- | --- |\n-| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Chapéu\n+</td>\n+<td>\n+Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n </column>\n </columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Peito\n+\n+DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n+</toggle>\n+\n+<toggle>\n+New: Bolso\n+\n+DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n+</toggle>\n+\n+<toggle>\n+New: Chapéu\n+\n+DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n+</toggle>\n+</toggle>\n \n <toggle>\n Fonte e original do Excel\n@@ -76,4 +146,67 @@\n | P102 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n | P103 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n | P104 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+<toggle>\n+New\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n+</callout>\n+</toggle>\n+\n+<toggle>\n+Old\n+\n+### Locais e personalização\n+</toggle>\n+\n+## Imagens\n+\n+## Descrição e notas do perfil\n+\n+## Notas\n+\n+<toggle>\n+Original preservado antes da revisão de layout e associações Excel\n+\n+Proveniência: M95:P104; grupos e células verificados no plano.\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n+</callout>\n+\n+| Face / local | Opções propostas | Nota |\n+| --- | --- | --- |\n+| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n+| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n+| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n+\n+<toggle>\n+Pendências técnicas\n+\n+- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n+- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n+- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n+</toggle>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+### Locais e personalização\n+\n+| Face / local | Opções completas e especificações | Notas |\n+| --- | --- | --- |\n+| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+</column>\n+</columns>\n+</toggle>\n </toggle>",
+  "excel": {
+    "groups": [
+      {
+        "locations": [
+          {
+            "cell": "O96",
+            "text": "Peito"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P96",
+            "text": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)"
+          },
+          {
+            "cell": "P97",
+            "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+          },
+          {
+            "cell": "P98",
+            "text": "DTF - Até A6 (10,5x14,8 cm)"
+          },
+          {
+            "cell": "P99",
+            "text": "DTF - Até A5 (14,8x21,0 cm)"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "cell": "O100",
+            "text": "Bolso"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P100",
+            "text": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)"
+          },
+          {
+            "cell": "P101",
+            "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "cell": "O102",
+            "text": "Chapéu"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P102",
+            "text": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)"
+          },
+          {
+            "cell": "P103",
+            "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+          },
+          {
+            "cell": "P104",
+            "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          }
+        ]
+      }
+    ],
+    "range": "M95:P104",
+    "title": "CONJ CRIANÇA Avental c\\ bolso Non-Woven + chapéu"
+  },
+  "operations": [
+    {
+      "after_region": "",
+      "before_region": "## Imagens\n\n",
+      "eligible": false,
+      "id": "467-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Imagens\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f06b6705ae1f82ad871e01420cf67ecb"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Descrição e notas do perfil\n\n",
+      "eligible": false,
+      "id": "467-body-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Descrição e notas do perfil\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f06b6705ae1f82ad871e01420cf67ecb"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Notas\n\n",
+      "eligible": false,
+      "id": "467-body-3",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Notas\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f06b6705ae1f82ad871e01420cf67ecb"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nDTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nChapéu\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nChapéu\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nDTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n</toggle>\n\n<toggle>\nNew: Bolso\n\nDTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n</toggle>\n\n<toggle>\nNew: Chapéu\n\nDTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</toggle>\n\n",
+      "before_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n",
+      "eligible": false,
+      "id": "467-body-4",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nDTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nChapéu\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nBolso\n</td>\n<td>\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nChapéu\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nDTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n</toggle>\n\n<toggle>\nNew: Bolso\n\nDTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n</toggle>\n\n<toggle>\nNew: Chapéu\n\nDTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</toggle>\n\n",
+            "old_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "f06b6705ae1f82ad871e01420cf67ecb"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M95:P104; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+      "before_region": null,
+      "eligible": false,
+      "id": "467-body-5",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M95:P104; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+        "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    }
+  ],
+  "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+  "property_operations": [
+    {
+      "after_value": [
+        "DTF"
+      ],
+      "before_value": [
+        "Transfer",
+        "DTF"
+      ],
+      "eligible": false,
+      "id": "467-property-1",
+      "kind": "properties",
+      "payload": {
+        "command": "update_properties",
+        "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+        "properties": {
+          "Técnicas": [
+            "DTF"
+          ]
+        }
+      }
+    },
+    {
+      "after_value": [
+        "DTF — até A5",
+        "DTF — até A7"
+      ],
+      "before_value": [
+        "Transfer — até 57 cm² — 1 cor",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A6",
+        "DTF — até A5",
+        "DTF — até A7",
+        "Transfer — até 12 cm² — 2 cores",
+        "Transfer — até 57 cm² — 2 cores"
+      ],
+      "eligible": false,
+      "id": "467-property-2",
+      "kind": "properties",
+      "payload": {
+        "command": "update_properties",
+        "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+        "properties": {
+          "Opções de personalização": [
+            "DTF — até A5",
+            "DTF — até A7"
+          ]
+        }
+      }
+    }
+  ],
+  "property_proposals": [
+    {
+      "after": [
+        "DTF"
+      ],
+      "before": [
+        "Transfer",
+        "DTF"
+      ],
+      "property": "Técnicas",
+      "reasons": [],
+      "resolved": true
+    },
+    {
+      "after": [
+        "DTF — até A5",
+        "DTF — até A7"
+      ],
+      "before": [
+        "Transfer — até 57 cm² — 1 cor",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A6",
+        "DTF — até A5",
+        "DTF — até A7",
+        "Transfer — até 12 cm² — 2 cores",
+        "Transfer — até 57 cm² — 2 cores"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [],
+      "resolved": true
+    }
+  ],
+  "reasons": [
+    "Global coverage UNKNOWN; no independently attested complete target-region export. Unique/balanced text and Excel agreement do not prove absence of omitted content.",
+    "Comment discovery unavailable after initial capability failure"
+  ],
+  "review_callout_sha256": [
+    "2ccd03bb3f1a536362dd41955315b7ded782fa6454cb36a4e370a125bf7979e5"
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://ee2b6705-ae1f-83d7-a458-81ecfb8a7db1/f9529b3b-6361-413b-a9d3-46d35d8ec584?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP467_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: M4754\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 467</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 467.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar |\n\n<toggle>\nPendências técnicas\n\n- Peito: DTF A5 provisório; Transfer 1 Cor já existe no Excel, mas não na lista IMP → New; Non-Woven a validar\n- Bolso: DTF A7 original; Transfer 1 Cor original ausente de IMP → New; confirmar área do bolso\n- Chapéu: DTF A7 do Excel; Transfer 2 Cores → 1 Cor por confirmar; material Non-Woven a validar\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M95:P104<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M95 | 467 |\n| N95 | CONJ CRIANÇA Avental c\\\\ bolso Non-Woven + chapéu |\n| N96 | Ex: M4754 |\n| O96 | Peito |\n| P96 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P97 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P98 | DTF - Até A6 (10,5x14,8 cm) |\n| P99 | DTF - Até A5 (14,8x21,0 cm) |\n| O100 | Bolso |\n| P100 | Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE) |\n| P101 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O102 | Chapéu |\n| P102 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P103 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P104 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "source_capture_sha256": "68f82f83b0ad9177e7cdb5aa96fb82431e60d29b204b58bf7647628f16edd97d",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/f9529b3b-6361-413b-a9d3-46d35d8ec584/PP467_1.jpeg"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "467",
+      "Estado": "A rever",
+      "Faces": [
+        "Peito",
+        "Bolso",
+        "Chapéu"
+      ],
+      "Família": [
+        "Conjuntos"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/f9529b3b-6361-413b-a9d3-46d35d8ec584/PP467_1.jpeg"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 3,
+      "Opções de personalização": [
+        "Transfer — até 57 cm² — 1 cor",
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A6",
+        "DTF — até A5",
+        "DTF — até A7",
+        "Transfer — até 12 cm² — 2 cores",
+        "Transfer — até 57 cm² — 2 cores"
+      ],
+      "PP": "467 — CONJ CRIANÇA Avental c\\\\ bolso Non-Woven + chapéu",
+      "SKU / referência do fornecedor": "Ex: M4754",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Transfer",
+        "DTF"
+      ],
+      "url": "https://app.notion.com/p/f06b6705ae1f82ad871e01420cf67ecb",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_observed_hash": "451747883f4feab481c79bec59bb6fd94d43e483c63e3585a2bf1ce5602b0d13",
+  "source_state_sha256": "f8faf4deb7b79057d014c9e9f3425814121483c87c7615fba3825d0e27470857",
+  "status": "BLOCKED",
+  "technical_unresolved": []
+}

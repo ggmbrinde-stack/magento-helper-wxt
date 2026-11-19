@@ -1,0 +1,317 @@
+{
+  "checks": {
+    "new_mapping_unchanged": true,
+    "old_repaired": false,
+    "old_rows": [
+      [
+        "Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito",
+        "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)"
+      ]
+    ],
+    "technical_notes": [
+      {
+        "location": "Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito",
+        "side": "New",
+        "text": "Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso"
+      },
+      {
+        "location": "Bolso Peito / Bolso Esquerdo / Bolso Direito",
+        "side": "New",
+        "text": "Transfer de 2 cores para 1 cor: opção ausente de IMP → New"
+      },
+      {
+        "location": "Bolso Peito / Bolso Esquerdo / Bolso Direito",
+        "side": "New",
+        "text": "Confirmar área útil do bolso"
+      },
+      {
+        "location": "Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito",
+        "side": "Old",
+        "text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+      }
+    ]
+  },
+  "code": "786",
+  "comments": {
+    "empty": false,
+    "reason": "Comment discovery unavailable after initial capability failure"
+  },
+  "desired_body": "<image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n\nEx: M22096\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 786</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 786.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nBolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nBolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n\nTransfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso\n</toggle>\n\n<toggle>\nNew: Bolso Peito / Bolso Esquerdo / Bolso Direito\n\nTransfer de 2 cores para 1 cor: opção ausente de IMP → New\n</toggle>\n\n<toggle>\nNew: Bolso Peito / Bolso Esquerdo / Bolso Direito\n\nConfirmar área útil do bolso\n</toggle>\n\n<toggle>\nOld: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n<table header-row=\"true\">\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM52\n</td>\n<td>\n786\n</td>\n</tr>\n<tr>\n<td>\nN52\n</td>\n<td>\nAVENTAL 3 bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO53\n</td>\n<td>\nBolso Peito\n</td>\n</tr>\n<tr>\n<td>\nP53\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nN54\n</td>\n<td>\nEx: M22096 \n</td>\n</tr>\n<tr>\n<td>\nO54\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP54\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nO55\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M52:P62; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+  "diff": "--- 786-before\n+++ 786-after\n@@ -1,12 +1,6 @@\n-## Imagens\n-\n <image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n \n-## Descrição e notas do perfil\n-\n Ex: M22096\n-\n-## Notas\n \n - Grupo com vários locais ou sem local: confirmar a distribuição das opções\n \n@@ -24,10 +18,202 @@\n <columns>\n <column ratio=\"50\">\n ## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções propostas\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n+\n+Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso\n+</toggle>\n+\n+<toggle>\n+New: Bolso Peito / Bolso Esquerdo / Bolso Direito\n+\n+Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n+</toggle>\n+\n+<toggle>\n+New: Bolso Peito / Bolso Esquerdo / Bolso Direito\n+\n+Confirmar área útil do bolso\n+</toggle>\n+\n+<toggle>\n+Old: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n+\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</toggle>\n+</toggle>\n+\n+<toggle>\n+Fonte e original do Excel\n+\n+AI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n+\n+<table header-row=\"true\">\n+<tr>\n+<td>\n+Célula\n+</td>\n+<td>\n+Texto original\n+</td>\n+</tr>\n+<tr>\n+<td>\n+M52\n+</td>\n+<td>\n+786\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N52\n+</td>\n+<td>\n+AVENTAL 3 bolsos - 3F\n+</td>\n+</tr>\n+<tr>\n+<td>\n+O53\n+</td>\n+<td>\n+Bolso Peito\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P53\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N54\n+</td>\n+<td>\n+Ex: M22096 \n+</td>\n+</tr>\n+<tr>\n+<td>\n+O54\n+</td>\n+<td>\n+Bolso Esquerdo\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P54\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+O55\n+</td>\n+<td>\n+Bolso Direito\n+</td>\n+</tr>\n+</table>\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+<toggle>\n+New\n \n <callout icon=\"📝\">\n <b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n </callout>\n+</toggle>\n+\n+<toggle>\n+Old\n+\n+### Locais e personalização\n+</toggle>\n+\n+## Imagens\n+\n+## Descrição e notas do perfil\n+\n+## Notas\n+\n+<toggle>\n+Original preservado antes da revisão de layout e associações Excel\n+\n+Proveniência: M52:P62; grupos e células verificados no plano.\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n+</callout>\n \n | Face / local | Opções propostas | Nota |\n | --- | --- | --- |\n@@ -50,84 +236,5 @@\n | Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n </column>\n </columns>\n-\n-<toggle>\n-Fonte e original do Excel\n-\n-AI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n-\n-<table header-row=\"true\">\n-<tr>\n-<td>\n-Célula\n-</td>\n-<td>\n-Texto original\n-</td>\n-</tr>\n-<tr>\n-<td>\n-M52\n-</td>\n-<td>\n-786\n-</td>\n-</tr>\n-<tr>\n-<td>\n-N52\n-</td>\n-<td>\n-AVENTAL 3 bolsos - 3F\n-</td>\n-</tr>\n-<tr>\n-<td>\n-O53\n-</td>\n-<td>\n-Bolso Peito\n-</td>\n-</tr>\n-<tr>\n-<td>\n-P53\n-</td>\n-<td>\n-Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n-</td>\n-</tr>\n-<tr>\n-<td>\n-N54\n-</td>\n-<td>\n-Ex: M22096 \n-</td>\n-</tr>\n-<tr>\n-<td>\n-O54\n-</td>\n-<td>\n-Bolso Esquerdo\n-</td>\n-</tr>\n-<tr>\n-<td>\n-P54\n-</td>\n-<td>\n-DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n-</td>\n-</tr>\n-<tr>\n-<td>\n-O55\n-</td>\n-<td>\n-Bolso Direito\n-</td>\n-</tr>\n-</table>\n+</toggle>\n </toggle>",
+  "excel": {
+    "groups": [
+      {
+        "locations": [
+          {
+            "cell": "O53",
+            "text": "Bolso Peito"
+          },
+          {
+            "cell": "O54",
+            "text": "Bolso Esquerdo"
+          },
+          {
+            "cell": "O55",
+            "text": "Bolso Direito"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P53",
+            "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+          },
+          {
+            "cell": "P54",
+            "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          }
+        ]
+      }
+    ],
+    "range": "M52:P62",
+    "title": "AVENTAL 3 bolsos - 3F"
+  },
+  "operations": [
+    {
+      "after_region": "",
+      "before_region": "## Imagens\n\n",
+      "eligible": false,
+      "id": "786-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Imagens\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "d00b6705ae1f835cb7440191c545e56b"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Descrição e notas do perfil\n\n",
+      "eligible": false,
+      "id": "786-body-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Descrição e notas do perfil\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "d00b6705ae1f835cb7440191c545e56b"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Notas\n\n",
+      "eligible": false,
+      "id": "786-body-3",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Notas\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "d00b6705ae1f835cb7440191c545e56b"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nBolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nBolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n\nTransfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso\n</toggle>\n\n<toggle>\nNew: Bolso Peito / Bolso Esquerdo / Bolso Direito\n\nTransfer de 2 cores para 1 cor: opção ausente de IMP → New\n</toggle>\n\n<toggle>\nNew: Bolso Peito / Bolso Esquerdo / Bolso Direito\n\nConfirmar área útil do bolso\n</toggle>\n\n<toggle>\nOld: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n</toggle>\n\n",
+      "before_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n",
+      "eligible": false,
+      "id": "786-body-4",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nBolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nBolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n\nTransfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso\n</toggle>\n\n<toggle>\nNew: Bolso Peito / Bolso Esquerdo / Bolso Direito\n\nTransfer de 2 cores para 1 cor: opção ausente de IMP → New\n</toggle>\n\n<toggle>\nNew: Bolso Peito / Bolso Esquerdo / Bolso Direito\n\nConfirmar área útil do bolso\n</toggle>\n\n<toggle>\nOld: Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n</toggle>\n\n",
+            "old_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "d00b6705ae1f835cb7440191c545e56b"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M52:P62; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+      "before_region": null,
+      "eligible": false,
+      "id": "786-body-5",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M52:P62; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+        "page_id": "d00b6705ae1f835cb7440191c545e56b",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    }
+  ],
+  "page_id": "d00b6705ae1f835cb7440191c545e56b",
+  "property_operations": [
+    {
+      "after_value": [
+        "DTF"
+      ],
+      "before_value": [
+        "Transfer",
+        "DTF"
+      ],
+      "eligible": false,
+      "id": "786-property-1",
+      "kind": "properties",
+      "payload": {
+        "command": "update_properties",
+        "page_id": "d00b6705ae1f835cb7440191c545e56b",
+        "properties": {
+          "Técnicas": [
+            "DTF"
+          ]
+        }
+      }
+    },
+    {
+      "after_value": [
+        "DTF — até A7"
+      ],
+      "before_value": [
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "eligible": false,
+      "id": "786-property-2",
+      "kind": "properties",
+      "payload": {
+        "command": "update_properties",
+        "page_id": "d00b6705ae1f835cb7440191c545e56b",
+        "properties": {
+          "Opções de personalização": [
+            "DTF — até A7"
+          ]
+        }
+      }
+    }
+  ],
+  "property_proposals": [
+    {
+      "after": [
+        "DTF"
+      ],
+      "before": [
+        "Transfer",
+        "DTF"
+      ],
+      "property": "Técnicas",
+      "reasons": [],
+      "resolved": true
+    },
+    {
+      "after": [
+        "DTF — até A7"
+      ],
+      "before": [
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [],
+      "resolved": true
+    }
+  ],
+  "reasons": [
+    "Global coverage UNKNOWN; no independently attested complete target-region export. Unique/balanced text and Excel agreement do not prove absence of omitted content.",
+    "Comment discovery unavailable after initial capability failure"
+  ],
+  "review_callout_sha256": [
+    "db25877074f80ee832159b4bf325cf907c5748aedadabad87ff40553d55758c8"
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M22096\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 786</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 786.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n<table header-row=\"true\">\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM52\n</td>\n<td>\n786\n</td>\n</tr>\n<tr>\n<td>\nN52\n</td>\n<td>\nAVENTAL 3 bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO53\n</td>\n<td>\nBolso Peito\n</td>\n</tr>\n<tr>\n<td>\nP53\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nN54\n</td>\n<td>\nEx: M22096 \n</td>\n</tr>\n<tr>\n<td>\nO54\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP54\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nO55\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n</table>\n</toggle>",
+  "source_capture_sha256": "243ce67654afbce76680681f93139a1579fcccddd9dffeda127ef6a0d7f9f8f2",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "786",
+      "Estado": "A rever",
+      "Faces": [
+        "Bolso Peito",
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 3,
+      "Opções de personalização": [
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "PP": "786 — AVENTAL 3 bolsos - 3F",
+      "SKU / referência do fornecedor": "Ex: M22096",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Transfer",
+        "DTF"
+      ],
+      "url": "https://app.notion.com/p/d00b6705ae1f835cb7440191c545e56b",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_observed_hash": "dbecadfcca74aa94e4301241af9b488c39ab471f012252169074d393f3243c68",
+  "source_state_sha256": "dcd06fc65a254e2fdccb96d3063337305ecbd2bac89eca6a2fc8286e82e0efae",
+  "status": "BLOCKED",
+  "technical_unresolved": []
+}

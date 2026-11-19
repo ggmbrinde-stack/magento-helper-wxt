@@ -1,0 +1,121 @@
+diff --git a/src/entrypoints/background/ppFreshForm.ts b/src/entrypoints/background/ppFreshForm.ts
+index a4dbecc..ebc659e 100644
+--- a/src/entrypoints/background/ppFreshForm.ts
++++ b/src/entrypoints/background/ppFreshForm.ts
+@@ -3,6 +3,7 @@ import { scanCurrentPpDraft, ppRoutePathFromUrl } from '../../page/features/pp-s
+ import { isPpDraftScanResponse } from './ppPreview';
+ 
+ const HOSTS = new Set(['bestofgifts.pt', 'bestofgifts.eu', 'bestofgifts.es', 'bestofgifts.fr', 'bestofgifts-pt-qa.toogas.net']);
++const BASE_RULE = 'Use https on bestofgifts.pt, bestofgifts.eu, bestofgifts.es, bestofgifts.fr or bestofgifts-pt-qa.toogas.net, with one admin path segment such as /admin_xxx, and no port, query, key or extra path.';
+ const MAX_WAIT = 30_000, MAX_INJECTIONS = 10;
+ interface ReadJob {
+   id: string; entityId: string; owner: number | undefined; cancelled: boolean;
+@@ -17,14 +18,29 @@ const stoppedBeforeStart = new Map<string, number | undefined>();
+ const reply = (id: string, entityId: string, status: PpFreshFormResponse['status'], reason: string): PpFreshFormResponse =>
+   ({ source: 'fresh-magento-form-load', requestId: id, entityId, status, reason, cleanup: 'not-created' });
+ 
+-export function freshFormUrl(base: unknown, entityId: unknown): string | null {
+-  if (typeof base !== 'string' || typeof entityId !== 'string' || !/^[1-9]\d{0,15}$/.test(entityId)) return null;
++export type FreshFormIssue = 'entity' | 'missing-base' | 'rejected-base';
++
++/** Name the exact input that blocks the load, so the reason is actionable instead of shared. */
++export function freshFormIssue(base: unknown, entityId: unknown): FreshFormIssue | null {
++  if (typeof entityId !== 'string' || !/^[1-9]\d{0,15}$/.test(entityId)) return 'entity';
++  if (typeof base !== 'string' || !base.trim()) return 'missing-base';
+   try {
+     const url = new URL(base);
+-    if (url.protocol !== 'https:' || !HOSTS.has(url.hostname) || url.port || url.username || url.password ||
+-      url.search || url.hash || !/^\/[a-z0-9_-]+\/?$/i.test(url.pathname)) return null;
+-    return `${url.origin}${url.pathname.replace(/\/$/, '')}/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${entityId}/`;
+-  } catch { return null; }
++    return url.protocol === 'https:' && HOSTS.has(url.hostname) && !url.port && !url.username && !url.password &&
++      !url.search && !url.hash && /^\/[a-z0-9_-]+\/?$/i.test(url.pathname) ? null : 'rejected-base';
++  } catch { return 'rejected-base'; }
++}
++
++const issueReason = (issue: FreshFormIssue): string => issue === 'entity'
++  ? 'Enter the exact positive Magento custom-option entity ID: digits only, no leading zero. No helper tab was opened.'
++  : issue === 'missing-base'
++    ? `Admin base URL is not set, so no helper tab was opened. Open Settings, enter the HTTPS admin root, press Save, then retry. ${BASE_RULE}`
++    : `The saved admin base URL is not accepted, so no helper tab was opened. ${BASE_RULE}`;
++
++export function freshFormUrl(base: unknown, entityId: unknown): string | null {
++  if (freshFormIssue(base, entityId)) return null;
++  const url = new URL(base as string);
++  return `${url.origin}${url.pathname.replace(/\/$/, '')}/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${entityId}/`;
+ }
+ 
+ /** Validate the whole native address without extracting or rewriting its key. */
+@@ -66,7 +82,10 @@ async function run(job: ReadJob): Promise<PpFreshFormResponse> {
+   try {
+     const settings = await chrome.storage.local.get(['adminBaseUrl']);
+     const target = freshFormUrl(settings.adminBaseUrl, job.entityId);
+-    if (!target) return reply(job.id, job.entityId, 'invalid', 'Configure an allowed HTTPS admin base and enter the exact positive Magento entity ID. Do not supply an edit URL or session key.');
++    if (!target) {
++      const issue = freshFormIssue(settings.adminBaseUrl, job.entityId) ?? 'rejected-base';
++      return reply(job.id, job.entityId, 'invalid', issueReason(issue));
++    }
+     if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
+     const wanted = new URL(target), safePath = ppRoutePathFromUrl(target)!;
+     const references = (await chrome.tabs.query({ url: [target.replace(/\/$/, ''), `${target}*`] }))
+diff --git a/tests/ppFreshForm.test.ts b/tests/ppFreshForm.test.ts
+index 49e356f..eec4a79 100644
+--- a/tests/ppFreshForm.test.ts
++++ b/tests/ppFreshForm.test.ts
+@@ -1,7 +1,7 @@
+ import test, { type TestContext } from 'node:test';
+ import assert from 'node:assert/strict';
+ import { runInNewContext } from 'node:vm';
+-import { freshFormUrl, isNativePpReference, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
++import { freshFormUrl, freshFormIssue, isNativePpReference, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
+ import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
+ import type { PpFreshFormResponse } from '../src/core/messages';
+ 
+@@ -27,7 +27,7 @@ function fixture(t: TestContext, config: { scenario?: string; removeFail?: boole
+   const registry = Object.create({ get: () => config.scenario === 'provider' ? undefined : { data: nativeData } });
+   const requireFn = Object.assign(() => { loaderCalls++; }, { s: { contexts: { _: { defined: { 'Magento_Ui/js/lib/registry/registry': registry } } } } });
+   globals.chrome = { runtime: { getURL: () => 'chrome-extension://fixture/dashboard.html' },
+-    storage: { local: { get: async (keys: string[]) => { assert.deepEqual(keys, ['adminBaseUrl']); return { adminBaseUrl: config.scenario === 'base' ? 'https://example.org/admin' : base }; } } },
++    storage: { local: { get: async (keys: string[]) => { assert.deepEqual(keys, ['adminBaseUrl']); return { adminBaseUrl: config.scenario === 'base' ? 'https://example.org/admin' : config.scenario === 'no-base' ? '' : base }; } } },
+     tabs: { create: async (options: any) => { created.push(options); if (config.scenario === 'create') throw new Error('PRIVATE_SESSION'); return config.createWait ?? { id: 77 }; },
+       get: async (id: number) => {
+         if (id === 88) {
+@@ -72,6 +72,17 @@ test('fresh target accepts only a configured allowed HTTPS admin base and exact
+   for (const id of ['', '0', '0966', ' 966', '966/49', '-1', 966]) assert.equal(freshFormUrl(base, id), null);
+ });
+ 
++test('invalid input reports the exact failing field instead of one shared message', () => {
++  assert.equal(freshFormIssue(base, '966'), null);
++  for (const id of ['', '0', '0966', ' 966', '966/49', '-1', 'PP0482', 966]) assert.equal(freshFormIssue(base, id), 'entity');
++  for (const missing of ['', '   ', undefined, null]) assert.equal(freshFormIssue(missing, '966'), 'missing-base');
++  for (const rejected of ['http://bestofgifts.pt/admin', 'https://example.org/admin', 'https://www.bestofgifts.pt/admin',
++    'https://bestofgifts.pt:444/admin', base + '/key/SECRET/', base + '?key=SECRET', base + '#SECRET',
++    'https://user:pass@bestofgifts.pt/admin', 'https://bestofgifts.pt/', 'not a url']) assert.equal(freshFormIssue(rejected, '966'), 'rejected-base');
++  assert.equal(freshFormUrl(base, '966'), full.replace('/key/PRIVATE_SESSION/', '/'));
++  assert.equal(freshFormUrl('https://example.org/admin', '966'), null);
++});
++
+ test('native reference accepts only the entire exact edit address and optional native key segment', () => {
+   const target = freshFormUrl(base, '966')!;
+   for (const valid of [full, target, target.replace(/\/$/, '')]) assert.equal(isNativePpReference(valid, target), true);
+@@ -127,14 +138,16 @@ test('fresh load uses a new inactive tab and serialized inherited-registry reade
+   assert.doesNotMatch(JSON.stringify(response), /PRIVATE|admin_fixture|key\//);
+ });
+ 
+-for (const scenario of ['base', 'create', 'login', 'redirect', 'entity-route', 'identity', 'provider', 'timeout', 'stale', 'frame', 'partial']) {
++for (const scenario of ['base', 'no-base', 'create', 'login', 'redirect', 'entity-route', 'identity', 'provider', 'timeout', 'stale', 'frame', 'partial']) {
+   test(`fresh lifecycle: ${scenario} is explicit and always cleans up created tabs`, async t => {
+     const f = fixture(t, { scenario });
+     const response = await settle(t, readFreshForm('case-' + scenario, '966', 1));
+-    assert.equal(response.status, scenario === 'base' ? 'invalid' : scenario === 'login' ? 'auth' : scenario === 'partial' ? 'partial' : 'unavailable');
+-    assert.equal(response.cleanup, ['base', 'create'].includes(scenario) ? 'not-created' : 'closed');
+-    assert.equal(f.removed.length, ['base', 'create'].includes(scenario) ? 0 : 1);
++    assert.equal(response.status, ['base', 'no-base'].includes(scenario) ? 'invalid' : scenario === 'login' ? 'auth' : scenario === 'partial' ? 'partial' : 'unavailable');
++    assert.equal(response.cleanup, ['base', 'no-base', 'create'].includes(scenario) ? 'not-created' : 'closed');
++    assert.equal(f.removed.length, ['base', 'no-base', 'create'].includes(scenario) ? 0 : 1);
+     assert.ok(f.injected.length <= 10); assert.doesNotMatch(JSON.stringify(response), /PRIVATE|key\//);
++    if (scenario === 'base') assert.match(response.reason, /saved admin base URL is not accepted/);
++    if (scenario === 'no-base') assert.match(response.reason, /Admin base URL is not set/);
+     if (scenario !== 'partial') assert.equal(response.snapshot, undefined);
+   });
+ }

@@ -1,0 +1,63 @@
+{
+  "code": "840",
+  "title": "840 — CONJ CRIANÇA Avental c\\ bolso + chapéu",
+  "url": "https://app.notion.com/p/bacb6705ae1f8296839b01585f6e5e8e",
+  "pageLastEditedAt": "2026-11-17T13:50:42.072Z",
+  "verification": {
+    "state": "unverified"
+  },
+  "content": "## Imagens\n\n<image source=\"notion-file-block://e79b6705-ae1f-82b4-8b63-81d67914222e/a3b63178-46ef-4da8-a4c6-25dd96cffcf1?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP840_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: TTK884\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 840</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 840.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir de IMP → New e do perfil original. Validar áreas, técnicas e material antes de aprovar. Histórico original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: tamanho proposto por confirmar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação |\n\n<toggle>\nPendências técnicas\n\n- Atribuição de técnicas aos locais agrupados no Excel por confirmar\n- Peito: DTF A5: tamanho proposto por confirmar\n- Bolso: DTF A7: tamanho proposto por confirmar\n- Bolso: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n- Bolso: Confirmar área de impressão do bolso\n- Chapéu: DTF A7: tamanho proposto por confirmar\n- Chapéu: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M126:P369<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M126 | 840 |\n| N126 | CONJ CRIANÇA Avental c\\\\ bolso  + chapéu |\n| N127 | Ex: TTK884 |\n| O127 | Peito |\n| P127 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P128 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P129 | DTF - Até A6 (10,5x14,8 cm) |\n| P130 | DTF - Até A5 (14,8x21,0 cm) |\n| O131 | Bolso |\n| P131 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P132 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O133 | Chapéu |\n| P133 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P134 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P135 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "properties": {
+    "Código PP": "840",
+    "Estado": "A rever",
+    "Faces": [
+      "Peito",
+      "Bolso",
+      "Chapéu"
+    ],
+    "Família": [
+      "Conjuntos"
+    ],
+    "Imagem principal": [
+      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg"
+    ],
+    "Notas": "",
+    "Número de locais possíveis": 3,
+    "Opções de personalização": [
+      "Transfer — até 57 cm² — 2 cores",
+      "Transfer — até 126 cm² — 2 cores",
+      "DTF — até A6",
+      "DTF — até A5",
+      "DTF — até A7",
+      "Transfer — até 12 cm² — 2 cores"
+    ],
+    "PP": "840 — CONJ CRIANÇA Avental c\\\\ bolso + chapéu",
+    "SKU / referência do fornecedor": "Ex: TTK884",
+    "Tipos de artigo compatíveis": [
+      "Avental"
+    ],
+    "Técnicas": [
+      "Transfer",
+      "DTF"
+    ],
+    "url": "https://app.notion.com/p/bacb6705ae1f8296839b01585f6e5e8e",
+    "Área": "Brinde têxtil"
+  },
+  "icon": null,
+  "cover": {
+    "type": "file",
+    "file": {
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg",
+      "expiry_time": "2026-11-17T13:56:03.136Z"
+    }
+  },
+  "validation": {
+    "code": "840",
+    "descExact": true,
+    "sourceExact": true,
+    "newExact": true,
+    "oldExact": true,
+    "afterReview": true,
+    "columns": 2
+  }
+}

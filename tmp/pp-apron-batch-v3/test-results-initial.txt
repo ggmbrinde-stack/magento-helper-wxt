@@ -1,0 +1,7 @@
+tests 40
+test_all_corrected_pages_idempotent_and_own_new_review_media_preserved (test_batch.BatchTests.test_all_corrected_pages_idempotent_and_own_new_review_media_preserved)
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-apron-batch-v3\tests\test_batch.py", line 119, in test_all_corrected_pages_idempotent_and_own_new_review_media_preserved
+    self.assertEqual(len(notes),len(set(notes)));self.assertEqual(len(notes),3)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 3

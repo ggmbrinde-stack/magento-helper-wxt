@@ -1,0 +1,204 @@
+--- 661-before
++++ 661-after
+@@ -1,10 +1,6 @@
+-## Descrição e notas do perfil
+-
+ Ex: MO6164
+ 
+ No caso de Bordado, apenas considere "Repetição" se já fez este bordado connosco no mesmo tamanho e cores
+-
+-## Notas
+ 
+ - Grupo com vários locais ou sem local: confirmar a distribuição das opções
+ - Sem imagem ancorada dentro do bloco
+@@ -24,34 +20,102 @@
+ <column ratio="50">
+ ## New (proposta)
+ 
+-<callout icon="📝">
+-<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.
+-</callout>
+-
+-| Face / local | Opções propostas | Nota |
+-| --- | --- | --- |
+-| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |
+-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |
+-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |
+-
+-<toggle>
+-Pendências técnicas
+-
+-- Peito: DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New
+-- Bolso Esquerdo: Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New
+-- Bolso Direito: DTF A7 registado na origem; confirmar técnica em cânhamo
+-</toggle>
++<table fit-page-width="true" header-row="true">
++<colgroup>
++<col width="80" />
++<col width="350" />
++</colgroup>
++<tr>
++<td>
++Face / local
++</td>
++<td>
++Opções propostas
++</td>
++</tr>
++<tr>
++<td>
++Peito
++</td>
++<td>
++DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6
++</td>
++</tr>
++<tr>
++<td>
++Bolso Esquerdo
++</td>
++<td>
++Por confirmar — sem opção aprovada em IMP → New
++</td>
++</tr>
++<tr>
++<td>
++Bolso Direito
++</td>
++<td>
++DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS)
++</td>
++</tr>
++</table>
+ </column>
+ <column ratio="50">
+ ## Old (original)
+ 
+-### Locais e personalização
+-
+-| Face / local | Opções completas e especificações | Notas |
+-| --- | --- | --- |
+-| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++<table fit-page-width="true" header-row="true">
++<colgroup>
++<col width="80" />
++<col width="350" />
++</colgroup>
++<tr>
++<td>
++Face / local
++</td>
++<td>
++Opções completas e especificações
++</td>
++</tr>
++<tr>
++<td>
++Peito
++</td>
++<td>
++Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5
++</td>
++</tr>
++<tr>
++<td>
++Bolso Esquerdo<br />Bolso Direito
++</td>
++<td>
++Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS)
++</td>
++</tr>
++</table>
+ </column>
+ </columns>
++
++<toggle heading="h2">
++Pontos técnicos a confirmar
++
++<toggle>
++New: Peito
++
++DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New
++</toggle>
++
++<toggle>
++New: Bolso Esquerdo
++
++Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New
++</toggle>
++
++<toggle>
++New: Bolso Direito
++
++DTF A7 registado na origem; confirmar técnica em cânhamo
++</toggle>
++</toggle>
+ 
+ <toggle>
+ Fonte e original do Excel
+@@ -76,4 +140,65 @@
+ | P71 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |
+ | O72 | Bolso Direito |
+ | P72 | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) |
++</toggle>
++
++<toggle>
++Histórico de apresentação
++
++<toggle>
++New
++
++<callout icon="📝">
++<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.
++</callout>
++</toggle>
++
++<toggle>
++Old
++
++### Locais e personalização
++</toggle>
++
++## Descrição e notas do perfil
++
++## Notas
++
++<toggle>
++Original preservado antes da revisão de layout e associações Excel
++
++Proveniência: M63:P73; grupos e células verificados no plano.
++
++<columns>
++<column ratio="50">
++## New (proposta)
++
++<callout icon="📝">
++<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.
++</callout>
++
++| Face / local | Opções propostas | Nota |
++| --- | --- | --- |
++| Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |
++| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |
++| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |
++
++<toggle>
++Pendências técnicas
++
++- Peito: DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New
++- Bolso Esquerdo: Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New
++- Bolso Direito: DTF A7 registado na origem; confirmar técnica em cânhamo
++</toggle>
++</column>
++<column ratio="50">
++## Old (original)
++
++### Locais e personalização
++
++| Face / local | Opções completas e especificações | Notas |
++| --- | --- | --- |
++| Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)<br />Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++</column>
++</columns>
++</toggle>
+ </toggle>

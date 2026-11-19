@@ -1,0 +1,109 @@
+{
+  "task": "PP-PYTHON-FIX",
+  "candidate": "v1",
+  "status": "Frozen for independent review; offline only; no operational imports authorised or executed",
+  "base": {
+    "rootBranch": "codex/release-baseline",
+    "rootHead": "cd3d2abbf4fbb5e4a9f8d5884cf05d753bd08071",
+    "originalZip": "C:\\Users\\user\\Downloads\\BOG_Studio_PP_Importer.zip",
+    "originalZipSha256": "ed1faf7ab29d2dd21288a866f28df1f85fc735422446c900640adffac8d7a466",
+    "originalScriptSha256": "eebf410f93ce8093c127e82313fabb865cf80888d42f7e9685a61154d05cf630"
+  },
+  "changedProductionFiles": [
+    "importar_pp.py"
+  ],
+  "otherChanges": [
+    "Focused README bugfix notes",
+    "Two stdlib test/preview helpers",
+    "Bounded source evidence and generated offline previews/logs"
+  ],
+  "correctedScriptSha256": "1fb60fb6e3753e09a9f71b3f27bdb51a5a83da9bb943e83217d29eb1ea341ab2",
+  "workbooks": [
+    {
+      "name": "AI_READ_Perfis de Personalização - Cópia.xlsx",
+      "sha256": "36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+      "scope": "PPs BRINDE TÊXTIL!M6:P32; no full workbook extraction"
+    },
+    {
+      "name": "CLEAN__Perfis de Personalização.xlsx",
+      "sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+      "scope": "PPs BRINDE TÊXTIL!M6:P32; no full workbook extraction"
+    }
+  ],
+  "findings": [
+    {
+      "bug": "Automatic/default top-border colours were ignored, flattening PP428 Peito/Bolso and neighbouring PP633.",
+      "fix": "Recognise missing/automatic/indexed-64 border colours only at labelled location rows; retain existing explicit-colour behaviour.",
+      "evidence": "Both real source hashes reverified. Original extractor failed six-plus-two fixture for each workbook; corrected focused reads pass."
+    },
+    {
+      "bug": "Ambiguous/shared or missing location assignments were warnings and remained writable.",
+      "fix": "Keep groups/raw source intact; block uncertain assignments at extraction and import, including older plans."
+    },
+    {
+      "bug": "Import accepted missing or duplicate codes in a supplied plan.",
+      "fix": "Reject those plans before API access; source extraction orphan/duplicate holds are retained."
+    },
+    {
+      "bug": "An all-existing-code import still performed schema option preparation.",
+      "fix": "Return before option/schema/upload/page mutations; existing pages and journal are preserved."
+    },
+    {
+      "bug": "Source-hash protection existed for imports but not direct option preparation.",
+      "fix": "Reuse the source hash guard before either path performs API operations."
+    },
+    {
+      "bug": "Page-create journal was written but not consulted, permitting another create after an uncertain previous create was absent from a query.",
+      "fix": "Query existing codes, skip visible pages, and hold any journalled missing page before schema preparation or uploads."
+    },
+    {
+      "bug": "Temporary schema-helper creation/cleanup had no durable uncertainty guard.",
+      "fix": "Journal intent, known helper ID and confirmed cleanup; unresolved helper state blocks subsequent attempts."
+    }
+  ],
+  "checks": {
+    "stdlibUnitTests": 17,
+    "baselineFocusedTests": {
+      "tests": 12,
+      "failures": 7,
+      "errors": 1,
+      "note": "Intentional failing pre-fix reproductions; only offline fake APIs were used."
+    },
+    "realFocusedPreview": "Two original workbooks, PP428 M9:P20 = Peito P10:P15 and Bolso P16:P17; neighbouring PP633 fixture = three plus two. All focused preview output records blocked for writes.",
+    "cliDryRun": "Passed without --aplicar; unit checks prove no API construction/network or file mutation.",
+    "patch": "Minimal importer-only patch applies directly to original ZIP bytes and reproduces corrected raw SHA256; strict forward/reverse whitespace checks passed with core.whitespace=cr-at-eol.",
+    "package": "ZIP entries re-read and byte-matched to frozen source."
+  },
+  "localOnlyCommands": [
+    "python -m unittest discover -s tests -v",
+    "python tests/preview_focused.py",
+    "python importar_pp.py importar --plano \"focused-preview/AI_READ_Perfis de Personalização - Cópia.json\" --codigo 428"
+  ],
+  "limits": [
+    "No Notion token, live API, schema write, upload or import was used or validated.",
+    "Existing Notion pages are skipped; this is not an existing-page correction/update tool.",
+    "Full 122 MB workbook extraction was not run; grouping proof is scoped to the recorded real ranges and small fixtures.",
+    "Unrecognised group layouts remain subject to review. No global correctness claim across all PPs.",
+    "Original option naming, image MIME/size rules and API payload contracts are unchanged. Image content authenticity/live format support was not tested.",
+    "Prior ambiguous external writes without a journal cannot be discovered automatically. Retain journals and reconcile uncertainty manually.",
+    "No dependencies, agents, external chat messages, commits/pushes, Magento actions, TypeScript changes, installation/staging or New/Old/price/PDF/DTF mapping work."
+  ],
+  "files": {
+    "baseline-regressions.log": "3e62a0c320ad48e7bd9b80569c5cdeb3f020c7a470429c02deea0dc0d4d04134",
+    "BOG_Studio_PP_Importer_FIXED_REVIEW_v1.zip": "2f86e697a3f38956403643ddfb7962863e21f3afd75a163ee0774b8ce78bc275",
+    "cli-dry-run.log": "81615e29bd5d57424c2e6bc72399bd5dfeb054d4f0d287b3d5cc2740fc104f2d",
+    "focused-preview/AI_READ_Perfis de Personalização - Cópia.json": "f13fd549c9a089ba7a55b62fa3d8fdcd513a55d52139cf4b36816259f112df96",
+    "focused-preview/CLEAN__Perfis de Personalização.json": "68360609b1f64a44a28eda50e4167eacace6803753247efa320352e62f3bdc79",
+    "focused-preview/summary.json": "640cf4be59cd5ad34d0f24dc76d6540ddc98f30202066f1f31c76058acac512a",
+    "importar_pp-fix-v1.patch": "1e606eab7b3d1414c3f5bac46a3847f4bd0fdad3275a4ce3d15fa7738630c87f",
+    "real-focused-preview.log": "54adba06de931ff1b8411b48993561ac83e351abd009e9fe02dc84ef0dc9f9ca",
+    "source/focused-source-evidence.json": "4786719f601e5b028898d6e0da3a167ac574de9be751aff1952fcb98c475fb73",
+    "source/importar_pp.py": "1fb60fb6e3753e09a9f71b3f27bdb51a5a83da9bb943e83217d29eb1ea341ab2",
+    "source/PROMPT_BOG_STUDIO.md": "f417fb3068e822cf1cb414fe5216748abd4516ec62fe2ab9f790376c0eceb41c",
+    "source/README.md": "a5fc35754522ee1b647343bb58738b96365c9c396f86225ff18c89986039ebbe",
+    "source/SETUP_NOTION.md": "da5517d41cdf2f80ca3e4d780aae00d9c20a4edce0c24c58c1bc49875b475b2d",
+    "source/tests/preview_focused.py": "ca890ebd66d62cf4e3bfa714da84d923223886d6e75d39edce406f926920cf8d",
+    "source/tests/test_importar_pp.py": "a1bfd580c89136d275dc13346e3973a08162ab0049e280c10501370d3b383411",
+    "unit-tests.log": "7ddda88ec0198f22206bcf9cee162cf7f6237171566e12fd22cf7e27bf4862e2"
+  }
+}

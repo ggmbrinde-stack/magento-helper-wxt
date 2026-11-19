@@ -1,0 +1,25 @@
+{
+  "basis": "Captured Markdown spec: table cells inline-only, br for cell line breaks. Public update_content contract: smallest exact unique old_str targeted search-and-replace. No descendant-bearing container is replaced.",
+  "body_notes": "Retain raw notes in their own row or explicitly label original joint scope once when Excel Old grouping is restored. Never retain only in history.",
+  "commands": [
+    "update_content",
+    "update_properties"
+  ],
+  "evidence": {
+    "captures/contract/markdown-spec.json": "13c4869d2f8ab5beb8ff80ae32017034c42987660bfde2a7041f637b76721e76",
+    "captures/contract/tool-descriptions.json": "ff03f0a2464b0ad134582d8a7bebb89380aa6caf78fd5193161cba9fddd8672e",
+    "source-evidence/ENGINEERING-SOURCE-INPUT.md": "5b9d76672a1b9fb74cba7b77272e71cb13fc7831fab94f8193b32b8da7140dcc",
+    "source-evidence/IMP-tab.md": "c01ea9d536a5cb9ce7ba4ac512dc710ea369ca5a4d96f7802ebe744b2849cfba",
+    "source-evidence/Regras-de-Atualizacao-tab.md": "81fcfeb46b41108cfb06b2384a6fc4e1b8314a18d60dd391fdfa5f71041271bf",
+    "source-evidence/manifest.json": "049b398f372da68b6ecbd7bb596aa38f5f047588ca945ab7461f39baf443f9e0"
+  },
+  "limits": "Real connector row saving/normalisation still requires reviewed pilot; no native block-tree or UI completeness claim; local freshness is not server atomic compare-and-swap.",
+  "name": "PP_METHOD_ROWS",
+  "native_comments": "Explicitly excluded by human; no absence or anchor preservation attested",
+  "protected_collections": [
+    "434b6705-ae1f-8372-9d2e-070435a4f043",
+    "166b6705-ae1f-83da-be92-87f8d804a1a5"
+  ],
+  "scope": "Exact complete data row, unchanged table width, existing native columns/toggles retained. Property changes restricted to the exact reviewed saved New and existing schema.",
+  "version": 1
+}

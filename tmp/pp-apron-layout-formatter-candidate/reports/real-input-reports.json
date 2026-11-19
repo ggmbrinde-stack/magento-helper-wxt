@@ -1,0 +1,322 @@
+[
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP429.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "e3618a9ff8f7a1be133e3db9dcfe2269a3a443bccd542405f7a2dd38b8d82f52",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "429",
+    "page_id": "137b6705ae1f82048ef1810070095cf0",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP430.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "44ae60efc8c0b29c99a5979315395b96bb1f9224a488da6c1a8a8f999360e826",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "430",
+    "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP467.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "32f6a9ca3b56fd0e710387a4377c874d02cc866ac5190ad91dd182dc02bf8e32",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "467",
+    "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP558.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "f3569bdc36ac0d3df4c47a0513f724f9e0c25107f8af7bb5a03ead0a629751ad",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "558",
+    "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP612.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "29bc53bbc2da2dd34564e3425e5847aa138fcbb149f2e6a5a1c452dc4d599973",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "612",
+    "page_id": "e48b6705ae1f83ddafb501a2ea781406",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP633.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "1d8b2b25be6dee9c704408bafaf84c2dfeadb24fa831db8cd977e58fd036f6ba",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "633",
+    "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP661.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "340486f4e21e5ee7c96cd1d4921c09a765d1f5b840c62001d8cb4f75f7fdb0a7",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "661",
+    "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP662.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "f9e71e8a52b190e6b46c14d747f8e26edbb00e9f52b7054fec86fba0e0df530b",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "662",
+    "page_id": "ddbb6705ae1f820cb837013a1864964a",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP786.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "c2b52b87c79ca198a213c74be3d6f9b7d093816799c6908115e4551ced62e689",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "786",
+    "page_id": "d00b6705ae1f835cb7440191c545e56b",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\after-PP840.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "7ae411d53777c2e10b3294758e6ed9eef61126b4c59b4f54aed38b9a84621a9f",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "840",
+    "page_id": "bacb6705ae1f8296839b01585f6e5e8e",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP429.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "e1bb1875a838c1242220f5e9d96ee2e5eb218c7eb71ea3ec89feadba238bceac",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "429",
+    "page_id": "137b6705ae1f82048ef1810070095cf0",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP430.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "9cbb604e73f76666e8f9b7bda1b4266d7489960059e2c0ceb1db8bd8c043b2ce",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "430",
+    "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP467.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "c153330d5a14b465abe2aa7ed747079b4072ba0f6b1e367a554710175e7b363e",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "467",
+    "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP558.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "07315b8d04914dadc1c33115346e9ef0ed520417f85e2eb6686d8162b029b88d",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "558",
+    "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP612.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "8b0fcffcce81e1b7e4418afe68d3d1436ec533ee6fc5140064f5ba2e410ff440",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "612",
+    "page_id": "e48b6705ae1f83ddafb501a2ea781406",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP633.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "132c370fb6180a746cf919dc99e285c5d2902645fe74fc20d625f54292dcf513",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "633",
+    "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP661.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "faa554fd50627ebc8e6fa374560a32319ec115d85686ef479d077e7e27a9c7dd",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "661",
+    "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP662.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "c4944c0c4120d5dddf9b35f0cdb3cc8ad045e584846a296e6f1f5b7f3f651717",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "662",
+    "page_id": "ddbb6705ae1f820cb837013a1864964a",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP786.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "ce56eecfa734de0cb525379d4e5e05af9800bdbc14be99ca42282e6503e6c90c",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "786",
+    "page_id": "d00b6705ae1f835cb7440191c545e56b",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  },
+  {
+    "input": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\notion-apron-layout-20261117\\before-PP840.json",
+    "status": "BLOCKED",
+    "apply_allowed": false,
+    "source_snapshot_sha256": "77ba56d04b4d662e39889fc5e70e5eb63cc0ef66e532dc8efa570fba5b0020ea",
+    "template_snapshot_sha256": null,
+    "synthetic_fixture": false,
+    "code": "840",
+    "page_id": "bacb6705ae1f8296839b01585f6e5e8e",
+    "reason": "Missing complete body/properties coverage evidence; rendered text alone is insufficient",
+    "missing_native_fields": [
+      "coverage",
+      "blocks"
+    ],
+    "template_dependency": "BLOCKED"
+  }
+]

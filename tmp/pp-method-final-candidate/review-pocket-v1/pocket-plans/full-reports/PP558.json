@@ -1,0 +1,124 @@
+{
+  "code": "558",
+  "desired_body": "## Imagens\n\n<image source=\"notion-file-block://666b6705-ae1f-82eb-a2db-01c72ffb3c35/47c82593-bafe-48fd-8115-de7a86731733?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP558_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: R9123\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 558</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 558.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado no Excel; confirmar viabilidade |\n\n<toggle>\nPendências técnicas\n\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New\n- Bolso Direito: DTF A7 registado no Excel; confirmar viabilidade\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M105:P116<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M105 | 558 |\n| N105 | AVENTAL C\\\\ 2 Bolsos |\n| O106 | Bolso Esquerdo |\n| P106 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| N107 | Ex: R9123 |\n| O107 | Bolso Direito |\n| P107 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "diff": "--- 558-before\n+++ 558-after\n@@ -31,7 +31,7 @@\n \n | Face / local | Opções propostas | Nota |\n | --- | --- | --- |\n-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |\n+| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |\n | Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado no Excel; confirmar viabilidade |\n \n <toggle>\n",
+  "method_complete": true,
+  "operations": [
+    {
+      "eligible": true,
+      "id": "558-pocket-row-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |",
+            "old_str": "| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "e43abe7a1f1773629260a9edd4161d5ac36896ec72d4b45118b8298f455d4684",
+        "old_note_scopes": [
+          "Bolso Esquerdo"
+        ],
+        "old_section_sha256": "6d1fdc66caf4f28609f6b47f8cd0b9e3f3b6547447810e205fa2201c3f636e91",
+        "visible_prefix_sha256": "5ce0a059fe0dcfd9a07c776ae74d3c7cb1ffccadaa29cbe92230ddab218cb02c",
+        "visible_suffix_sha256": "3175c663962cb65f532bd4864a0abced92cd6d70500614edcf5adef2fdf36bbd"
+      }
+    }
+  ],
+  "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+  "pocket_locations": [
+    "Bolso Esquerdo"
+  ],
+  "property_operations": [
+    {
+      "after_value": [
+        "Transfer — até 126 cm² — 1 cor",
+        "DTF — até A7"
+      ],
+      "before_value": [
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "eligible": true,
+      "id": "558-pocket-property-1",
+      "kind": "properties",
+      "payload": {
+        "command": "update_properties",
+        "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+        "properties": {
+          "Opções de personalização": [
+            "Transfer — até 126 cm² — 1 cor",
+            "DTF — até A7"
+          ]
+        }
+      }
+    }
+  ],
+  "reasons": [],
+  "scope_complete": true,
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://666b6705-ae1f-82eb-a2db-01c72ffb3c35/47c82593-bafe-48fd-8115-de7a86731733?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP558_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: R9123\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 558</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 558.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 registado no Excel; confirmar viabilidade |\n\n<toggle>\nPendências técnicas\n\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New\n- Bolso Direito: DTF A7 registado no Excel; confirmar viabilidade\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M105:P116<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M105 | 558 |\n| N105 | AVENTAL C\\\\ 2 Bolsos |\n| O106 | Bolso Esquerdo |\n| P106 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| N107 | Ex: R9123 |\n| O107 | Bolso Direito |\n| P107 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/47c82593-bafe-48fd-8115-de7a86731733/PP558_1.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "558",
+      "Estado": "A rever",
+      "Faces": [
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/47c82593-bafe-48fd-8115-de7a86731733/PP558_1.png"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 2,
+      "Opções de personalização": [
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "PP": "558 — AVENTAL C\\\\ 2 Bolsos",
+      "SKU / referência do fornecedor": "Ex: R9123",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Transfer",
+        "DTF"
+      ],
+      "url": "https://app.notion.com/p/1dcb6705ae1f83c6bfb181c13c9a7d19",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_state_sha256": "901fea8362706cdaa27e2b6277297731079800f8fbef01cc42c26b2176dc706a",
+  "status": "READY_FOR_REVIEW",
+  "technical_unresolved": [],
+  "unaffected_open_choices": "661 chest, 662 box, cores mapping, DTF sizes/allocation and other full-method decisions are preserved and excluded",
+  "validation_policy": {
+    "body_notes_required": true,
+    "contract_sha256": "f6f05377bff7a554a1fdad4d668bb9b1d7168fe883104d5b1418258e6a988dd6",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "name": "PP_METHOD_ROWS",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  },
+  "whole_profile_method_complete": false
+}

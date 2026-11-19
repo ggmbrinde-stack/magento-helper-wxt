@@ -1,0 +1,1830 @@
+diff --git a/package.json b/package.json
+index 2b30b2d..3c6a8f2 100644
+--- a/package.json
++++ b/package.json
+@@ -27,13 +27,15 @@
+     "test:makito": "npx esbuild src/audit/__tests__/makitoImages.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/makito-images-test.mjs --log-level=warning && node --test .output/makito-images-test.mjs",
+     "test:enable": "npx esbuild src/audit/__tests__/enableFlow.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/enable-flow-test.mjs --log-level=warning && node --test .output/enable-flow-test.mjs",
+     "test:facts": "npx esbuild src/audit/__tests__/adminFacts.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/admin-facts-test.mjs --log-level=warning && node --test .output/admin-facts-test.mjs",
+-    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features && npm run test:batch && npm run test:ui && npm run test:notion-retry && npm run test:enable-freshness",
++    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features && npm run test:batch && npm run test:ui && npm run test:notion-retry && npm run test:enable-freshness && npm run test:pp-catalog && npm run test:pp-scan",
+     "test:batch": "node --test src/automation/__tests__/batchRunner.test.mjs",
+     "test:ui": "npx esbuild tests/uiControls.test.ts tests/assocBulk.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outdir=.output/ui-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/ui-tests/uiControls.test.mjs .output/ui-tests/assocBulk.test.mjs",
+     "test:notion-retry": "npx esbuild scripts/__tests__/notionRetry.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outfile=.output/notion-retry-test.mjs --log-level=warning && node --test .output/notion-retry-test.mjs",
+     "test:enable-freshness": "npx esbuild scripts/__tests__/enableFlowFreshness.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outfile=.output/enable-flow-freshness-test.mjs --log-level=warning && node --test .output/enable-flow-freshness-test.mjs",
+     "test:features": "npx esbuild src/shared/__tests__/features.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/features-test.mjs --log-level=warning && node --test .output/features-test.mjs",
+-    "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs"
++    "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs",
++    "test:pp-catalog": "esbuild tests/ppCatalog.test.ts tests/ppCatalogUi.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outdir=.output/pp-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/pp-tests/ppCatalog.test.mjs .output/pp-tests/ppCatalogUi.test.mjs",
++    "test:pp-scan": "npx esbuild tests/ppScan.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/pp-scan-test.mjs --log-level=warning && node --test .output/pp-scan-test.mjs"
+   },
+   "dependencies": {
+     "preact": "^10.29.8",
+diff --git a/src/audit/index.ts b/src/audit/index.ts
+index f953dc9..0169b0b 100644
+--- a/src/audit/index.ts
++++ b/src/audit/index.ts
+@@ -36,3 +36,5 @@ export * from './textAudit';
+ export * from './textFetch';
+ export * from './variantLabels';
+ export * from './variants';
++
++export * from './ppCatalog';
+diff --git a/src/core/messages/audit.ts b/src/core/messages/audit.ts
+index 555e94c..af2029d 100644
+--- a/src/core/messages/audit.ts
++++ b/src/core/messages/audit.ts
+@@ -441,3 +441,10 @@ export interface ErrorMarkupMessage {
+   type: 'ERROR_MARKUP';
+   errors: ListingError[];
+ }
++
++/** Exact business-code reference only; no Magento mutation or association. */
++export interface FetchPpCatalogRequest {
++  type: 'FETCH_PP_CATALOG';
++  code: string;
++}
++export type { PpCatalogResponse } from '../../shared/ppCatalog';
+diff --git a/src/core/messages/envelope.ts b/src/core/messages/envelope.ts
+index 27d46b9..d03efcf 100644
+--- a/src/core/messages/envelope.ts
++++ b/src/core/messages/envelope.ts
+@@ -31,6 +31,9 @@ export type MessageResponder = (response: unknown) => void;
+ export interface RouterContext {
+   /** Tab that sent the message, when the sender was a content script. */
+   senderTabId?: number;
++  /** Originating document metadata for messages that act on the sender tab. */
++  senderUrl?: string;
++  senderFrameId?: number;
+   sendResponse: MessageResponder;
+ }
+ 
+diff --git a/src/core/messages/ui.ts b/src/core/messages/ui.ts
+index 3371a12..da261de 100644
+--- a/src/core/messages/ui.ts
++++ b/src/core/messages/ui.ts
+@@ -110,3 +110,50 @@ export interface SelectAssociatedSkusResponse {
+   tickedOnScreen: number;
+   filterPasses: number;
+ }
++
++export type PpDraftValue =
++  | null
++  | boolean
++  | number
++  | string
++  | PpDraftValue[]
++  | { [key: string]: PpDraftValue };
++
++export interface PpDraftTranslation {
++  raw: PpDraftValue;
++  parsed?: PpDraftValue;
++  parseError?: string;
++}
++
++export interface PpDraftRow {
++  position: number;
++  values: Record<string, PpDraftValue>;
++  translations: Record<string, PpDraftTranslation>;
++}
++
++export interface PpDraftCollection {
++  state: 'available' | 'missing' | 'invalid';
++  rows: PpDraftRow[];
++  truncated: boolean;
++  identifierGaps: number;
++}
++
++export interface ScanPpDraftRequest {
++  type: 'SCAN_PP_DRAFT';
++}
++
++export interface ScanPpDraftResponse {
++  version: 1;
++  status: 'ok' | 'partial' | 'unavailable' | 'identity-mismatch';
++  entityId: string | null;
++  providerEntityId?: PpDraftValue;
++  routePath: string;
++  scannedAt?: number;
++  providerAttributeSetId?: PpDraftValue;
++  generalAttributeSetId?: PpDraftValue;
++  general: Record<string, PpDraftValue>;
++  generalTranslations?: PpDraftTranslation;
++  locations: PpDraftCollection;
++  items: PpDraftCollection;
++  warnings: string[];
++}
+diff --git a/src/entrypoints/background/index.ts b/src/entrypoints/background/index.ts
+index 3b9ade5..1a53956 100644
+--- a/src/entrypoints/background/index.ts
++++ b/src/entrypoints/background/index.ts
+@@ -51,7 +51,12 @@ export default defineBackground(() => {
+   resumeBatchOnWake();
+ 
+   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+-    const ctx = { senderTabId: sender.tab?.id, sendResponse };
++    const ctx = {
++      senderTabId: sender.tab?.id,
++      senderUrl: sender.url,
++      senderFrameId: sender.frameId,
++      sendResponse,
++    };
+     for (const route of ROUTERS) {
+       if (route(message, ctx)) return true;
+     }
+diff --git a/src/entrypoints/background/routers/audit.ts b/src/entrypoints/background/routers/audit.ts
+index f94bcd1..43da315 100644
+--- a/src/entrypoints/background/routers/audit.ts
++++ b/src/entrypoints/background/routers/audit.ts
+@@ -1,3 +1,5 @@
++import { ppCatalogEntity } from '../../../shared/ppCatalog';
++import { loadPpCatalog } from '../../../audit';
+ /**
+  * Lane B router — audit.
+  *
+@@ -86,6 +88,20 @@ async function findAdminTabId(): Promise<number | undefined> {
+ export const handleAuditMessage: LaneRouter = (message, ctx) => {
+   const { sendResponse } = ctx;
+ 
++  if (message?.type === 'FETCH_PP_CATALOG') {
++    void (async () => {
++      try {
++        const tab = typeof ctx.senderTabId === 'number' ? await chrome.tabs.get(ctx.senderTabId) : null;
++        if (!tab?.url || !ppCatalogEntity(tab.url)) throw new Error('Unsupported page');
++        sendResponse(await loadPpCatalog(message.code));
++      } catch {
++        sendResponse({ status: 'unavailable', code: typeof message.code === 'string' ? message.code : '',
++          checkedAt: new Date().toISOString(), reason: 'Open a supported Magento custom-option edit page to read a PP reference.' });
++      }
++    })();
++    return true;
++  }
++
+   if (message?.type === 'FETCH_SKU_DATA') {
+     const sku = String(message.sku ?? '');
+     const storeView = String(message.storeView ?? 'all');
+diff --git a/src/entrypoints/background/routers/ui.ts b/src/entrypoints/background/routers/ui.ts
+index 283b72b..a6d5ac4 100644
+--- a/src/entrypoints/background/routers/ui.ts
++++ b/src/entrypoints/background/routers/ui.ts
+@@ -1,19 +1,96 @@
+ /**
+  * Lane A router — page + panel surface.
+  *
+- * Owns: browser-tab capability our own controls ask for. The page-domain
+- * messages (GET_CONFIG, GET_SKU, GET_FORM_STATE, APPLY_FIELD, SEARCH_MAGENTO)
+- * are answered by the content script, not here.
++ * Owns: browser-tab capabilities our controls ask for. SCAN_PP_DRAFT is the
++ * exception that reads Magento's already-loaded main-world registry.
+  *
+  * The audit lane drives error markup and the resolver; this router must not
+  * import audit internals.
+  */
+ 
+-import type { LaneRouter } from '../../../core/messages';
++import type { LaneRouter, ScanPpDraftResponse } from '../../../core/messages';
+ 
+ import { selectAssociatedSkus } from '../../../page/features/assoc-bulk/page';
++import {
++  ppEntityIdFromUrl,
++  scanCurrentPpDraft,
++} from '../../../page/features/pp-scan/page';
++
++const PP_ADMIN_HOSTS = new Set([
++  'bestofgifts-pt-qa.toogas.net',
++  'bestofgifts.pt',
++  'bestofgifts.eu',
++  'bestofgifts.es',
++  'bestofgifts.fr',
++]);
++
++function unavailablePpScan(entityId: string | null, routePath: string): ScanPpDraftResponse {
++  return {
++    version: 1,
++    status: 'unavailable',
++    entityId,
++    routePath: routePath.slice(0, 512),
++    general: {},
++    locations: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    items: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    warnings: ['The current Magento page could not be scanned safely.'],
++  };
++}
+ 
+ export const handleUiMessage: LaneRouter = (message, ctx) => {
++  if (message?.type === 'SCAN_PP_DRAFT') {
++    const senderEntity = ctx.senderUrl ? ppEntityIdFromUrl(ctx.senderUrl) : null;
++    const senderPath = (() => {
++      try { return new URL(ctx.senderUrl ?? '').pathname; } catch { return ''; }
++    })();
++    void (async () => {
++      if (
++        typeof ctx.senderTabId !== 'number' ||
++        ctx.senderFrameId !== 0 ||
++        !senderEntity ||
++        !ctx.senderUrl
++      ) {
++        ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++        return;
++      }
++      try {
++        const sender = new URL(ctx.senderUrl);
++        if (sender.protocol !== 'https:' || !PP_ADMIN_HOSTS.has(sender.hostname)) {
++          ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++          return;
++        }
++        const tab = await chrome.tabs.get(ctx.senderTabId);
++        const current = new URL(tab.url ?? '');
++        if (
++          current.protocol !== 'https:' ||
++          current.hostname !== sender.hostname ||
++          current.pathname !== sender.pathname ||
++          ppEntityIdFromUrl(tab.url ?? '') !== senderEntity
++        ) {
++          ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++          return;
++        }
++        const [injection] = await chrome.scripting.executeScript({
++          target: { tabId: ctx.senderTabId },
++          world: 'MAIN',
++          func: scanCurrentPpDraft,
++        });
++        const result = injection?.result as ScanPpDraftResponse | undefined;
++        if (
++          !result || result.entityId !== senderEntity ||
++          result.routePath !== senderPath
++        ) {
++          ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++          return;
++        }
++        ctx.sendResponse(result);
++      } catch {
++        ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++      }
++    })();
++    return true;
++  }
++
+   if (message?.type === 'OPEN_TAB_GROUP') {
+     const urls = (message.urls ?? []) as string[];
+     const groupName = String(message.groupName ?? 'Magento');
+diff --git a/src/entrypoints/content.ts b/src/entrypoints/content.ts
+index 54cc5fe..5dfd4cc 100644
+--- a/src/entrypoints/content.ts
++++ b/src/entrypoints/content.ts
+@@ -1,3 +1,4 @@
++import { unmountPpCatalog } from '../page/features/pp-catalog';
+ import { defineContentScript } from 'wxt/sandbox';
+ import type { ListingError } from '../shared/schemas';
+ import { getFeatureSettings, loadFeatureSettings, onFeatureSettingsChange } from '../shared/featureSettings';
+@@ -18,7 +19,7 @@ import type {
+ // label, page detection, default) and the mounts in
+ // `src/page/features/registry.ts`. This file only runs the chain.
+ import { FEATURE_CATALOG, detectFeatureIds } from '../shared/featureCatalog';
+-import { FEATURE_MOUNTS } from '../page/features/registry';
++import { FEATURE_MOUNTS, unmountPpScan } from '../page/features/registry';
+ import { extractColorGroups } from '../page/features/config-groups';
+ import { applyErrorMarkup } from '../page/features/error-markup';
+ import { handleApplyField } from '../page/features/form-fill';
+@@ -41,7 +42,11 @@ let lastDetectedFeatures: string[] | undefined;
+  */
+ function scan(options: { categoryTreeChanged?: boolean } = {}): void {
+   const f = getFeatureSettings();
+-  if (!f.extensionEnabled) return;
++  if (!f.extensionEnabled || !f.ppCatalog) unmountPpCatalog();
++  if (!f.extensionEnabled) {
++    unmountPpScan();
++    return;
++  }
+   const detectedFeatures = detectFeatureIds(document);
+   if (
+     !lastDetectedFeatures ||
+@@ -62,7 +67,10 @@ function scan(options: { categoryTreeChanged?: boolean } = {}): void {
+   for (const feature of FEATURE_CATALOG) {
+     const key = feature.id;
+     if (key === 'extensionEnabled') continue;
+-    if (!f[key]) continue;
++    if (!f[key]) {
++      if (key === 'ppScan') unmountPpScan();
++      continue;
++    }
+     if (key === 'categoryTree' && options.categoryTreeChanged === false) continue;
+     safe(key, FEATURE_MOUNTS[key]);
+   }
+diff --git a/src/page/features/registry.ts b/src/page/features/registry.ts
+index 8f235ca..2d0e03c 100644
+--- a/src/page/features/registry.ts
++++ b/src/page/features/registry.ts
+@@ -1,3 +1,5 @@
++import { mountPpCatalog } from './pp-catalog';
++import { mountPpScan, unmountPpScan } from './pp-scan';
+ // Mounts for the feature catalog.
+ //
+ // `src/shared/featureCatalog.ts` says what each feature is (key, label, page
+@@ -64,4 +66,8 @@ export const FEATURE_MOUNTS: Record<MountableFeatureKey, () => void> = {
+   optionsCompanion: addOptionsCompanion,
+   optionsItems: enhanceOptionsItems,
+   assocBulk: enhanceAssocBulk,
++  ppCatalog: mountPpCatalog,
++  ppScan: mountPpScan,
+ };
++
++export { unmountPpScan };
+diff --git a/src/shared/__tests__/features.test.ts b/src/shared/__tests__/features.test.ts
+index d568126..8b50b9c 100644
+--- a/src/shared/__tests__/features.test.ts
++++ b/src/shared/__tests__/features.test.ts
+@@ -55,6 +55,8 @@ test('the catalog still declares every storage key with its default', () => {
+     errorMarkup: true,
+     optionsCompanion: true,
+     optionsItems: true,
++    ppCatalog: true,
++    ppScan: true,
+   };
+   assert.deepEqual(FEATURE_DEFAULTS, expected);
+ });
+@@ -118,6 +120,18 @@ test('a product edit page detects the product-form features', () => {
+   }
+ });
+ 
++test('the PP scan is detected only on the native custom-option edit route', () => {
++  const dom = new JSDOM(
++    '<div data-bind="scope: \'toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas\'"></div>',
++    { url: 'https://bestofgifts.pt/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/secret' },
++  );
++  assert.ok(detectFeatureIds(dom.window.document).includes('ppScan'));
++  const other = new JSDOM('<div class="custom-options"></div>', {
++    url: 'https://bestofgifts.pt/catalog/product/edit/id/1',
++  });
++  assert.ok(!detectFeatureIds(other.window.document).includes('ppScan'));
++});
++
+ test('detection ids are unique and follow catalog order', () => {
+   const detected = detectFeatureIds(
+     docWith('<div class="data-grid"></div><div class="store-switcher"></div>'),
+diff --git a/src/shared/featureCatalog.ts b/src/shared/featureCatalog.ts
+index c08bd8c..44dbe95 100644
+--- a/src/shared/featureCatalog.ts
++++ b/src/shared/featureCatalog.ts
+@@ -1,3 +1,4 @@
++import { ppCatalogEntity } from './ppCatalog';
+ // The one list of page features.
+ //
+ // Before this file there were four parallel lists that had to agree by hand:
+@@ -39,7 +40,9 @@ export type FeatureKey =
+   | 'configButtons'
+   | 'errorMarkup'
+   | 'optionsCompanion'
+-  | 'optionsItems';
++  | 'optionsItems'
++  | 'ppCatalog'
++  | 'ppScan';
+ 
+ /** Panel heading a feature is listed under. */
+ export type FeatureGroup =
+@@ -84,6 +87,10 @@ const has = (doc: Document, selector: string): boolean =>
+ const GRID = '.data-grid';
+ const PRODUCT_FORM = '#product_form, .product-edit, [data-ui-id="product-form"]';
+ const CUSTOM_OPTIONS = '.custom-options, .options';
++const PP_OPTIONS_ROUTE =
++  /\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/\d+(?:\/|$)/i;
++const PP_OPTIONS_ANCHOR =
++  '[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]';
+ 
+ export const FEATURE_CATALOG: readonly FeatureMeta[] = [
+   {
+@@ -277,6 +284,27 @@ export const FEATURE_CATALOG: readonly FeatureMeta[] = [
+     available: true,
+     detect: (doc) => has(doc, CUSTOM_OPTIONS),
+   },
++  {
++    id: 'ppCatalog',
++    label: 'Notion PP reference',
++    description: 'Load an exact business PP definition from Notion without changing the Magento page.',
++    group: 'Product form',
++    defaultOn: true,
++    available: true,
++    detect: (doc) => ppCatalogEntity(doc.URL) !== null,
++  },
++  {
++    id: 'ppScan',
++    label: 'Scan current PP draft',
++    description:
++      'Read a bounded snapshot of the current unsaved custom-option draft. The scan never saves or changes Magento data.',
++    group: 'Product form',
++    defaultOn: true,
++    available: true,
++    detect: (doc) =>
++      PP_OPTIONS_ROUTE.test(doc.defaultView?.location.pathname ?? '') &&
++      has(doc, PP_OPTIONS_ANCHOR),
++  },
+ ];
+ 
+ /** Storage keys and their defaults, derived from the catalog. */
+diff --git a/src/shared/notion/client.ts b/src/shared/notion/client.ts
+index 45c1cb3..5d92c7b 100644
+--- a/src/shared/notion/client.ts
++++ b/src/shared/notion/client.ts
+@@ -355,8 +355,11 @@ export async function queryDatabasePage(
+       has_more?: boolean;
+       next_cursor?: string | null;
+     };
++    if (!Array.isArray(json.results) || typeof json.has_more !== 'boolean') {
++      throw new NotionApiError(502, 'invalid_response', 'Incomplete Notion query response', 0, false);
++    }
+     return {
+-      results: json.results ?? [],
++      results: json.results,
+       hasMore: json.has_more === true,
+       nextCursor: typeof json.next_cursor === 'string' ? json.next_cursor : null,
+     };
+@@ -403,6 +406,29 @@ export async function queryAllDatabase(
+   return { results, truncated: true };
+ }
+ 
++/** One body page with explicit pagination, for bounded catalogue reads. */
++export async function listBlockChildrenPage(
++  token: string,
++  blockId: string,
++  startCursor?: string,
++): Promise<DatabaseQueryPage> {
++  return queued(async () => {
++    const url = new URL(`https://api.notion.com/v1/blocks/${blockId}/children`);
++    url.searchParams.set('page_size', '100');
++    if (startCursor) url.searchParams.set('start_cursor', startCursor);
++    const response = await readOnlyNotionFetch(url.toString(), {
++      method: 'GET',
++      headers: { Authorization: `Bearer ${token}`, 'Notion-Version': NOTION_VERSION },
++    });
++    if (!response.ok) throw await notionApiError(response, 'listBlocks');
++    const json = await response.json() as { results?: unknown[]; has_more?: boolean; next_cursor?: string | null };
++    if (!Array.isArray(json.results) || typeof json.has_more !== 'boolean') {
++      throw new NotionApiError(502, 'invalid_response', 'Incomplete Notion block response', 0, false);
++    }
++    return { results: json.results, hasMore: json.has_more, nextCursor: typeof json.next_cursor === 'string' ? json.next_cursor : null };
++  });
++}
++
+ /** Read every top-level child block of a page (read-only, paginated). */
+ export async function listBlockChildren(
+   token: string,
+diff --git a/src/audit/ppCatalog.ts b/src/audit/ppCatalog.ts
+new file mode 100644
+index 0000000..c521a1f
+--- /dev/null
++++ b/src/audit/ppCatalog.ts
+@@ -0,0 +1,145 @@
++import {
++  getDatabase, loadSettings, queryDatabasePage, listBlockChildrenPage, NotionApiError,
++} from '../shared/notion/client';
++import {
++  PP_CATALOG_DATABASE, type PpCatalogDefinition, type PpCatalogResponse,
++} from '../shared/ppCatalog';
++
++const record = (value: unknown): Record<string, unknown> =>
++  value !== null && typeof value === 'object' && !Array.isArray(value)
++    ? value as Record<string, unknown> : {};
++
++function text(value: unknown): string | null {
++  if (!Array.isArray(value)) return null;
++  const parts = value.map(item => {
++    const part = record(item);
++    return typeof part.plain_text === 'string' ? part.plain_text : record(part.text).content;
++  });
++  return parts.every(part => typeof part === 'string') ? parts.join('') : null;
++}
++
++function labels(value: unknown): string[] | null {
++  const prop = record(value);
++  if (prop.type !== 'multi_select' || !Array.isArray(prop.multi_select)) return null;
++  const values = prop.multi_select.map(item => record(item).name);
++  return values.every(item => typeof item === 'string') ? values as string[] : null;
++}
++
++function count(value: unknown): number | null {
++  const prop = record(value);
++  return prop.type === 'number' && typeof prop.number === 'number' && Number.isFinite(prop.number)
++    ? prop.number : null;
++}
++
++/** Only the selected page's body, with explicit coverage limits and no inference. */
++async function readBody(token: string, pageId: string): Promise<{ lines: string[]; partial: boolean }> {
++  const lines: string[] = [];
++  let requests = 0;
++  let blocks = 0;
++  let characters = 0;
++  let partial = false;
++  const visit = async (id: string, depth: number): Promise<void> => {
++    let cursor: string | undefined;
++    do {
++      if (requests >= 8 || blocks >= 400 || characters >= 12000) { partial = true; return; }
++      const page = await listBlockChildrenPage(token, id, cursor);
++      requests++;
++      for (const raw of page.results) {
++        if (++blocks > 400 || characters >= 12000) { partial = true; return; }
++        const block = record(raw);
++        const value = record(block[String(block.type)]);
++        let line = text(value.rich_text);
++        if (typeof block.type !== 'string' || ('rich_text' in value && line === null)) partial = true;
++        // Only known containers and dividers can legitimately omit readable text.
++        if (block.type === 'unsupported' || (line === null && block.type !== 'table_row' &&
++          !['table', 'column_list', 'column', 'divider'].includes(String(block.type)))) partial = true;
++        if (block.type === 'table_row' && !Array.isArray(value.cells)) partial = true;
++        if (block.type === 'table_row' && Array.isArray(value.cells)) {
++          const cells = value.cells.map(text);
++          if (cells.some(cell => cell === null)) partial = true;
++          line = cells.map(cell => cell ?? '[Unreadable cell]').join(' | ');
++        }
++        if (line) {
++          const remaining = 12000 - characters;
++          lines.push(line.slice(0, remaining));
++          characters += Math.min(line.length, remaining);
++          if (line.length > remaining) partial = true;
++        }
++        if (block.has_children === true) {
++          if (depth >= 3 || typeof block.id !== 'string' || !/^[0-9a-f-]{36}$/i.test(block.id)) partial = true;
++          else await visit(block.id, depth + 1);
++        }
++      }
++      if (!page.hasMore) return;
++      if (!page.nextCursor || page.nextCursor === cursor) { partial = true; return; }
++      cursor = page.nextCursor;
++    } while (true);
++  };
++  await visit(pageId, 0);
++  return { lines, partial };
++}
++
++/** User-triggered reference lookup. Uses the existing worker-only credential path. */
++export async function loadPpCatalog(code: unknown): Promise<PpCatalogResponse> {
++  const rawCode = typeof code === 'string' ? code : '';
++  const result = (status: PpCatalogResponse['status'], reason: string, definition?: PpCatalogDefinition): PpCatalogResponse => ({
++    status, code: rawCode, checkedAt: new Date().toISOString(), reason,
++    ...(definition ? { definition } : {}),
++  });
++  if (typeof code !== 'string' || !code.trim() || code.length > 128) {
++    return result('invalid', 'Enter the exact business PP text (1 to 128 characters).');
++  }
++  let definition: PpCatalogDefinition | undefined;
++  try {
++    const { notionToken } = await loadSettings();
++    if (!notionToken) return result('auth', 'Configure the existing Notion integration token in Settings first.');
++    const database = record(await getDatabase(notionToken, PP_CATALOG_DATABASE));
++    const properties = record(database.properties);
++    const codeSchema = record(properties['Código PP']);
++    if (codeSchema.type !== 'rich_text' || record(properties.PP).type !== 'title') {
++      return result('unavailable', 'The catalogue schema is unavailable or incompatible: Código PP must be rich text and PP must be the title.');
++    }
++    const page = await queryDatabasePage(notionToken, PP_CATALOG_DATABASE,
++      { property: 'Código PP', rich_text: { equals: code } }, 2);
++    if (page.results.length > 1) return result('multiple', 'Multiple catalogue records matched. No reference was selected.');
++    if (page.hasMore) return result('partial', 'The exact lookup was incomplete. A unique match cannot be established.');
++    const candidate = page.results[0];
++    if (!candidate) return result('not-found', 'No catalogue record matched this exact text. No aliases were tried.');
++    const row = record(candidate);
++    const props = record(row.properties);
++    const matchedCode = text(record(props['Código PP']).rich_text);
++    const name = text(record(props.PP).title);
++    if (matchedCode !== code || name === null || typeof row.id !== 'string' ||
++      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(row.id)) {
++      return result('partial', 'The returned identity or title could not be verified exactly. No reference was selected.');
++    }
++    const review = record(props.Estado);
++    const reviewName = record(review[review.type === 'status' ? 'status' : 'select']).name;
++    definition = {
++      pageId: row.id, code, name,
++      reviewStatus: typeof reviewName === 'string' ? reviewName : null,
++      faces: labels(props.Faces), options: labels(props['Opções de personalização']),
++      techniques: labels(props['Técnicas']),
++      faceCount: count(props['Número de faces']), locationCount: count(props['Número de locais possíveis']),
++      body: [],
++      warnings: [
++        'Global faces, techniques and options do not establish assignments to each location.',
++        'Missing, blank or unclear fields are unknown, never instructions to remove or overwrite Magento data.',
++      ],
++      lastEditedAt: typeof row.last_edited_time === 'string' ? row.last_edited_time : null,
++    };
++    const body = await readBody(notionToken, row.id);
++    definition.body = body.lines;
++    if (!body.lines.length) definition.warnings.push('No readable body text was available; location-specific details remain unknown.');
++    if (body.partial) definition.warnings.push('Body coverage is incomplete: unreadable content or a coverage limit was encountered.');
++    return result(body.partial ? 'partial' : 'found', body.partial
++      ? 'Reference loaded with incomplete body coverage.' : 'Reference loaded from Notion. Review its status and uncertainties.', definition);
++  } catch (error) {
++    if (error instanceof NotionApiError) {
++      if (error.status === 401) return result('auth', 'Notion authentication failed. Check the existing integration in Settings.', definition);
++      if (error.status === 403 || error.status === 404) return result('access', 'The integration cannot access the copied catalogue or its page body. Connector access does not grant extension access.', definition);
++      if (error.status === 400 || error.code === 'invalid_response') return result('unavailable', 'The catalogue API or schema is incompatible with the existing client.', definition);
++    }
++    return result('network', 'The Notion lookup could not complete. Retry explicitly; no Magento data was changed.', definition);
++  }
++}
+diff --git a/src/page/features/pp-catalog/index.ts b/src/page/features/pp-catalog/index.ts
+new file mode 100644
+index 0000000..86c7abc
+--- /dev/null
++++ b/src/page/features/pp-catalog/index.ts
+@@ -0,0 +1,106 @@
++import { button, ensureUi } from '../../../ui';
++import { ppCatalogEntity, PpCatalogResponseSchema, type PpCatalogResponse } from '../../../shared/ppCatalog';
++import type { FetchPpCatalogRequest } from '../../../core/messages';
++
++let mounted: { panel: HTMLElement; entity: string; destroy: () => void } | undefined;
++
++export function unmountPpCatalog(): void {
++  mounted?.destroy();
++  mounted = undefined;
++}
++
++/** Read-only reference panel, a sibling of the native component, never a form editor. */
++export function mountPpCatalog(): void {
++  const entity = ppCatalogEntity(location.href);
++  const native = document.querySelector<HTMLElement>('[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]');
++  if (mounted && (!mounted.panel.isConnected || mounted.entity !== entity || !native || mounted.panel.nextElementSibling !== native)) unmountPpCatalog();
++  if (!entity || !native?.parentElement || mounted) return;
++  void ensureUi();
++  const panel = document.createElement('section');
++  panel.id = 'mhx-pp-catalog';
++  panel.setAttribute('aria-label', 'Notion PP reference');
++  const heading = document.createElement('h2');
++  heading.textContent = 'Notion PP reference (read-only)';
++  const context = document.createElement('p');
++  context.textContent = `Magento entity ${entity}. A manually selected reference does not establish this page’s PP code or Attribute Set association. No comparison with saved data is made.`;
++  const label = document.createElement('label');
++  label.textContent = 'Exact business PP text ';
++  const input = document.createElement('input');
++  input.type = 'text';
++  input.maxLength = 128;
++  input.autocomplete = 'off';
++  input.spellcheck = false;
++  label.appendChild(input);
++  const output = document.createElement('div');
++  output.setAttribute('role', 'status');
++  output.setAttribute('aria-live', 'polite');
++  let request = 0;
++  const message = (value: string) => { const p = document.createElement('p'); p.textContent = value; output.appendChild(p); };
++  const list = (title: string, values: string[] | null) => {
++    message(`${title}: ${values === null || values.length === 0 ? 'not provided / unknown' : values.join('; ')}`);
++  };
++  const render = (response: PpCatalogResponse) => {
++    output.replaceChildren();
++    message(`${response.status}: ${response.reason}`);
++    message(`Exact requested code: ${response.code}. Checked: ${response.checkedAt}.`);
++    const def = response.definition;
++    if (!def) return;
++    message(`Name: ${def.name || 'not provided'}`);
++    message(`Review status: ${def.reviewStatus ?? 'unknown'}`);
++    list('Faces', def.faces);
++    message(`Number of faces: ${def.faceCount ?? 'unknown'}. Number of possible locations: ${def.locationCount ?? 'unknown'}.`);
++    list('Personalization options (global list)', def.options);
++    list('Techniques (global list)', def.techniques);
++    message(`Notion last edited: ${def.lastEditedAt ?? 'unknown'}. This timestamp does not prove approval or a Magento match.`);
++    const link = document.createElement('a');
++    link.href = `https://www.notion.so/${def.pageId.replaceAll('-', '')}`;
++    link.textContent = 'Open Notion definition';
++    link.target = '_blank';
++    link.rel = 'noopener noreferrer';
++    output.appendChild(link);
++    for (const warning of def.warnings) message(warning);
++    if (def.body.length) {
++      const details = document.createElement('details');
++      const summary = document.createElement('summary');
++      summary.textContent = 'Source body text (groupings are not per-location assignments)';
++      details.appendChild(summary);
++      for (const line of def.body) {
++        const p = document.createElement('p'); p.textContent = line; details.appendChild(p);
++      }
++      output.appendChild(details);
++    }
++  };
++  const load = async () => {
++    const code = input.value;
++    const current = ++request;
++    output.replaceChildren();
++    if (!code.trim() || code.length > 128) { message('Enter the exact business PP text (1 to 128 characters).'); return; }
++    message('Reading the Notion reference. Magento data will not be changed.');
++    try {
++      const payload: FetchPpCatalogRequest = { type: 'FETCH_PP_CATALOG', code };
++      const raw: unknown = await chrome.runtime.sendMessage(payload);
++      if (current !== request || !panel.isConnected || !native.isConnected || ppCatalogEntity(location.href) !== entity || input.value !== code) return;
++      const response = PpCatalogResponseSchema.safeParse(raw);
++      if (!response.success || response.data.code !== code || (response.data.definition && response.data.definition.code !== code)) {
++        output.replaceChildren(); message('unavailable: The background returned an invalid or mismatched reference.'); return;
++      }
++      render(response.data);
++    } catch {
++      if (current !== request || !panel.isConnected || !native.isConnected || ppCatalogEntity(location.href) !== entity || input.value !== code) return;
++      output.replaceChildren(); message('unavailable: The extension could not complete the lookup. Retry explicitly.');
++    }
++  };
++  const onInput = () => { request++; output.replaceChildren(); message('Code changed. Load the exact reference again.'); };
++  const onKey = (event: KeyboardEvent) => { if (event.key === 'Enter') { event.preventDefault(); void load(); } };
++  input.addEventListener('input', onInput);
++  input.addEventListener('keydown', onKey);
++  const loadButton = button({ label: 'Load Notion reference', onClick: () => { void load(); } });
++  panel.append(heading, context, label, loadButton, output);
++  native.parentElement.insertBefore(panel, native);
++  mounted = { panel, entity, destroy: () => {
++    request++;
++    input.removeEventListener('input', onInput);
++    input.removeEventListener('keydown', onKey);
++    panel.remove();
++  } };
++}
+diff --git a/src/page/features/pp-scan/index.ts b/src/page/features/pp-scan/index.ts
+new file mode 100644
+index 0000000..aa8c89e
+--- /dev/null
++++ b/src/page/features/pp-scan/index.ts
+@@ -0,0 +1,123 @@
++import type {
++  ScanPpDraftRequest,
++  ScanPpDraftResponse,
++} from '../../../core/messages';
++import { ppEntityIdFromUrl } from './page';
++
++const ANCHOR_SELECTOR =
++  '[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]';
++const PANEL_ID = 'mhx-pp-draft-scan';
++
++let mounted:
++  | { panel: HTMLElement; anchor: HTMLElement; entityId: string; destroy: () => void }
++  | undefined;
++
++function isScanResponse(value: unknown): value is ScanPpDraftResponse {
++  if (!value || typeof value !== 'object') return false;
++  const result = value as ScanPpDraftResponse;
++  return (
++    result.version === 1 &&
++    ['ok', 'partial', 'unavailable', 'identity-mismatch'].includes(result.status) &&
++    (typeof result.entityId === 'string' || result.entityId === null) &&
++    typeof result.routePath === 'string' &&
++    !!result.general && typeof result.general === 'object' &&
++    !!result.locations && Array.isArray(result.locations.rows) &&
++    !!result.items && Array.isArray(result.items.rows) &&
++    Array.isArray(result.warnings)
++  );
++}
++
++export function unmountPpScan(): void {
++  mounted?.destroy();
++  mounted = undefined;
++}
++
++export function mountPpScan(): void {
++  const entityId = ppEntityIdFromUrl(window.location.href);
++  const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
++  if (
++    mounted &&
++    (!mounted.panel.isConnected || mounted.entityId !== entityId ||
++      mounted.anchor !== anchor || !anchor || mounted.panel.nextElementSibling !== anchor)
++  ) unmountPpScan();
++  if (!entityId || !anchor?.parentElement || mounted) return;
++
++  const pageDocument = document;
++  const routePath = window.location.pathname;
++  let generation = 0;
++  const panel = document.createElement('section');
++  panel.id = PANEL_ID;
++  panel.setAttribute('aria-label', 'Current Magento custom-option draft scan');
++  const heading = document.createElement('h2');
++  heading.textContent = 'Current Magento draft (read-only)';
++  const explanation = document.createElement('p');
++  explanation.textContent =
++    'Scans the current unsaved draft. It does not save or change Magento data.';
++  const scanButton = document.createElement('button');
++  scanButton.type = 'button';
++  scanButton.textContent = 'Scan current PP';
++  const status = document.createElement('p');
++  status.setAttribute('role', 'status');
++  status.setAttribute('aria-live', 'polite');
++  status.textContent = 'Scan when the custom-option form has finished loading.';
++  const details = document.createElement('details');
++  const summary = document.createElement('summary');
++  summary.textContent = 'Snapshot';
++  const output = document.createElement('pre');
++  output.setAttribute('aria-label', 'Current custom-option draft snapshot');
++  details.append(summary, output);
++  panel.append(heading, explanation, scanButton, status, details);
++  anchor.parentElement.insertBefore(panel, anchor);
++
++  const stillCurrent = (request: number): boolean =>
++    request === generation && pageDocument === document && panel.isConnected &&
++    anchor.isConnected && document.querySelector(ANCHOR_SELECTOR) === anchor &&
++    window.location.pathname === routePath &&
++    ppEntityIdFromUrl(window.location.href) === entityId;
++  const onDraftChange = (): void => {
++    generation += 1;
++    scanButton.disabled = false;
++    output.textContent = '';
++    status.textContent = 'The draft changed. Scan again to refresh the snapshot.';
++  };
++  const scan = async (): Promise<void> => {
++    const request = ++generation;
++    scanButton.disabled = true;
++    output.textContent = '';
++    status.textContent = 'Reading the current unsaved Magento draft…';
++    try {
++      const payload: ScanPpDraftRequest = { type: 'SCAN_PP_DRAFT' };
++      const response: unknown = await chrome.runtime.sendMessage(payload);
++      if (!stillCurrent(request)) return;
++      if (!isScanResponse(response) || response.entityId !== entityId || response.routePath !== routePath) {
++        status.textContent = 'The scan response was invalid or the page identity changed. Scan again.';
++        return;
++      }
++      status.textContent = `${response.status}: snapshot of Magento entity ${entityId}. Item parent values remain raw; no Notion or location assignment is inferred.`;
++      output.textContent = JSON.stringify(response, null, 2);
++      details.open = true;
++    } catch {
++      if (!stillCurrent(request)) return;
++      status.textContent = 'The scan could not complete. Retry after Magento has finished loading.';
++    } finally {
++      if (stillCurrent(request)) scanButton.disabled = false;
++    }
++  };
++  const onClick = (): void => { void scan(); };
++  scanButton.addEventListener('click', onClick);
++  anchor.addEventListener('input', onDraftChange, true);
++  anchor.addEventListener('change', onDraftChange, true);
++
++  mounted = {
++    panel,
++    anchor,
++    entityId,
++    destroy: () => {
++      generation += 1;
++      scanButton.removeEventListener('click', onClick);
++      anchor.removeEventListener('input', onDraftChange, true);
++      anchor.removeEventListener('change', onDraftChange, true);
++      panel.remove();
++    },
++  };
++}
+diff --git a/src/page/features/pp-scan/page.ts b/src/page/features/pp-scan/page.ts
+new file mode 100644
+index 0000000..49952d8
+--- /dev/null
++++ b/src/page/features/pp-scan/page.ts
+@@ -0,0 +1,331 @@
++import type {
++  PpDraftCollection,
++  PpDraftRow,
++  PpDraftTranslation,
++  PpDraftValue,
++  ScanPpDraftResponse,
++} from '../../../core/messages';
++
++const ROUTE =
++  /\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/(\d+)(?:\/|$)/i;
++export function ppEntityIdFromUrl(url: string): string | null {
++  try {
++    return new URL(url).pathname.match(ROUTE)?.[1] ?? null;
++  } catch {
++    return null;
++  }
++}
++
++/** Runs in Magento's main world and reads only the already-loaded registry provider. */
++export function scanCurrentPpDraft(): ScanPpDraftResponse {
++  const providerName =
++    'toogas_attributesetcustomoptions_attributesetcustomoptions_form.attributesetcustomoptions_form_data_source';
++  const registryModuleName = 'Magento_Ui/js/lib/registry/registry';
++  const maxRows = 100;
++  const maxString = 1024;
++  const maxObjectKeys = 40;
++  const route = window.location.pathname.match(
++    /\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/(\d+)(?:\/|$)/i,
++  );
++  const entityId = route?.[1] ?? null;
++  const base: ScanPpDraftResponse = {
++    version: 1,
++    status: 'unavailable',
++    entityId,
++    routePath: window.location.pathname.slice(0, 512),
++    general: {},
++    locations: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    items: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    warnings: [],
++  };
++  if (!entityId) {
++    base.warnings.push('This is not a recognized custom-option edit route.');
++    return base;
++  }
++
++  let clipped = false;
++  let sanitized = false;
++  type Read = { found: boolean; value?: unknown };
++  const read = (source: unknown, key: string): Read => {
++    if (
++      source === null ||
++      (typeof source !== 'object' && typeof source !== 'function')
++    ) return { found: false };
++    const descriptor = Object.getOwnPropertyDescriptor(source, key);
++    if (descriptor && !('value' in descriptor)) sanitized = true;
++    return descriptor && 'value' in descriptor
++      ? { found: true, value: descriptor.value }
++      : { found: false };
++  };
++  const path = (source: unknown, keys: string[]): Read => {
++    let current = source;
++    for (const key of keys) {
++      const next = read(current, key);
++      if (!next.found) return { found: false };
++      current = next.value;
++    }
++    return { found: true, value: current };
++  };
++  const safeValue = (
++    value: unknown,
++    seen = new Set<object>(),
++    depth = 0,
++  ): PpDraftValue => {
++    if (value === null || typeof value === 'boolean') return value;
++    if (typeof value === 'number') {
++      if (!Number.isFinite(value)) sanitized = true;
++      return Number.isFinite(value) ? value : null;
++    }
++    if (typeof value === 'string') {
++      if (value.length > maxString) clipped = true;
++      return value.slice(0, maxString);
++    }
++    if (typeof value !== 'object') {
++      sanitized = true;
++      return null;
++    }
++    if (seen.has(value)) {
++      sanitized = true;
++      return '[Circular]';
++    }
++    if (depth >= 4) {
++      clipped = true;
++      return '[Depth limit]';
++    }
++    seen.add(value);
++    if (Array.isArray(value)) {
++      const out: PpDraftValue[] = [];
++      const length = Math.min(value.length, maxRows);
++      if (value.length > length) clipped = true;
++      for (let index = 0; index < length; index += 1) {
++        const item = read(value, String(index));
++        out.push(item.found ? safeValue(item.value, seen, depth + 1) : null);
++      }
++      seen.delete(value);
++      return out;
++    }
++    const out: Record<string, PpDraftValue> = {};
++    const keys: string[] = [];
++    for (const key in value) {
++      if (!Object.prototype.hasOwnProperty.call(value, key)) continue;
++      keys.push(key);
++      if (keys.length > maxObjectKeys) break;
++    }
++    if (keys.length > maxObjectKeys) clipped = true;
++    for (const key of keys.slice(0, maxObjectKeys)) {
++      const item = read(value, key);
++      if (item.found) out[key.slice(0, 80)] = safeValue(item.value, seen, depth + 1);
++    }
++    seen.delete(value);
++    return out;
++  };
++  const fieldValues = (
++    source: unknown,
++    fields: string[],
++  ): Record<string, PpDraftValue> => {
++    const values: Record<string, PpDraftValue> = {};
++    for (const field of fields) {
++      const found = read(source, field);
++      if (found.found) values[field] = safeValue(found.value);
++    }
++    return values;
++  };
++  const translation = (value: unknown): PpDraftTranslation => {
++    const result: PpDraftTranslation = { raw: safeValue(value) };
++    if (typeof value !== 'string' || !value.trim()) return result;
++    if (value.length > maxString) {
++      clipped = true;
++      result.parseError = 'Translation JSON exceeds the scan limit.';
++      return result;
++    }
++    const trimmed = value.trim();
++    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return result;
++    try {
++      result.parsed = safeValue(JSON.parse(value));
++    } catch {
++      result.parseError = 'Invalid translation JSON.';
++    }
++    return result;
++  };
++  const collection = (
++    found: Read,
++    fields: string[],
++    translatedFields: string[],
++    identifierFields: string[],
++  ): PpDraftCollection => {
++    if (!found.found || found.value === null || found.value === undefined) {
++      return { state: 'missing', rows: [], truncated: false, identifierGaps: 0 };
++    }
++    if (!Array.isArray(found.value) && typeof found.value !== 'object') {
++      return { state: 'invalid', rows: [], truncated: false, identifierGaps: 0 };
++    }
++    const source = found.value as object;
++    const keys: string[] = [];
++    if (Array.isArray(source)) {
++      const length = Math.min(source.length, maxRows + 1);
++      for (let index = 0; index < length; index += 1) keys.push(String(index));
++    } else {
++      for (const key in source) {
++        if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
++        keys.push(key);
++        if (keys.length > maxRows) break;
++      }
++    }
++    const rows: PpDraftRow[] = [];
++    const truncated = keys.length > maxRows;
++    let identifierGaps = 0;
++    for (let index = 0; index < Math.min(keys.length, maxRows); index += 1) {
++      const key = keys[index];
++      if (key === undefined) continue;
++      const row = read(source, key);
++      if (!row.found || !row.value || typeof row.value !== 'object') continue;
++      const values = fieldValues(row.value, fields);
++      if (Object.keys(values).length === 0) continue;
++      if (identifierFields.some((field) => {
++        const value = read(row.value, field);
++        return !value.found || value.value === null || value.value === undefined || value.value === '';
++      })) identifierGaps += 1;
++      const translations: Record<string, PpDraftTranslation> = {};
++      for (const field of translatedFields) {
++        const value = read(row.value, field);
++        if (!value.found) continue;
++        translations[field] = translation(value.value);
++      }
++      rows.push({ position: index, values, translations });
++    }
++    return { state: 'available', rows, truncated, identifierGaps };
++  };
++
++  try {
++    const requireFn = (window as Window & { require?: unknown }).require;
++    const contexts = read(requireFn, 's');
++    const context = path(contexts.value, ['contexts', '_']);
++    const defined = read(context.value, 'defined');
++    const registryModule = read(defined.value, registryModuleName);
++    const get = read(registryModule.value, 'get');
++    if (!contexts.found || !context.found || !defined.found || !registryModule.found || typeof get.value !== 'function') {
++      base.warnings.push('The already-loaded Magento registry is unavailable.');
++      return base;
++    }
++    const provider = (get.value as (name: string) => unknown).call(
++      registryModule.value,
++      providerName,
++    );
++    if (!provider) {
++      base.warnings.push('The Magento custom-option provider is not loaded.');
++      return base;
++    }
++    const dataRead = read(provider, 'data');
++    if (!dataRead.found || !dataRead.value || typeof dataRead.value !== 'object') {
++      base.warnings.push('The Magento provider data is unavailable.');
++      return base;
++    }
++    const data = dataRead.value;
++    const providerId = read(data, 'attributesetcustomoptions_id');
++    if (providerId.found) base.providerEntityId = safeValue(providerId.value);
++    if (providerId.found && String(providerId.value) !== entityId) {
++      base.status = 'identity-mismatch';
++      base.warnings.push('The route entity and provider entity do not match.');
++      return base;
++    }
++
++    const general = path(data, ['general']);
++    const generalValid = general.found && !!general.value && typeof general.value === 'object';
++    if (generalValid) {
++      base.general = fieldValues(general.value, [
++        'option_title', 'attribute_set_id', 'option_type', 'is_required',
++        'sort_order', 'description', 'info_message', 'placeholder', 'price',
++        'max_characters', 'allowed_extensions', 'translationsData', 'translations',
++      ]);
++      const translations = read(general.value, 'translationsData');
++      if (translations.found) base.generalTranslations = translation(translations.value);
++      const setId = read(general.value, 'attribute_set_id');
++      if (setId.found) base.generalAttributeSetId = safeValue(setId.value);
++    } else {
++      base.warnings.push('General provider data is missing or invalid.');
++    }
++    const providerSetId = read(data, 'attribute_set_id');
++    if (providerSetId.found) base.providerAttributeSetId = safeValue(providerSetId.value);
++
++    const locationFields = [
++      'record_id', 'key_id', 'name', 'description', 'img', 'price', 'sort',
++      'store_view', 'visible', 'is_visible', 'hidden', 'disabled', 'delete',
++    ];
++    const itemFields = [
++      'record_id', 'parent', 'name', 'name_option', 'price', 'sort',
++      'store_view', 'visible', 'is_visible', 'hidden', 'disabled', 'delete',
++    ];
++    base.locations = collection(
++      path(data, ['options', 'sub_options', 'sub_options']),
++      locationFields,
++      ['name', 'description'],
++      ['record_id', 'key_id'],
++    );
++    base.items = collection(
++      path(data, ['options', 'sub_options_items', 'sub_options_items']),
++      itemFields,
++      ['name'],
++      ['record_id', 'parent'],
++    );
++    base.scannedAt = Date.now();
++    base.status = 'ok';
++    if (!generalValid || base.locations.state !== 'available' || base.items.state !== 'available') {
++      base.status = 'partial';
++      if (base.locations.state !== 'available') base.warnings.push(`Location collection is ${base.locations.state}.`);
++      if (base.items.state !== 'available') base.warnings.push(`Item collection is ${base.items.state}.`);
++    }
++    if (base.generalTranslations?.parseError) {
++      base.status = 'partial';
++      base.warnings.push(base.generalTranslations.parseError);
++    }
++    if ([...base.locations.rows, ...base.items.rows].some((row) =>
++      Object.values(row.translations).some((value) => Boolean(value.parseError)),
++    )) {
++      base.status = 'partial';
++      base.warnings.push('One or more row translation values contain invalid JSON.');
++    }
++    if (base.locations.identifierGaps || base.items.identifierGaps) {
++      base.status = 'partial';
++      base.warnings.push(
++        `Rows with missing or blank identity/parent fields: locations ${base.locations.identifierGaps}, items ${base.items.identifierGaps}.`,
++      );
++    }
++    if (base.locations.truncated || base.items.truncated || clipped) {
++      base.status = 'partial';
++      base.warnings.push('The snapshot reached a safety limit; some values or rows may be truncated.');
++    }
++    if (sanitized) {
++      base.status = 'partial';
++      base.warnings.push('Some provider values were omitted or sanitized because they were not safe JSON values.');
++    }
++    const duplicateValues = (rows: PpDraftRow[], field: string): boolean => {
++      const seen = new Set<string>();
++      for (const row of rows) {
++        const value = row.values[field];
++        if (typeof value !== 'string' && typeof value !== 'number') continue;
++        const key = String(value);
++        if (seen.has(key)) return true;
++        seen.add(key);
++      }
++      return false;
++    };
++    if (
++      duplicateValues(base.locations.rows, 'record_id') ||
++      duplicateValues(base.locations.rows, 'key_id') ||
++      duplicateValues(base.items.rows, 'record_id')
++    ) {
++      base.status = 'partial';
++      base.warnings.push('Duplicate row identifiers were found; review relationships manually.');
++    }
++    base.warnings.push('Item parent values are preserved raw; this scan does not infer location assignments.');
++    base.warnings.push('Absent provider fields are omitted; explicit blank values remain visible as empty strings.');
++    return base;
++  } catch {
++    base.status = 'unavailable';
++    base.general = {};
++    base.locations = { state: 'missing', rows: [], truncated: false, identifierGaps: 0 };
++    base.items = { state: 'missing', rows: [], truncated: false, identifierGaps: 0 };
++    base.warnings.push('The provider could not be read safely. Retry the scan after Magento finishes loading.');
++    return base;
++  }
++}
+diff --git a/src/shared/ppCatalog.ts b/src/shared/ppCatalog.ts
+new file mode 100644
+index 0000000..ee041e4
+--- /dev/null
++++ b/src/shared/ppCatalog.ts
+@@ -0,0 +1,38 @@
++import { z } from 'zod';
++
++export const PP_CATALOG_DATABASE = '417b6705-ae1f-81ba-bdfd-c46a86fe4b54';
++export const PP_CATALOG_DATA_SOURCE = '431b6705-ae1f-83db-b71c-0739778f9e1a';
++
++export const PpCatalogDefinitionSchema = z.object({
++  pageId: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i),
++  code: z.string(),
++  name: z.string(),
++  reviewStatus: z.string().nullable(),
++  faces: z.array(z.string()).nullable(),
++  options: z.array(z.string()).nullable(),
++  techniques: z.array(z.string()).nullable(),
++  faceCount: z.number().nullable(),
++  locationCount: z.number().nullable(),
++  body: z.array(z.string()),
++  warnings: z.array(z.string()),
++  lastEditedAt: z.string().nullable(),
++});
++export type PpCatalogDefinition = z.infer<typeof PpCatalogDefinitionSchema>;
++
++export const PpCatalogResponseSchema = z.object({
++  status: z.enum(['found', 'not-found', 'multiple', 'auth', 'access', 'network', 'partial', 'unavailable', 'invalid']),
++  code: z.string(),
++  checkedAt: z.string(),
++  reason: z.string(),
++  definition: PpCatalogDefinitionSchema.optional(),
++}).refine(response => response.status !== 'found' || response.definition !== undefined);
++export type PpCatalogResponse = z.infer<typeof PpCatalogResponseSchema>;
++
++/** A supported edit record, never a storefront or create/duplicate route. */
++export function ppCatalogEntity(url: string): string | null {
++  try {
++    const parsed = new URL(url);
++    if (!/^https:\/\/(bestofgifts\.(pt|eu|es|fr)|bestofgifts-pt-qa\.toogas\.net)$/.test(parsed.origin)) return null;
++    return parsed.pathname.match(/\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/(\d+)(?:\/|$)/)?.[1] ?? null;
++  } catch { return null; }
++}
+diff --git a/tests/ppCatalog.test.ts b/tests/ppCatalog.test.ts
+new file mode 100644
+index 0000000..3811b07
+--- /dev/null
++++ b/tests/ppCatalog.test.ts
+@@ -0,0 +1,174 @@
++import test, { type TestContext } from 'node:test';
++import assert from 'node:assert/strict';
++import { loadPpCatalog } from '../src/audit/ppCatalog';
++import { PP_CATALOG_DATABASE, PP_CATALOG_DATA_SOURCE } from '../src/shared/ppCatalog';
++
++const id = 'cbbb6705-ae1f-8227-90c6-01b6be542afc';
++const tableId = '11111111-1111-1111-1111-111111111111';
++const rich = (value: string) => [{ plain_text: value }];
++const options = (names: string[]) => ({ type: 'multi_select', multi_select: names.map(name => ({ name })) });
++const page = (code = '49') => ({ id, last_edited_time: '2026-11-13T10:00:00.000Z', properties: {
++  PP: { type: 'title', title: rich('49 - Textile') },
++  'Código PP': { type: 'rich_text', rich_text: rich(code) },
++  Estado: { type: 'select', select: { name: 'A rever' } },
++  Faces: options(['Face 1', 'Face 2', 'Face 3', 'Face 4', 'Face 5', 'Face 6']),
++  'Técnicas': options(['Screen print']), 'Opções de personalização': options(['1 colour']),
++  'Número de faces': { type: 'number', number: null },
++  'Número de locais possíveis': { type: 'number', number: 6 },
++} });
++let now = 1_800_000_000_000;
++
++async function settle<T>(t: TestContext, promise: Promise<T>): Promise<T> {
++  let done = false;
++  void promise.then(() => { done = true; }, () => { done = true; });
++  for (let i = 0; i < 500 && !done; i++) {
++    t.mock.timers.tick(500);
++    for (let j = 0; j < 24; j++) await Promise.resolve();
++  }
++  assert.ok(done, 'bounded lookup completed');
++  return promise;
++}
++
++function fixture(t: TestContext, config: {
++  code?: string; token?: string; rows?: readonly unknown[]; more?: boolean; schema?: string;
++  status?: number; network?: boolean; bodyStatus?: number; cappedBody?: boolean; malformed?: boolean; bodyBlocks?: unknown[];
++} = {}) {
++  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: now += 2_000_000 });
++  const globals = globalThis as unknown as Record<string, unknown>;
++  const previousChrome = globals.chrome;
++  globals.chrome = { runtime: { id: 'fixture-only-extension' }, storage: { local: { get: async () => ({ notionToken: config.token ?? 'fixture-only-token' }) } } };
++  t.after(() => { globals.chrome = previousChrome; });
++  const calls: { url: string; method: string; body: Record<string, unknown> }[] = [];
++  t.mock.method(globalThis, 'fetch', async (input: unknown, init?: RequestInit) => {
++    const url = String(input);
++    const method = init?.method ?? 'GET';
++    calls.push({ url, method, body: init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : {} });
++    assert.ok(method === 'GET' || (method === 'POST' && url.endsWith(`/databases/${PP_CATALOG_DATABASE}/query`)), 'only catalogue reads');
++    assert.ok(!url.includes(PP_CATALOG_DATA_SOURCE), 'data source is not used as a legacy database id');
++    if (config.network) throw new TypeError('fixture network failure');
++    if (config.status) return Response.json({ code: 'fixture_error' }, { status: config.status });
++    if (url.endsWith(`/databases/${PP_CATALOG_DATABASE}`)) return Response.json({ properties: {
++      'Código PP': { type: config.schema ?? 'rich_text' }, PP: { type: 'title' },
++    } });
++    if (url.endsWith('/query')) return Response.json(config.malformed ? {} : {
++      results: config.rows ?? [page(config.code)], has_more: config.more ?? false, next_cursor: config.more ? 'next' : null,
++    });
++    if (config.bodyStatus) return Response.json({ code: 'restricted_resource' }, { status: config.bodyStatus });
++    if (config.bodyBlocks) return Response.json({ results: config.bodyBlocks, has_more: false });
++    if (config.cappedBody) return Response.json({ results: [], has_more: true, next_cursor: 'repeated' });
++    if (url.includes(`/blocks/${tableId}/children`)) return Response.json({ results: [{
++      type: 'table_row', table_row: { cells: [rich('Face 1 / Face 2'), rich('Distribution unconfirmed')] },
++    }], has_more: false });
++    const cursor = new URL(url).searchParams.get('start_cursor');
++    return Response.json(cursor ? { results: [{ type: 'paragraph', paragraph: { rich_text: rich('After table') } }], has_more: false }
++      : { results: [
++        { type: 'paragraph', paragraph: { rich_text: rich('Locais e personalização') } },
++        { id: tableId, type: 'table', table: {}, has_children: true },
++      ], has_more: true, next_cursor: 'body-next' });
++  });
++  return calls;
++}
++
++test('exact lookup uses schema, copied database and read-only body pagination; retains uncertainty and blank counts', async t => {
++  const calls = fixture(t);
++  const result = await settle(t, loadPpCatalog('49'));
++  assert.equal(result.status, 'found');
++  assert.equal(result.definition!.reviewStatus, 'A rever');
++  assert.equal(result.definition!.faceCount, null);
++  assert.equal(result.definition!.locationCount, 6);
++  assert.equal(result.definition!.faces!.length, 6);
++  assert.deepEqual(result.definition!.body, ['Locais e personalização', 'Face 1 / Face 2 | Distribution unconfirmed', 'After table']);
++  assert.equal('assignments' in result.definition!, false);
++  assert.match(result.definition!.warnings.join(' '), /do not establish assignments/);
++  assert.deepEqual(calls.find(call => call.method === 'POST')!.body, {
++    page_size: 2, filter: { property: 'Código PP', rich_text: { equals: '49' } },
++  });
++  assert.ok(!JSON.stringify(result).includes('fixture-only-token'));
++});
++
++test('code is kept verbatim without trimming, prefix or numeric aliases', async t => {
++  const calls = fixture(t, { code: ' 0049 ' });
++  const result = await settle(t, loadPpCatalog(' 0049 '));
++  assert.equal(result.definition!.code, ' 0049 ');
++  assert.deepEqual(calls.find(call => call.method === 'POST')!.body.filter,
++    { property: 'Código PP', rich_text: { equals: ' 0049 ' } });
++});
++
++for (const [index, scenario] of ([
++  { rows: [], expected: 'not-found' },
++  { rows: [page(), page()], expected: 'multiple' },
++  { rows: [page()], more: true, expected: 'partial' },
++  { rows: [page('PP49')], expected: 'partial' },
++  { schema: 'number', expected: 'unavailable' },
++  { malformed: true, expected: 'unavailable' },
++  { status: 401, expected: 'auth' },
++  { status: 403, expected: 'access' },
++  { status: 404, expected: 'access' },
++  { status: 400, expected: 'unavailable' },
++  { network: true, expected: 'network' },
++] as const).entries()) {
++  test(`lookup case ${index + 1}: ${scenario.expected}, no reference selected`, async t => {
++    const calls = fixture(t, scenario);
++    const result = await settle(t, loadPpCatalog('49'));
++    assert.equal(result.status, scenario.expected);
++    assert.equal(result.definition, undefined);
++    assert.equal(calls.some(call => call.url.includes('/blocks/')), false);
++  });
++}
++
++test('missing credentials and invalid input make no network requests', async t => {
++  const calls = fixture(t, { token: '' });
++  assert.equal((await loadPpCatalog('49')).status, 'auth');
++  for (const code of [49, '', '   ', 'x'.repeat(129), null]) assert.equal((await loadPpCatalog(code)).status, 'invalid');
++  assert.deepEqual(calls, []);
++});
++
++test('partial body coverage is explicit, with verified properties retained', async t => {
++  const calls = fixture(t, { cappedBody: true });
++  const result = await settle(t, loadPpCatalog('49'));
++  assert.equal(result.status, 'partial');
++  assert.equal(result.definition!.code, '49');
++  assert.match(result.definition!.warnings.join(' '), /coverage limit/);
++  assert.ok(calls.filter(call => call.url.includes('/blocks/')).length <= 8);
++});
++
++test('body access failure retains the reference but never reports full success', async t => {
++  fixture(t, { bodyStatus: 403 });
++  const result = await settle(t, loadPpCatalog('49'));
++  assert.equal(result.status, 'access');
++  assert.equal(result.definition!.code, '49');
++  assert.deepEqual(result.definition!.body, []);
++});
++
++for (const supported of [true, false]) {
++  test(`Audit router only reads the catalogue for a supported sender (${supported})`, async t => {
++    const calls = fixture(t);
++    const chrome = (globalThis as unknown as { chrome: Record<string, unknown> }).chrome;
++    chrome.tabs = { get: async () => ({ url: supported
++      ? 'https://bestofgifts.pt/admin/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/'
++      : 'https://bestofgifts.pt/a-product.html' }) };
++    const { handleAuditMessage } = await import('../src/entrypoints/background/routers/audit');
++    const response = new Promise<unknown>(resolve => {
++      assert.equal(handleAuditMessage({ type: 'FETCH_PP_CATALOG', code: '49' }, { senderTabId: 7, sendResponse: resolve }), true);
++    });
++    const result = await settle(t, response) as { status: string };
++    assert.equal(result.status, supported ? 'found' : 'unavailable');
++    assert.equal(calls.length > 0, supported);
++  });
++}
++
++for (const [block, expected] of [
++  [{ type: 'unsupported', unsupported: {}, has_children: false }, 'partial'],
++  [{ type: 'paragraph', paragraph: {}, has_children: false }, 'partial'],
++  [{ type: 'divider', divider: {}, has_children: false }, 'found'],
++] as const) {
++  test(`body coverage: ${block.type} is ${expected}, with readable text retained`, async t => {
++    fixture(t, { bodyBlocks: [
++      { type: 'paragraph', paragraph: { rich_text: rich('Readable source paragraph') } }, block,
++    ] });
++    const result = await settle(t, loadPpCatalog('49'));
++    assert.equal(result.status, expected);
++    assert.deepEqual(result.definition!.body, ['Readable source paragraph']);
++    assert.equal(result.definition!.warnings.some(warning => /coverage limit/.test(warning)), expected === 'partial');
++  });
++}
+diff --git a/tests/ppCatalogUi.test.ts b/tests/ppCatalogUi.test.ts
+new file mode 100644
+index 0000000..629bd55
+--- /dev/null
++++ b/tests/ppCatalogUi.test.ts
+@@ -0,0 +1,142 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++// @ts-expect-error - untyped transitive dependency
++import { JSDOM } from 'jsdom';
++import { mountPpCatalog, unmountPpCatalog } from '../src/page/features/pp-catalog';
++import { ppCatalogEntity, type PpCatalogResponse } from '../src/shared/ppCatalog';
++
++const url = 'https://bestofgifts.pt/admin/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/not-a-real-key/';
++const reply = (code: string): PpCatalogResponse => ({
++  status: 'found', code, checkedAt: '2026-11-13T10:01:00.000Z', reason: 'Reference read',
++  definition: { pageId: 'cbbb6705-ae1f-8227-90c6-01b6be542afc', code,
++    name: '<img src=x onerror=alert(1)>', reviewStatus: 'A rever', faces: ['Face 1', 'Face 2'],
++    options: ['Tampografia 1 Cor'], techniques: null, faceCount: null, locationCount: 6,
++    body: ['Face 1 / Face 2 | distribution unconfirmed'], warnings: ['No per-location mapping is established.'], lastEditedAt: null },
++});
++
++function fixture() {
++  const dom = new JSDOM(`<!doctype html><html><body><form>
++    <button id="native-save">Save</button><div id="native" data-bind="scope: 'toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas'">
++    <input name="general[option_title]" value="Unsaved native draft"><table data-index="sub_options"><tbody><tr><td>Face 1</td></tr></tbody></table></div>
++    </form></body></html>`, { url });
++  const globals = globalThis as unknown as Record<string, unknown>;
++  for (const key of ['window', 'document', 'location', 'Element', 'HTMLElement', 'Event', 'KeyboardEvent']) globals[key] = dom.window[key];
++  const pending: { message: { type: string; code: string }; resolve: (value: unknown) => void; reject: () => void }[] = [];
++  globals.chrome = { runtime: { sendMessage: (message: { type: string; code: string }) => new Promise((resolve, reject) => pending.push({ message, resolve, reject: () => reject(new Error('fixture')) })) } };
++  let changes = 0, submissions = 0;
++  const native = document.querySelector<HTMLElement>('#native')!;
++  const before = native.outerHTML;
++  native.addEventListener('input', () => changes++);
++  native.addEventListener('change', () => changes++);
++  document.querySelector('form')!.addEventListener('submit', event => { event.preventDefault(); submissions++; });
++  mountPpCatalog();
++  const input = () => document.querySelector<HTMLInputElement>('#mhx-pp-catalog input')!;
++  const load = (code: string) => { input().value = code; document.querySelector<HTMLButtonElement>('#mhx-pp-catalog button')!.click(); };
++  return { dom, pending, native, before, input, load, changes: () => changes, submissions: () => submissions,
++    close: () => { unmountPpCatalog(); dom.window.close(); delete globals.chrome; } };
++}
++const flush = async () => { for (let i = 0; i < 8; i++) await Promise.resolve(); };
++
++test('connected panel sends exact text, renders safe reference details and leaves the native draft untouched', async () => {
++  const f = fixture();
++  try {
++    mountPpCatalog();
++    assert.equal(document.querySelectorAll('#mhx-pp-catalog').length, 1);
++    assert.equal(f.pending.length, 0, 'no automatic lookup on mount');
++    f.load(' 0049 ');
++    assert.deepEqual(f.pending[0]!.message, { type: 'FETCH_PP_CATALOG', code: ' 0049 ' });
++    f.pending[0]!.resolve(reply(' 0049 ')); await flush();
++    const panel = document.querySelector<HTMLElement>('#mhx-pp-catalog')!;
++    assert.match(panel.textContent!, /A rever/);
++    assert.match(panel.textContent!, /Tampografia 1 Cor/);
++    assert.match(panel.textContent!, /Number of faces: unknown/);
++    assert.match(panel.textContent!, /does not establish/);
++    assert.match(panel.textContent!, /Checked: 2026-11-13/);
++    assert.equal(panel.querySelector('img, script'), null);
++    const link = panel.querySelector<HTMLAnchorElement>('a')!;
++    assert.equal(link.href, 'https://www.notion.so/cbbb6705ae1f822790c601b6be542afc');
++    assert.equal(link.href.includes('key'), false);
++    assert.equal(f.native.outerHTML, f.before);
++    assert.equal(f.changes(), 0);
++    assert.equal(f.submissions(), 0);
++    assert.ok(Array.from(panel.querySelectorAll('button')).every(button => button.type === 'button'));
++    assert.equal(new f.dom.window.FormData(document.querySelector('form')).get('general[option_title]'), 'Unsaved native draft');
++    assert.equal(Array.from(new f.dom.window.FormData(document.querySelector('form')).keys()).length, 1);
++  } finally { f.close(); }
++});
++
++test('new requests and input edits invalidate older responses', async () => {
++  const f = fixture();
++  try {
++    f.load('49'); f.load('50');
++    f.pending[1]!.resolve(reply('50')); await flush();
++    f.pending[0]!.resolve(reply('49')); await flush();
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /Exact requested code: 50/);
++    f.load('51');
++    f.input().value = '52'; f.input().dispatchEvent(new Event('input', { bubbles: true }));
++    f.pending[2]!.resolve(reply('51')); await flush();
++    assert.doesNotMatch(document.querySelector('#mhx-pp-catalog')!.textContent!, /Exact requested code: 51/);
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /Code changed/);
++  } finally { f.close(); }
++});
++
++test('route replacement and explicit cleanup discard pending responses without touching native controls', async () => {
++  const f = fixture();
++  try {
++    f.load('49');
++    f.dom.window.history.replaceState({}, '', '/admin/catalog/product/edit/id/1/');
++    f.pending[0]!.resolve(reply('49')); await flush();
++    assert.doesNotMatch(document.querySelector('#mhx-pp-catalog')!.textContent!, /A rever/);
++    mountPpCatalog();
++    assert.equal(document.querySelector('#mhx-pp-catalog'), null);
++    assert.equal(f.native.outerHTML, f.before);
++    f.dom.window.history.replaceState({}, '', url);
++    mountPpCatalog(); f.load('49');
++    unmountPpCatalog();
++    f.pending[1]!.resolve(reply('49')); await flush();
++    assert.equal(document.querySelector('#mhx-pp-catalog'), null);
++  } finally { f.close(); }
++});
++
++test('native component replacement remounts once and Enter does not submit Magento', async () => {
++  const f = fixture();
++  try {
++    f.native.replaceWith(f.native.cloneNode(true)); mountPpCatalog(); mountPpCatalog();
++    assert.equal(document.querySelectorAll('#mhx-pp-catalog').length, 1);
++    f.input().value = '49';
++    const enter = new f.dom.window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
++    f.input().dispatchEvent(enter);
++    assert.equal(enter.defaultPrevented, true);
++    assert.equal(f.pending.length, 1);
++    assert.equal(f.submissions(), 0);
++    f.pending[0]!.resolve(reply('49')); await flush();
++  } finally { f.close(); }
++});
++
++test('invalid, mismatched and failed responses are explicit rather than a reference match', async () => {
++  const f = fixture();
++  try {
++    f.load('49'); f.pending[0]!.resolve(reply('PP49')); await flush();
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /invalid or mismatched/);
++    f.load('49'); f.pending[1]!.resolve({ status: 'found', definition: { name: 'unsafe' } }); await flush();
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /invalid or mismatched/);
++    f.load('49'); f.pending[2]!.reject(); await flush();
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /could not complete/);
++    f.load('49'); f.pending.at(-1)!.resolve({ status: 'found', code: '49', checkedAt: 'now', reason: 'Missing definition' }); await flush();
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /invalid or mismatched/);
++    for (const status of ['not-found', 'multiple', 'auth', 'access', 'network', 'partial', 'unavailable'] as const) {
++      f.load('49'); f.pending.at(-1)!.resolve({ status, code: '49', checkedAt: 'now', reason: 'Explicit fixture state' }); await flush();
++      assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, new RegExp(status));
++      assert.equal(document.querySelector('#mhx-pp-catalog a'), null);
++    }
++  } finally { f.close(); }
++});
++
++test('page scope excludes storefronts, other hosts, unrelated routes and records without identity', () => {
++  assert.equal(ppCatalogEntity(url), '966');
++  for (const other of ['https://example.com'+new URL(url).pathname, 'https://bestofgifts.pt/a-product.html',
++    'https://bestofgifts.pt/admin/toogas_attributesetcustomoptions/attributesetcustomoptions/new/',
++    'https://bestofgifts.pt/admin/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/', 'invalid']) {
++    assert.equal(ppCatalogEntity(other), null);
++  }
++});
+diff --git a/tests/ppScan.test.ts b/tests/ppScan.test.ts
+new file mode 100644
+index 0000000..a0d071a
+--- /dev/null
++++ b/tests/ppScan.test.ts
+@@ -0,0 +1,253 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++// @ts-expect-error - jsdom ships no types and is only used by DOM tests.
++import { JSDOM } from 'jsdom';
++
++import type { ScanPpDraftResponse } from '../src/core/messages/ui';
++import { mountPpScan, unmountPpScan } from '../src/page/features/pp-scan';
++import { scanCurrentPpDraft } from '../src/page/features/pp-scan/page';
++import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
++
++const ROUTE =
++  'https://bestofgifts.pt/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/session';
++const REGISTRY_MODULE = 'Magento_Ui/js/lib/registry/registry';
++const PROVIDER_NAME =
++  'toogas_attributesetcustomoptions_attributesetcustomoptions_form.attributesetcustomoptions_form_data_source';
++
++function withProvider<T>(data: unknown, run: (dom: any) => T, present = true): T {
++  const dom = new JSDOM('<!doctype html><main id="root"></main>', { url: ROUTE });
++  const registry = {
++    get(name: string) { return present && name === PROVIDER_NAME ? { data } : undefined; },
++  };
++  const requireFn = Object.assign(() => undefined, {
++    s: { contexts: { _: { defined: { [REGISTRY_MODULE]: registry } } } },
++  });
++  Object.defineProperty(dom.window, 'require', { value: requireFn, configurable: true });
++  const oldWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
++  Object.defineProperty(globalThis, 'window', { value: dom.window, configurable: true });
++  try { return run(dom); }
++  finally {
++    dom.window.close();
++    if (oldWindow) Object.defineProperty(globalThis, 'window', oldWindow);
++    else Reflect.deleteProperty(globalThis, 'window');
++  }
++}
++
++function liveData(): Record<string, unknown> {
++  return {
++    attributesetcustomoptions_id: '966',
++    attribute_set_id: '479',
++    secret: 'must not leave the provider',
++    general: {
++      option_title: 'PP profile',
++      attribute_set_id: ['479'],
++      option_type: 6,
++      sort_order: '',
++      translationsData: '{"1":{"option_title":"PT"}}',
++    },
++    options: {
++      sub_options: { sub_options: [
++        { record_id: 0, key_id: 'face-key', name: '{"1":"Face 1"}', sort: '', visible: false, hidden: true, disabled: true, delete: true, secret: 'strip' },
++        { record_id: 1, key_id: 'face-key-2', name: '{"1":"Face 2"}', sort: 0 },
++      ] },
++      sub_options_items: { sub_options_items: [
++        { record_id: 0, parent: 'face-key', name: '', name_option: '6', price: 0, sort: 0, disabled: true, delete: false },
++      ] },
++    },
++  };
++}
++
++test('reads allowlisted provider fields even when option tables are not rendered', () => {
++  withProvider(liveData(), (dom) => {
++    dom.window.document.body.innerHTML += '<table data-index="sub_options"><tbody><tr><td>DOM-only false row</td></tr></tbody></table><div class="mhx-items-panel">clone</div>';
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'ok');
++    assert.equal(result.entityId, '966');
++    assert.equal(result.providerAttributeSetId, '479');
++    assert.deepEqual(result.generalAttributeSetId, ['479']);
++    assert.equal(result.locations.rows.length, 2);
++    assert.equal(result.locations.rows[0]?.values.sort, '');
++    assert.equal(result.locations.rows[1]?.values.sort, 0);
++    assert.equal(result.locations.rows[0]?.values.disabled, true);
++    assert.equal(result.locations.rows[0]?.values.visible, false);
++    assert.equal(result.locations.rows[0]?.values.hidden, true);
++    assert.equal(result.locations.rows[0]?.values.delete, true);
++    assert.deepEqual(result.locations.rows[0]?.translations.name?.parsed, { '1': 'Face 1' });
++    assert.equal(result.items.rows[0]?.values.parent, 'face-key');
++    assert.equal(result.items.rows[0]?.values.name, '');
++    assert.equal(result.items.rows[0]?.values.price, 0);
++    assert.equal(result.items.rows[0]?.values.disabled, true);
++    assert.equal(result.items.rows[0]?.values.delete, false);
++    assert.ok(result.warnings.some((warning) => warning.includes('does not infer')));
++    assert.ok(!JSON.stringify(result).includes('must not leave'));
++    assert.ok(!JSON.stringify(result).includes('strip'));
++  });
++});
++
++test('distinguishes missing collections from present empty collections', () => {
++  withProvider({ ...liveData(), options: { sub_options: { sub_options: [] } } }, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.locations.state, 'available');
++    assert.deepEqual(result.locations.rows, []);
++    assert.equal(result.items.state, 'missing');
++    assert.equal(result.status, 'partial');
++  });
++});
++
++test('rejects provider identity mismatch without returning provider rows', () => {
++  withProvider({ ...liveData(), attributesetcustomoptions_id: '967' }, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'identity-mismatch');
++    assert.equal(result.entityId, '966');
++    assert.equal(result.providerEntityId, '967');
++    assert.deepEqual(result.locations.rows, []);
++  });
++});
++
++test('reports a missing provider and duplicate identifiers without guessing parents', () => {
++  withProvider({}, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'unavailable');
++    assert.ok(result.warnings.some((warning) => warning.includes('provider is not loaded')));
++  }, false);
++  const data = liveData() as any;
++  data.options.sub_options.sub_options[1].key_id = 'face-key';
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.ok(result.warnings.some((warning) => warning.includes('Duplicate row identifiers')));
++    assert.equal(result.items.rows[0]?.values.parent, 'face-key');
++    assert.ok(result.warnings.some((warning) => warning.includes('does not infer location assignments')));
++  });
++});
++
++test('reports missing identity and parent fields while preserving explicit blanks', () => {
++  const data = liveData() as any;
++  delete data.options.sub_options.sub_options[0].key_id;
++  delete data.options.sub_options_items.sub_options_items[0].parent;
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.equal(result.locations.identifierGaps, 1);
++    assert.equal(result.items.identifierGaps, 1);
++    assert.equal(result.locations.rows[0]?.values.sort, '');
++    assert.ok(result.warnings.some((warning) => warning.includes('locations 1, items 1')));
++  });
++});
++
++test('reports malformed translation JSON and bounds oversized collections', () => {
++  const data = liveData() as any;
++  data.general.translationsData = '{invalid';
++  data.options.sub_options.sub_options[0].name = '{invalid';
++  data.options.sub_options.sub_options.push(...Array.from({ length: 110 }, (_, i) => ({ record_id: i + 2, key_id: `k${i}` })));
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.equal(result.locations.rows.length, 100);
++    assert.equal(result.locations.truncated, true);
++    assert.equal(result.generalTranslations?.parseError, 'Invalid translation JSON.');
++    assert.equal(result.locations.rows[0]?.translations.name?.parseError, 'Invalid translation JSON.');
++  });
++});
++
++test('sanitizes non-JSON provider values inside allowlisted fields', () => {
++  const data = liveData() as any;
++  const cycle: any = {};
++  cycle.self = cycle;
++  data.general.placeholder = cycle;
++  data.general.translations = { '1': { option_title: 'PT', unsafe: () => 'secret' } };
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.deepEqual(result.general.placeholder, { self: '[Circular]' });
++    assert.deepEqual(result.general.translations, { '1': { option_title: 'PT', unsafe: null } });
++    assert.ok(!JSON.stringify(result).includes('secret'));
++  });
++});
++
++test('rejects non-top-frame and unsupported-host requests before tab access or injection', async () => {
++  const oldChrome = Object.getOwnPropertyDescriptor(globalThis, 'chrome');
++  let tabLookups = 0;
++  let injections = 0;
++  const responses: unknown[] = [];
++  Object.defineProperty(globalThis, 'chrome', {
++    value: {
++      tabs: { get: async () => { tabLookups += 1; throw new Error('must not read this tab'); } },
++      scripting: { executeScript: async () => { injections += 1; return []; } },
++    },
++    configurable: true,
++  });
++  try {
++    for (const context of [
++      { senderTabId: 5, senderUrl: ROUTE, senderFrameId: 2 },
++      { senderTabId: 5, senderUrl: ROUTE.replace('bestofgifts.pt', 'evil.example'), senderFrameId: 0 },
++    ]) {
++      assert.equal(handleUiMessage(
++        { type: 'SCAN_PP_DRAFT' },
++        { ...context, sendResponse: (value) => { responses.push(value); } },
++      ), true);
++    }
++    await Promise.resolve();
++    await Promise.resolve();
++    assert.equal(responses.length, 2);
++    assert.ok(responses.every((response) => (response as ScanPpDraftResponse).status === 'unavailable'));
++    assert.equal(tabLookups, 0);
++    assert.equal(injections, 0);
++  } finally {
++    if (oldChrome) Object.defineProperty(globalThis, 'chrome', oldChrome);
++    else Reflect.deleteProperty(globalThis, 'chrome');
++  }
++});
++
++test('does not auto-scan and drops responses after draft or native anchor changes', async () => {
++  const dom = new JSDOM(
++    '<form><div data-bind="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"><input></div></form>',
++    { url: ROUTE },
++  );
++  const oldWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
++  const oldDocument = Object.getOwnPropertyDescriptor(globalThis, 'document');
++  const oldChrome = Object.getOwnPropertyDescriptor(globalThis, 'chrome');
++  let submitCount = 0;
++  Object.defineProperty(globalThis, 'window', { value: dom.window, configurable: true });
++  Object.defineProperty(globalThis, 'document', { value: dom.window.document, configurable: true });
++  let resolveMessage!: (value: unknown) => void;
++  const sent: unknown[] = [];
++  Object.defineProperty(globalThis, 'chrome', {
++    value: { runtime: { sendMessage: (message: unknown) => {
++      sent.push(message);
++      return new Promise((resolve) => { resolveMessage = resolve; });
++    } } },
++    configurable: true,
++  });
++  try {
++    dom.window.document.querySelector('form')?.addEventListener('submit', () => { submitCount += 1; });
++    mountPpScan();
++    assert.equal(sent.length, 0);
++    const button = dom.window.document.querySelector('button');
++    assert.ok(button);
++    assert.equal(button.type, 'button');
++    button.click();
++    assert.equal(submitCount, 0);
++    assert.equal(sent.length, 1);
++    dom.window.document.querySelector('input')?.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
++    resolveMessage({ version: 1, status: 'ok', entityId: '966', routePath: dom.window.location.pathname, general: {}, locations: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, items: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, warnings: [] } satisfies ScanPpDraftResponse);
++    await new Promise((resolve) => setTimeout(resolve, 0));
++    assert.equal(dom.window.document.querySelector('pre')?.textContent, '');
++    assert.match(dom.window.document.querySelector('[role="status"]')?.textContent ?? '', /draft changed/i);
++
++    const secondButton = dom.window.document.querySelector<HTMLButtonElement>(`#mhx-pp-draft-scan button`);
++    assert.ok(secondButton);
++    secondButton.click();
++    dom.window.document.querySelector('[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]')?.remove();
++    mountPpScan();
++    resolveMessage({ version: 1, status: 'ok', entityId: '966', routePath: dom.window.location.pathname, general: {}, locations: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, items: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, warnings: [] } satisfies ScanPpDraftResponse);
++    await new Promise((resolve) => setTimeout(resolve, 0));
++    assert.equal(dom.window.document.querySelector('#mhx-pp-draft-scan'), null);
++  } finally {
++    unmountPpScan();
++    dom.window.close();
++    if (oldWindow) Object.defineProperty(globalThis, 'window', oldWindow); else Reflect.deleteProperty(globalThis, 'window');
++    if (oldDocument) Object.defineProperty(globalThis, 'document', oldDocument); else Reflect.deleteProperty(globalThis, 'document');
++    if (oldChrome) Object.defineProperty(globalThis, 'chrome', oldChrome); else Reflect.deleteProperty(globalThis, 'chrome');
++  }
++});

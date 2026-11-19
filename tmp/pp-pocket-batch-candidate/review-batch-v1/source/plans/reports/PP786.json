@@ -1,0 +1,308 @@
+{
+  "approved_state": "A rever; own Yes/No and why unchanged",
+  "body_protected_snapshot": [
+    {
+      "kind": "image",
+      "scope": [],
+      "sha256": "acdeeedcbc8a3a9a5b6c9f9b5a54769f3f0ee7343c120c0572c65cb1e1785f7f"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "133a1ba5a86e3b0864377a45c752f029b040c3884a2c94a7895fd7b93eac4c29"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "0918d18f5dfbe1a5f153f89605cddd06cbbdfb2433d6de628ab2a29b986f3e49"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "callout:Revisão do PP 786"
+      ],
+      "sha256": "db25877074f80ee832159b4bf325cf907c5748aedadabad87ff40553d55758c8"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 786"
+      ],
+      "sha256": "8df30a1e473c464a47edab70b1eba1b4d6e8bd4e9bcfe91ff5ebe12bb8a18a1e"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 786"
+      ],
+      "sha256": "d845f2773c4b1f1bae45a3305cb40332beac8ea361d57e815727bdfd181e2f28"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 786"
+      ],
+      "sha256": "0ffcca8b6629463fadfd2630cce63e4459783728506dcf488773371b15b67627"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 786"
+      ],
+      "sha256": "33b7e39bb01962ec14ed89628b3f62ee5ba9f396bf772b6c0f56260c3576d3f9"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 786"
+      ],
+      "sha256": "973196cd0e67f8bc2530873e61852b1782d7d525234720bcce67c45277b1a908"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:0"
+      ],
+      "sha256": "1b69466d80163a8b86590c6f565a5979d73a6119442a8f7c4edef6e6e42c30e6"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo."
+      ],
+      "sha256": "8109354e7ad9e4691b537a83e3db42aa5d5d19180d308f355326a8fc600b5112"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo."
+      ],
+      "sha256": "a1be96373aac0e4e5d722b9ef29f2ad128e1309fb10daedd8ff3fa53c68822f5"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito:2"
+      ],
+      "sha256": "3e405c66da554f28d2adb5bc385d3f98c8afc52aa63f7ad2ed4f4ee5e4e30d52"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "9b166df5a539d5ea21e8ab1382561f964e794e4dbefb52443a3d5a187a7c98d2"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "b6c9f12c79eb1c9142ff84dfd60d214608e4ab8e5ac14054dad6764abdeb6ab4"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "54c8b06657352df16979c656bbb3dbf6739ade4da155a65689a30c7dd398921e"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "a64603c5ba8e3284d5fc14cf979d40490cef0c39587b4fc005af3344329493be"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:1",
+        "table-note:Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito:2"
+      ],
+      "sha256": "c230272f23481e32a15d2ae7454a8b43271b0d55ea7b0a26a1d52ca6510c55b5"
+    },
+    {
+      "kind": "toggle",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "a1742695b2650025a4781870d4cffd9fcb4527c6bee335fbd42c4ec9a5b16ebb"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "433226947e7cf0d66612997641f78c67a53cbd15ccfa422459bdb629c820982c"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "e7bd7e7848a4f6a47ad69814c5fde15ba44f8f5dae69e715d542f98537c94446"
+    },
+    {
+      "kind": "body-comment-table",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "ef7ec9834e71d252f1426e40020a98d03c159780e8f75667f00e140c874d7d86"
+    }
+  ],
+  "category": "APRON",
+  "code": "786",
+  "desired_body": "## Imagens\n\n<image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M22096\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 786</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 786.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n<table header-row=\"true\">\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM52\n</td>\n<td>\n786\n</td>\n</tr>\n<tr>\n<td>\nN52\n</td>\n<td>\nAVENTAL 3 bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO53\n</td>\n<td>\nBolso Peito\n</td>\n</tr>\n<tr>\n<td>\nP53\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nN54\n</td>\n<td>\nEx: M22096 \n</td>\n</tr>\n<tr>\n<td>\nO54\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP54\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nO55\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n</table>\n</toggle>",
+  "diff": "--- 786-before\n+++ 786-after\n@@ -31,7 +31,7 @@\n \n | Face / local | Opções propostas | Nota |\n | --- | --- | --- |\n-| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n+| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n \n <toggle>\n Pendências técnicas\n",
+  "layout": "Existing New/Old columns and row notes retained; no whole-container rewrite or cosmetic note relocation",
+  "method_complete": false,
+  "operations": [
+    {
+      "eligible": true,
+      "id": "786-row-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |",
+            "old_str": "| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "d00b6705ae1f835cb7440191c545e56b"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "e82fa0c20bd9a924adb168a12857b61b42a655013aaaa8618bb4c53fc8ba302e",
+        "old_note_scopes": [
+          "Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito"
+        ],
+        "old_section_sha256": "4ed6815db1a52ee384b9ca048ed1c05c9913ca3723e749d8dd5125a556a1f5a6",
+        "visible_prefix_sha256": "898e6ef375112ea9e6ca9e5bebfe3a5326f60ae3647bb965c5bf10743e257bf7",
+        "visible_suffix_sha256": "84911b8bfc423c991be6de666247101d5e1f1ee50a0d1c31149e722f8f2994de"
+      },
+      "side": "New"
+    }
+  ],
+  "page_id": "d00b6705ae1f835cb7440191c545e56b",
+  "property_operations": [],
+  "property_proposals": [
+    {
+      "after": [
+        "DTF"
+      ],
+      "before": [
+        "Transfer",
+        "DTF"
+      ],
+      "property": "Técnicas",
+      "reasons": [],
+      "resolved": true
+    },
+    {
+      "after": [
+        "DTF — até A6"
+      ],
+      "before": [
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [],
+      "resolved": true
+    }
+  ],
+  "reasons": [],
+  "rule_changes": [
+    {
+      "after": [
+        "DTF - Até A6 (10,5x14,8 cm)"
+      ],
+      "before": [
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      ],
+      "locations": [
+        "Bolso Peito",
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "reference": "A6"
+    }
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://ed0b6705-ae1f-8314-8e79-8187485fdec9/09637722-7bd7-4f4d-9155-fb07c9171caf?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP786_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M22096\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 786</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 786.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New\n- Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n<table header-row=\"true\">\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM52\n</td>\n<td>\n786\n</td>\n</tr>\n<tr>\n<td>\nN52\n</td>\n<td>\nAVENTAL 3 bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO53\n</td>\n<td>\nBolso Peito\n</td>\n</tr>\n<tr>\n<td>\nP53\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nN54\n</td>\n<td>\nEx: M22096 \n</td>\n</tr>\n<tr>\n<td>\nO54\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP54\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nO55\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n</table>\n</toggle>",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "786",
+      "Estado": "A rever",
+      "Faces": [
+        "Bolso Peito",
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/09637722-7bd7-4f4d-9155-fb07c9171caf/PP786_1.png"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 3,
+      "Opções de personalização": [
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "PP": "786 — AVENTAL 3 bolsos - 3F",
+      "SKU / referência do fornecedor": "Ex: M22096",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Transfer",
+        "DTF"
+      ],
+      "url": "https://app.notion.com/p/d00b6705ae1f835cb7440191c545e56b",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_state_sha256": "dcd06fc65a254e2fdccb96d3063337305ecbd2bac89eca6a2fc8286e82e0efae",
+  "status": "READY_FOR_REVIEW",
+  "technical_unresolved": [
+    "Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed"
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "contract_sha256": "f6f05377bff7a554a1fdad4d668bb9b1d7168fe883104d5b1418258e6a988dd6",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "name": "PP_METHOD_ROWS",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  }
+}

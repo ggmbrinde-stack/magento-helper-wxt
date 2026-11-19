@@ -1,0 +1,31 @@
+{
+  "canonical_plan_sha256": "82f8dbf4370ed4a0c3ee65db4253db332df91109f6916842203f3a0aa6aeb0b2",
+  "implementation_sha256": "ff4fca13269a007af0ed59829053036df3b7e23623b3b5104d3ee6681a4df06e",
+  "metadata_dependencies": {
+    "Erro": "EXISTS",
+    "Para revisão": "EXISTS"
+  },
+  "pages": [
+    {
+      "body_operations": 1,
+      "business_properties": 1,
+      "code": "558",
+      "failure_status": "Erro, best effort; durable local reason always",
+      "final_status": "Para revisão"
+    },
+    {
+      "body_operations": 2,
+      "business_properties": 0,
+      "code": "661",
+      "failure_status": "Erro, best effort; durable local reason always",
+      "final_status": "Para revisão"
+    },
+    {
+      "body_operations": 2,
+      "business_properties": 1,
+      "code": "662",
+      "failure_status": "Erro, best effort; durable local reason always",
+      "final_status": "Para revisão"
+    }
+  ]
+}

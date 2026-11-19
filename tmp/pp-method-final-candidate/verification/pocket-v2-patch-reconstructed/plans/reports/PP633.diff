@@ -1,0 +1,21 @@
+--- 633-before
++++ 633-after
+@@ -36,7 +36,7 @@
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+ | Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |
+-| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |
++| Bolso | DTF - Até A6 (10,5x14,8 cm) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |
+ 
+ <toggle>
+ Pendências técnicas
+@@ -52,7 +52,8 @@
+ 
+ | Face / local | Opções completas e especificações | Notas |
+ | --- | --- | --- |
+-| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm) | Nota original conjunta (Peito<br />Bolso): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Bolso | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) |  |
+ 
+ <p />
+ </column>

@@ -1,0 +1,150 @@
+{
+  "baseCommit": "cd3d2abbf4fbb5e4a9f8d5884cf05d753bd08071",
+  "branch": "codex/pp-scan-candidate",
+  "createdAt": "2026-11-14T14:31:31.283Z",
+  "previousArtifactsPreserved": {
+    "final-manifest.md": "708ddc07fdc003b7b74ba3855cf4853f073fea7552df7c3967c1ddf1ea5945ad",
+    "combined-candidate-final.patch": "a522fe936770b62c30bc1e554fd9295f0bf95468b75dee1338825689cd185ca4",
+    "scanner-only-final.patch": "aab045524fca5ef8b734424a608a076fb4989acf2792bf1cecca52084d214845"
+  },
+  "originalPpWorktreePreserved": true,
+  "originalPpPatchSha256": "e07f7eac8967bd0619c68e69bfab08fc418bd9dbb3391e26bdbb6685c3736d38",
+  "combinedPatch": {
+    "file": "combined-candidate-anchor-fix-v1.patch",
+    "sha256": "cf4053024c7de3cb791d016258bd37a41daa40156bc8de02d8a97f22d5fa203f"
+  },
+  "anchorOnlyPatch": {
+    "file": "anchor-fix-only-v1.patch",
+    "sha256": "3b492b2890e7127a3d1da6e9d48e11a53bb095dd01f104b53729ed20969d46ce",
+    "appliesAfterCombinedPatchSha256": "a522fe936770b62c30bc1e554fd9295f0bf95468b75dee1338825689cd185ca4"
+  },
+  "changedByThisFollowUp": [
+    "src/page/features/pp-catalog/index.ts",
+    "tests/ppCatalogUi.test.ts"
+  ],
+  "sourceFiles": [
+    {
+      "path": "package.json",
+      "sha256Lf": "f811f476ad9055112bbb3562473dcf0a973b407f621eda863731ba0560c7ec5d"
+    },
+    {
+      "path": "src/audit/index.ts",
+      "sha256Lf": "40e8d4dbc816b321233d5b7b21fa84f44110e936e8f57bab61b5e646abc5d82d"
+    },
+    {
+      "path": "src/audit/ppCatalog.ts",
+      "sha256Lf": "061bc442609ccf96bbcefed7b142290f7474218ff5966d764d2e250e8e386d72"
+    },
+    {
+      "path": "src/core/messages/audit.ts",
+      "sha256Lf": "cdd1c61ad564e602978bd03c85c8f5e57273e62dff0d82c375f37a29c000fddd"
+    },
+    {
+      "path": "src/core/messages/envelope.ts",
+      "sha256Lf": "681e8114bb0bda997afdaf40fc6f8185fe383335112c4f211fa5573a38aac4f3"
+    },
+    {
+      "path": "src/core/messages/ui.ts",
+      "sha256Lf": "bc29887de1caa8a1b817aed715ff40bad30f39a4c7ad054e5405b69d1ca5119b"
+    },
+    {
+      "path": "src/entrypoints/background/index.ts",
+      "sha256Lf": "ab9241bf323a3d345313f3b7c92317bbbab96eaf42c6e98eaa8220afc695581b"
+    },
+    {
+      "path": "src/entrypoints/background/routers/audit.ts",
+      "sha256Lf": "b29b2c3cd51e41c369ca2c7a1c1c13d668aa8d2d3624ab968d28b5455ee79fbc"
+    },
+    {
+      "path": "src/entrypoints/background/routers/ui.ts",
+      "sha256Lf": "1bac51e31cc5049d440142ec74621b1bd769ccd4c80112d208896dd367c652cd"
+    },
+    {
+      "path": "src/entrypoints/content.ts",
+      "sha256Lf": "ae58b346feb0fe0cb482d4a8cba9cd6d1b3b2a6a5ffe5b6323e5a5cc32a96643"
+    },
+    {
+      "path": "src/page/features/pp-catalog/index.ts",
+      "sha256Lf": "ca4327bd41a4d73444c53f05d882db5a77388b1475f52c4ee2716bccf619b100"
+    },
+    {
+      "path": "src/page/features/pp-scan/index.ts",
+      "sha256Lf": "553da68beb5e220614aa0125f0364c3665458e87eef788bec6311e28714c4dd7"
+    },
+    {
+      "path": "src/page/features/pp-scan/page.ts",
+      "sha256Lf": "b139a2d2fd38694b1456c94d183e8a7481448718ad4ff8b9aa265c98d01249f6"
+    },
+    {
+      "path": "src/page/features/registry.ts",
+      "sha256Lf": "8b9b3f7aab93160891c685f1a8e4861a0e603185a1c4f26516f04ede3eecdd56"
+    },
+    {
+      "path": "src/shared/__tests__/features.test.ts",
+      "sha256Lf": "94361132ac92f32f9a39f1718fb92f1e0d683806f458cb5327d95046a65f8492"
+    },
+    {
+      "path": "src/shared/featureCatalog.ts",
+      "sha256Lf": "dded5310dca35f7e010d9dcf5be9589c46959395c8ffa6e054f6a7031443295a"
+    },
+    {
+      "path": "src/shared/notion/client.ts",
+      "sha256Lf": "88faf62f2dd65c371848aff42dac1b921efe7e084c0e5e3a2286ab352ddb8b86"
+    },
+    {
+      "path": "src/shared/ppCatalog.ts",
+      "sha256Lf": "8b127c9a644d208bb4f89bd7ab67f74874b8ebfec3faab2e2b2d7ab3df2e3c75"
+    },
+    {
+      "path": "tests/ppCatalog.test.ts",
+      "sha256Lf": "c48d120319dd815319f24fa504b01be7eca0b07519435523b77c2880a22139a5"
+    },
+    {
+      "path": "tests/ppCatalogUi.test.ts",
+      "sha256Lf": "99590f5d1e521f65b9a419c67a3e268ee9bb4adb90b37ed0e448caef929fc8f2"
+    },
+    {
+      "path": "tests/ppScan.test.ts",
+      "sha256Lf": "570e892d529309b4c26f566d2d13d51c9681153e5521b80f0ca9b56960271957"
+    }
+  ],
+  "candidate": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-scan-candidate\\.output\\chrome-mv3",
+  "buildFiles": {
+    "assets/dashboard-ohl-gMng.css": "cea5f1f004f1b7828c97cf5286297a92e03e1ceb7e48c62d4f592922d09b871a",
+    "background.js": "38865e16a99395b06ad3d0b97cca0bacd3b339cf397f74a73405290cd158a845",
+    "chunks/ToolkitColors-5dxNe-SH.js": "918802b342e7cdfbb565098f381307cbce8eba4ffcbd8e64dc7c39cf3d3b7c56",
+    "chunks/dashboard-CIHHzG0S.js": "324aae60ced71d59b689ee32ea8e5c5e502bbdb35bfa6a404f02533d40cf334d",
+    "chunks/sidepanel-Bfz22vDl.js": "f4801f23f5d65cb8695a5391610a80f7c6a8dc39b5244c9cb0b612dfed087f39",
+    "content-scripts/content.js": "d4250dd9b56f101f9bf2c6656ba48dde62f6bd8e06c800bad6ae1d07bc1e136a",
+    "dashboard.html": "aaff699488aaefc0277ee0a8fe9a1b520337b34f8009398f5f1f4414f3a7bbd0",
+    "icon/128.png": "117cc7fb75a505a2abb09d216c38fd3151625f407cddb63771f9a230dd651de3",
+    "icon/16.png": "7dcad689786b48d6d2128f3de677f9229904e630e8d6cd3c6937b76f00950031",
+    "icon/32.png": "b9dbabc78e5c710702f638d9f506689fa7a08db98dd893da8a555a15bc8456be",
+    "icon/48.png": "8e52ecd5231ac4511a0814422552ea46315096e82d7c67b3a3e08b312d619267",
+    "icon/96.png": "e53bf3fd3d503f0e5ddf684d48cedafa40094f7876d7eb8fd997cb835e90ab35",
+    "manifest.json": "79b0230e5858c1e3779826ff3dce7af170802e21f75969f5beb852b69f148498",
+    "sidepanel.html": "e286b1cf991b96de5581269b339156acadeec83fa173a8a3463494414a8bef7b",
+    "ui/toolkit.css": "41c7c3403a18359bf82be237a4634e4cd871b855adede76f72b1134f89122437"
+  },
+  "buildSha256": "a86139c0e4df51702f3f932bc92fddb639f3e2a890ea3c2d9e74789e0bf7feea",
+  "checks": {
+    "regression": "reproduced failure before the three-line fix",
+    "ppCatalog": "27 passed",
+    "ppScan": "13 passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "ui": "G1-G6 passed",
+    "notion": "passed",
+    "lanes": "passed",
+    "features": "passed",
+    "diff": "passed",
+    "snapshotReverseChecks": "both passed",
+    "combinedBuildMarkers": "lookup and scanner present"
+  },
+  "limits": [
+    "No full unrelated suite repeat for bounded anchor fix",
+    "No Chrome install/reload or live Magento test",
+    "No installed directories changed",
+    "Independent re-review required"
+  ]
+}

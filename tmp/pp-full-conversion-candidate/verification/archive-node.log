@@ -1,0 +1,22 @@
+✔ full preparation reads exact selected pages, schema, rules and layout only; scrubs credentials (5.6634ms)
+✔ PP601-only selection is refused before connector reads (0.3905ms)
+✔ failed actual fetch stops preparation and never applies a page (0.1485ms)
+✔ failed selected-page read is persisted as a per-page error while source reads remain global (0.3056ms)
+✔ default dry-run invokes only local inspection and safely quotes paths (0.699ms)
+✔ explicit application serialises real tool calls and UTF-8 events (2.2391ms)
+✔ lost mutation result is delivered once to the durable engine, never retried (0.2422ms)
+✔ reconciliation refuses mutations even if a malformed engine action requests one (0.2097ms)
+✔ out-of-batch targets and replace-all do not reach the connector (0.5007ms)
+✔ cancellation is local and cannot dispatch a mutation (0.1336ms)
+✔ targeted policy refuses property and insertion commands at the bridge (0.2363ms)
+✔ fresh rule reads are limited to the reviewed Working Copy home (0.6597ms)
+✔ per-page status phases use actual connector and return error report (1.3821ms)
+✔ explicit batch continuation is separate from read-only reconciliation (0.3794ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80.0447

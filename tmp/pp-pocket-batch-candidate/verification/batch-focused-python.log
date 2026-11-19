@@ -1,0 +1,22 @@
+test_absent_error_option_is_not_created_and_local_report_continues (test_page_batch.BatchTests.test_absent_error_option_is_not_created_and_local_report_continues) ... ok
+test_actual_cli_batch_entry_runs_success_and_error_status_with_fake_transport (test_page_batch.BatchTests.test_actual_cli_batch_entry_runs_success_and_error_status_with_fake_transport) ... ok
+test_all_selected_pages_quarantined_finishes_without_holding_global_fence (test_page_batch.BatchTests.test_all_selected_pages_quarantined_finishes_without_holding_global_fence) ... ok
+test_cancellation_never_starts_error_mark_or_next_pp (test_page_batch.BatchTests.test_cancellation_never_starts_error_mark_or_next_pp) ... ok
+test_error_status_failure_keeps_local_reason_then_next (test_page_batch.BatchTests.test_error_status_failure_keeps_local_reason_then_next) ... ok
+test_explicit_negative_saved_read_stops_current_content_but_next_runs (test_page_batch.BatchTests.test_explicit_negative_saved_read_stops_current_content_but_next_runs) ... ok
+test_first_pp_failure_marks_error_and_next_succeeds (test_page_batch.BatchTests.test_first_pp_failure_marks_error_and_next_succeeds) ... ok
+test_global_hash_scope_and_status_payload_guards_remain_refused (test_page_batch.BatchTests.test_global_hash_scope_and_status_payload_guards_remain_refused) ... ok
+test_lost_content_never_retried_quarantine_does_not_block_next (test_page_batch.BatchTests.test_lost_content_never_retried_quarantine_does_not_block_next) ... ok
+test_malformed_first_page_response_is_local_error_and_next_runs (test_page_batch.BatchTests.test_malformed_first_page_response_is_local_error_and_next_runs) ... ok
+test_new_run_skips_quarantined_pp_but_allows_different_selected_pp (test_page_batch.BatchTests.test_new_run_skips_quarantined_pp_but_allows_different_selected_pp) ... ok
+test_partial_failure_preserves_first_receipt_skips_remaining_current_pp (test_page_batch.BatchTests.test_partial_failure_preserves_first_receipt_skips_remaining_current_pp) ... ok
+test_readonly_reconciliation_records_resolution_without_retry_and_keeps_barrier (test_page_batch.BatchTests.test_readonly_reconciliation_records_resolution_without_retry_and_keeps_barrier) ... ok
+test_restart_pending_page_is_not_replayed_and_continues_other_pp (test_page_batch.BatchTests.test_restart_pending_page_is_not_replayed_and_continues_other_pp) ... ok
+test_success_status_only_after_verified_body_and_properties (test_page_batch.BatchTests.test_success_status_only_after_verified_body_and_properties) ... ok
+test_success_status_uncertainty_never_counts_success_and_next_runs (test_page_batch.BatchTests.test_success_status_uncertainty_never_counts_success_and_next_runs) ... ok
+test_wrong_error_identity_never_marks_protected_target_and_next_runs (test_page_batch.BatchTests.test_wrong_error_identity_never_marks_protected_target_and_next_runs) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 9.665s
+
+OK

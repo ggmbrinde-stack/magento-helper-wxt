@@ -1,0 +1,95 @@
+{
+  "observed_at_utc": "2026-11-18T19:23:22.939Z",
+  "data_source": "collection://431b6705-ae1f-83db-b71c-0739778f9e1a",
+  "change": "Add Erro select option only; no PP row/status assignments",
+  "before_estado": {
+    "description": "",
+    "name": "Estado",
+    "options": [
+      {
+        "color": "gray",
+        "description": "",
+        "name": "Demo",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/MTFiNTQ0MjItNTAzMC00NWRmLThkZDAtNThjOGM3YjExOTA4"
+      },
+      {
+        "color": "green",
+        "description": "",
+        "name": "Validado",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/NWM2MDBkZTItYjk1NS00OGZhLThjZDgtY2M3ZmQ3YjNhYmEw"
+      },
+      {
+        "color": "yellow",
+        "description": "",
+        "name": "A rever",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/ZTE1MzAyY2YtMmJmZS00NzAyLWI4OGYtNDUyYWJlNWFlMjg2"
+      },
+      {
+        "color": "red",
+        "description": "",
+        "name": "Obsoleto",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/OTE1M2ExN2MtMTk1My00ODM3LWIzNjYtY2VlMTZhNmM1ZTk3"
+      },
+      {
+        "color": "blue",
+        "description": "",
+        "name": "Para revisão",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/NzRlOWJjNDYtN2JiNy00NTE5LTgxMDQtMDg3OTQ0OGEwNzk5"
+      }
+    ],
+    "type": "select"
+  },
+  "after_estado": {
+    "description": "",
+    "name": "Estado",
+    "options": [
+      {
+        "color": "gray",
+        "description": "",
+        "name": "Demo",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/MTFiNTQ0MjItNTAzMC00NWRmLThkZDAtNThjOGM3YjExOTA4"
+      },
+      {
+        "color": "green",
+        "description": "",
+        "name": "Validado",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/NWM2MDBkZTItYjk1NS00OGZhLThjZDgtY2M3ZmQ3YjNhYmEw"
+      },
+      {
+        "color": "yellow",
+        "description": "",
+        "name": "A rever",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/ZTE1MzAyY2YtMmJmZS00NzAyLWI4OGYtNDUyYWJlNWFlMjg2"
+      },
+      {
+        "color": "red",
+        "description": "",
+        "name": "Obsoleto",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/OTE1M2ExN2MtMTk1My00ODM3LWIzNjYtY2VlMTZhNmM1ZTk3"
+      },
+      {
+        "color": "blue",
+        "description": "",
+        "name": "Para revisão",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/NzRlOWJjNDYtN2JiNy00NTE5LTgxMDQtMDg3OTQ0OGEwNzk5"
+      },
+      {
+        "color": "red",
+        "description": "",
+        "name": "Erro",
+        "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/ZjYwZmI0MmQtNTM1Ny00MGI1LTk5ZjAtYjYwYTRhMTAyMWUx"
+      }
+    ],
+    "type": "select"
+  },
+  "new_option": {
+    "color": "red",
+    "description": "",
+    "name": "Erro",
+    "url": "collectionPropertyOption://431b6705-ae1f-83db-b71c-0739778f9e1a/RFVAYA/ZjYwZmI0MmQtNTM1Ny00MGI1LTk5ZjAtYjYwYTRhMTAyMWUx"
+  },
+  "view": "view://41cb6705-ae1f-8140-82b2-000cc6e50e6a",
+  "view_filter": "Estado = \"Para revisão\"",
+  "preserved": "Existing option names, IDs and colors; original catalog and all backups untouched",
+  "code_hookup": "Pending reviewed runtime; success Para revisão, failed/partial Erro where safe plus durable local reason; continue next PP without replaying uncertain writes"
+}

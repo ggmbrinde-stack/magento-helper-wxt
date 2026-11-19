@@ -1,0 +1,74 @@
+{
+  "pages": {
+    "430": {
+      "code": "430",
+      "confirmed_receipts": [
+        {
+          "code": "430",
+          "operation": "430-pocket-row-1",
+          "saved_state_sha256": "094c4d4f6923e5f8cb2374faf1bd9c7d9241e4a8eaf68f9acec69fae7ea79df0",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "430",
+          "operation": "430-pocket-row-2",
+          "saved_state_sha256": "96263ddae8697621af4d44ec9c5c6b33409663715b55d98e3cb852e0fa5f5e73",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "430",
+          "operation": "430-pocket-property-1",
+          "saved_state_sha256": "445c9ee9910b08040ad187d2ee4e790d6ec92713523e4379a4811eb4077b6ee4",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "430",
+          "operation": "430-review-status",
+          "saved_estado": "Para revisão",
+          "saved_state_sha256": "a4dbcca553cfe9875a433156116ff8ee0194b926b03baa2e843eae429d1071b4",
+          "status": "SUCCEEDED"
+        }
+      ],
+      "outcome": "SUCCESS",
+      "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+      "pending_receipts": [],
+      "readback": {
+        "edited_at": "2026-11-18T21:31:30.258Z",
+        "estado": "Para revisão",
+        "observed_body_sha256": "6d4469c8ec70a4e5bf4f1dd70e72772a89ca8179c0826623ba40d20e075f2fb2",
+        "properties_sha256": "49b89c44a9b013823dedd5953039d30a8a0555d2fb0853f047d8be40eb291f42"
+      },
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "a4dbcca553cfe9875a433156116ff8ee0194b926b03baa2e843eae429d1071b4"
+    }
+  },
+  "plan_sha256": "14e2f3f867eb430e46f58ced9560954e5b9860b52ecdfccbb1ba536d2e8ea962",
+  "receipts": [
+    {
+      "code": "430",
+      "operation": "430-pocket-row-1",
+      "saved_state_sha256": "094c4d4f6923e5f8cb2374faf1bd9c7d9241e4a8eaf68f9acec69fae7ea79df0",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "430",
+      "operation": "430-pocket-row-2",
+      "saved_state_sha256": "96263ddae8697621af4d44ec9c5c6b33409663715b55d98e3cb852e0fa5f5e73",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "430",
+      "operation": "430-pocket-property-1",
+      "saved_state_sha256": "445c9ee9910b08040ad187d2ee4e790d6ec92713523e4379a4811eb4077b6ee4",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "430",
+      "operation": "430-review-status",
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "a4dbcca553cfe9875a433156116ff8ee0194b926b03baa2e843eae429d1071b4",
+      "status": "SUCCEEDED"
+    }
+  ],
+  "status": "COMPLETE"
+}

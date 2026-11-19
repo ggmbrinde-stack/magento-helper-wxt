@@ -1,0 +1,47 @@
+
+> magento-helper-wxt@0.2.1 test:pp-catalog
+> esbuild tests/ppCatalog.test.ts tests/ppCatalogUi.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outdir=.output/pp-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/pp-tests/ppCatalog.test.mjs .output/pp-tests/ppCatalogUi.test.mjs
+
+✔ exact lookup uses schema, copied database and read-only body pagination; retains uncertainty and blank counts (22.8333ms)
+✔ code is kept verbatim without trimming, prefix or numeric aliases (2.4713ms)
+✔ index reads only summary properties, preserves exact codes and missing fields, and never reads bodies (0.7699ms)
+✔ index rejects invalid cursors without network access (0.2102ms)
+✔ index fails explicitly and respects existing bounded retries: {"token":""} (0.279ms)
+✔ index fails explicitly and respects existing bounded retries: {"status":401} (1.359ms)
+✔ index fails explicitly and respects existing bounded retries: {"status":403} (0.431ms)
+✔ index fails explicitly and respects existing bounded retries: {"schema":"number"} (0.37ms)
+✔ index fails explicitly and respects existing bounded retries: {"malformed":true} (0.4423ms)
+✔ index fails explicitly and respects existing bounded retries: {"network":true} (0.337ms)
+✔ lookup case 1: not-found, no reference selected (0.539ms)
+✔ lookup case 2: multiple, no reference selected (0.4566ms)
+✔ lookup case 3: partial, no reference selected (0.6017ms)
+✔ lookup case 4: partial, no reference selected (0.6194ms)
+✔ lookup case 5: unavailable, no reference selected (0.3441ms)
+✔ lookup case 6: unavailable, no reference selected (0.5315ms)
+✔ lookup case 7: auth, no reference selected (0.2721ms)
+✔ lookup case 8: access, no reference selected (0.338ms)
+✔ lookup case 9: access, no reference selected (0.2639ms)
+✔ lookup case 10: unavailable, no reference selected (0.2688ms)
+✔ lookup case 11: network, no reference selected (0.259ms)
+✔ missing credentials and invalid input make no network requests (0.3739ms)
+✔ partial body coverage is explicit, with verified properties retained (1.1612ms)
+✔ body access failure retains the reference but never reports full success (0.7552ms)
+✔ Audit router only reads the catalogue for a supported sender (true) (8.495ms)
+✔ Audit router only reads the catalogue for a supported sender (false) (0.4225ms)
+✔ body coverage: unsupported is partial, with readable text retained (0.7139ms)
+✔ body coverage: paragraph is partial, with readable text retained (0.472ms)
+✔ body coverage: divider is found, with readable text retained (0.6619ms)
+✔ connected panel sends exact text, renders safe reference details and leaves the native draft untouched (63.3314ms)
+✔ new requests and input edits invalidate older responses (10.6593ms)
+✔ route replacement and explicit cleanup discard pending responses without touching native controls (10.0508ms)
+✔ native replacement discards old lookup and completes a fresh lookup without submitting Magento (7.8785ms)
+✔ invalid, mismatched and failed responses are explicit rather than a reference match (10.0012ms)
+✔ page scope excludes storefronts, other hosts, unrelated routes and records without identity (0.1396ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 681.8409

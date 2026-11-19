@@ -1,0 +1,1052 @@
+{
+  "status": "PROPOSED_LOCAL_ONLY",
+  "apply_allowed": false,
+  "source_snapshot_sha256": "5b92d47e390a6cec48935c1873ea7054173b8b1e07cfb296e4df4accf934a460",
+  "template_snapshot_sha256": "641ccbc82fe59478d9bf2e4d7c92406aa41c2d7dc1be75ed101a41e16cb26741",
+  "synthetic_fixture": true,
+  "code": "429",
+  "page_id": "137b6705ae1f82048ef1810070095cf0",
+  "proposed_body": [
+    {
+      "object": "block",
+      "id": "8894e792-f414-56ec-aab2-cc8bcfc49162",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Imagens"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "6ee6c5d7-78f2-525a-9f25-0b9a635716e7",
+      "type": "image",
+      "image": {
+        "rich_text": [],
+        "type": "file",
+        "file": {
+          "url": "notion-file-block://stable-original-429"
+        },
+        "caption": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Original caption"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "6d1fff40-f4e9-5985-9269-bef6342e5021",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Descrição e notas do perfil"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "a7250904-e176-54ff-a08d-e6734174d916",
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Original description / Ex: REF-429"
+            }
+          }
+        ]
+      },
+      "has_children": false
+    },
+    {
+      "object": "block",
+      "id": "7eb2445f-6722-59ee-b075-61acc723e6a8",
+      "type": "callout",
+      "callout": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Revisão do PP 429"
+            }
+          }
+        ],
+        "children": [
+          {
+            "object": "block",
+            "id": "b0a8d78d-d513-5a19-ab2b-f0ec65dafb82",
+            "type": "to_do",
+            "to_do": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Sim, aprovo a configuração New do PP 429."
+                  }
+                }
+              ],
+              "checked": false
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "04a2a3e6-361c-5411-953d-fd2b4cddc4c8",
+            "type": "to_do",
+            "to_do": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Não, são necessárias correções."
+                  }
+                }
+              ],
+              "checked": false
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "6801c5ee-2100-5319-8c06-3a46218ffd47",
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Se não, porquê?"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "70f5d0f3-bae7-5b3b-8622-b68eef9237b1",
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": []
+            },
+            "has_children": false
+          }
+        ],
+        "icon": {
+          "type": "emoji",
+          "emoji": "📝"
+        }
+      },
+      "has_children": true,
+      "children_complete": true
+    },
+    {
+      "object": "block",
+      "id": "4ac4afb2-442d-523d-a676-4da593136ec1",
+      "type": "column_list",
+      "column_list": {
+        "children": [
+          {
+            "object": "block",
+            "id": "850c0f41-8c6d-5ca1-a794-651278c3116c",
+            "type": "column",
+            "column": {
+              "children": [
+                {
+                  "object": "block",
+                  "id": "fc8d7edb-d937-56d6-bf6c-4477738ee1a3",
+                  "type": "heading_2",
+                  "heading_2": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "New (proposta)"
+                        }
+                      }
+                    ]
+                  },
+                  "has_children": false
+                },
+                {
+                  "object": "block",
+                  "id": "7de1224b-f990-5122-888d-2da17ef0f95f",
+                  "type": "table",
+                  "table": {
+                    "rich_text": [],
+                    "table_width": 2,
+                    "has_column_header": true,
+                    "has_row_header": false,
+                    "children": [
+                      {
+                        "object": "block",
+                        "id": "32e16020-fc11-5723-a046-d08155b7b850",
+                        "type": "table_row",
+                        "table_row": {
+                          "rich_text": [],
+                          "cells": [
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Face / local"
+                                }
+                              }
+                            ],
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Opções New"
+                                }
+                              }
+                            ]
+                          ]
+                        },
+                        "has_children": false
+                      },
+                      {
+                        "object": "block",
+                        "id": "42d33214-f30e-59f9-aeac-b91bc911bddd",
+                        "type": "table_row",
+                        "table_row": {
+                          "rich_text": [],
+                          "cells": [
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Peito"
+                                }
+                              }
+                            ],
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "New: original DTF A4\nunknown option unchanged"
+                                }
+                              }
+                            ]
+                          ]
+                        },
+                        "has_children": false
+                      },
+                      {
+                        "object": "block",
+                        "id": "b81ef33f-5697-562e-9aa5-66999170b8c9",
+                        "type": "table_row",
+                        "table_row": {
+                          "rich_text": [],
+                          "cells": [
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Bolso"
+                                }
+                              }
+                            ],
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "New: original DTF A4\nunknown option unchanged"
+                                }
+                              }
+                            ]
+                          ]
+                        },
+                        "has_children": false
+                      }
+                    ]
+                  },
+                  "has_children": true,
+                  "children_complete": true
+                }
+              ],
+              "width_ratio": 0.5
+            },
+            "has_children": true,
+            "children_complete": true
+          },
+          {
+            "object": "block",
+            "id": "f6c84095-07e4-5875-81a8-8c54be42971d",
+            "type": "column",
+            "column": {
+              "children": [
+                {
+                  "object": "block",
+                  "id": "34cd9acc-34c7-5430-86c5-a61c3eee8c0d",
+                  "type": "heading_2",
+                  "heading_2": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "Old (original)"
+                        }
+                      }
+                    ]
+                  },
+                  "has_children": false
+                },
+                {
+                  "object": "block",
+                  "id": "e92e1886-9d3c-5844-aa05-22ce85e27fcb",
+                  "type": "table",
+                  "table": {
+                    "rich_text": [],
+                    "table_width": 2,
+                    "has_column_header": true,
+                    "has_row_header": false,
+                    "children": [
+                      {
+                        "object": "block",
+                        "id": "664b5632-9734-567e-a2ee-fcf968447c4c",
+                        "type": "table_row",
+                        "table_row": {
+                          "rich_text": [],
+                          "cells": [
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Face / local"
+                                }
+                              }
+                            ],
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Opções Old"
+                                }
+                              }
+                            ]
+                          ]
+                        },
+                        "has_children": false
+                      },
+                      {
+                        "object": "block",
+                        "id": "35ec7926-c608-519d-9257-cb6192d0173d",
+                        "type": "table_row",
+                        "table_row": {
+                          "rich_text": [],
+                          "cells": [
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Peito"
+                                }
+                              }
+                            ],
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Old: original DTF A4\nunknown option unchanged"
+                                }
+                              }
+                            ]
+                          ]
+                        },
+                        "has_children": false
+                      },
+                      {
+                        "object": "block",
+                        "id": "d322725d-ac4b-5877-8725-50f5de62808f",
+                        "type": "table_row",
+                        "table_row": {
+                          "rich_text": [],
+                          "cells": [
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Bolso"
+                                }
+                              }
+                            ],
+                            [
+                              {
+                                "type": "text",
+                                "text": {
+                                  "content": "Old: original DTF A4\nunknown option unchanged"
+                                }
+                              }
+                            ]
+                          ]
+                        },
+                        "has_children": false
+                      }
+                    ]
+                  },
+                  "has_children": true,
+                  "children_complete": true
+                }
+              ],
+              "width_ratio": 0.5
+            },
+            "has_children": true,
+            "children_complete": true
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    },
+    {
+      "object": "block",
+      "id": "4e33a13d-9eba-5069-aabd-ab15aa1700a2",
+      "type": "toggle",
+      "toggle": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Pontos técnicos a confirmar"
+            }
+          }
+        ],
+        "children": [
+          {
+            "object": "block",
+            "id": "03f05e64-d1f3-5166-aa50-b4b761bae3ac",
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Notas"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "79ad27a7-b96e-5cf0-9be3-315145ca37e3",
+            "type": "toggle",
+            "toggle": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "New: "
+                  }
+                },
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Peito"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "object": "block",
+                  "id": "a3d1dd2b-6a81-5ddb-8819-206e9cbb3af8",
+                  "type": "paragraph",
+                  "paragraph": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "Peito: exact technical reason"
+                        }
+                      }
+                    ]
+                  },
+                  "has_children": false
+                }
+              ]
+            },
+            "has_children": true,
+            "children_complete": true
+          },
+          {
+            "object": "block",
+            "id": "c505cf5a-1468-5d81-9aa2-e6b0cf2ea590",
+            "type": "toggle",
+            "toggle": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "New: "
+                  }
+                },
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Bolso"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "object": "block",
+                  "id": "cf201f3d-2537-58fc-915c-99949213fa1f",
+                  "type": "paragraph",
+                  "paragraph": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "Bolso: exact technical reason"
+                        }
+                      }
+                    ]
+                  },
+                  "has_children": false
+                }
+              ]
+            },
+            "has_children": true,
+            "children_complete": true
+          },
+          {
+            "object": "block",
+            "id": "6e352994-d5c5-5261-bbd8-bd3e0641201b",
+            "type": "toggle",
+            "toggle": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "New"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "object": "block",
+                  "id": "c7cf4d3e-78bb-56e0-8ed7-74f62a3e640d",
+                  "type": "toggle",
+                  "toggle": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "Pendências técnicas"
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "object": "block",
+                        "id": "4f37bd4c-47eb-54e4-9880-4215c32f6c9a",
+                        "type": "paragraph",
+                        "paragraph": {
+                          "rich_text": [
+                            {
+                              "type": "text",
+                              "text": {
+                                "content": "Exact existing location note: Bolso"
+                              }
+                            }
+                          ]
+                        },
+                        "has_children": false
+                      }
+                    ]
+                  },
+                  "has_children": true,
+                  "children_complete": true
+                }
+              ]
+            },
+            "has_children": true,
+            "children_complete": true
+          },
+          {
+            "object": "block",
+            "id": "9a00d52b-d677-5bbc-a9e7-a7359b1b5126",
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Notas"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "02f89b5f-ac31-5756-98ae-bcb230ae3563",
+            "type": "toggle",
+            "toggle": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Old: "
+                  }
+                },
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Peito"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "object": "block",
+                  "id": "a638a5dc-9408-584c-95a9-0b9d11d00ad9",
+                  "type": "paragraph",
+                  "paragraph": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "Peito: exact technical reason"
+                        }
+                      }
+                    ]
+                  },
+                  "has_children": false
+                }
+              ]
+            },
+            "has_children": true,
+            "children_complete": true
+          },
+          {
+            "object": "block",
+            "id": "4d84fd6b-a009-5b08-9153-512ab4c174a9",
+            "type": "toggle",
+            "toggle": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Old: "
+                  }
+                },
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Bolso"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "object": "block",
+                  "id": "e520ec0b-248d-523e-ad07-4c4f1ece9d7d",
+                  "type": "paragraph",
+                  "paragraph": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "Bolso: exact technical reason"
+                        }
+                      }
+                    ]
+                  },
+                  "has_children": false
+                }
+              ]
+            },
+            "has_children": true,
+            "children_complete": true
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    },
+    {
+      "object": "block",
+      "id": "cba6302c-cd6a-515c-b167-f0686e4fde97",
+      "type": "toggle",
+      "toggle": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Fonte e original do Excel"
+            }
+          }
+        ],
+        "children": [
+          {
+            "object": "block",
+            "id": "168124ac-9299-52a8-9a50-323fc905a25f",
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Full source cells, original notes and history 429"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    },
+    {
+      "object": "block",
+      "id": "f1717229-23c8-5fe6-a436-61381f789b95",
+      "type": "toggle",
+      "toggle": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Histórico de apresentação"
+            }
+          }
+        ],
+        "children": [
+          {
+            "object": "block",
+            "id": "f9d1d021-72b9-59cf-894d-f4764e2fcf43",
+            "type": "heading_2",
+            "heading_2": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Locais e personalização: nova configuração (proposta)"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          },
+          {
+            "object": "block",
+            "id": "baa79feb-5d83-5154-9acc-0be92e839b78",
+            "type": "toggle",
+            "toggle": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "New"
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "object": "block",
+                  "id": "9fc24ba4-5419-5de5-8cef-70b19c60f3a5",
+                  "type": "callout",
+                  "callout": {
+                    "rich_text": [
+                      {
+                        "type": "text",
+                        "text": {
+                          "content": "Old proposal uncertainty: do not remove"
+                        }
+                      }
+                    ]
+                  },
+                  "has_children": false
+                }
+              ]
+            },
+            "has_children": true,
+            "children_complete": true
+          },
+          {
+            "object": "block",
+            "id": "d11d475c-df69-5679-a4f7-73f2bf0cd6c7",
+            "type": "heading_2",
+            "heading_2": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Antes da alteração: tabela original integral"
+                  }
+                }
+              ]
+            },
+            "has_children": false
+          }
+        ]
+      },
+      "has_children": true,
+      "children_complete": true
+    }
+  ],
+  "note_associations": [
+    {
+      "side": "New",
+      "table_id": "7de1224b-f990-5122-888d-2da17ef0f95f",
+      "row_id": "42d33214-f30e-59f9-aeac-b91bc911bddd",
+      "location": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Peito"
+          }
+        }
+      ],
+      "note": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Peito: exact technical reason"
+          }
+        }
+      ]
+    },
+    {
+      "side": "New",
+      "table_id": "7de1224b-f990-5122-888d-2da17ef0f95f",
+      "row_id": "b81ef33f-5697-562e-9aa5-66999170b8c9",
+      "location": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Bolso"
+          }
+        }
+      ],
+      "note": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Bolso: exact technical reason"
+          }
+        }
+      ]
+    },
+    {
+      "side": "Old",
+      "table_id": "e92e1886-9d3c-5844-aa05-22ce85e27fcb",
+      "row_id": "35ec7926-c608-519d-9257-cb6192d0173d",
+      "location": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Peito"
+          }
+        }
+      ],
+      "note": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Peito: exact technical reason"
+          }
+        }
+      ]
+    },
+    {
+      "side": "Old",
+      "table_id": "e92e1886-9d3c-5844-aa05-22ce85e27fcb",
+      "row_id": "d322725d-ac4b-5877-8725-50f5de62808f",
+      "location": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Bolso"
+          }
+        }
+      ],
+      "note": [
+        {
+          "type": "text",
+          "text": {
+            "content": "Bolso: exact technical reason"
+          }
+        }
+      ]
+    }
+  ],
+  "review": {
+    "yes": false,
+    "no": false,
+    "callout_sha256": "64ed99cf74784c5c43a35a7c70cee6570e1cf9cab6478ff69919b783547f4c62",
+    "origin": "unchecked-no-prior-decision"
+  },
+  "before_body_sha256": "8c1d7e95fbaf2b7fd8c238417ff3baf054972f0e659477563da5a0af6c424c17",
+  "after_body_sha256": "6b26a417a45cca6e30d23759abb2261a66109ce81069ce0aeedcc19fa7124eb0",
+  "original_new_old_mappings": [
+    {
+      "side": "New",
+      "table_id": "7de1224b-f990-5122-888d-2da17ef0f95f",
+      "cells": [
+        [
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Face / local"
+              }
+            }
+          ],
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Opções New"
+              }
+            }
+          ]
+        ],
+        [
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Peito"
+              }
+            }
+          ],
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "New: original DTF A4\nunknown option unchanged"
+              }
+            }
+          ]
+        ],
+        [
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Bolso"
+              }
+            }
+          ],
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "New: original DTF A4\nunknown option unchanged"
+              }
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "side": "Old",
+      "table_id": "e92e1886-9d3c-5844-aa05-22ce85e27fcb",
+      "cells": [
+        [
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Face / local"
+              }
+            }
+          ],
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Opções Old"
+              }
+            }
+          ]
+        ],
+        [
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Peito"
+              }
+            }
+          ],
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Old: original DTF A4\nunknown option unchanged"
+              }
+            }
+          ]
+        ],
+        [
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Bolso"
+              }
+            }
+          ],
+          [
+            {
+              "type": "text",
+              "text": {
+                "content": "Old: original DTF A4\nunknown option unchanged"
+              }
+            }
+          ]
+        ]
+      ]
+    }
+  ],
+  "unchanged_page_metadata": {
+    "properties": {
+      "Código PP": "429",
+      "Estado": "A rever",
+      "Human": "No and original reason"
+    },
+    "cover": {
+      "type": "file",
+      "file": {
+        "url": "original-cover"
+      }
+    },
+    "icon": null
+  },
+  "preservation": {
+    "original_rich_text_and_media_retained": true,
+    "page_metadata_unchanged": true,
+    "table_width_intent_only": [
+      80,
+      350
+    ],
+    "before_new_old_mapping_sha256": "54d78e6d2f1f55de659def60776c509486f6720bb9a9e84d36ac5df6df109a99",
+    "after_new_old_mapping_sha256": "54d78e6d2f1f55de659def60776c509486f6720bb9a9e84d36ac5df6df109a99",
+    "page_metadata_sha256": "faf31bacfcf8fdca0f8258edac9d7c78b77de8ab30b8b791d69781bf430d1dd6"
+  }
+}

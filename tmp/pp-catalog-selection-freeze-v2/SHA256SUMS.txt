@@ -1,0 +1,4 @@
+2028a0a74599891e21f0e7c32ec7fadc17a586d6a19cba168555406e59a0e15d  pp-catalog-selection-combined-v2.patch
+69a76beea9040445f924975d5083021cc6b36439959194add996d5ee43653d9d  pp-catalog-selection-only-v2.patch
+32aa5f94a3c6ad816ac1d46437e2fa2eea41cda017052b4b042ca33f5aea3fc7  manifest-v2.json
+5285b7bdee66108cca9eaea19945d0a456c785ecff9005385070d107aa97362b  README.md

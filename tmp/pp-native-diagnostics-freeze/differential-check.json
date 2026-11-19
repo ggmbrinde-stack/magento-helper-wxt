@@ -1,0 +1,5 @@
+{
+  "cases": 425,
+  "result": "passed",
+  "meaning": "Approved and external pure URL constructors return exactly the same URL or rejection for every tested input; issue classifier agrees."
+}

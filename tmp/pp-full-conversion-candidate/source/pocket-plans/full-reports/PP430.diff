@@ -1,0 +1,13 @@
+--- 430-before
++++ 430-after
+@@ -34,8 +34,8 @@
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+ | Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |
+-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |
+-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |
++| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |
++| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | DTF A7 da fonte original; confirmar dimensão útil |
+ 
+ <toggle>
+ Pendências técnicas

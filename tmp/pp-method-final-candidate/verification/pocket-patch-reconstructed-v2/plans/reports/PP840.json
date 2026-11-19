@@ -1,0 +1,410 @@
+{
+  "approved_state": "A rever; own Yes/No and why unchanged",
+  "body_protected_snapshot": [
+    {
+      "kind": "image",
+      "scope": [],
+      "sha256": "faad7c38b103bf3a725ebdce067b73c21f0fcb60817830e92e22dbbac79bb0a7"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "82cc9eb2c00739c85f3cce33d6e2a366726aac993850d0137854240f5e428387"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "0918d18f5dfbe1a5f153f89605cddd06cbbdfb2433d6de628ab2a29b986f3e49"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "callout:Revisão do PP 840"
+      ],
+      "sha256": "d63505d291e04e1633d78005ab2e9c640b4419f9667ada59f673a4b9c0ef4449"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 840"
+      ],
+      "sha256": "9e2e9d858b285c80d7489583e48dd50cd8d77ab253d788884fa08cfbd9e4d1af"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 840"
+      ],
+      "sha256": "d845f2773c4b1f1bae45a3305cb40332beac8ea361d57e815727bdfd181e2f28"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 840"
+      ],
+      "sha256": "37b17f5ae30915f3558a28e0dec9fce3d493bbf2494f74afdc89444bc5d38253"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 840"
+      ],
+      "sha256": "33b7e39bb01962ec14ed89628b3f62ee5ba9f396bf772b6c0f56260c3576d3f9"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 840"
+      ],
+      "sha256": "973196cd0e67f8bc2530873e61852b1782d7d525234720bcce67c45277b1a908"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:0"
+      ],
+      "sha256": "1b69466d80163a8b86590c6f565a5979d73a6119442a8f7c4edef6e6e42c30e6"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Seleção proposta a partir de IMP → New e do perfil original. Validar áreas, técnicas e material antes de aprovar. Histórico original visível abaixo."
+      ],
+      "sha256": "342a85264c4d22258d89a1aef649d38705cb0eb50bc398958e03a7fe70469723"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Seleção proposta a partir de IMP → New e do perfil original. Validar áreas, técnicas e material antes de aprovar. Histórico original visível abaixo."
+      ],
+      "sha256": "946255576c978fe81f07a89740f2bc72fa65331776479708ada3e520e42ebe56"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Peito:2"
+      ],
+      "sha256": "09b727a8f2ba484c302842b8aff7392b0767869d3cf179102717dfbb2d745c8f"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Bolso:2"
+      ],
+      "sha256": "edad477b61ab864bf7501a05968e1f1578577660b70102b65042b466f1f05fd7"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Chapéu:2"
+      ],
+      "sha256": "cb0c3c76034ead5c0bee29148366113e3fda389d0d6ba581c1c531e2a087715f"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "9b166df5a539d5ea21e8ab1382561f964e794e4dbefb52443a3d5a187a7c98d2"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "cff5448128ce2ae8c192723484d0a5a024b30e8f9687ab1e8f41418efa376624"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "54c8b06657352df16979c656bbb3dbf6739ade4da155a65689a30c7dd398921e"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "a64603c5ba8e3284d5fc14cf979d40490cef0c39587b4fc005af3344329493be"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:1",
+        "table-note:Peito<br />Bolso<br />Chapéu:2"
+      ],
+      "sha256": "c230272f23481e32a15d2ae7454a8b43271b0d55ea7b0a26a1d52ca6510c55b5"
+    },
+    {
+      "kind": "toggle",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "135d8b51d32eb9b2bddddf62290351777f19a3411f7671719b7bb23549fc9d68"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "433226947e7cf0d66612997641f78c67a53cbd15ccfa422459bdb629c820982c"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "af77bdfcca1479fd4b2bfe396f6f8673856073cf459f694c4caf2f03ee3a4ad3"
+    },
+    {
+      "kind": "body-comment-table",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "2c1510bf79d648472ea8f1620b68321dae8de9b7ca35f756deeb9a0662cff548"
+    }
+  ],
+  "category": "APRON_SET",
+  "code": "840",
+  "desired_body": "## Imagens\n\n<image source=\"notion-file-block://e79b6705-ae1f-82b4-8b63-81d67914222e/a3b63178-46ef-4da8-a4c6-25dd96cffcf1?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP840_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: TTK884\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 840</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 840.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir de IMP → New e do perfil original. Validar áreas, técnicas e material antes de aprovar. Histórico original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A4 (21x29,7cm) | DTF A5: tamanho proposto por confirmar |\n| Bolso | DTF - Até A6 (10,5x14,8 cm) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação |\n\n<toggle>\nPendências técnicas\n\n- Atribuição de técnicas aos locais agrupados no Excel por confirmar\n- Peito: DTF A5: tamanho proposto por confirmar\n- Bolso: DTF A7: tamanho proposto por confirmar\n- Bolso: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n- Bolso: Confirmar área de impressão do bolso\n- Chapéu: DTF A7: tamanho proposto por confirmar\n- Chapéu: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm) | Nota original conjunta (Peito<br />Bolso<br />Chapéu): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n| Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |\n| Chapéu | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M126:P369<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M126 | 840 |\n| N126 | CONJ CRIANÇA Avental c\\\\ bolso  + chapéu |\n| N127 | Ex: TTK884 |\n| O127 | Peito |\n| P127 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P128 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P129 | DTF - Até A6 (10,5x14,8 cm) |\n| P130 | DTF - Até A5 (14,8x21,0 cm) |\n| O131 | Bolso |\n| P131 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P132 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O133 | Chapéu |\n| P133 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P134 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P135 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "diff": "--- 840-before\n+++ 840-after\n@@ -31,8 +31,8 @@\n \n | Face / local | Opções propostas | Nota |\n | --- | --- | --- |\n-| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: tamanho proposto por confirmar |\n-| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |\n+| Peito | DTF - Até A4 (21x29,7cm) | DTF A5: tamanho proposto por confirmar |\n+| Bolso | DTF - Até A6 (10,5x14,8 cm) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |\n | Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação |\n \n <toggle>\n@@ -54,7 +54,9 @@\n \n | Face / local | Opções completas e especificações | Notas |\n | --- | --- | --- |\n-| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+| Peito | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm) | Nota original conjunta (Peito<br />Bolso<br />Chapéu): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+| Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |\n+| Chapéu | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |\n </column>\n </columns>\n \n",
+  "layout": "Existing New/Old columns and row notes retained; no whole-container rewrite or cosmetic note relocation",
+  "method_complete": false,
+  "operations": [
+    {
+      "eligible": true,
+      "id": "840-row-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Peito | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm) | Nota original conjunta (Peito<br />Bolso<br />Chapéu): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n| Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |\n| Chapéu | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |  |",
+            "old_str": "| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "bacb6705ae1f8296839b01585f6e5e8e"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "665e2040ecf35c26a9e2eacb9480c7f86b477f3e10c63585c47776d01e265e05",
+        "old_note_scopes": [
+          "Peito<br />Bolso<br />Chapéu"
+        ],
+        "old_section_sha256": "e94677f247802b6d9aae84eb9a8cb6e638ff8d14cc283b483643aeb4d913447c",
+        "visible_prefix_sha256": "9052850a750efbc72bf7b1b9ef786e55b261d4a2c1b4c60021b442fe59153330",
+        "visible_suffix_sha256": "34cffc65d35adb3d4346db5323c70b382302c9e2d72cb4b9582d14eb82e10823"
+      },
+      "side": "Old"
+    },
+    {
+      "eligible": true,
+      "id": "840-row-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Peito | DTF - Até A4 (21x29,7cm) | DTF A5: tamanho proposto por confirmar |",
+            "old_str": "| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: tamanho proposto por confirmar |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "bacb6705ae1f8296839b01585f6e5e8e"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "5056777684748d8a85362f112b361e1347c36040a20f489b64e300a610c63190",
+        "old_note_scopes": [
+          "Peito"
+        ],
+        "old_section_sha256": "8024eab81aa32cf826903ab0601b6287e2ab8740f6d145dbdb624ad787e3f8b9",
+        "visible_prefix_sha256": "781b4fea310e1e99cfa5c6b6f4d806a95c5d63631a33bd7c6b5f9124d1bab208",
+        "visible_suffix_sha256": "b331bea3adecce4321b30ad28ca819625852faae31d549fca24e2a1beccc4965"
+      },
+      "side": "New"
+    },
+    {
+      "eligible": true,
+      "id": "840-row-3",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "| Bolso | DTF - Até A6 (10,5x14,8 cm) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |",
+            "old_str": "| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "bacb6705ae1f8296839b01585f6e5e8e"
+      },
+      "region_evidence": {
+        "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+        "body_notes_preserved": true,
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "5ad915da4824f9cc599b6b887875fb99c0856cff6e2d3b4210a3b98042f3cd6a",
+        "old_note_scopes": [
+          "Bolso"
+        ],
+        "old_section_sha256": "d257c84b008f2656a229491800cc700649d6a9d3324b61d7d91f50f3ad6b60c6",
+        "visible_prefix_sha256": "17c70b9f935812f0235fe41d3f75c3fa19eb36603eace36ea082411d39a15e3f",
+        "visible_suffix_sha256": "796bdf474d166c011ca26099f7b5ed23f1110c0f0901411c05b9f7a14c0e4338"
+      },
+      "side": "New"
+    }
+  ],
+  "page_id": "bacb6705ae1f8296839b01585f6e5e8e",
+  "property_operations": [],
+  "property_proposals": [
+    {
+      "after": [
+        "DTF"
+      ],
+      "before": [
+        "Transfer",
+        "DTF"
+      ],
+      "property": "Técnicas",
+      "reasons": [],
+      "resolved": true
+    },
+    {
+      "after": [
+        "DTF — até A4",
+        "DTF — até A6",
+        "DTF — até A7"
+      ],
+      "before": [
+        "Transfer — até 57 cm² — 2 cores",
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A6",
+        "DTF — até A5",
+        "DTF — até A7",
+        "Transfer — até 12 cm² — 2 cores"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [],
+      "resolved": true
+    }
+  ],
+  "reasons": [],
+  "rule_changes": [
+    {
+      "after": [
+        "DTF - Até A4 (21x29,7cm)"
+      ],
+      "before": [
+        "DTF - Até A5 (14,8x21,0 cm)"
+      ],
+      "locations": [
+        "Peito"
+      ],
+      "reference": "A4"
+    },
+    {
+      "after": [
+        "DTF - Até A6 (10,5x14,8 cm)"
+      ],
+      "before": [
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      ],
+      "locations": [
+        "Bolso"
+      ],
+      "reference": "A6"
+    }
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://e79b6705-ae1f-82b4-8b63-81d67914222e/a3b63178-46ef-4da8-a4c6-25dd96cffcf1?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP840_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nEx: TTK884\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 840</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 840.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta a partir de IMP → New e do perfil original. Validar áreas, técnicas e material antes de aprovar. Histórico original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: tamanho proposto por confirmar |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |\n| Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação |\n\n<toggle>\nPendências técnicas\n\n- Atribuição de técnicas aos locais agrupados no Excel por confirmar\n- Peito: DTF A5: tamanho proposto por confirmar\n- Bolso: DTF A7: tamanho proposto por confirmar\n- Bolso: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n- Bolso: Confirmar área de impressão do bolso\n- Chapéu: DTF A7: tamanho proposto por confirmar\n- Chapéu: Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M126:P369<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M126 | 840 |\n| N126 | CONJ CRIANÇA Avental c\\\\ bolso  + chapéu |\n| N127 | Ex: TTK884 |\n| O127 | Peito |\n| P127 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P128 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P129 | DTF - Até A6 (10,5x14,8 cm) |\n| P130 | DTF - Até A5 (14,8x21,0 cm) |\n| O131 | Bolso |\n| P131 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P132 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O133 | Chapéu |\n| P133 | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm) |\n| P134 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P135 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "840",
+      "Estado": "A rever",
+      "Faces": [
+        "Peito",
+        "Bolso",
+        "Chapéu"
+      ],
+      "Família": [
+        "Conjuntos"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/a3b63178-46ef-4da8-a4c6-25dd96cffcf1/PP840_1.jpeg"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 3,
+      "Opções de personalização": [
+        "Transfer — até 57 cm² — 2 cores",
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A6",
+        "DTF — até A5",
+        "DTF — até A7",
+        "Transfer — até 12 cm² — 2 cores"
+      ],
+      "PP": "840 — CONJ CRIANÇA Avental c\\\\ bolso + chapéu",
+      "SKU / referência do fornecedor": "Ex: TTK884",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Transfer",
+        "DTF"
+      ],
+      "url": "https://app.notion.com/p/bacb6705ae1f8296839b01585f6e5e8e",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_state_sha256": "b3b4b9bb2e6270050a64935605e440b377d0141c0ea14952ba6497f31fe07630",
+  "status": "READY_FOR_REVIEW",
+  "technical_unresolved": [
+    "Peito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+    "Bolso: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+    "Chapéu: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed"
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "contract_sha256": "f6f05377bff7a554a1fdad4d668bb9b1d7168fe883104d5b1418258e6a988dd6",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "name": "PP_METHOD_ROWS",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  }
+}

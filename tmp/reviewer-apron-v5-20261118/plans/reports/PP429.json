@@ -1,0 +1,791 @@
+{
+  "body_preservation_snapshot": [
+    {
+      "kind": "image",
+      "scope": [],
+      "sha256": "151c3b9ca88ab8e8dc412626ce84bd382ca8b11c16022ef34d5cb05cf45865c2"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "3f3b37acb7530db61ed9276c1e64d65d84d55bedb3763ded851c7259dfcb9b26"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "80f5140a2d3445b6de36580904524496dfa4103c975237acb0d720704aec0ed3"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [],
+      "sha256": "18ba3fe6c30944eb27de603092fcaaf7518b217766f0f6007831da38de80412e"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "callout:Revisão do PP 429"
+      ],
+      "sha256": "f29679ef9254e5f808fb38e0871379b3f3fb4977a95f71558616c625fd5ad8b6"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 429"
+      ],
+      "sha256": "2e019d97897bd202ac6ae1e67ab320d221d5e0f59f5c0fd0e0352a29d09b45db"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 429"
+      ],
+      "sha256": "d845f2773c4b1f1bae45a3305cb40332beac8ea361d57e815727bdfd181e2f28"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 429"
+      ],
+      "sha256": "e164e3216bc8bfaedb6c62b1e5e8fb2e8a166a2f5deacc5219911a443d048e09"
+    },
+    {
+      "kind": "todo",
+      "scope": [
+        "callout:Revisão do PP 429"
+      ],
+      "sha256": "33b7e39bb01962ec14ed89628b3f62ee5ba9f396bf772b6c0f56260c3576d3f9"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "callout:Revisão do PP 429"
+      ],
+      "sha256": "973196cd0e67f8bc2530873e61852b1782d7d525234720bcce67c45277b1a908"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:0"
+      ],
+      "sha256": "1b69466d80163a8b86590c6f565a5979d73a6119442a8f7c4edef6e6e42c30e6"
+    },
+    {
+      "kind": "callout",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+      ],
+      "sha256": "7cc139b5252ce9903e8884c40734e195bacd2ce700913dd5a05b038197fd9e4d"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+      ],
+      "sha256": "ba8ce9946ff867fc25f13601b921d91fe9246b9bb610df7cdd9829ada0cd4787"
+    },
+    {
+      "kind": "annotation",
+      "scope": [
+        "columns",
+        "column:0",
+        "table-note:Face 1:2"
+      ],
+      "sha256": "178622d288658f15afdaeae58e250ccf780ae61b49120c8854a23ecf71e609b8"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "9b166df5a539d5ea21e8ab1382561f964e794e4dbefb52443a3d5a187a7c98d2"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "columns",
+        "column:0",
+        "toggle:Pendências técnicas"
+      ],
+      "sha256": "31dd940418acf85ad8ac06408b90a62e7c30e5849f3e3b0a6338f76d575b59db"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "54c8b06657352df16979c656bbb3dbf6739ade4da155a65689a30c7dd398921e"
+    },
+    {
+      "kind": "heading",
+      "scope": [
+        "columns",
+        "column:1"
+      ],
+      "sha256": "a64603c5ba8e3284d5fc14cf979d40490cef0c39587b4fc005af3344329493be"
+    },
+    {
+      "kind": "toggle",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "a30317f46f841eff278010a2422004458ad989d04e5302356f3f8660d7252a9a"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "433226947e7cf0d66612997641f78c67a53cbd15ccfa422459bdb629c820982c"
+    },
+    {
+      "kind": "paragraph",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "be5e299b2d3dc7fcdc7fc90b89e9d3629520a75c6425df0db90ad7733438fcd6"
+    },
+    {
+      "kind": "body-comment-table",
+      "scope": [
+        "toggle:Fonte e original do Excel"
+      ],
+      "sha256": "f818a3f6bf0d9bdbaaa277596c5675d966ff6b4ea4258466ec0bc51aed550784"
+    }
+  ],
+  "checks": {
+    "new_mapping_unchanged": true,
+    "old_repaired": false,
+    "old_rows": [
+      [
+        "Face 1",
+        "Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+      ]
+    ],
+    "technical_notes": [
+      {
+        "location": "Face 1",
+        "side": "New",
+        "text": "A4/240 cm² como referências provisórias; confirmar a área útil do avental"
+      }
+    ]
+  },
+  "code": "429",
+  "comments": {
+    "empty_attested": false,
+    "native_anchors_preserved_claimed": false,
+    "policy": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY"
+  },
+  "desired_body": "<image source=\"notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png\" />\n\nAventais com bolso apx 100cm altura\n\nEx: M21425\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n<callout icon=\"📝\">\n<b>Revisão do PP 429</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 429.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nFace 1\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nFace 1\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Face 1\n\nA4/240 cm² como referências provisórias; confirmar a área útil do avental\n</toggle>\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M33:P40; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n</column>\n</columns>\n</toggle>\n</toggle>",
+  "diff": "--- 429-before\n+++ 429-after\n@@ -1,8 +1,4 @@\n-## Imagens\n-\n <image source=\"notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png\" />\n-\n-## Descrição e notas do perfil\n \n Aventais com bolso apx 100cm altura\n \n@@ -20,6 +16,120 @@\n \n <b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n </callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções propostas\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Face 1\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Face 1\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Face 1\n+\n+A4/240 cm² como referências provisórias; confirmar a área útil do avental\n+</toggle>\n+\n+- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n+</toggle>\n+\n+<toggle>\n+Fonte e original do Excel\n+\n+AI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n+\n+| Célula | Texto original |\n+| --- | --- |\n+| M33 | 429 |\n+| N33 | AVENTAL grande sem bolso - 1F |\n+| N34 | Aventais com bolso apx 100cm altura |\n+| O34 | Face 1 |\n+| P34 | Estamparia - Até A4 - 4 Cores |\n+| N35 | Ex: M21425 |\n+| P35 | DTF - Até A5 (14,8x21,0 cm) |\n+| P36 | DTF - Até A4 (21x29,7cm) |\n+| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n+| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n+| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n+| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+<toggle>\n+New\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n+</callout>\n+</toggle>\n+\n+<toggle>\n+Old\n+\n+### Locais e personalização\n+</toggle>\n+\n+## Imagens\n+\n+## Descrição e notas do perfil\n+\n+<toggle>\n+Original preservado antes da revisão de layout e associações Excel\n+\n+Proveniência: M33:P40; grupos e células verificados no plano.\n \n <columns>\n <column ratio=\"50\">\n@@ -49,24 +159,5 @@\n | Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n </column>\n </columns>\n-\n-<toggle>\n-Fonte e original do Excel\n-\n-AI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n-\n-| Célula | Texto original |\n-| --- | --- |\n-| M33 | 429 |\n-| N33 | AVENTAL grande sem bolso - 1F |\n-| N34 | Aventais com bolso apx 100cm altura |\n-| O34 | Face 1 |\n-| P34 | Estamparia - Até A4 - 4 Cores |\n-| N35 | Ex: M21425 |\n-| P35 | DTF - Até A5 (14,8x21,0 cm) |\n-| P36 | DTF - Até A4 (21x29,7cm) |\n-| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n-| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n-| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n-| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n+</toggle>\n </toggle>",
+  "excel": {
+    "groups": [
+      {
+        "locations": [
+          {
+            "cell": "O34",
+            "text": "Face 1"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P34",
+            "text": "Estamparia - Até A4 - 4 Cores"
+          },
+          {
+            "cell": "P35",
+            "text": "DTF - Até A5 (14,8x21,0 cm)"
+          },
+          {
+            "cell": "P36",
+            "text": "DTF - Até A4 (21x29,7cm)"
+          },
+          {
+            "cell": "P37",
+            "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+          },
+          {
+            "cell": "P38",
+            "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+          },
+          {
+            "cell": "P39",
+            "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+          }
+        ]
+      }
+    ],
+    "range": "M33:P40",
+    "title": "AVENTAL grande sem bolso - 1F"
+  },
+  "operations": [
+    {
+      "after_region": "",
+      "before_region": "## Imagens\n\n",
+      "eligible": true,
+      "id": "429-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Imagens\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "137b6705ae1f82048ef1810070095cf0"
+      },
+      "region_evidence": {
+        "body_comments_preserved_with_associations": true,
+        "body_protected_after": [],
+        "body_protected_before": [],
+        "boundary": "one complete top-level supported section",
+        "completeness_basis": "documented childless presentation heading",
+        "contract_sha256": "24cebf0bed07b7953497c42c95cedfdd49b5994bb9ad1d84699bdcbcd8ab938e",
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "old_section_sha256": "556803bd2312c1cc5e4d54086fdaa445135f92d39b901f1b1be0aea301798466",
+        "reasons": [],
+        "visible_prefix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "visible_suffix_sha256": "74560e237f911339f22d722b2b34d06358334782735a1f981fea81e465e7444b"
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Descrição e notas do perfil\n\n",
+      "eligible": true,
+      "id": "429-body-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Descrição e notas do perfil\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "137b6705ae1f82048ef1810070095cf0"
+      },
+      "region_evidence": {
+        "body_comments_preserved_with_associations": true,
+        "body_protected_after": [],
+        "body_protected_before": [],
+        "boundary": "one complete top-level supported section",
+        "completeness_basis": "documented childless presentation heading",
+        "contract_sha256": "24cebf0bed07b7953497c42c95cedfdd49b5994bb9ad1d84699bdcbcd8ab938e",
+        "eligible": true,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "old_section_sha256": "9d3f00677907d65d98bf28c15660f9a379d3d53171559acc3ef2831a01918fd7",
+        "reasons": [],
+        "visible_prefix_sha256": "ec670711f65cab08bdc3dc5750eaa132bf40b17f5f1f5eee716f7829b814aca1",
+        "visible_suffix_sha256": "778594396c4b6c0be657e560a3380b660681a815e43c41e31562eee6ce624fab"
+      }
+    },
+    {
+      "after_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nFace 1\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nFace 1\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Face 1\n\nA4/240 cm² como referências provisórias; confirmar a área útil do avental\n</toggle>\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n\n",
+      "before_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n</column>\n</columns>\n\n",
+      "eligible": false,
+      "id": "429-body-3",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nFace 1\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nFace 1\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Face 1\n\nA4/240 cm² como referências provisórias; confirmar a área útil do avental\n</toggle>\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n\n",
+            "old_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n</column>\n</columns>\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "137b6705ae1f82048ef1810070095cf0"
+      },
+      "region_evidence": {
+        "body_comments_preserved_with_associations": false,
+        "body_protected_after": [
+          {
+            "kind": "heading",
+            "scope": [
+              "columns",
+              "column:0"
+            ],
+            "sha256": "1b69466d80163a8b86590c6f565a5979d73a6119442a8f7c4edef6e6e42c30e6"
+          },
+          {
+            "kind": "heading",
+            "scope": [
+              "columns",
+              "column:1"
+            ],
+            "sha256": "54c8b06657352df16979c656bbb3dbf6739ade4da155a65689a30c7dd398921e"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Pontos técnicos a confirmar"
+            ],
+            "sha256": "2bb956070297ca93aa91438f1aedaa4c189b42b9d11273c3015a2ab02116bd71"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Pontos técnicos a confirmar",
+              "toggle:New: Face 1"
+            ],
+            "sha256": "bf880adc6ee6b6a97951fa2892982851dfd77c474ecc7575fcabc0738ed195f8"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Pontos técnicos a confirmar",
+              "toggle:New: Face 1"
+            ],
+            "sha256": "178622d288658f15afdaeae58e250ccf780ae61b49120c8854a23ecf71e609b8"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Pontos técnicos a confirmar"
+            ],
+            "sha256": "31dd940418acf85ad8ac06408b90a62e7c30e5849f3e3b0a6338f76d575b59db"
+          }
+        ],
+        "body_protected_before": [
+          {
+            "kind": "heading",
+            "scope": [
+              "columns",
+              "column:0"
+            ],
+            "sha256": "1b69466d80163a8b86590c6f565a5979d73a6119442a8f7c4edef6e6e42c30e6"
+          },
+          {
+            "kind": "callout",
+            "scope": [
+              "columns",
+              "column:0",
+              "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+            ],
+            "sha256": "7cc139b5252ce9903e8884c40734e195bacd2ce700913dd5a05b038197fd9e4d"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "columns",
+              "column:0",
+              "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+            ],
+            "sha256": "ba8ce9946ff867fc25f13601b921d91fe9246b9bb610df7cdd9829ada0cd4787"
+          },
+          {
+            "kind": "annotation",
+            "scope": [
+              "columns",
+              "column:0",
+              "table-note:Face 1:2"
+            ],
+            "sha256": "178622d288658f15afdaeae58e250ccf780ae61b49120c8854a23ecf71e609b8"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "columns",
+              "column:0",
+              "toggle:Pendências técnicas"
+            ],
+            "sha256": "9b166df5a539d5ea21e8ab1382561f964e794e4dbefb52443a3d5a187a7c98d2"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "columns",
+              "column:0",
+              "toggle:Pendências técnicas"
+            ],
+            "sha256": "31dd940418acf85ad8ac06408b90a62e7c30e5849f3e3b0a6338f76d575b59db"
+          },
+          {
+            "kind": "heading",
+            "scope": [
+              "columns",
+              "column:1"
+            ],
+            "sha256": "54c8b06657352df16979c656bbb3dbf6739ade4da155a65689a30c7dd398921e"
+          },
+          {
+            "kind": "heading",
+            "scope": [
+              "columns",
+              "column:1"
+            ],
+            "sha256": "a64603c5ba8e3284d5fc14cf979d40490cef0c39587b4fc005af3344329493be"
+          }
+        ],
+        "boundary": "one complete top-level supported section",
+        "completeness_basis": "UNPROVED",
+        "contract_sha256": "24cebf0bed07b7953497c42c95cedfdd49b5994bb9ad1d84699bdcbcd8ab938e",
+        "eligible": false,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "5655e77f7f62303552905da820afccd0d607c925d434926021c947daf15b5f08",
+        "old_section_sha256": "a789fda6b686ac2bc19733b27ec3964e56bed28f7dc368ca40db27f330f50205",
+        "reasons": [
+          "Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+          "Body comments/review/prose/annotations or their associations would change inside the affected section"
+        ],
+        "visible_prefix_sha256": "67ba1af7ff4faee05f72717f98708094626ad5e87e6f6f2ed1dfa5b09133f391",
+        "visible_suffix_sha256": "a30317f46f841eff278010a2422004458ad989d04e5302356f3f8660d7252a9a"
+      }
+    },
+    {
+      "after_region": "<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M33:P40; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n</column>\n</columns>\n</toggle>\n</toggle>",
+      "before_region": "<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>",
+      "eligible": false,
+      "id": "429-body-4",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M33:P40; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n</column>\n</columns>\n</toggle>\n</toggle>",
+            "old_str": "<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "137b6705ae1f82048ef1810070095cf0"
+      },
+      "region_evidence": {
+        "body_comments_preserved_with_associations": true,
+        "body_protected_after": [
+          {
+            "kind": "toggle",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "a30317f46f841eff278010a2422004458ad989d04e5302356f3f8660d7252a9a"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "433226947e7cf0d66612997641f78c67a53cbd15ccfa422459bdb629c820982c"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "be5e299b2d3dc7fcdc7fc90b89e9d3629520a75c6425df0db90ad7733438fcd6"
+          },
+          {
+            "kind": "body-comment-table",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "f818a3f6bf0d9bdbaaa277596c5675d966ff6b4ea4258466ec0bc51aed550784"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação"
+            ],
+            "sha256": "5b9f97f34677652f0a9f4f18cd1a03494525a0b3b059acea99a85a155ae9c0b5"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:New"
+            ],
+            "sha256": "e9f7cceb39860c56f09a3a0183afaaede84c2ae5f7c00ce003ec93f065080881"
+          },
+          {
+            "kind": "callout",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:New",
+              "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+            ],
+            "sha256": "7cc139b5252ce9903e8884c40734e195bacd2ce700913dd5a05b038197fd9e4d"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:New",
+              "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+            ],
+            "sha256": "ba8ce9946ff867fc25f13601b921d91fe9246b9bb610df7cdd9829ada0cd4787"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Old"
+            ],
+            "sha256": "c0c1910ac2f020a95de961b4ddfde37bd673db95986057c45681d0dae633c24c"
+          },
+          {
+            "kind": "heading",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Old"
+            ],
+            "sha256": "a64603c5ba8e3284d5fc14cf979d40490cef0c39587b4fc005af3344329493be"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel"
+            ],
+            "sha256": "9b11d6d5219d9f235a32bedcf1eeb43ea3ac32898d1672c6395f4873a19a7423"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel"
+            ],
+            "sha256": "dc531b6c3204613bea82a1730577421db7fd3b9d6df5c084e725c7fc005e7a37"
+          },
+          {
+            "kind": "heading",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:0"
+            ],
+            "sha256": "1b69466d80163a8b86590c6f565a5979d73a6119442a8f7c4edef6e6e42c30e6"
+          },
+          {
+            "kind": "callout",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:0",
+              "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+            ],
+            "sha256": "7cc139b5252ce9903e8884c40734e195bacd2ce700913dd5a05b038197fd9e4d"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:0",
+              "callout:A rever. Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo."
+            ],
+            "sha256": "ba8ce9946ff867fc25f13601b921d91fe9246b9bb610df7cdd9829ada0cd4787"
+          },
+          {
+            "kind": "annotation",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:0",
+              "table-note:Face 1:2"
+            ],
+            "sha256": "178622d288658f15afdaeae58e250ccf780ae61b49120c8854a23ecf71e609b8"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:0",
+              "toggle:Pendências técnicas"
+            ],
+            "sha256": "9b166df5a539d5ea21e8ab1382561f964e794e4dbefb52443a3d5a187a7c98d2"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:0",
+              "toggle:Pendências técnicas"
+            ],
+            "sha256": "31dd940418acf85ad8ac06408b90a62e7c30e5849f3e3b0a6338f76d575b59db"
+          },
+          {
+            "kind": "heading",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:1"
+            ],
+            "sha256": "54c8b06657352df16979c656bbb3dbf6739ade4da155a65689a30c7dd398921e"
+          },
+          {
+            "kind": "heading",
+            "scope": [
+              "toggle:Histórico de apresentação",
+              "toggle:Original preservado antes da revisão de layout e associações Excel",
+              "columns",
+              "column:1"
+            ],
+            "sha256": "a64603c5ba8e3284d5fc14cf979d40490cef0c39587b4fc005af3344329493be"
+          }
+        ],
+        "body_protected_before": [
+          {
+            "kind": "toggle",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "a30317f46f841eff278010a2422004458ad989d04e5302356f3f8660d7252a9a"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "433226947e7cf0d66612997641f78c67a53cbd15ccfa422459bdb629c820982c"
+          },
+          {
+            "kind": "paragraph",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "be5e299b2d3dc7fcdc7fc90b89e9d3629520a75c6425df0db90ad7733438fcd6"
+          },
+          {
+            "kind": "body-comment-table",
+            "scope": [
+              "toggle:Fonte e original do Excel"
+            ],
+            "sha256": "f818a3f6bf0d9bdbaaa277596c5675d966ff6b4ea4258466ec0bc51aed550784"
+          }
+        ],
+        "boundary": "one complete top-level supported section",
+        "completeness_basis": "UNPROVED",
+        "contract_sha256": "24cebf0bed07b7953497c42c95cedfdd49b5994bb9ad1d84699bdcbcd8ab938e",
+        "eligible": false,
+        "global_export_claimed": false,
+        "native_comment_anchors_claimed": false,
+        "new_section_sha256": "92c57151f9a8a015298ddba23265e6e447ead3e0f5716a3c14112ded4332fd1b",
+        "old_section_sha256": "a30317f46f841eff278010a2422004458ad989d04e5302356f3f8660d7252a9a",
+        "reasons": [
+          "Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+        ],
+        "visible_prefix_sha256": "7f26bfd9cff48ae0a07aef8143da226e48d022bb0f8441ac7f3f475b61f95c95",
+        "visible_suffix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+      }
+    }
+  ],
+  "page_id": "137b6705ae1f82048ef1810070095cf0",
+  "property_operations": [],
+  "property_proposals": [
+    {
+      "after": [
+        "Estamparia — até A4 — 1 cor",
+        "DTF — até A4",
+        "Bordado — até 240 cm²"
+      ],
+      "before": [
+        "Estamparia — até A4 — 4 cores",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Bordado — até 120 cm²",
+        "Bordado — até 240 cm²",
+        "Bordado — até 360 cm²"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [],
+      "resolved": true
+    }
+  ],
+  "reasons": [
+    "429-body-3: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+    "429-body-3: Body comments/review/prose/annotations or their associations would change inside the affected section",
+    "429-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+  ],
+  "review_callout_sha256": [
+    "f29679ef9254e5f808fb38e0871379b3f3fb4977a95f71558616c625fd5ad8b6"
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M21425\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n<callout icon=\"📝\">\n<b>Revisão do PP 429</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 429.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n\n<toggle>\nPendências técnicas\n\n- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M33:P40<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M33 | 429 |\n| N33 | AVENTAL grande sem bolso - 1F |\n| N34 | Aventais com bolso apx 100cm altura |\n| O34 | Face 1 |\n| P34 | Estamparia - Até A4 - 4 Cores |\n| N35 | Ex: M21425 |\n| P35 | DTF - Até A5 (14,8x21,0 cm) |\n| P36 | DTF - Até A4 (21x29,7cm) |\n| N37 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n</toggle>",
+  "source_capture_sha256": "1c8246b5d98f76009056f87c8637cd4430dd39bc2791d749c0fbfc78c239f54d",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "429",
+      "Estado": "A rever",
+      "Faces": [
+        "Face 1"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/85567298-9dcd-4a2b-96ae-df39d2a684f4/PP429_1.png"
+      ],
+      "Notas": "",
+      "Número de faces": 1,
+      "Número de locais possíveis": 1,
+      "Opções de personalização": [
+        "Estamparia — até A4 — 4 cores",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Bordado — até 120 cm²",
+        "Bordado — até 240 cm²",
+        "Bordado — até 360 cm²"
+      ],
+      "PP": "429 — AVENTAL grande sem bolso - 1F",
+      "SKU / referência do fornecedor": "Ex: M21425",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Estamparia",
+        "DTF",
+        "Bordado"
+      ],
+      "url": "https://app.notion.com/p/137b6705ae1f82048ef1810070095cf0",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_observed_hash": "b3002078f669582e8ee637698e97219002e5b87da964e83b9d244560b3ee9c17",
+  "source_state_sha256": "a5c75ef9267fe27704d77f10be7071b2377a27b3b8b424f25bc37746fbc1a1d1",
+  "status": "BLOCKED",
+  "technical_unresolved": [],
+  "validation_policy": {
+    "body_comments_required": true,
+    "contract_sha256": "24cebf0bed07b7953497c42c95cedfdd49b5994bb9ad1d84699bdcbcd8ab938e",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "name": "TARGETED_SECTION",
+    "native_comments": {
+      "anchor_preservation_claimed": false,
+      "empty_attested": false,
+      "provenance": "Human clarification relayed by Engineering Lead for V5: native Notion comments are not required; comments/review text inside page body must stay.",
+      "requirement": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY"
+    },
+    "version": 1
+  }
+}

@@ -1,0 +1,219 @@
+import { unmountPpCatalog } from '../page/features/pp-catalog';
+import { defineContentScript } from 'wxt/sandbox';
+import type { ListingError } from '../shared/schemas';
+import { getFeatureSettings, loadFeatureSettings, onFeatureSettingsChange } from '../shared/featureSettings';
+import { detectStoreView } from '../shared/store';
+import { isProductEditPage, readFormState, readPageSku } from '../page/shared/magentoForm';
+import { ensureUi } from '../ui';
+import { watchToolkitColors } from '../ui/tokens';
+import { watchMagentoPageTheme } from '../page/theme/magentoTheme';
+import type {
+  ApplyFieldRequest,
+  GetConfigResponse,
+  GetFormStateResponse,
+  GetSkuResponse,
+  SearchMagentoResponse,
+} from '../core/messages';
+
+// Page features. The list of them lives in `src/shared/featureCatalog.ts` (key,
+// label, page detection, default) and the mounts in
+// `src/page/features/registry.ts`. This file only runs the chain.
+import { FEATURE_CATALOG, detectFeatureIds } from '../shared/featureCatalog';
+import { FEATURE_MOUNTS, unmountPpScan } from '../page/features/registry';
+import { extractColorGroups } from '../page/features/config-groups';
+import { applyErrorMarkup } from '../page/features/error-markup';
+import { handleApplyField } from '../page/features/form-fill';
+import { handleSearchMagento } from '../page/features/grid-search';
+
+let lastDetectedFeatures: string[] | undefined;
+
+/**
+ * The scan loop.
+ *
+ * This file is deliberately thin: it boots the toolkit, runs the feature mounts
+ * in order, and answers the panel's messages. Anything that touches the page
+ * belongs to a feature folder, so two features can be worked on without both
+ * agents editing one 1,500-line file.
+ *
+ * Runs on every matched admin page (debounced by the observer). Each step is
+ * idempotent, so re-running is safe and picks up AJAX-loaded sections, and each
+ * step is isolated: one enhancer throwing must never skip the rest (a dead
+ * dropdown pass once cost the operator every pencil on the page).
+ */
+function scan(options: { categoryTreeChanged?: boolean } = {}): void {
+  const f = getFeatureSettings();
+  if (!f.extensionEnabled || !f.ppCatalog) unmountPpCatalog();
+  if (!f.extensionEnabled) {
+    unmountPpScan();
+    return;
+  }
+  const detectedFeatures = detectFeatureIds(document);
+  if (
+    !lastDetectedFeatures ||
+    detectedFeatures.length !== lastDetectedFeatures.length ||
+    detectedFeatures.some((id, index) => id !== lastDetectedFeatures?.[index])
+  ) {
+    lastDetectedFeatures = detectedFeatures;
+    void chrome.storage.local.set({ detectedFeatures });
+  }
+  const safe = (name: string, fn: () => void): void => {
+    try {
+      fn();
+    } catch (err) {
+      console.warn(`[BOG Helper] scan step "${name}" failed:`, err);
+    }
+  };
+
+  for (const feature of FEATURE_CATALOG) {
+    const key = feature.id;
+    if (key === 'extensionEnabled') continue;
+    if (!f[key]) {
+      if (key === 'ppScan') unmountPpScan();
+      continue;
+    }
+    if (key === 'categoryTree' && options.categoryTreeChanged === false) continue;
+    safe(key, FEATURE_MOUNTS[key]);
+  }
+}
+
+const CATEGORY_TREE_SELECTOR =
+  'ul[data-mhx-cat-tree="1"], .category-tree, [id="category_ids"], .categories-side-col, [id="add-products-to-category-content"], .store-tree';
+
+function isExtensionUiNode(node: Node): boolean {
+  if (!(node instanceof Element)) return false;
+  if (node.id.startsWith('mhx-')) return true;
+  return Array.from(node.classList).some((className) =>
+    className.startsWith('mhx-'),
+  );
+}
+
+// Do not rescan the page for child-list changes made only by extension UI.
+function isExtensionOnlyMutation(record: MutationRecord): boolean {
+  const addedNodes = Array.from(record.addedNodes);
+  const removedNodes = Array.from(record.removedNodes);
+  if (record.target instanceof Element && isExtensionUiNode(record.target)) {
+    return [...addedNodes, ...removedNodes].every(
+      (node) => !(node instanceof Element) || isExtensionUiNode(node),
+    );
+  }
+  return (
+    addedNodes.length > 0 &&
+    removedNodes.length === 0 &&
+    addedNodes.every(isExtensionUiNode)
+  );
+}
+
+function mutationTouchesCategoryTree(record: MutationRecord): boolean {
+  const target =
+    record.target instanceof Element
+      ? record.target
+      : record.target.parentElement;
+  if (target?.closest(CATEGORY_TREE_SELECTOR)) return true;
+
+  return [...record.addedNodes, ...record.removedNodes].some((node) => {
+    if (!(node instanceof Element)) return false;
+    return (
+      node.matches(CATEGORY_TREE_SELECTOR) ||
+      node.querySelector(CATEGORY_TREE_SELECTOR) !== null
+    );
+  });
+}
+
+export default defineContentScript({
+  // Admin hosts (QA + all live storefronts/admins). Static matches are
+  // required for the content script to inject at all.
+  matches: [
+    'https://bestofgifts-pt-qa.toogas.net/*',
+    'https://bestofgifts.pt/*',
+    'https://bestofgifts.eu/*',
+    'https://bestofgifts.es/*',
+    'https://bestofgifts.fr/*',
+  ],
+  runAt: 'document_idle',
+  async main() {
+    // Tab that predates an extension reload? The background injects this bundle
+    // on demand (see ensureHelperContentScript). A second injection must not
+    // bind a second message listener or start a second scan loop, so the boot
+    // is idempotent per document.
+    const booted = window as unknown as Record<string, unknown>;
+    if (booted.__mhxContentLoaded) return;
+    booted.__mhxContentLoaded = true;
+
+    // One toolkit sheet per page (link, inline fallback) plus the operator's
+    // custom toolkit colours from Settings. Features call ensureUi() too; this
+    // first call gets the sheet on the page before the first scan draws.
+    ensureUi();
+    watchToolkitColors();
+    watchMagentoPageTheme();
+    await loadFeatureSettings();
+    scan();
+    onFeatureSettingsChange(() => scan());
+    let timer: number | undefined;
+    let categoryTreeChanged = false;
+    new MutationObserver((records) => {
+      const pageRecords = records.filter(
+        (record) => !isExtensionOnlyMutation(record),
+      );
+      if (pageRecords.length === 0) return;
+      categoryTreeChanged ||= pageRecords.some(mutationTouchesCategoryTree);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        scan({ categoryTreeChanged });
+        categoryTreeChanged = false;
+      }, 200);
+    }).observe(document.body, { childList: true, subtree: true });
+
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+      const type = message?.type;
+      if (type === 'GET_FORM_STATE') {
+        const state = readFormState(detectStoreView(location.href));
+        const response: GetFormStateResponse = isProductEditPage(location.href)
+          ? { available: true, state }
+          : {
+              available: false,
+              reason:
+                'Open a Magento product edit page (admin) to fill fields.',
+            };
+        sendResponse(response);
+        return false;
+      }
+      if (type === 'APPLY_FIELD') {
+        sendResponse(handleApplyField(message as ApplyFieldRequest));
+        return false;
+      }
+      if (type === 'GET_CONFIG') {
+        sendResponse(extractColorGroups());
+        return false;
+      }
+      if (type === 'GET_SKU') {
+        const response: GetSkuResponse = { sku: readPageSku() };
+        sendResponse(response);
+        return false;
+      }
+      if (type === 'SEARCH_MAGENTO') {
+        const req = message as {
+          sku?: string;
+          childIds?: string[];
+          parentId?: string;
+          expand?: boolean;
+          readFacts?: boolean;
+        };
+        void handleSearchMagento(
+          String(req.sku ?? ''),
+          req.childIds,
+          req.parentId,
+          Boolean(req.expand),
+          Boolean(req.readFacts),
+        ).then(sendResponse);
+        return true;
+      }
+      if (type === 'ERROR_MARKUP') {
+        // D12 fix: report real matched/unmatched counts instead of always {success:true}.
+        const { matched, unmatched } = applyErrorMarkup((message.errors ?? []) as ListingError[]);
+        sendResponse({ success: matched > 0 || unmatched === 0, matched, unmatched });
+        return false;
+      }
+      return false;
+    });
+  },
+});

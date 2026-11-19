@@ -1,0 +1,61 @@
+{
+  "code": "612",
+  "title": "612 — AVENTAL Criança c\\ bolso",
+  "url": "https://app.notion.com/p/e48b6705ae1f83ddafb501a2ea781406",
+  "pageLastEditedAt": "2026-11-17T13:50:37.413Z",
+  "verification": {
+    "state": "unverified"
+  },
+  "content": "## Imagens\n\n<image source=\"notion-file-block://c6bb6705-ae1f-8340-a445-010b33084d7a/bff4920e-df68-4f68-951a-2e445266ec1a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP612_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: A99826\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 612</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 612.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Proposta por face baseada no IMP → New e no histórico. Confirmar material, técnicas e áreas antes da aprovação. Configuração original visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: confirmar área de referência |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso |\n\n<toggle>\nPendências técnicas\n\n- Grupo original com locais diferentes: distribuição da proposta por confirmar\n- Peito: DTF A5: confirmar área de referência\n- Bolso: DTF A7: confirmar área de referência\n- Bolso: Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New\n- Bolso: Confirmar área útil do bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M117:P125<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M117 | 612 |\n| N117 | AVENTAL Criança c\\\\ bolso |\n| N118 | Ex: A99826 |\n| O118 | Peito |\n| P118 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P119 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| P120 | DTF - Até A6 (10,5x14,8 cm) |\n| P121 | DTF - Até A5 (14,8x21,0 cm) |\n| O122 | Bolso |\n| P122 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| P123 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "properties": {
+    "Código PP": "612",
+    "Estado": "A rever",
+    "Faces": [
+      "Peito",
+      "Bolso"
+    ],
+    "Família": [
+      "Aventais"
+    ],
+    "Imagem principal": [
+      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/bff4920e-df68-4f68-951a-2e445266ec1a/PP612_1.png"
+    ],
+    "Notas": "",
+    "Número de locais possíveis": 2,
+    "Opções de personalização": [
+      "Transfer — até 57 cm² — 2 cores",
+      "Transfer — até 126 cm² — 2 cores",
+      "DTF — até A6",
+      "DTF — até A5",
+      "DTF — até A7"
+    ],
+    "PP": "612 — AVENTAL Criança c\\\\ bolso",
+    "SKU / referência do fornecedor": "Ex: A99826",
+    "Tipos de artigo compatíveis": [
+      "Avental"
+    ],
+    "Técnicas": [
+      "Transfer",
+      "DTF"
+    ],
+    "url": "https://app.notion.com/p/e48b6705ae1f83ddafb501a2ea781406",
+    "Área": "Brinde têxtil"
+  },
+  "icon": null,
+  "cover": {
+    "type": "file",
+    "file": {
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/bff4920e-df68-4f68-951a-2e445266ec1a/PP612_1.png",
+      "expiry_time": "2026-11-17T13:56:03.165Z"
+    }
+  },
+  "validation": {
+    "code": "612",
+    "descExact": true,
+    "sourceExact": true,
+    "newExact": true,
+    "oldExact": true,
+    "afterReview": true,
+    "columns": 2
+  }
+}

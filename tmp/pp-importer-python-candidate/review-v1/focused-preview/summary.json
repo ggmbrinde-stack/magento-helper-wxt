@@ -1,0 +1,62 @@
+[
+  {
+    "workbook": "AI_READ_Perfis de Personalização - Cópia.xlsx",
+    "sha256": "36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+    "scope": "PPs BRINDE TÊXTIL!M6:P32 only; placeholder destination, no import",
+    "PP428": [
+      {
+        "locals": [
+          "Peito"
+        ],
+        "cells": [
+          "P10",
+          "P11",
+          "P12",
+          "P13",
+          "P14",
+          "P15"
+        ]
+      },
+      {
+        "locals": [
+          "Bolso"
+        ],
+        "cells": [
+          "P16",
+          "P17"
+        ]
+      }
+    ],
+    "all_records_blocked_for_writes": true
+  },
+  {
+    "workbook": "CLEAN__Perfis de Personalização.xlsx",
+    "sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "scope": "PPs BRINDE TÊXTIL!M6:P32 only; placeholder destination, no import",
+    "PP428": [
+      {
+        "locals": [
+          "Peito"
+        ],
+        "cells": [
+          "P10",
+          "P11",
+          "P12",
+          "P13",
+          "P14",
+          "P15"
+        ]
+      },
+      {
+        "locals": [
+          "Bolso"
+        ],
+        "cells": [
+          "P16",
+          "P17"
+        ]
+      }
+    ],
+    "all_records_blocked_for_writes": true
+  }
+]

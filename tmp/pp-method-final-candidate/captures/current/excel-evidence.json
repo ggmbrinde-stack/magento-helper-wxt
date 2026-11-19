@@ -1,0 +1,2351 @@
+{
+  "workbook": "C:\\Users\\user\\Desktop\\CLEAN__Perfis de Personalização.xlsx",
+  "sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+  "sheet": "PPs BRINDE TÊXTIL",
+  "method": "Original top-border grouping, additionally recognising indexed colour64 as the visible dark boundary; shared groups remain explicit",
+  "records": {
+    "428": {
+      "title": "AVENTAL grande com bolso - 2F",
+      "range": "M9:P20",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O10"
+            }
+          ],
+          "options": [
+            {
+              "text": "Estamparia - Até A4 - 4 Cores",
+              "cell": "P10"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P11"
+            },
+            {
+              "text": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P12"
+            },
+            {
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+              "cell": "P13"
+            },
+            {
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+              "cell": "P14"
+            },
+            {
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+              "cell": "P15"
+            }
+          ],
+          "startRow": 10
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso",
+              "cell": "O16"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P16"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P17"
+            }
+          ],
+          "startRow": 16
+        }
+      ],
+      "rows": [
+        {
+          "row": 10,
+          "local": "Peito",
+          "option": "Estamparia - Até A4 - 4 Cores",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 11,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 12,
+          "local": "",
+          "option": "DTF - Até A4 (21x29,7cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 13,
+          "local": "",
+          "option": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 14,
+          "local": "",
+          "option": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 15,
+          "local": "",
+          "option": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 16,
+          "local": "Bolso",
+          "option": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 17,
+          "local": "",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": false
+    },
+    "429": {
+      "title": "AVENTAL grande sem bolso - 1F",
+      "range": "M33:P40",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Face 1",
+              "cell": "O34"
+            }
+          ],
+          "options": [
+            {
+              "text": "Estamparia - Até A4 - 4 Cores",
+              "cell": "P34"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P35"
+            },
+            {
+              "text": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P36"
+            },
+            {
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+              "cell": "P37"
+            },
+            {
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+              "cell": "P38"
+            },
+            {
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+              "cell": "P39"
+            }
+          ],
+          "startRow": 34
+        }
+      ],
+      "rows": [
+        {
+          "row": 34,
+          "local": "Face 1",
+          "option": "Estamparia - Até A4 - 4 Cores",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 35,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 36,
+          "local": "",
+          "option": "DTF - Até A4 (21x29,7cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 37,
+          "local": "",
+          "option": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 38,
+          "local": "",
+          "option": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 39,
+          "local": "",
+          "option": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": false
+    },
+    "430": {
+      "title": "AVENTAL grande vários bolsos - 3F",
+      "range": "M41:P51",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O42"
+            }
+          ],
+          "options": [
+            {
+              "text": "Estamparia - Até A4 - 4 Cores",
+              "cell": "P42"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P43"
+            },
+            {
+              "text": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P44"
+            },
+            {
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+              "cell": "P45"
+            },
+            {
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+              "cell": "P46"
+            },
+            {
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+              "cell": "P47"
+            }
+          ],
+          "startRow": 42
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso Esquerdo",
+              "cell": "O48"
+            },
+            {
+              "name": "Bolso Direito",
+              "cell": "O49"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P48"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P49"
+            }
+          ],
+          "startRow": 48
+        }
+      ],
+      "rows": [
+        {
+          "row": 42,
+          "local": "Peito",
+          "option": "Estamparia - Até A4 - 4 Cores",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 43,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 44,
+          "local": "",
+          "option": "DTF - Até A4 (21x29,7cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 45,
+          "local": "",
+          "option": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 46,
+          "local": "",
+          "option": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 47,
+          "local": "",
+          "option": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 48,
+          "local": "Bolso Esquerdo",
+          "option": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 49,
+          "local": "Bolso Direito",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": true
+    },
+    "467": {
+      "title": "CONJ CRIANÇA Avental c\\ bolso Non-Woven + chapéu",
+      "range": "M95:P104",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O96"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P96"
+            },
+            {
+              "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P97"
+            },
+            {
+              "text": "DTF - Até A6 (10,5x14,8 cm)",
+              "cell": "P98"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P99"
+            }
+          ],
+          "startRow": 96
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso",
+              "cell": "O100"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P100"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P101"
+            }
+          ],
+          "startRow": 100
+        },
+        {
+          "locations": [
+            {
+              "name": "Chapéu",
+              "cell": "O102"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+              "cell": "P102"
+            },
+            {
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P103"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P104"
+            }
+          ],
+          "startRow": 102
+        }
+      ],
+      "rows": [
+        {
+          "row": 96,
+          "local": "Peito",
+          "option": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 97,
+          "local": "",
+          "option": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 98,
+          "local": "",
+          "option": "DTF - Até A6 (10,5x14,8 cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 99,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 100,
+          "local": "Bolso",
+          "option": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 101,
+          "local": "",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 102,
+          "local": "Chapéu",
+          "option": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 103,
+          "local": "",
+          "option": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 104,
+          "local": "",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": false
+    },
+    "558": {
+      "title": "AVENTAL C\\ 2 Bolsos",
+      "range": "M105:P116",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Bolso Esquerdo",
+              "cell": "O106"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P106"
+            }
+          ],
+          "startRow": 106
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso Direito",
+              "cell": "O107"
+            }
+          ],
+          "options": [
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P107"
+            }
+          ],
+          "startRow": 107
+        }
+      ],
+      "rows": [
+        {
+          "row": 106,
+          "local": "Bolso Esquerdo",
+          "option": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 107,
+          "local": "Bolso Direito",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": false
+    },
+    "612": {
+      "title": "AVENTAL Criança c\\ bolso",
+      "range": "M117:P125",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O118"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P118"
+            },
+            {
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P119"
+            },
+            {
+              "text": "DTF - Até A6 (10,5x14,8 cm)",
+              "cell": "P120"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P121"
+            }
+          ],
+          "startRow": 118
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso",
+              "cell": "O122"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P122"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P123"
+            }
+          ],
+          "startRow": 122
+        }
+      ],
+      "rows": [
+        {
+          "row": 118,
+          "local": "Peito",
+          "option": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 119,
+          "local": "",
+          "option": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 120,
+          "local": "",
+          "option": "DTF - Até A6 (10,5x14,8 cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 121,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 122,
+          "local": "Bolso",
+          "option": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 123,
+          "local": "",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": false
+    },
+    "633": {
+      "title": "AVENTAL Non-woven grande com bolso - 2F",
+      "range": "M21:P32",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O22"
+            }
+          ],
+          "options": [
+            {
+              "text": "Estamparia - Até A4 - 1 Cor",
+              "cell": "P22"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P23"
+            },
+            {
+              "text": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P24"
+            }
+          ],
+          "startRow": 22
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso",
+              "cell": "O25"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P25"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P26"
+            }
+          ],
+          "startRow": 25
+        }
+      ],
+      "rows": [
+        {
+          "row": 22,
+          "local": "Peito",
+          "option": "Estamparia - Até A4 - 1 Cor",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 23,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 24,
+          "local": "",
+          "option": "DTF - Até A4 (21x29,7cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 25,
+          "local": "Bolso",
+          "option": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 26,
+          "local": "",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": false
+    },
+    "661": {
+      "title": "AVENTAL grande Canhamo vários bolsos - 3F",
+      "range": "M63:P73",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O64"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)",
+              "cell": "P64"
+            },
+            {
+              "text": "Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)",
+              "cell": "P65"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P66"
+            },
+            {
+              "text": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P67"
+            },
+            {
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+              "cell": "P68"
+            },
+            {
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+              "cell": "P69"
+            },
+            {
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+              "cell": "P70"
+            }
+          ],
+          "startRow": 64
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso Esquerdo",
+              "cell": "O71"
+            },
+            {
+              "name": "Bolso Direito",
+              "cell": "O72"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P71"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P72"
+            }
+          ],
+          "startRow": 71
+        }
+      ],
+      "rows": [
+        {
+          "row": 64,
+          "local": "Peito",
+          "option": "Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 65,
+          "local": "",
+          "option": "Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)",
+          "Otop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 66,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 67,
+          "local": "",
+          "option": "DTF - Até A4 (21x29,7cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 68,
+          "local": "",
+          "option": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 69,
+          "local": "",
+          "option": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 70,
+          "local": "",
+          "option": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 71,
+          "local": "Bolso Esquerdo",
+          "option": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 72,
+          "local": "Bolso Direito",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": true
+    },
+    "662": {
+      "title": "AVENTAL grande vários bolsos (3F) + Caixa",
+      "range": "M74:P94",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O75"
+            }
+          ],
+          "options": [
+            {
+              "text": "Estamparia - Até A4 - 4 Cores",
+              "cell": "P75"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P76"
+            },
+            {
+              "text": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P77"
+            },
+            {
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+              "cell": "P78"
+            },
+            {
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+              "cell": "P79"
+            },
+            {
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+              "cell": "P80"
+            }
+          ],
+          "startRow": 75
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso Esquerdo",
+              "cell": "O81"
+            },
+            {
+              "name": "Bolso Direito",
+              "cell": "O82"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P81"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P82"
+            }
+          ],
+          "startRow": 81
+        },
+        {
+          "locations": [
+            {
+              "name": "Caixa",
+              "cell": "O83"
+            }
+          ],
+          "options": [
+            {
+              "text": "Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores",
+              "cell": "P83"
+            },
+            {
+              "text": "Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores",
+              "cell": "P84"
+            },
+            {
+              "text": "UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS | OUTROS)",
+              "cell": "P85"
+            },
+            {
+              "text": "UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES | OUTROS)",
+              "cell": "P86"
+            },
+            {
+              "text": "UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)",
+              "cell": "P87"
+            },
+            {
+              "text": "Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)",
+              "cell": "P88"
+            },
+            {
+              "text": "Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)",
+              "cell": "P89"
+            },
+            {
+              "text": "Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)",
+              "cell": "P90"
+            }
+          ],
+          "startRow": 83
+        }
+      ],
+      "rows": [
+        {
+          "row": 75,
+          "local": "Peito",
+          "option": "Estamparia - Até A4 - 4 Cores",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 76,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 77,
+          "local": "",
+          "option": "DTF - Até A4 (21x29,7cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 78,
+          "local": "",
+          "option": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 79,
+          "local": "",
+          "option": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 80,
+          "local": "",
+          "option": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 81,
+          "local": "Bolso Esquerdo",
+          "option": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 82,
+          "local": "Bolso Direito",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 83,
+          "local": "Caixa",
+          "option": "Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 84,
+          "local": "",
+          "option": "Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 85,
+          "local": "",
+          "option": "UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS | OUTROS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 86,
+          "local": "",
+          "option": "UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES | OUTROS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 87,
+          "local": "",
+          "option": "UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 88,
+          "local": "",
+          "option": "Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 89,
+          "local": "",
+          "option": "Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 90,
+          "local": "",
+          "option": "Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": true
+    },
+    "786": {
+      "title": "AVENTAL 3 bolsos - 3F",
+      "range": "M52:P62",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Bolso Peito",
+              "cell": "O53"
+            },
+            {
+              "name": "Bolso Esquerdo",
+              "cell": "O54"
+            },
+            {
+              "name": "Bolso Direito",
+              "cell": "O55"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P53"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P54"
+            }
+          ],
+          "startRow": 53
+        }
+      ],
+      "rows": [
+        {
+          "row": 53,
+          "local": "Bolso Peito",
+          "option": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 54,
+          "local": "Bolso Esquerdo",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 55,
+          "local": "Bolso Direito",
+          "option": "",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": true
+    },
+    "840": {
+      "title": "CONJ CRIANÇA Avental c\\ bolso  + chapéu",
+      "range": "M126:P369",
+      "groups": [
+        {
+          "locations": [
+            {
+              "name": "Peito",
+              "cell": "O127"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P127"
+            },
+            {
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P128"
+            },
+            {
+              "text": "DTF - Até A6 (10,5x14,8 cm)",
+              "cell": "P129"
+            },
+            {
+              "text": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P130"
+            }
+          ],
+          "startRow": 127
+        },
+        {
+          "locations": [
+            {
+              "name": "Bolso",
+              "cell": "O131"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P131"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P132"
+            }
+          ],
+          "startRow": 131
+        },
+        {
+          "locations": [
+            {
+              "name": "Chapéu",
+              "cell": "O133"
+            }
+          ],
+          "options": [
+            {
+              "text": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+              "cell": "P133"
+            },
+            {
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+              "cell": "P134"
+            },
+            {
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P135"
+            }
+          ],
+          "startRow": 133
+        }
+      ],
+      "rows": [
+        {
+          "row": 127,
+          "local": "Peito",
+          "option": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 128,
+          "local": "",
+          "option": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 129,
+          "local": "",
+          "option": "DTF - Até A6 (10,5x14,8 cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 130,
+          "local": "",
+          "option": "DTF - Até A5 (14,8x21,0 cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 131,
+          "local": "Bolso",
+          "option": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": null,
+            "colour": null,
+            "boundary": false
+          }
+        },
+        {
+          "row": 132,
+          "local": "",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 133,
+          "local": "Chapéu",
+          "option": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "indexed": "64"
+            },
+            "boundary": true
+          }
+        },
+        {
+          "row": 134,
+          "local": "",
+          "option": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        },
+        {
+          "row": 135,
+          "local": "",
+          "option": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+          "Otop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          },
+          "Ptop": {
+            "style": "thin",
+            "colour": {
+              "theme": "0",
+              "tint": "-0.05"
+            },
+            "boundary": false
+          }
+        }
+      ],
+      "ambiguous": false
+    }
+  }
+}

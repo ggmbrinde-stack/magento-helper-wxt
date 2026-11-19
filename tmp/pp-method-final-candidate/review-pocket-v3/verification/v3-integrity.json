@@ -1,0 +1,16 @@
+{
+  "exact_patch_reconstruction": true,
+  "business_rows_properties_source_states_identical_to_v2": true,
+  "source_changes": [
+    "batch_apply.py",
+    "README.md",
+    "rendered_layout.py",
+    "plans/method.json",
+    "pocket-plans/full.json",
+    "pocket-plans/pilot.json",
+    "pocket-plans/rest.json",
+    "tests/test_pocket.py",
+    "tests/test_rendered.py",
+    "plans/reports/summary.json"
+  ]
+}

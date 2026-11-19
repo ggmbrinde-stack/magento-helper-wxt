@@ -1,0 +1,16 @@
+✔ default dry-run invokes only local inspection and safely quotes paths (0.8353ms)
+✔ explicit application serialises real tool calls and UTF-8 events (2.5184ms)
+✔ lost mutation result is delivered once to the durable engine, never retried (0.3132ms)
+✔ reconciliation refuses mutations even if a malformed engine action requests one (0.1876ms)
+✔ out-of-batch targets and replace-all do not reach the connector (0.2926ms)
+✔ cancellation is local and cannot dispatch a mutation (0.1192ms)
+✔ targeted policy refuses property and insertion commands at the bridge (0.2222ms)
+✔ fresh rule reads are limited to the reviewed Working Copy home (0.5169ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63.822

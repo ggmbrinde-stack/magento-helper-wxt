@@ -1,0 +1,32 @@
+{
+  "kind": "read-only source input, not verified complete containers",
+  "source_files": [
+    {
+      "source": "C:\\Users\\user\\Downloads\\Personalizações Regras.pdf",
+      "sha256": "1293e683d3e470cb6533382dc7216b3b719d9e1422eee93c884bb3369853b9cf",
+      "bytes": 520530
+    },
+    {
+      "source": "C:\\Users\\user\\Downloads\\ChatGPT Image Nov 17, 2026, 11_26_56 AM.png",
+      "sha256": "32d607e1096d90aeec139303a8882edf8d040821ada8e3ce8fe27382c97f7cae",
+      "bytes": 137729
+    }
+  ],
+  "evidence_files": {
+    "ENGINEERING-SOURCE-INPUT.md": "5b9d76672a1b9fb74cba7b77272e71cb13fc7831fab94f8193b32b8da7140dcc",
+    "IMP-tab.md": "c01ea9d536a5cb9ce7ba4ac512dc710ea369ca5a4d96f7802ebe744b2849cfba",
+    "PP430-current-body.md": "62e59fa448c498656bd3ea85183127db690aadae1d65596f504364eaa5ab44ca",
+    "PP430-current.json": "d3158c489a160e5b74dda1fc481c317381b89dc0b219c1c061ed60e012e28fb8",
+    "PP558-current-body.md": "48c11c172558dfa03b16e93e1ca49ba5e320778d8a8418317456742d7ba62448",
+    "PP558-current.json": "4039373bac8532528136380d084d330ee0b24f4c8bd706406d265f1a7c11b49b",
+    "PP661-current-body.md": "5d428133cb57b1db9ce89122943c054614397fb602abf1982965d6562124f329",
+    "PP661-current.json": "b2bdde06615ec4ee5e1903c2233fb14f5c8e3e70657f901317054b6f6ea762ed",
+    "PP662-current-body.md": "31fef885f5df39dc9d1126b7f2cfd4989ffbc3c3032910612120b0970270605d",
+    "PP662-current.json": "ee3986dc40031954d27177c4c571a3f79375fa3fb7daef4086d638d422cc01f2",
+    "Regras-de-Atualizacao-tab.md": "81fcfeb46b41108cfb06b2384a6fc4e1b8314a18d60dd391fdfa5f71041271bf",
+    "rules-home-capture.json": "b023912f6710807494446a58d630339d5804ad7595e8ed16c35e6b0900959031",
+    "rules-page-1.png": "37e5bc058d88675b107e81ec782630332a742fc14f18bdc1f0e8032c472e4c2c",
+    "rules-page-2.png": "4bd8d3e877f08b9b676b6a29fa0745daa18626f995aa9bb1a9feb416d7604e65",
+    "rules-page-3.png": "99eab10505be867c3c5fabe7bae297a078f259ae5e91d9061e45fa957c529e63"
+  }
+}

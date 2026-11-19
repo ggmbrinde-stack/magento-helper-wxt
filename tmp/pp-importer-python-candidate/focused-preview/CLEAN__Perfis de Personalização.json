@@ -1,0 +1,386 @@
+{
+  "format_version": 1,
+  "source": {
+    "path": "C:\\Users\\user\\Desktop\\CLEAN__Perfis de Personalização.xlsx",
+    "sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "metadata": {
+      "creator": "user"
+    }
+  },
+  "data_source_id": "00000000-0000-0000-0000-000000000001",
+  "records": [
+    {
+      "code": "428",
+      "title": "AVENTAL grande com bolso - 2F",
+      "area": "Brinde têxtil",
+      "families": [
+        "Aventais"
+      ],
+      "article_types": [
+        "Avental"
+      ],
+      "description": "Aventais com bolso apx 100cm altura",
+      "notes": [
+        "Ex: M3897",
+        "No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+      ],
+      "source": "PPs BRINDE TÊXTIL!M9:P20",
+      "groups": [
+        {
+          "locals": [
+            "Peito"
+          ],
+          "options": [
+            {
+              "name": "Estamparia — até A4 — 4 cores",
+              "original": "Estamparia - Até A4 - 4 Cores",
+              "cell": "P10"
+            },
+            {
+              "name": "DTF — até A5",
+              "original": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P11"
+            },
+            {
+              "name": "DTF — até A4",
+              "original": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P12"
+            },
+            {
+              "name": "Bordado — até 120 cm²",
+              "original": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+              "cell": "P13"
+            },
+            {
+              "name": "Bordado — até 240 cm²",
+              "original": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+              "cell": "P14"
+            },
+            {
+              "name": "Bordado — até 360 cm²",
+              "original": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+              "cell": "P15"
+            }
+          ],
+          "start_row": 10
+        },
+        {
+          "locals": [
+            "Bolso"
+          ],
+          "options": [
+            {
+              "name": "Transfer — até 126 cm² — 2 cores",
+              "original": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P16"
+            },
+            {
+              "name": "DTF — até A7",
+              "original": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P17"
+            }
+          ],
+          "start_row": 16
+        }
+      ],
+      "images": [
+        "xl/media/image800.png"
+      ],
+      "comments": [],
+      "raw": [
+        {
+          "cell": "M9",
+          "value": "428"
+        },
+        {
+          "cell": "N9",
+          "value": "AVENTAL grande com bolso - 2F"
+        },
+        {
+          "cell": "N10",
+          "value": "Aventais com bolso apx 100cm altura"
+        },
+        {
+          "cell": "O10",
+          "value": "Peito"
+        },
+        {
+          "cell": "P10",
+          "value": "Estamparia - Até A4 - 4 Cores"
+        },
+        {
+          "cell": "N11",
+          "value": "Ex: M3897"
+        },
+        {
+          "cell": "P11",
+          "value": "DTF - Até A5 (14,8x21,0 cm)"
+        },
+        {
+          "cell": "P12",
+          "value": "DTF - Até A4 (21x29,7cm)"
+        },
+        {
+          "cell": "N13",
+          "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+        },
+        {
+          "cell": "P13",
+          "value": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+        },
+        {
+          "cell": "P14",
+          "value": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+        },
+        {
+          "cell": "P15",
+          "value": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+        },
+        {
+          "cell": "O16",
+          "value": "Bolso"
+        },
+        {
+          "cell": "P16",
+          "value": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+        },
+        {
+          "cell": "P17",
+          "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+        }
+      ],
+      "review_flags": [],
+      "blocked": [
+        "Focused offline preview only; full-workbook extraction and review required"
+      ]
+    },
+    {
+      "code": "633",
+      "title": "AVENTAL Non-woven grande com bolso - 2F",
+      "area": "Brinde têxtil",
+      "families": [
+        "Aventais"
+      ],
+      "article_types": [
+        "Avental"
+      ],
+      "description": "Aventais com bolso apx 100cm altura",
+      "notes": [
+        "Ex: M3897",
+        "No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+      ],
+      "source": "PPs BRINDE TÊXTIL!M21:P32",
+      "groups": [
+        {
+          "locals": [
+            "Peito"
+          ],
+          "options": [
+            {
+              "name": "Estamparia — até A4 — 1 cor",
+              "original": "Estamparia - Até A4 - 1 Cor",
+              "cell": "P22"
+            },
+            {
+              "name": "DTF — até A5",
+              "original": "DTF - Até A5 (14,8x21,0 cm)",
+              "cell": "P23"
+            },
+            {
+              "name": "DTF — até A4",
+              "original": "DTF - Até A4 (21x29,7cm)",
+              "cell": "P24"
+            }
+          ],
+          "start_row": 22
+        },
+        {
+          "locals": [
+            "Bolso"
+          ],
+          "options": [
+            {
+              "name": "Transfer — até 126 cm² — 1 cor",
+              "original": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+              "cell": "P25"
+            },
+            {
+              "name": "DTF — até A7",
+              "original": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+              "cell": "P26"
+            }
+          ],
+          "start_row": 25
+        }
+      ],
+      "images": [
+        "xl/media/image808.png"
+      ],
+      "comments": [],
+      "raw": [
+        {
+          "cell": "M21",
+          "value": "633"
+        },
+        {
+          "cell": "N21",
+          "value": "AVENTAL Non-woven grande com bolso - 2F"
+        },
+        {
+          "cell": "N22",
+          "value": "Aventais com bolso apx 100cm altura"
+        },
+        {
+          "cell": "O22",
+          "value": "Peito"
+        },
+        {
+          "cell": "P22",
+          "value": "Estamparia - Até A4 - 1 Cor"
+        },
+        {
+          "cell": "N23",
+          "value": "Ex: M3897"
+        },
+        {
+          "cell": "P23",
+          "value": "DTF - Até A5 (14,8x21,0 cm)"
+        },
+        {
+          "cell": "P24",
+          "value": "DTF - Até A4 (21x29,7cm)"
+        },
+        {
+          "cell": "N25",
+          "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+        },
+        {
+          "cell": "O25",
+          "value": "Bolso"
+        },
+        {
+          "cell": "P25",
+          "value": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+        },
+        {
+          "cell": "P26",
+          "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+        }
+      ],
+      "review_flags": [],
+      "blocked": [
+        "Focused offline preview only; full-workbook extraction and review required"
+      ]
+    }
+  ],
+  "catalog": [
+    {
+      "name": "Estamparia — até A4 — 4 cores",
+      "technique": "Estamparia",
+      "originals": [
+        "Estamparia - Até A4 - 4 Cores"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P10"
+      ]
+    },
+    {
+      "name": "DTF — até A5",
+      "technique": "DTF",
+      "originals": [
+        "DTF - Até A5 (14,8x21,0 cm)"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P11",
+        "PPs BRINDE TÊXTIL!P23"
+      ]
+    },
+    {
+      "name": "DTF — até A4",
+      "technique": "DTF",
+      "originals": [
+        "DTF - Até A4 (21x29,7cm)"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P12",
+        "PPs BRINDE TÊXTIL!P24"
+      ]
+    },
+    {
+      "name": "Bordado — até 120 cm²",
+      "technique": "Bordado",
+      "originals": [
+        "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P13"
+      ]
+    },
+    {
+      "name": "Bordado — até 240 cm²",
+      "technique": "Bordado",
+      "originals": [
+        "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P14"
+      ]
+    },
+    {
+      "name": "Bordado — até 360 cm²",
+      "technique": "Bordado",
+      "originals": [
+        "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P15"
+      ]
+    },
+    {
+      "name": "Transfer — até 126 cm² — 2 cores",
+      "technique": "Transfer",
+      "originals": [
+        "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P16"
+      ]
+    },
+    {
+      "name": "DTF — até A7",
+      "technique": "DTF",
+      "originals": [
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P17",
+        "PPs BRINDE TÊXTIL!P26"
+      ]
+    },
+    {
+      "name": "Estamparia — até A4 — 1 cor",
+      "technique": "Estamparia",
+      "originals": [
+        "Estamparia - Até A4 - 1 Cor"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P22"
+      ]
+    },
+    {
+      "name": "Transfer — até 126 cm² — 1 cor",
+      "technique": "Transfer",
+      "originals": [
+        "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+      ],
+      "sources": [
+        "PPs BRINDE TÊXTIL!P25"
+      ]
+    }
+  ],
+  "orphans": [],
+  "unknown_option_text": [],
+  "excluded_sheets": [],
+  "duplicate_codes": {},
+  "preview_scope": "PPs BRINDE TÊXTIL!M6:P32 only; placeholder destination, no import"
+}

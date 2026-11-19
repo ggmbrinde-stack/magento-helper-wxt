@@ -1,0 +1,44 @@
+// Paste into the DevTools console on the custom-options edit page.
+// Independent of the extension build: inspects the page DOM and the console path only.
+(function () {
+  'use strict';
+  const diag = window.__mhxOptionsDiag;
+  console.group('[mhx opt probe] page diagnostics');
+  console.log('URL:', window.location.href);
+  console.log('hash:', window.location.hash);
+  console.log('readyState:', document.readyState);
+  console.log('customOptionsPage (href includes token):', window.location.href.indexOf('toogas_attributesetcustomoptions') !== -1);
+
+  const repeatRows = document.querySelectorAll('tr.data-row[data-repeat-index]');
+  console.log('tr.data-row[data-repeat-index] count:', repeatRows.length);
+
+  const subOpts = document.querySelectorAll('input[name^="options[sub_options][sub_options]"]');
+  console.log('input name^=options[sub_options][sub_options] count:', subOpts.length);
+
+  const subItems = document.querySelectorAll(
+    'input[name^="options[sub_options_items][sub_options_items]"], select[name^="options[sub_options_items][sub_options_items]"]',
+  );
+  console.log('input/select name^=options[sub_options_items][sub_options_items] count:', subItems.length);
+
+  const mainHost = [...repeatRows].find((tr) => tr.querySelector('input[name^="options[sub_options][sub_options]"]'))?.closest('table, div, ul, form');
+  console.log('sub_options host tag:', mainHost ? mainHost.nodeName.toLowerCase() : 'none');
+
+  const itemsHost = [...repeatRows].find((tr) =>
+    tr.querySelector(
+      'input[name^="options[sub_options_items][sub_options_items]"], select[name^="options[sub_options_items][sub_options_items]"]',
+    ),
+  )?.closest('table, div, ul, form');
+  console.log('sub_options_items host tag:', itemsHost ? itemsHost.nodeName.toLowerCase() : 'none');
+
+  console.log('companion shell present:', !!document.getElementById('mhx-opt-companion'));
+  console.log('window.__mhxOptionsDiag present:', typeof diag);
+
+  // Mirror the extension’s own startup check so you can compare the logic.
+  const fakeBoot = {
+    onPage: window.location.href.indexOf('toogas_attributesetcustomoptions') !== -1,
+    repeatRows: repeatRows.length,
+    wouldMountCompanion: window.location.href.indexOf('toogas_attributesetcustomoptions') !== -1 && repeatRows.length > 0 && !document.getElementById('mhx-opt-companion'),
+  };
+  console.log('fakeBoot (what the current content.ts would see):', fakeBoot);
+  console.groupEnd();
+})();

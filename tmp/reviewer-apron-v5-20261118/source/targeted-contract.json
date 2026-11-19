@@ -1,0 +1,22 @@
+{
+  "body_text": "All body prose, review choices/reasons, notes, annotations, media and source remain protected with scope-bound hashes. Changed inside-target associations block an operation.",
+  "connector_command": "update_content",
+  "container_limit": "Neither fetched specification nor current tool description attests that a rendered column/toggle/table contains every server-side descendant. Such replacements require explicit complete source evidence; balanced text alone is insufficient.",
+  "documented_scope": "Tool describes targeted search-and-replace using the smallest exact unique old_str. This supplies a public narrow-edit contract, not a runtime proof of internals.",
+  "evidence": {
+    "markdown-spec.json": "13c4869d2f8ab5beb8ff80ae32017034c42987660bfde2a7041f637b76721e76",
+    "tool-descriptions.json": "ff03f0a2464b0ad134582d8a7bebb89380aa6caf78fd5193161cba9fddd8672e"
+  },
+  "leaf_boundary_basis": "Markdown specification states plain headings have no children. Only exact standalone presentation headings are certified by this adapter without subtree coverage metadata.",
+  "live_write_authorised": false,
+  "name": "TARGETED_SECTION",
+  "native_comments": {
+    "anchor_preservation_claimed": false,
+    "empty_attested": false,
+    "provenance": "Human clarification relayed by Engineering Lead for V5: native Notion comments are not required; comments/review text inside page body must stay.",
+    "requirement": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY"
+  },
+  "replace_all_matches": false,
+  "version": 1,
+  "whole_page_replace": false
+}

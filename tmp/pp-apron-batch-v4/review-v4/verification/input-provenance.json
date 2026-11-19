@@ -1,0 +1,28 @@
+{
+  "source_snapshot": "tmp/pp-apron-batch-v3/review-v3/source",
+  "v3_manifest_sha256": "25317004aa663be3893fa979f4fb13ae195ca2c7650cde6a73c1d8a2111addfe",
+  "fixture_source": "tmp\\pp-apron-batch-v3\\fixtures\\historical",
+  "fixture_label": "Historical inputs, not current or complete export evidence",
+  "fixtures": {
+    "after-PP429.json": "dc846155eba4927b40c00590cebf5a51b128dd8579dba217cde35cc58e423d47",
+    "after-PP430.json": "553458d466ede93b719cf0ec905a2cadc81576e245a25909955ffdb1b3bd9fdb",
+    "after-PP467.json": "ce44c14d191e69066e60299dbd37e24d4f26f542c4c3f9866f3d30f3bbdeca3f",
+    "after-PP558.json": "adc73db3df03d3e6dab480f600cac58a0076b1bfa5751421ef50e3a34ac552a9",
+    "after-PP612.json": "94fd19b738cd76baeb94259a176741aafcf69928efec94f03c067541153c295a",
+    "after-PP633.json": "142caf94e71a0b1a508d0d8262a92221f216ee54a7e1dea751b6f25c0a1a61bb",
+    "after-PP661.json": "ec845638aaf6072d86ba1927ce773f09f6056348c9908f1cd2f7f27a1283d158",
+    "after-PP662.json": "e5e51deb7dba5a94cb6ce09332d7a59ad8b1a7a7c6f76564be0899995af502b0",
+    "after-PP786.json": "c951b18538299ab77a235a3e5c825d3b9c6a937ad92364d493f61e9fc39f60f9",
+    "after-PP840.json": "c713d7d4935a8a89a97cf428044ab9cdf5a14f3963780cf5bd967f4883f72c18",
+    "before-PP429.json": "2e54bf55b15d0e7efb4e1cdb76085b99cd2e4040e31e73b9579e194f6f5b9ee0",
+    "before-PP430.json": "8f522827cd3f57f5c79f4f20dcc5a3eb1ca0668b1039b2223455922d7574481f",
+    "before-PP467.json": "875d2e7966968b61d8cdcef0592eccc3291beaeb1a4383223526076acac92b66",
+    "before-PP558.json": "7490dd7b53e1e07b3e4bf405268076c85fb11290ccd74539a4b25f4e47220624",
+    "before-PP612.json": "7dc1338875da33e438172c43f94d108323326fa64908524619c156bf8e7127a6",
+    "before-PP633.json": "aefe536890872151268b5eace2b55a4bbba9d3f678575e3c4501284c159c5333",
+    "before-PP661.json": "8adec4e1fdc0b3999dede2f2371712f1abede232f37387eb23b7d804f114185c",
+    "before-PP662.json": "f829e2d22b8943d3b84d4c300eff0db84d37f1dd03bdf278792ecff13f7cd31d",
+    "before-PP786.json": "766fa1eb0cf4921f081482d1515c86bf44452699ee144a66e7005f9b8b534668",
+    "before-PP840.json": "75e84a72a6a7ef201b51de11501ef068065829d8cc2f1faa0542b0d6fc4c419d"
+  }
+}

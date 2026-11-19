@@ -1,0 +1,28 @@
+{
+  "authorisation": "EXPLICIT_HUMAN_APPROVAL",
+  "authorisation_reference": "Direct human scope: confirmed four pocket corrections, Para revisão after verified success, Erro with durable reason on error, skip failed PP and continue next approved independent PP",
+  "plan_sha256": "82f8dbf4370ed4a0c3ee65db4253db332df91109f6916842203f3a0aa6aeb0b2",
+  "implementation_sha256": "ff4fca13269a007af0ed59829053036df3b7e23623b3b5104d3ee6681a4df06e",
+  "review_reference": "",
+  "approved_codes": [
+    "558",
+    "661",
+    "662"
+  ],
+  "approved_operation_ids": [
+    "558-pocket-row-1",
+    "558-pocket-property-1",
+    "558-review-status",
+    "558-error-status",
+    "661-pocket-row-1",
+    "661-pocket-row-2",
+    "661-review-status",
+    "661-error-status",
+    "662-pocket-row-1",
+    "662-pocket-row-2",
+    "662-pocket-property-1",
+    "662-review-status",
+    "662-error-status"
+  ],
+  "condition": "Actual independent review required; no invented acceptance reference"
+}

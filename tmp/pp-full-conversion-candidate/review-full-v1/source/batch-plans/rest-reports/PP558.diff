@@ -1,0 +1,11 @@
+--- 558-before
++++ 558-after
+@@ -31,7 +31,7 @@
+ 
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |
++| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |
+ | Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 registado no Excel; confirmar viabilidade |
+ 
+ <toggle>

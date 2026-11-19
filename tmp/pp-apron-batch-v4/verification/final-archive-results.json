@@ -1,0 +1,38 @@
+{
+  "zip_sha256": "9455e6958dcac8d0e28aa5d455585174f5d485d04d9d8830757f5df598cdffcf",
+  "manifest_sha256": "86793e053519ae40aa1d8ee80bbc8be9a7a4de97a6abf8a694477963c360ce07",
+  "archive_integrity": true,
+  "required_fixtures": 20,
+  "python_tests_passed": 49,
+  "node_tests_passed": 5,
+  "extracted_files_match_manifest_after_tests": true,
+  "frozen_files_unchanged": true,
+  "results": [
+    {
+      "check": "final-archive-python",
+      "cwd": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-apron-batch-v4\\verification\\final-archive-extracted\\source",
+      "command": [
+        "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-I",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "check": "final-archive-node",
+      "cwd": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-apron-batch-v4\\verification\\final-archive-extracted\\source",
+      "command": [
+        "node",
+        "--test",
+        "tests/test_session_bridge.cjs"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

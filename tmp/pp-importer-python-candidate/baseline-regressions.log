@@ -1,0 +1,130 @@
+test_changed_source_blocks_import_and_schema_prep_before_network (test_importar_pp.Tests.test_changed_source_blocks_import_and_schema_prep_before_network) ... FAIL
+test_confirmed_journal_page_absent_from_query_is_also_held (test_importar_pp.Tests.test_confirmed_journal_page_absent_from_query_is_also_held) ... FAIL
+test_dry_run_never_constructs_api_or_mutates_files (test_importar_pp.Tests.test_dry_run_never_constructs_api_or_mutates_files) ... ok
+test_duplicate_and_missing_source_codes_are_held (test_importar_pp.Tests.test_duplicate_and_missing_source_codes_are_held) ... ok
+test_exact_raw_notes_comments_images_remain_recoverable (test_importar_pp.Tests.test_exact_raw_notes_comments_images_remain_recoverable) ... ok
+test_existing_code_is_preserved_without_schema_or_page_mutations (test_importar_pp.Tests.test_existing_code_is_preserved_without_schema_or_page_mutations) ... FAIL
+test_image_rejections_happen_before_any_api_request (test_importar_pp.Tests.test_image_rejections_happen_before_any_api_request) ... ok
+test_import_rejects_duplicate_or_missing_codes_before_network (test_importar_pp.Tests.test_import_rejects_duplicate_or_missing_codes_before_network) ... FAIL
+test_real_pp428_six_plus_two_and_neighbour (test_importar_pp.Tests.test_real_pp428_six_plus_two_and_neighbour) ... 
+  test_real_pp428_six_plus_two_and_neighbour (test_importar_pp.Tests.test_real_pp428_six_plus_two_and_neighbour) (workbook='AI_READ_Perfis de Personaliza��o - C�pia.xlsx') ... FAIL
+  test_real_pp428_six_plus_two_and_neighbour (test_importar_pp.Tests.test_real_pp428_six_plus_two_and_neighbour) (workbook='CLEAN__Perfis de Personaliza��o.xlsx') ... FAIL
+test_shared_or_ambiguous_labels_are_not_blindly_split_and_are_blocked (test_importar_pp.Tests.test_shared_or_ambiguous_labels_are_not_blindly_split_and_are_blocked) ... FAIL
+test_uncertain_page_create_cannot_be_repeated_when_not_visible (test_importar_pp.Tests.test_uncertain_page_create_cannot_be_repeated_when_not_visible) ... ERROR
+test_write_timeout_and_5xx_are_not_retried (test_importar_pp.Tests.test_write_timeout_and_5xx_are_not_retried) ... ok
+
+======================================================================
+ERROR: test_uncertain_page_create_cannot_be_repeated_when_not_visible (test_importar_pp.Tests.test_uncertain_page_create_cannot_be_repeated_when_not_visible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 193, in test_uncertain_page_create_cannot_be_repeated_when_not_visible
+    with self.assertRaises((ValueError, RuntimeError)): pp.import_records(api, plan, set(), journal)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\importar_pp.py", line 673, in import_records
+    page = api.request("POST", "pages", payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 88, in request
+    raise TimeoutError('uncertain create')
+TimeoutError: uncertain create
+
+======================================================================
+FAIL: test_changed_source_blocks_import_and_schema_prep_before_network (test_importar_pp.Tests.test_changed_source_blocks_import_and_schema_prep_before_network)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 178, in test_changed_source_blocks_import_and_schema_prep_before_network
+    else: pp.prepare_options(api, plan)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\importar_pp.py", line 606, in prepare_options
+    schema = api.request("GET", f"data_sources/{source_id}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 92, in request
+    raise AssertionError('Unexpected operation: ' + repr((method, path)))
+AssertionError: Unexpected operation: ('GET', 'data_sources/00000000-0000-0000-0000-000000000001')
+
+======================================================================
+FAIL: test_confirmed_journal_page_absent_from_query_is_also_held (test_importar_pp.Tests.test_confirmed_journal_page_absent_from_query_is_also_held)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 199, in test_confirmed_journal_page_absent_from_query_is_also_held
+    with patch.object(pp, 'prepare_options') as prepare, self.assertRaises((ValueError, RuntimeError)):
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (<class 'ValueError'>, <class 'RuntimeError'>) not raised
+
+======================================================================
+FAIL: test_existing_code_is_preserved_without_schema_or_page_mutations (test_importar_pp.Tests.test_existing_code_is_preserved_without_schema_or_page_mutations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 184, in test_existing_code_is_preserved_without_schema_or_page_mutations
+    prepare.assert_not_called()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python312\Lib\unittest\mock.py", line 910, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'prepare_options' to not have been called. Called 1 times.
+Calls: [call(<test_importar_pp.FakeApi object at 0x000001D1B728C8C0>, {'format_version': 1, 'source': {'path': 'C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-importer-python-candidate\\tmp5l4y36wd\\fixture.xlsx', 'sha256': 'fd75a67a791392cf1cebb67722034d02b9f18a7ad0b7e9c32ece23df5a89d9d3', 'metadata': {'modified': 'fixture'}}, 'data_source_id': '00000000-0000-0000-0000-000000000001', 'records': [{'code': '428', 'title': 'AVENTAL grande com bolso - 2F', 'area': 'Brinde t�xtil', 'families': ['Aventais'], 'article_types': ['Avental'], 'description': 'Aventais com bolso apx 100cm altura', 'notes': ['Ex: M3897', 'No caso de Bordado, apenas considere "Repeti��o" se j� fez este bordado connosco no mesmo tamanho e cores'], 'source': 'PPs BRINDE T�XTIL!M9:P20', 'groups': [{'locals': ['Peito', 'Bolso'], 'options': [{'name': 'Estamparia � at� A4 � 4 cores', 'original': 'Estamparia - At� A4 - 4 Cores', 'cell': 'P10'}, {'name': 'DTF � at� A5', 'original': 'DTF - At� A5 (14,8x21,0 cm)', 'cell': 'P11'}, {'name': 'DTF � at� A4', 'original': 'DTF - At� A4 (21x29,7cm)', 'cell': 'P12'}, {'name': 'Bordado � at� 120 cm�', 'original': 'Bordado - At� 120 cm2 - At� 11x11cm aprox. - BOLSAS | MOCHILAS', 'cell': 'P13'}, {'name': 'Bordado � at� 240 cm�', 'original': 'Bordado - At� 240 cm2 - At� 15,5x15,5cm aprox. - A6', 'cell': 'P14'}, {'name': 'Bordado � at� 360 cm�', 'original': 'Bordado - At� 360 cm2 - At� 19x19cm aprox. - A5', 'cell': 'P15'}, {'name': 'Transfer � at� 126 cm� � 2 cores', 'original': 'Transfer - At� 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)', 'cell': 'P16'}, {'name': 'DTF � at� A7', 'original': 'DTF - At� A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)', 'cell': 'P17'}], 'start_row': 10}], 'images': [], 'comments': [{'cell': 'N13', 'text': 'Original human note: No, retain reason'}], 'raw': [{'cell': 'M9', 'value': '428'}, {'cell': 'N9', 'value': 'AVENTAL grande com bolso - 2F'}, {'cell': 'N10', 'value': 'Aventais com bolso apx 100cm altura'}, {'cell': 'O10', 'value': 'Peito'}, {'cell': 'P10', 'value': 'Estamparia - At� A4 - 4 Cores'}, {'cell': 'N11', 'value': 'Ex: M3897'}, {'cell': 'P11', 'value': 'DTF - At� A5 (14,8x21,0 cm)'}, {'cell': 'P12', 'value': 'DTF - At� A4 (21x29,7cm)'}, {'cell': 'N13', 'value': 'No caso de Bordado, apenas considere  "Repeti��o" se j� fez este bordado connosco no mesmo tamanho e cores'}, {'cell': 'P13', 'value': 'Bordado - At� 120 cm2 - At� 11x11cm aprox. - BOLSAS | MOCHILAS'}, {'cell': 'P14', 'value': 'Bordado - At� 240 cm2 - At� 15,5x15,5cm aprox. - A6'}, {'cell': 'P15', 'value': 'Bordado - At� 360 cm2 - At� 19x19cm aprox. - A5'}, {'cell': 'O16', 'value': 'Bolso'}, {'cell': 'P16', 'value': 'Transfer - At� 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)'}, {'cell': 'P17', 'value': 'DTF - At� A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)'}], 'review_flags': ['Grupo com v�rios locais ou sem local: confirmar a distribui��o das op��es'], 'blocked': []}], 'catalog': [{'name': 'Estamparia � at� A4 � 4 cores', 'technique': 'Estamparia', 'originals': ['Estamparia - At� A4 - 4 Cores'], 'sources': ['PPs BRINDE T�XTIL!P10']}, {'name': 'DTF � at� A5', 'technique': 'DTF', 'originals': ['DTF - At� A5 (14,8x21,0 cm)'], 'sources': ['PPs BRINDE T�XTIL!P11', 'PPs BRINDE T�XTIL!P23']}, {'name': 'DTF � at� A4', 'technique': 'DTF', 'originals': ['DTF - At� A4 (21x29,7cm)'], 'sources': ['PPs BRINDE T�XTIL!P12', 'PPs BRINDE T�XTIL!P24']}, {'name': 'Bordado � at� 120 cm�', 'technique': 'Bordado', 'originals': ['Bordado - At� 120 cm2 - At� 11x11cm aprox. - BOLSAS | MOCHILAS'], 'sources': ['PPs BRINDE T�XTIL!P13']}, {'name': 'Bordado � at� 240 cm�', 'technique': 'Bordado', 'originals': ['Bordado - At� 240 cm2 - At� 15,5x15,5cm aprox. - A6'], 'sources': ['PPs BRINDE T�XTIL!P14']}, {'name': 'Bordado � at� 360 cm�', 'technique': 'Bordado', 'originals': ['Bordado - At� 360 cm2 - At� 19x19cm aprox. - A5'], 'sources': ['PPs BRINDE T�XTIL!P15']}, {'name': 'Transfer � at� 126 cm� � 2 cores', 'technique': 'Transfer', 'originals': ['Transfer - At� 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)'], 'sources': ['PPs BRINDE T�XTIL!P16']}, {'name': 'DTF � at� A7', 'technique': 'DTF', 'originals': ['DTF - At� A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)'], 'sources': ['PPs BRINDE T�XTIL!P17', 'PPs BRINDE T�XTIL!P26']}, {'name': 'Estamparia � at� A4 � 1 cor', 'technique': 'Estamparia', 'originals': ['Estamparia - At� A4 - 1 Cor'], 'sources': ['PPs BRINDE T�XTIL!P22']}, {'name': 'Transfer � at� 126 cm� � 1 cor', 'technique': 'Transfer', 'originals': ['Transfer - At� 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)'], 'sources': ['PPs BRINDE T�XTIL!P25']}], 'orphans': [], 'unknown_option_text': [], 'excluded_sheets': [], 'duplicate_codes': {}})].
+
+======================================================================
+FAIL: test_import_rejects_duplicate_or_missing_codes_before_network (test_importar_pp.Tests.test_import_rejects_duplicate_or_missing_codes_before_network)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 168, in test_import_rejects_duplicate_or_missing_codes_before_network
+    with patch.object(pp, 'prepare_options'), self.assertRaises(ValueError):
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_real_pp428_six_plus_two_and_neighbour (test_importar_pp.Tests.test_real_pp428_six_plus_two_and_neighbour) (workbook='AI_READ_Perfis de Personaliza��o - C�pia.xlsx')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 118, in test_real_pp428_six_plus_two_and_neighbour
+    self.assertEqual([g['locals'] for g in record['groups']], [['Peito'], ['Bolso']])
+AssertionError: Lists differ: [['Peito', 'Bolso']] != [['Peito'], ['Bolso']]
+
+First differing element 0:
+['Peito', 'Bolso']
+['Peito']
+
+Second list contains 1 additional elements.
+First extra element 1:
+['Bolso']
+
+- [['Peito', 'Bolso']]
++ [['Peito'], ['Bolso']]
+?          +  +
+
+
+======================================================================
+FAIL: test_real_pp428_six_plus_two_and_neighbour (test_importar_pp.Tests.test_real_pp428_six_plus_two_and_neighbour) (workbook='CLEAN__Perfis de Personaliza��o.xlsx')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 118, in test_real_pp428_six_plus_two_and_neighbour
+    self.assertEqual([g['locals'] for g in record['groups']], [['Peito'], ['Bolso']])
+AssertionError: Lists differ: [['Peito', 'Bolso']] != [['Peito'], ['Bolso']]
+
+First differing element 0:
+['Peito', 'Bolso']
+['Peito']
+
+Second list contains 1 additional elements.
+First extra element 1:
+['Bolso']
+
+- [['Peito', 'Bolso']]
++ [['Peito'], ['Bolso']]
+?          +  +
+
+
+======================================================================
+FAIL: test_shared_or_ambiguous_labels_are_not_blindly_split_and_are_blocked (test_importar_pp.Tests.test_shared_or_ambiguous_labels_are_not_blindly_split_and_are_blocked)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Videos\BestOfGifts_Master\magento-helper-wxt\tmp\pp-importer-python-candidate\tests\test_importar_pp.py", line 147, in test_shared_or_ambiguous_labels_are_not_blindly_split_and_are_blocked
+    self.assertTrue(record['blocked'])
+AssertionError: [] is not true
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.346s
+
+FAILED (failures=7, errors=1)
+428: criado em A rever � fixture-page
+428: j� existe; preservado
+428: criado em A rever � fixture-page
+428: j� existe; preservado

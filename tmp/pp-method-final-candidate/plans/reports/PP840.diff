@@ -1,0 +1,24 @@
+--- 840-before
++++ 840-after
+@@ -31,8 +31,8 @@
+ 
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+-| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: tamanho proposto por confirmar |
+-| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |
++| Peito | DTF - Até A4 (21x29,7cm) | DTF A5: tamanho proposto por confirmar |
++| Bolso | DTF - Até A6 (10,5x14,8 cm) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação; Confirmar área de impressão do bolso |
+ | Chapéu | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7: tamanho proposto por confirmar; Transfer 2 cores → 1 cor: não consta de IMP → New; aguarda aprovação |
+ 
+ <toggle>
+@@ -54,7 +54,9 @@
+ 
+ | Face / local | Opções completas e especificações | Notas |
+ | --- | --- | --- |
+-| Peito<br />Bolso<br />Chapéu | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS)<br />Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Peito | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm) | Nota original conjunta (Peito<br />Bolso<br />Chapéu): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) |  |
++| Chapéu | Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) |  |
+ </column>
+ </columns>
+ 

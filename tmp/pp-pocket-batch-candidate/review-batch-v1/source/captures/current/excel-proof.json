@@ -1,0 +1,647 @@
+{
+  "workbook": "C:\\Users\\user\\Desktop\\CLEAN__Perfis de Personalização.xlsx",
+  "workbook_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+  "evidence_sha256": "479617fd409a41c19183a642aa0da500a69e2bf1f1323f1e79858f131ed34046",
+  "sheet": "PPs BRINDE TÊXTIL",
+  "records": {
+    "428": {
+      "range": "M9:P20",
+      "title": "AVENTAL grande com bolso - 2F",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O10",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P10",
+              "text": "Estamparia - Até A4 - 4 Cores"
+            },
+            {
+              "cell": "P11",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            },
+            {
+              "cell": "P12",
+              "text": "DTF - Até A4 (21x29,7cm)"
+            },
+            {
+              "cell": "P13",
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+            },
+            {
+              "cell": "P14",
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+            },
+            {
+              "cell": "P15",
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O16",
+              "text": "Bolso"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P16",
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P17",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "429": {
+      "range": "M33:P40",
+      "title": "AVENTAL grande sem bolso - 1F",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O34",
+              "text": "Face 1"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P34",
+              "text": "Estamparia - Até A4 - 4 Cores"
+            },
+            {
+              "cell": "P35",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            },
+            {
+              "cell": "P36",
+              "text": "DTF - Até A4 (21x29,7cm)"
+            },
+            {
+              "cell": "P37",
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+            },
+            {
+              "cell": "P38",
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+            },
+            {
+              "cell": "P39",
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+            }
+          ]
+        }
+      ]
+    },
+    "430": {
+      "range": "M41:P51",
+      "title": "AVENTAL grande vários bolsos - 3F",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O42",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P42",
+              "text": "Estamparia - Até A4 - 4 Cores"
+            },
+            {
+              "cell": "P43",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            },
+            {
+              "cell": "P44",
+              "text": "DTF - Até A4 (21x29,7cm)"
+            },
+            {
+              "cell": "P45",
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+            },
+            {
+              "cell": "P46",
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+            },
+            {
+              "cell": "P47",
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O48",
+              "text": "Bolso Esquerdo"
+            },
+            {
+              "cell": "O49",
+              "text": "Bolso Direito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P48",
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P49",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "467": {
+      "range": "M95:P104",
+      "title": "CONJ CRIANÇA Avental c\\ bolso Non-Woven + chapéu",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O96",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P96",
+              "text": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P97",
+              "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P98",
+              "text": "DTF - Até A6 (10,5x14,8 cm)"
+            },
+            {
+              "cell": "P99",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O100",
+              "text": "Bolso"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P100",
+              "text": "Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P101",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O102",
+              "text": "Chapéu"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P102",
+              "text": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)"
+            },
+            {
+              "cell": "P103",
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P104",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "558": {
+      "range": "M105:P116",
+      "title": "AVENTAL C\\ 2 Bolsos",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O106",
+              "text": "Bolso Esquerdo"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P106",
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O107",
+              "text": "Bolso Direito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P107",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "612": {
+      "range": "M117:P125",
+      "title": "AVENTAL Criança c\\ bolso",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O118",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P118",
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P119",
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P120",
+              "text": "DTF - Até A6 (10,5x14,8 cm)"
+            },
+            {
+              "cell": "P121",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O122",
+              "text": "Bolso"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P122",
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P123",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "633": {
+      "range": "M21:P32",
+      "title": "AVENTAL Non-woven grande com bolso - 2F",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O22",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P22",
+              "text": "Estamparia - Até A4 - 1 Cor"
+            },
+            {
+              "cell": "P23",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            },
+            {
+              "cell": "P24",
+              "text": "DTF - Até A4 (21x29,7cm)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O25",
+              "text": "Bolso"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P25",
+              "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P26",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "661": {
+      "range": "M63:P73",
+      "title": "AVENTAL grande Canhamo vários bolsos - 3F",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O64",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P64",
+              "text": "Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)"
+            },
+            {
+              "cell": "P65",
+              "text": "Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)"
+            },
+            {
+              "cell": "P66",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            },
+            {
+              "cell": "P67",
+              "text": "DTF - Até A4 (21x29,7cm)"
+            },
+            {
+              "cell": "P68",
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+            },
+            {
+              "cell": "P69",
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+            },
+            {
+              "cell": "P70",
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O71",
+              "text": "Bolso Esquerdo"
+            },
+            {
+              "cell": "O72",
+              "text": "Bolso Direito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P71",
+              "text": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P72",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "662": {
+      "range": "M74:P94",
+      "title": "AVENTAL grande vários bolsos (3F) + Caixa",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O75",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P75",
+              "text": "Estamparia - Até A4 - 4 Cores"
+            },
+            {
+              "cell": "P76",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            },
+            {
+              "cell": "P77",
+              "text": "DTF - Até A4 (21x29,7cm)"
+            },
+            {
+              "cell": "P78",
+              "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+            },
+            {
+              "cell": "P79",
+              "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+            },
+            {
+              "cell": "P80",
+              "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O81",
+              "text": "Bolso Esquerdo"
+            },
+            {
+              "cell": "O82",
+              "text": "Bolso Direito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P81",
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P82",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O83",
+              "text": "Caixa"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P83",
+              "text": "Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores"
+            },
+            {
+              "cell": "P84",
+              "text": "Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores"
+            },
+            {
+              "cell": "P85",
+              "text": "UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS | OUTROS)"
+            },
+            {
+              "cell": "P86",
+              "text": "UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES | OUTROS)"
+            },
+            {
+              "cell": "P87",
+              "text": "UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)"
+            },
+            {
+              "cell": "P88",
+              "text": "Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)"
+            },
+            {
+              "cell": "P89",
+              "text": "Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)"
+            },
+            {
+              "cell": "P90",
+              "text": "Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)"
+            }
+          ]
+        }
+      ]
+    },
+    "786": {
+      "range": "M52:P62",
+      "title": "AVENTAL 3 bolsos - 3F",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O53",
+              "text": "Bolso Peito"
+            },
+            {
+              "cell": "O54",
+              "text": "Bolso Esquerdo"
+            },
+            {
+              "cell": "O55",
+              "text": "Bolso Direito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P53",
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P54",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    },
+    "840": {
+      "range": "M126:P369",
+      "title": "CONJ CRIANÇA Avental c\\ bolso  + chapéu",
+      "groups": [
+        {
+          "locations": [
+            {
+              "cell": "O127",
+              "text": "Peito"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P127",
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P128",
+              "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+            },
+            {
+              "cell": "P129",
+              "text": "DTF - Até A6 (10,5x14,8 cm)"
+            },
+            {
+              "cell": "P130",
+              "text": "DTF - Até A5 (14,8x21,0 cm)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O131",
+              "text": "Bolso"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P131",
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P132",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "cell": "O133",
+              "text": "Chapéu"
+            }
+          ],
+          "options": [
+            {
+              "cell": "P133",
+              "text": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)"
+            },
+            {
+              "cell": "P134",
+              "text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+            },
+            {
+              "cell": "P135",
+              "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "blank_cells": {
+    "P55": "     "
+  }
+}

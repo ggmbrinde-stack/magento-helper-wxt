@@ -1,0 +1,24 @@
+{
+  "extracted_and_frozen_hashes_unchanged": true,
+  "implementation_sha256": "37a14565f13e4dfa5df6e8c3e4a2f7941b9ad4067c84a97726da38ff2d124cf3",
+  "manifest_sha256": "e4124b4069b52587a8c4a18758e07a2fec1c65e72776427cc3d304806d5b2752",
+  "node_passed": 14,
+  "passed": true,
+  "plans": {
+    "pilot39": "28d0e799311c6f282d43a033c8e4314763b1740db1d8e9a38f064884c011d014",
+    "representative": "0c75c99d9ac224d17fdccafc0b6809b814e648615f3d9c4cf02b5a1027d01923"
+  },
+  "python_passed": 141,
+  "results": [
+    {
+      "check": "archive-python",
+      "exit_code": 0
+    },
+    {
+      "check": "archive-node",
+      "exit_code": 0
+    }
+  ],
+  "self_contained": true,
+  "zip_sha256": "31347cce013fc1c9bec308914e6f1b7c9a081ab91d72e1b0fe42f20d3b1b7cc0"
+}

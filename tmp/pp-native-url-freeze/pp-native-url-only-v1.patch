@@ -1,0 +1,211 @@
+diff --git a/src/dashboard/sections/ui/PpPreview.tsx b/src/dashboard/sections/ui/PpPreview.tsx
+index b9eaf23..c410687 100644
+--- a/src/dashboard/sections/ui/PpPreview.tsx
++++ b/src/dashboard/sections/ui/PpPreview.tsx
+@@ -174,7 +174,7 @@ export function PpPreview() {
+   const rows = desired && draft ? ppPreviewRows(desired, draft) : [];
+   return <div class="db-stack">
+     <section class="db-card"><h2>PP Preview <span class="db-badge">Read-only</span></h2>
+-      <p class="db-note">Choose Notion V2 records. Preview one selected PP at a time. No existing Magento edit tab is needed.</p>
++      <p class="db-note">Choose Notion V2 records. Preview one selected PP at a time. Temporarily keep one edit tab open for that exact Magento record. Only its native address is used privately to load a fresh helper; your draft is not read or changed. A general admin tab is not sufficient.</p>
+       <div class="db-actions"><button type="button" class="db-btn" disabled={loading} onClick={() => void load()}>Load PP catalogue</button>
+         <button type="button" class="db-btn" disabled={!loading} onClick={stopLoad}>Stop catalogue load</button></div>
+       <p role="status" aria-live="polite">Catalogue: {index.coverage}. {index.reason} Rows: {index.rows.length}. Read: {time(index.checkedAt)}</p>
+@@ -190,7 +190,7 @@ export function PpPreview() {
+         {index.rows.filter(row => row.pageId && checked.includes(row.pageId)).map(row => <option key={row.pageId!} value={row.pageId!}>{row.code} · {row.name}</option>)}
+       </select></label>
+       <label class="db-field"><span>Exact Magento custom-option entity ID</span><input inputMode="numeric" value={entityId} maxLength={16} onInput={event => { invalidate(); setEntityId(event.currentTarget.value); }} />
+-        <em>Enter the actual record ID separately. It is not the business code or Attribute Set ID. The configured allowed HTTPS admin base is used; do not paste a URL or session key.</em></label>
++        <em>Enter the actual record ID separately. It is not the business code or Attribute Set ID. The reference tab must match that exact entity and the configured allowed HTTPS admin base. Do not paste a URL or session key.</em></label>
+       <label><input type="checkbox" checked={paired} disabled={!chosen || !!chosenProblem || !/^[1-9]\d{0,15}$/.test(entityId)} onChange={event => { generation.current++; setResult(null); stopPreview(); setPaired(event.currentTarget.checked); }} /> I manually pair this Notion record with this Magento entity for this preview. The association is not verified.</label>
+       <div class="db-actions"><button type="button" class="db-btn db-btn--primary" disabled={busy || helper.status !== 'idle' || !chosen || !!chosenProblem || !paired} aria-busy={busy} onClick={() => void read()}>{busy ? 'Reading selected PP…' : 'Preview selected PP'}</button>
+         <button type="button" class="db-btn" disabled={!busy && helper.status === 'idle'} onClick={() => void stopOrClose()}>Stop preview / close helper tab</button></div>
+diff --git a/src/entrypoints/background/ppFreshForm.ts b/src/entrypoints/background/ppFreshForm.ts
+index c26b599..a4dbecc 100644
+--- a/src/entrypoints/background/ppFreshForm.ts
++++ b/src/entrypoints/background/ppFreshForm.ts
+@@ -27,6 +27,18 @@ export function freshFormUrl(base: unknown, entityId: unknown): string | null {
+   } catch { return null; }
+ }
+ 
++/** Validate the whole native address without extracting or rewriting its key. */
++export function isNativePpReference(value: unknown, target: string): value is string {
++  if (typeof value !== 'string' || /[?#]/.test(value)) return false;
++  try {
++    const url = new URL(value), wanted = new URL(target);
++    const path = wanted.pathname.replace(/\/$/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
++    return url.href === value && !url.username && !url.password && url.origin === wanted.origin &&
++      url.protocol === 'https:' && HOSTS.has(url.hostname) &&
++      new RegExp(`^${path}(?:/key/[A-Za-z0-9_-]{1,256})?/?$`).test(url.pathname);
++  } catch { return false; }
++}
++
+ async function closeOwned(job: ReadJob): Promise<boolean> {
+   if (job.tabId === undefined || job.removed) return true;
+   if (!job.close) {
+@@ -57,7 +69,22 @@ async function run(job: ReadJob): Promise<PpFreshFormResponse> {
+     if (!target) return reply(job.id, job.entityId, 'invalid', 'Configure an allowed HTTPS admin base and enter the exact positive Magento entity ID. Do not supply an edit URL or session key.');
+     if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
+     const wanted = new URL(target), safePath = ppRoutePathFromUrl(target)!;
+-    const created = await chrome.tabs.create({ url: target, active: false });
++    const references = (await chrome.tabs.query({ url: [target.replace(/\/$/, ''), `${target}*`] }))
++      .filter(tab => typeof tab.id === 'number' && Number.isInteger(tab.id) && tab.id >= 0 &&
++        tab.status === 'complete' && !tab.pendingUrl && isNativePpReference(tab.url, target));
++    if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
++    if (!references.length) return reply(job.id, job.entityId, 'unavailable',
++      `Open Magento record ${job.entityId} as a reference tab, then retry. Its address is used privately; your draft remains untouched.`);
++    if (references.length !== 1) return reply(job.id, job.entityId, 'unavailable',
++      `Keep only one reference edit tab for Magento record ${job.entityId} open, then retry. No helper was opened.`);
++    const reference = references[0]!;
++    const current = await chrome.tabs.get(reference.id!);
++    if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
++    if (current.status !== 'complete' || current.pendingUrl || current.url !== reference.url || !isNativePpReference(current.url, target)) {
++      return reply(job.id, job.entityId, 'unavailable', 'The exact-record reference tab changed. Reopen the target record and retry; its draft was not read.');
++    }
++    // Only the owned helper loads this unchanged, private native address.
++    const created = await chrome.tabs.create({ url: current.url, active: false });
+     if (typeof created.id !== 'number') throw new Error('No owned tab');
+     job.tabId = created.id;
+     job.onRemoved = id => {
+diff --git a/tests/ppCatalogSelection.test.ts b/tests/ppCatalogSelection.test.ts
+index e997127..911d609 100644
+--- a/tests/ppCatalogSelection.test.ts
++++ b/tests/ppCatalogSelection.test.ts
+@@ -117,6 +117,8 @@ test('multi-selection survives filtering, exact selected details precede the fre
+   const f = fixture();
+   try {
+     assert.equal(f.pending.length, 0); assert.equal(f.button('Preview selected PP').disabled, true);
++    assert.match(f.root.textContent!, /exact Magento record|general admin tab is not sufficient/);
++    assert.doesNotMatch(f.root.textContent!, /No existing Magento edit tab is needed/);
+     await f.prepare(); assert.match(f.root.textContent!, /2 selected/);
+     f.change('Search loaded codes or titles', '50'); assert.match(f.root.textContent!, /2 selected · 1 visible/);
+     f.change('Search loaded codes or titles', ''); assert.equal(f.root.querySelectorAll('table input:checked').length, 2);
+diff --git a/tests/ppFreshForm.test.ts b/tests/ppFreshForm.test.ts
+index 6b34ba5..49e356f 100644
+--- a/tests/ppFreshForm.test.ts
++++ b/tests/ppFreshForm.test.ts
+@@ -1,7 +1,7 @@
+ import test, { type TestContext } from 'node:test';
+ import assert from 'node:assert/strict';
+ import { runInNewContext } from 'node:vm';
+-import { freshFormUrl, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
++import { freshFormUrl, isNativePpReference, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
+ import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
+ import type { PpFreshFormResponse } from '../src/core/messages';
+ 
+@@ -15,10 +15,10 @@ async function settle<T>(t: TestContext, promise: Promise<T>): Promise<T> {
+   await flush(); assert.equal(done, true, 'bounded lifecycle completed'); return promise;
+ }
+ 
+-function fixture(t: TestContext, config: { scenario?: string; removeFail?: boolean; createWait?: Promise<any>; injectionWait?: Promise<any> } = {}) {
++function fixture(t: TestContext, config: { scenario?: string; removeFail?: boolean; createWait?: Promise<any>; injectionWait?: Promise<any>; queryWait?: Promise<any>; referenceWait?: Promise<any> } = {}) {
+   t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_900_000_000_000 });
+   const previous = globals.chrome, removedListeners = new Set<(id: number) => void>();
+-  const created: any[] = [], removed: number[] = [], injected: any[] = [];
++  const created: any[] = [], removed: number[] = [], injected: any[] = [], queries: any[] = [], sourceGets: number[] = [];
+   let gets = 0, loaderCalls = 0;
+   const nativeData: any = { attributesetcustomoptions_id: '966', attribute_set_id: '479', general: { option_title: 'Fresh native form', attribute_set_id: ['479'] },
+     options: { sub_options: { sub_options: [] }, sub_options_items: { sub_options_items: [] } } };
+@@ -29,7 +29,13 @@ function fixture(t: TestContext, config: { scenario?: string; removeFail?: boole
+   globals.chrome = { runtime: { getURL: () => 'chrome-extension://fixture/dashboard.html' },
+     storage: { local: { get: async (keys: string[]) => { assert.deepEqual(keys, ['adminBaseUrl']); return { adminBaseUrl: config.scenario === 'base' ? 'https://example.org/admin' : base }; } } },
+     tabs: { create: async (options: any) => { created.push(options); if (config.scenario === 'create') throw new Error('PRIVATE_SESSION'); return config.createWait ?? { id: 77 }; },
+-      get: async (id: number) => { assert.equal(id, 77); gets++;
++      get: async (id: number) => {
++        if (id === 88) {
++          sourceGets.push(id);
++          if (config.scenario === 'source-closed') throw new Error('PRIVATE_SESSION');
++          return config.referenceWait ?? { id, status: 'complete', url: config.scenario === 'source-changed' ? full.replace('PRIVATE_SESSION', 'CHANGED_SESSION') : full };
++        }
++        assert.equal(id, 77); gets++;
+         const url = config.scenario === 'login' ? base + '/admin/auth/login/' :
+           config.scenario === 'redirect' ? 'https://example.org/admin/' :
+           config.scenario === 'entity-route' || (config.scenario === 'stale' && gets > 1) ? full.replace('/966/', '/49/') : full;
+@@ -37,14 +43,26 @@ function fixture(t: TestContext, config: { scenario?: string; removeFail?: boole
+       }, remove: async (id: number) => { assert.equal(id, 77); removed.push(id); if (config.removeFail) throw new Error('remove failed');
+         for (const listener of [...removedListeners]) listener(id);
+       }, onRemoved: { addListener: (fn: (id: number) => void) => removedListeners.add(fn), removeListener: (fn: (id: number) => void) => removedListeners.delete(fn) },
+-      query: () => { throw new Error('No tab enumeration'); }, update: () => { throw new Error('No tab navigation'); } },
++      query: async (options: any) => {
++        queries.push(options);
++        assert.deepEqual(options, { url: [full.replace('/key/PRIVATE_SESSION/', ''), full.replace('key/PRIVATE_SESSION/', '*')] });
++        if (config.queryWait) return config.queryWait;
++        if (config.scenario === 'no-source') return [];
++        const source = { id: 88, url: full, status: 'complete' };
++        if (config.scenario === 'multiple-sources') return [source, { ...source, id: 89 }];
++        if (config.scenario === 'source-wrong-record') return [{ ...source, url: full.replace('/966/', '/49/') }];
++        if (config.scenario === 'source-wrong-action') return [{ ...source, url: full.replace('/edit/', '/save/') }];
++        if (config.scenario === 'source-wrong-host') return [{ ...source, url: full.replace('bestofgifts.pt', 'example.org') }];
++        if (config.scenario === 'source-pending') return [{ ...source, pendingUrl: full }];
++        return [source];
++      }, update: () => { throw new Error('No tab navigation'); } },
+     scripting: { executeScript: async (options: any) => { injected.push(options); assert.deepEqual(options.target, { tabId: 77, frameIds: [0] }); assert.equal(options.world, 'MAIN');
+       if (config.injectionWait) return config.injectionWait;
+       return [{ frameId: config.scenario === 'frame' ? 2 : 0,
+         result: runInNewContext('(' + options.func.toString() + ')()', { window: { location: { pathname: new URL(full).pathname }, require: requireFn } }) }];
+     } } };
+   t.after(() => { globals.chrome = previous; });
+-  return { config, created, removed, injected, nativeData, loaderCalls: () => loaderCalls, manualClose: () => { for (const fn of [...removedListeners]) fn(77); }, listeners: removedListeners };
++  return { config, created, removed, injected, queries, sourceGets, nativeData, loaderCalls: () => loaderCalls, manualClose: () => { for (const fn of [...removedListeners]) fn(77); }, listeners: removedListeners };
+ }
+ 
+ test('fresh target accepts only a configured allowed HTTPS admin base and exact positive entity', () => {
+@@ -54,12 +72,57 @@ test('fresh target accepts only a configured allowed HTTPS admin base and exact
+   for (const id of ['', '0', '0966', ' 966', '966/49', '-1', 966]) assert.equal(freshFormUrl(base, id), null);
+ });
+ 
++test('native reference accepts only the entire exact edit address and optional native key segment', () => {
++  const target = freshFormUrl(base, '966')!;
++  for (const valid of [full, target, target.replace(/\/$/, '')]) assert.equal(isNativePpReference(valid, target), true);
++  for (const invalid of [
++    full.replace('bestofgifts.pt', 'example.org'), full.replace('https:', 'http:'), full.replace('/966/', '/49/'),
++    full.replace('/edit/', '/save/'), full.replace('/edit/', '/delete/'), full.replace('/admin_fixture/', '/other_admin/'),
++    full + '?form_key=PRIVATE_QUERY', full + '#PRIVATE_FRAGMENT', full + '?', full + '#',
++    full.replace('https://', 'https://user:PRIVATE_PASSWORD@'), full + 'back/edit/',
++    full.replace('PRIVATE_SESSION', 'PRIVATE%2FSESSION'), full.replace('PRIVATE_SESSION', 'x'.repeat(257)),
++    full.replace('key/PRIVATE_SESSION/', 'key/PRIVATE_SESSION/key/OTHER/'),
++  ]) assert.equal(isNativePpReference(invalid, target), false);
++});
++
++for (const scenario of ['no-source', 'multiple-sources', 'source-wrong-record', 'source-wrong-action', 'source-wrong-host', 'source-pending', 'source-changed', 'source-closed']) {
++  test(`native reference: ${scenario} blocks before opening or inspecting any page`, async t => {
++    const f = fixture(t, { scenario });
++    const response = await settle(t, readFreshForm('reference-' + scenario, '966', 1));
++    assert.equal(response.status, 'unavailable'); assert.equal(response.cleanup, 'not-created');
++    assert.equal(f.created.length, 0); assert.equal(f.injected.length, 0); assert.equal(f.removed.length, 0);
++    assert.doesNotMatch(JSON.stringify(response), /PRIVATE|admin_fixture|key\//);
++    if (scenario === 'no-source') assert.match(response.reason, /Open Magento record 966.*draft remains untouched/);
++    if (scenario === 'multiple-sources') assert.match(response.reason, /Keep only one reference/);
++    if (scenario === 'source-changed') assert.match(response.reason, /reference tab changed/);
++  });
++}
++
++test('cancelling during reference discovery or final source recheck creates no helper and touches no draft', async t => {
++  let resolveQuery!: (value: any) => void;
++  const f = fixture(t, { queryWait: new Promise(resolve => { resolveQuery = resolve; }) });
++  const pending = readFreshForm('cancel-query', '966', 1); await flush();
++  const stopped = cancelFreshForm('cancel-query', 1);
++  resolveQuery([{ id: 88, status: 'complete', url: full }]);
++  assert.equal((await settle(t, pending)).status, 'cancelled'); await stopped;
++  assert.equal(f.created.length, 0); assert.equal(f.sourceGets.length, 0); assert.equal(f.injected.length, 0);
++  let resolveSource!: (value: any) => void;
++  f.config.queryWait = Promise.resolve([{ id: 88, status: 'complete', url: full }]);
++  f.config.referenceWait = new Promise(resolve => { resolveSource = resolve; });
++  const recheck = readFreshForm('cancel-recheck', '966', 1); await flush();
++  const stoppedAgain = cancelFreshForm('cancel-recheck', 1);
++  resolveSource({ id: 88, status: 'complete', url: full });
++  assert.equal((await settle(t, recheck)).status, 'cancelled'); await stoppedAgain;
++  assert.equal(f.created.length, 0); assert.equal(f.removed.length, 0); assert.equal(f.injected.length, 0);
++});
++
+ test('fresh load uses a new inactive tab and serialized inherited-registry reader, then closes only the owned tab', async t => {
+   const f = fixture(t);
+   const response = await settle(t, readFreshForm('positive', '966', 1));
+   assert.equal(response.status, 'ok'); assert.equal(response.source, 'fresh-magento-form-load'); assert.equal(response.cleanup, 'closed');
+   assert.equal(response.snapshot!.general.option_title, 'Fresh native form'); assert.equal(f.loaderCalls(), 0);
+-  assert.equal(f.created.length, 1); assert.equal(f.created[0].active, false); assert.doesNotMatch(f.created[0].url, /key\//);
++  assert.equal(f.created.length, 1); assert.equal(f.created[0].active, false); assert.equal(f.created[0].url, full, 'native address copied byte-for-byte without key or entity substitution');
++  assert.equal(f.queries.length, 1); assert.deepEqual(f.sourceGets, [88]);
+   assert.deepEqual(f.removed, [77]); assert.equal(f.listeners.size, 0); assert.equal(freshFormState(1).status, 'idle');
+   assert.doesNotMatch(JSON.stringify(response), /PRIVATE|admin_fixture|key\//);
+ });

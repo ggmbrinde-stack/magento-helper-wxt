@@ -1,0 +1,8 @@
+{
+  "authorisation": "NOT_AUTHORISED",
+  "plan_sha256": "FILL_ONLY_AFTER_INDEPENDENT_REVIEW_AND_HUMAN_AUTHORISATION",
+  "implementation_sha256": "COPY_FROM_THE_EXACT_REVIEWED_PLAN",
+  "review_reference": "",
+  "approved_codes": [],
+  "approved_operation_ids": []
+}

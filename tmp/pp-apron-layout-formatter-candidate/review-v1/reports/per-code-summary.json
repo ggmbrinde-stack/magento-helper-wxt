@@ -1,0 +1,112 @@
+[
+  {
+    "code": "428",
+    "expected_page_id": "074b6705ae1f8257a53701d87a64eb32",
+    "verified_inputs": 0,
+    "status": "MISSING_INPUT",
+    "reasons": [
+      "No complete PP428 snapshot available"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "429",
+    "expected_page_id": "137b6705ae1f82048ef1810070095cf0",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "430",
+    "expected_page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "467",
+    "expected_page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "558",
+    "expected_page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "612",
+    "expected_page_id": "e48b6705ae1f83ddafb501a2ea781406",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "633",
+    "expected_page_id": "f7bb6705ae1f826b848d819549bc3c03",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "661",
+    "expected_page_id": "4e5b6705ae1f835ea3fc81290bfd0d16",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "662",
+    "expected_page_id": "ddbb6705ae1f820cb837013a1864964a",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "786",
+    "expected_page_id": "d00b6705ae1f835cb7440191c545e56b",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  },
+  {
+    "code": "840",
+    "expected_page_id": "bacb6705ae1f8296839b01585f6e5e8e",
+    "verified_inputs": 2,
+    "status": "BLOCKED",
+    "reasons": [
+      "Missing complete body/properties coverage evidence; rendered text alone is insufficient"
+    ],
+    "apply_allowed": false
+  }
+]

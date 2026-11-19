@@ -1,0 +1,172 @@
+--- a/batch_apply.py
++++ b/batch_apply.py
+@@ -168,7 +168,10 @@
+             return self.stop(state,'UNCERTAIN' if phase in ('WRITE_PENDING','VERIFY_PAGE','RECONCILE_PAGE') else 'FAILED', 'Connector failure; no mutation is retried')
+         result=event.get('result',{})
+         if phase in ('FETCH_PAGE','FETCH_PREWRITE','VERIFY_PAGE','RECONCILE_PAGE'):
+-            current=b.page_state(capture_response(result,page['page_id']))
++            try:current=b.page_state(capture_response(result,page['page_id']))
++            except ValueError as error:
++                status='UNCERTAIN' if phase in ('VERIFY_PAGE','RECONCILE_PAGE') else 'BLOCKED'
++                return self.stop(state,status,str(error))
+             if current['code']!=page['code']:return self.stop(state,'STALE','Fresh page identity changed')
+             if phase=='FETCH_PAGE':
+                 expected=state.get('last_state_hash',page['source_state_sha256']) if state['op_index'] else page['source_state_sha256']
+--- a/README.md
++++ b/README.md
+@@ -35,13 +35,13 @@
+ 
+ Python mantém o estado local e não se liga ao MCP. `session_bridge.js` usa as ferramentas reais da sessão: `exec_command`, `apply_patch`, `mcp__codex_apps__notion_fetch` e `mcp__codex_apps__notion_notion_update_page`. A inspecção é o modo predefinido. Não há backend com token nem novas dependências.
+ 
+-O congelamento `review-pocket-v2` contém fonte, planos, diferenças, testes, capturas e manifesto. Copiar a aprovação do piloto para `pocket-approvals/pilot.json` e preencher apenas a referência real da revisão independente já concluída. Os hashes e IDs de operações têm de coincidir com o plano revisto. Para o restante grupo, usar `pocket-approvals/rest.json` só depois de aceitar os recibos e a leitura do piloto. Os modelos `.pending-review.json` têm autorização humana real, mas são deliberadamente recusados enquanto essa referência estiver vazia.
++O congelamento `review-pocket-v3` contém fonte, planos, diferenças, testes, capturas e manifesto. Copiar a aprovação do piloto para `pocket-approvals/pilot.json` e preencher apenas a referência real da revisão independente já concluída. Os hashes e IDs de operações têm de coincidir com o plano revisto. Para o restante grupo, usar `pocket-approvals/rest.json` só depois de aceitar os recibos e a leitura do piloto. Os modelos `.pending-review.json` têm autorização humana real, mas são deliberadamente recusados enquanto essa referência estiver vazia.
+ 
+ A configuração de execução exacta está em `execution-pilot.json` e `execution-rest.json`. Carregar apenas a ponte cujo hash foi verificado no manifesto. Exemplo para `functions.exec`:
+ 
+ ```javascript
+ const loaded = await tools.exec_command({
+-  cmd: "python -B 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-method-final-candidate/review-pocket-v2/source/batch_cli.py' bridge-source",
++  cmd: "python -B 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-method-final-candidate/review-pocket-v3/source/batch_cli.py' bridge-source",
+   max_output_tokens: 8000
+ });
+ if (loaded.exit_code !== 0) throw new Error('Falha ao carregar a ponte');
+@@ -49,7 +49,7 @@
+ if (bridge.sha256 !== '<files[source/session_bridge.js] DO MANIFESTO REVISTO>') throw new Error('Ponte alterada');
+ const run = eval(bridge.source);
+ text(await run({
+-  script: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-method-final-candidate/review-pocket-v2/source/batch_cli.py',
++  script: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-method-final-candidate/review-pocket-v3/source/batch_cli.py',
+   plan: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-method-final-candidate/pocket-plans/pilot.json'
+ }, tools));
+ ```
+@@ -79,3 +79,7 @@
+ ## Caminhos curtos no Windows
+ 
+ O pacote V2 usa a pasta temporária do sistema nos testes, evitando MAX_PATH quando o ZIP é extraído numa pasta profunda. Não foram alteradas as salvaguardas do motor. A coordenação usa `C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-pocket-run/` para planos, aprovações e registos operacionais. Os planos copiados mantêm os bytes e hashes revistos. Preencher apenas a referência real da revisão nas cópias `pilot.approval.json` e `rest.approval.json`; não alterar os modelos congelados. As configurações execution-pilot.json e execution-rest.json apontam para este caminho curto e para a fonte congelada V2.
++
++## Correcção V3 de cobertura explícita
++
++Qualquer indicador explícito de truncagem ou conteúdo desconhecido é recusado antes de classificar os campos ausentes. Na leitura posterior a uma escrita, a recusa fica registada como UNCERTAIN e impede a operação seguinte. A ausência dos indicadores globais continua permitida pelo contrato dirigido. A alteração não modifica as sete linhas nem as três propriedades aprovadas. Foram repetidos os testes afectados test_rendered.py, test_pocket.py e test_method.py, além dos oito testes Node; a bateria completa anterior não foi repetida nesta correcção limitada. As configurações V3 usam pilot-v3.json e rest-v3.json no directório operacional curto.
+--- a/rendered_layout.py
++++ b/rendered_layout.py
+@@ -519,17 +519,16 @@
+     for timestamp in (value['page_last_edited_at'], provenance['received_at_utc']):
+         if datetime.fromisoformat(timestamp.replace('Z', '+00:00')).tzinfo is None:
+             raise Refused('Capture/edit timestamps need explicit time zones')
+-    fields = ('truncated', 'unknown_block_count', 'unknown_block_ids')
+-    for extra in (value.get('metadata', {}), response.get('_meta', {})):
++    allowed = {'truncated': False, 'unknown_block_count': 0, 'unknown_block_ids': []}
++    fields = tuple(allowed)
++    for extra in (value, value.get('metadata', {}), response.get('_meta', {})):
+         if isinstance(extra, dict):
+-            for name in fields:
+-                if name in extra and (extra[name] not in (False, 0, []) or (name in value and extra[name] != value[name])):
+-                    raise Refused('Conflicting/negative nested connector coverage evidence')
++            for name, expected in allowed.items():
++                if name in extra and (type(extra[name]) is not type(expected) or extra[name] != expected):
++                    raise Refused('Connector reports truncation/unknown or unsupported coverage evidence')
+     missing = [k for k in fields if k not in value]
+     if missing:
+         coverage = {'state': 'UNKNOWN', 'missing_fields': missing}
+-    elif value['truncated'] is not False or type(value['unknown_block_count']) is not int or value['unknown_block_count'] != 0 or value['unknown_block_ids'] != []:
+-        raise Refused('Connector reports truncation/unknown or unsupported content')
+     else:
+         coverage = {'state': 'EXPLICIT_COMPLETE_EXPORT', 'missing_fields': []}
+     def stable_metadata(value):
+--- a/plans/method.json
++++ b/plans/method.json
+@@ -652,7 +652,7 @@
+   "global_deferred": [
+     "Human deferred customer cores to DTF mapping; no final technical approval inferred"
+   ],
+-  "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
++  "implementation_sha256": "87f30592f6c5ab2879cb2526481c3af7ef724df9adbaa8a5bee9b13d4f0a9eda",
+   "input_freshness": "Current received reads; timestamps in individual captures; not complete-container attestation",
+   "pages": [
+     {
+--- a/pocket-plans/full.json
++++ b/pocket-plans/full.json
+@@ -649,7 +649,7 @@
+     "workbook": "C:\\Users\\user\\Desktop\\CLEAN__Perfis de Personalização.xlsx",
+     "workbook_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348"
+   },
+-  "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
++  "implementation_sha256": "87f30592f6c5ab2879cb2526481c3af7ef724df9adbaa8a5bee9b13d4f0a9eda",
+   "pages": [
+     {
+       "code": "430",
+--- a/pocket-plans/pilot.json
++++ b/pocket-plans/pilot.json
+@@ -649,7 +649,7 @@
+     "workbook": "C:\\Users\\user\\Desktop\\CLEAN__Perfis de Personalização.xlsx",
+     "workbook_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348"
+   },
+-  "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
++  "implementation_sha256": "87f30592f6c5ab2879cb2526481c3af7ef724df9adbaa8a5bee9b13d4f0a9eda",
+   "pages": [
+     {
+       "code": "430",
+--- a/pocket-plans/rest.json
++++ b/pocket-plans/rest.json
+@@ -649,7 +649,7 @@
+     "workbook": "C:\\Users\\user\\Desktop\\CLEAN__Perfis de Personalização.xlsx",
+     "workbook_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348"
+   },
+-  "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
++  "implementation_sha256": "87f30592f6c5ab2879cb2526481c3af7ef724df9adbaa8a5bee9b13d4f0a9eda",
+   "pages": [
+     {
+       "code": "558",
+--- a/tests/test_pocket.py
++++ b/tests/test_pocket.py
+@@ -118,6 +118,20 @@
+         with patch.object(Path,'replace',transient):action=session.start()
+         self.assertEqual(action['type'],'FETCH_PAGE');self.assertEqual(len(calls),2)
+         self.assertEqual(json.loads(session.path.read_text(encoding='utf8'))['nonce'],action['nonce'])
++    def test_first_saved_read_with_one_explicit_negative_stops_uncertain_before_second_write(self):
++        for field,value in [('truncated',True),('unknown_block_count',1),('unknown_block_ids',['omitted'])]:
++            connector=self.connector();fetch=connector.fetch
++            def negative_read(request,phase):
++                response=fetch(request,phase)
++                if phase=='VERIFY_PAGE':
++                    for name in ('truncated','unknown_block_count','unknown_block_ids'):response['structuredContent'].pop(name,None)
++                    response['structuredContent'][field]=value;sync(response)
++                return response
++            connector.fetch=negative_read;session=a.FileSession(self.work/field/'runs'/'one',self.bundle,self.approval(),fake=True)
++            result=drive(session,connector,session.start())
++            self.assertEqual(result['status'],'UNCERTAIN');self.assertEqual(len(connector.writes),1)
++            journal=json.loads(session.path.read_text(encoding='utf8'))
++            self.assertEqual(journal['status'],'UNCERTAIN');self.assertEqual(journal['receipts'],[]);self.assertTrue(session.fence.exists())
+ 
+ 
+ if __name__=='__main__':unittest.main()
+--- a/tests/test_rendered.py
++++ b/tests/test_rendered.py
+@@ -96,6 +96,16 @@
+         self.assertEqual(result['source_coverage']['missing_fields'], ['truncated', 'unknown_block_count', 'unknown_block_ids'])
+         self.assertFalse(r.verify_precondition(result, self.target))
+         self.assertFalse(any(k in self.target['response']['structuredContent'] for k in result['source_coverage']['missing_fields']))
++    def test_each_present_negative_is_refused_even_when_other_fields_are_missing(self):
++        for field,value in [('truncated',True),('unknown_block_count',1),('unknown_block_ids',['omitted'])]:
++            for placement in ('top','metadata','response-meta'):
++                bad=copy.deepcopy(self.target)
++                for name in ('truncated','unknown_block_count','unknown_block_ids'):bad['response']['structuredContent'].pop(name,None)
++                if placement=='top':bad['response']['structuredContent'][field]=value
++                elif placement=='metadata':bad['response']['structuredContent'].setdefault('metadata',{})[field]=value
++                else:bad['response']['_meta']={field:value}
++                sync(bad)
++                with self.subTest(field=field,placement=placement),self.assertRaises(r.Refused):r.decode_capture(bad)
+     def test_explicit_complete_branch_and_semantic_precondition_are_synthetic_only(self):
+         target, template = synthetic_complete(self.target), synthetic_complete(self.template)
+         result = r.plan(target, template)
+--- a/plans/reports/summary.json
++++ b/plans/reports/summary.json
+@@ -1,6 +1,6 @@
+ {
+-  "canonical_plan_sha256": "49b26f10f31ed3a80f6ec17df7210b162875c845a592bb50daa1af4231a0ec20",
+-  "implementation_sha256": "66844aeada2e87b3775301f87683a389895967d50bcacfc1d3432cef1116ab36",
++  "canonical_plan_sha256": "d9ec387aa4910c77b4841004e5ce2445bc3e5d44b2fd9ad596b992e078ff21a0",
++  "implementation_sha256": "87f30592f6c5ab2879cb2526481c3af7ef724df9adbaa8a5bee9b13d4f0a9eda",
+   "pages": [
+     {
+       "body_operations": 0,

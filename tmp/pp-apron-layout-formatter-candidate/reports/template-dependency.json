@@ -1,0 +1,8 @@
+{
+  "status": "BLOCKED",
+  "expected_code": "428",
+  "expected_page_id": "074b6705ae1f8257a53701d87a64eb32",
+  "directory": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-apron-layout-template-input",
+  "rejected_inputs": [],
+  "reason": "Complete approved native PP428 template is absent or unsupported"
+}

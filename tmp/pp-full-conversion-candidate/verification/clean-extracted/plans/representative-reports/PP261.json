@@ -1,0 +1,572 @@
+{
+  "bounded_region_evidence": {
+    "global_export_claimed": false,
+    "observation_order": "PP261 observed before PP262; exact observation time not separately recorded",
+    "page_id": "879b6705ae1f83d8bf1901bb02d359d5",
+    "regions": [
+      {
+        "child_types": [
+          "text"
+        ],
+        "children": [
+          "41ab6705-ae1f-812f-bdbc-cd55e32ab984"
+        ],
+        "id": "41ab6705-ae1f-8199-99db-c6398215f6e6",
+        "kind": "callout",
+        "text": "A rever. Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo."
+      },
+      {
+        "child_types": [
+          "bulleted_list",
+          "bulleted_list",
+          "bulleted_list",
+          "bulleted_list"
+        ],
+        "children": [
+          "41ab6705-ae1f-8182-8efa-e7bb9a1ec0a4",
+          "41ab6705-ae1f-8101-8024-c7a2ef408a14",
+          "41ab6705-ae1f-8122-b3e5-ea89799d1ed5",
+          "41ab6705-ae1f-813e-9933-cc8b773ad432"
+        ],
+        "id": "41ab6705-ae1f-813b-9b67-e00a8972e09e",
+        "kind": "toggle",
+        "paragraphs": [
+          "Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.",
+          "Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.",
+          "Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.",
+          "Confirmar o número de faces e as condições físicas do boné."
+        ],
+        "title": "Pendências técnicas"
+      }
+    ],
+    "source_edited_at": "2026-11-18T16:24:14.809Z",
+    "source_state_sha256": "fcf88cf55d1095d873f589f92ab61f3953b7b52d91a08e29d59622f81cb84754"
+  },
+  "category": "CAP",
+  "code": "261",
+  "completion_binding": {
+    "excel_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "full_scope_sha256": "1a93dcddd00f321f3919c67bf00437f4419bd0a5d0bd78edb7eed3b640204573",
+    "implementation_sha256": "37a14565f13e4dfa5df6e8c3e4a2f7941b9ad4067c84a97726da38ff2d124cf3",
+    "index_sha256": "67eaf0e09c9f48a324f3521d81f35bf52e6a5ef6074d7c0a0185e3b858679f0c",
+    "rules_sha256": "db70aa0fb673c5217b8763b7c916d3682cb1963e047b014cbd70051da233e704",
+    "scope": "PP_FULL_CONVERSION_V1",
+    "source_state_sha256": "fcf88cf55d1095d873f589f92ab61f3953b7b52d91a08e29d59622f81cb84754",
+    "template_sha256": "71b26c8bf2c2f899e88dc73b2310d7eda841cfd63299248a83fc4bbdb5e699f3"
+  },
+  "completion_status_operation": {
+    "eligible": true,
+    "id": "261-full-review-status",
+    "kind": "success_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "879b6705ae1f83d8bf1901bb02d359d5",
+      "properties": {
+        "Estado": "Para revisão"
+      }
+    }
+  },
+  "desired_body": "<image source=\"notion-file-block://bb3b6705-ae1f-8362-9eff-0178d9217203/25079a91-be58-4837-bda4-75e3661557eb?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_frente.png\" />\n\n<image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n\n- <b>Exemplo no Excel:</b> C10535; referência do fornecedor por confirmar.\n\n- <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n- <b>Número de faces:</b> por confirmar.\n- <b>Configuração:</b> peça única.\n\n<callout icon=\"📝\">\n<b>Revisão do PP 261</b>\n\n- [ ] Sim, aprovo a configuração New do PP 261.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPainel Frontal\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nVerso Cima\n</td>\n<td>\nFlex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nVerso Fecho\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Esquerdo\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Direito\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPainel Frontal\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nVerso Cima\n</td>\n<td>\nFlex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nVerso Fecho\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />DTF - Até A8 (5,2x7,4cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Esquerdo\n</td>\n<td>\nPor confirmar na origem\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Direito\n</td>\n<td>\nPor confirmar na origem\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Painel frontal\n\nTransfer de 2 cores → 1 cor por aprovar em IMP → New\n</toggle>\n\n<toggle>\nNew: Painel lateral esquerdo\n\nDTF / Bordado sem dimensões definidas; Transfer por aprovar\n</toggle>\n\n<toggle>\nNew: Painel lateral direito\n\nDTF / Bordado sem dimensões definidas; Transfer por aprovar\n</toggle>\n\n<toggle>\nNew: Verso cima\n\nConfirmar área e compatibilidade\n</toggle>\n\n<toggle>\nNew: Verso fecho metálico\n\nTransfer 1 cor pendente; validar acesso e Bordado junto ao fecho\n</toggle>\n\n<toggle>\nOld: Painel lateral esquerdo\n\nLimites por confirmar.\n</toggle>\n\n<toggle>\nOld: Painel lateral direito\n\nLimites por confirmar.\n</toggle>\n\n- Painel Frontal: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n\n- Verso Fecho: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)\n\n- Painel Lateral Esquerdo: Área ou opções não definidas na origem Excel\n\n- Painel Lateral Esquerdo: Não há opções New confirmadas para este grupo\n\n- Painel Lateral Direito: Área ou opções não definidas na origem Excel\n\n- Painel Lateral Direito: Não há opções New confirmadas para este grupo\n\n- Painel Lateral Esquerdo: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado\n\n- Painel Lateral Direito: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado\n\n<callout icon=\"📝\">\n<b>A rever.</b> Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.\n</callout>\n\n<toggle>\nPendências técnicas\n\n- Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.\n- Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.\n- Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.\n- Confirmar o número de faces e as condições físicas do boné.\n</toggle>\n</toggle>\n\n<toggle>\nFonte\n\n«Perfis de Personalização.xlsx», folha «PPs BRINDE TÊXTIL», bloco C9:F19. Revisão 5, metadados de 7 de outubro de 2026. Cópia anterior à versão atual.\n</toggle>\n\n\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 1a93dcddd00f321f3919c67bf00437f4419bd0a5d0bd78edb7eed3b640204573\n\n<toggle>\nOrigem Excel verificada\n\nPPs BRINDE TÊXTIL!C9:F20\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC9\n</td>\n<td>\n261\n</td>\n</tr>\n<tr>\n<td>\nD9\n</td>\n<td>\nBONÉS 3P / 3F - Fecho Metálico\n</td>\n</tr>\n<tr>\n<td>\nD10\n</td>\n<td>\nBoné 5 Painés \n</td>\n</tr>\n<tr>\n<td>\nE10\n</td>\n<td>\nPainel Frontal\n</td>\n</tr>\n<tr>\n<td>\nF10\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n</tr>\n<tr>\n<td>\nD11\n</td>\n<td>\nPainel Frontal (TS2C+DTF+B)\n</td>\n</tr>\n<tr>\n<td>\nF11\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nD12\n</td>\n<td>\nPainel Lateral Esquerdo (TS2C+DTF+B)\n</td>\n</tr>\n<tr>\n<td>\nF12\n</td>\n<td>\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD13\n</td>\n<td>\nPainel Lateral Direito (TS2C+DTF+B)\n</td>\n</tr>\n<tr>\n<td>\nE13\n</td>\n<td>\nVerso Cima\n</td>\n</tr>\n<tr>\n<td>\nF13\n</td>\n<td>\nFlex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nD14\n</td>\n<td>\nVerso Cima (F+B)\n</td>\n</tr>\n<tr>\n<td>\nF14\n</td>\n<td>\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD15\n</td>\n<td>\nVerso Fecho METÁLICO (TS2C+DTF+B) &gt;Com Bordado\n</td>\n</tr>\n<tr>\n<td>\nE15\n</td>\n<td>\nVerso Fecho \n</td>\n</tr>\n<tr>\n<td>\nF15\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)\n</td>\n</tr>\n<tr>\n<td>\nD16\n</td>\n<td>\nEx: C10535\n</td>\n</tr>\n<tr>\n<td>\nF16\n</td>\n<td>\nDTF - Até A8 (5,2x7,4cm)\n</td>\n</tr>\n<tr>\n<td>\nF17\n</td>\n<td>\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n</td>\n</tr>\n<tr>\n<td>\nD18\n</td>\n<td>\nNo caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Painel frontal | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer de 2 cores → 1 cor por aprovar em IMP → New |\n| Painel lateral esquerdo | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Painel lateral direito | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Verso cima | Flex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Confirmar área e compatibilidade |\n| Verso fecho metálico | DTF - Até A8 (5,2x7,4cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer 1 cor pendente; validar acesso e Bordado junto ao fecho |\n\n<toggle>\nPendências técnicas\n\n- Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.\n- Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.\n- Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.\n- Confirmar o número de faces e as condições físicas do boné.\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"190\" />\n<col width=\"460\" />\n<col width=\"300\" />\n</colgroup>\n<tr color=\"gray_bg\">\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPainel frontal\n</td>\n<td>\nTransfer — até 57 cm² — 2 cores (7,5 × 7,5 cm)<br />DTF — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nPainel lateral esquerdo\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nPainel lateral direito\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nVerso cima\n</td>\n<td>\nFlex — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nVerso fecho metálico\n</td>\n<td>\nTransfer — até 12 cm² — 2 cores (aprox. 3,4 × 3,4 cm)<br />DTF — até A8 (5,2 × 7,4 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n</table>\n\n## Imagens\n\n<image source=\"notion-file-block://bb3b6705-ae1f-8362-9eff-0178d9217203/25079a91-be58-4837-bda4-75e3661557eb?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_frente.png\" />\n\n- <b>Exemplo no Excel:</b> C10535; referência do fornecedor por confirmar.\n\n<image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n\n## Notas\n\n- <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n- <b>Número de faces:</b> por confirmar.\n- <b>Configuração:</b> peça única.\n</toggle>\n</toggle>",
+  "diff": "--- 261-before\n+++ 261-after\n@@ -1,3 +1,422 @@\n+<image source=\"notion-file-block://bb3b6705-ae1f-8362-9eff-0178d9217203/25079a91-be58-4837-bda4-75e3661557eb?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_frente.png\" />\n+\n+<image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n+\n+- <b>Exemplo no Excel:</b> C10535; referência do fornecedor por confirmar.\n+\n+- <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n+- <b>Número de faces:</b> por confirmar.\n+- <b>Configuração:</b> peça única.\n+\n+<callout icon=\"📝\">\n+<b>Revisão do PP 261</b>\n+\n+- [ ] Sim, aprovo a configuração New do PP 261.\n+- [ ] Não, são necessárias correções.\n+\n+<b>Se não, porquê?</b>\n+<p />\n+</callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Painel Frontal\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Verso Cima\n+</td>\n+<td>\n+Flex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Verso Fecho\n+</td>\n+<td>\n+Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Painel Lateral Esquerdo\n+</td>\n+<td>\n+Transfer — 2 cores; DTF; Bordado\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Painel Lateral Direito\n+</td>\n+<td>\n+Transfer — 2 cores; DTF; Bordado\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Painel Frontal\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Verso Cima\n+</td>\n+<td>\n+Flex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Verso Fecho\n+</td>\n+<td>\n+Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />DTF - Até A8 (5,2x7,4cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Painel Lateral Esquerdo\n+</td>\n+<td>\n+Por confirmar na origem\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Painel Lateral Direito\n+</td>\n+<td>\n+Por confirmar na origem\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Painel frontal\n+\n+Transfer de 2 cores → 1 cor por aprovar em IMP → New\n+</toggle>\n+\n+<toggle>\n+New: Painel lateral esquerdo\n+\n+DTF / Bordado sem dimensões definidas; Transfer por aprovar\n+</toggle>\n+\n+<toggle>\n+New: Painel lateral direito\n+\n+DTF / Bordado sem dimensões definidas; Transfer por aprovar\n+</toggle>\n+\n+<toggle>\n+New: Verso cima\n+\n+Confirmar área e compatibilidade\n+</toggle>\n+\n+<toggle>\n+New: Verso fecho metálico\n+\n+Transfer 1 cor pendente; validar acesso e Bordado junto ao fecho\n+</toggle>\n+\n+<toggle>\n+Old: Painel lateral esquerdo\n+\n+Limites por confirmar.\n+</toggle>\n+\n+<toggle>\n+Old: Painel lateral direito\n+\n+Limites por confirmar.\n+</toggle>\n+\n+- Painel Frontal: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n+\n+- Verso Fecho: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)\n+\n+- Painel Lateral Esquerdo: Área ou opções não definidas na origem Excel\n+\n+- Painel Lateral Esquerdo: Não há opções New confirmadas para este grupo\n+\n+- Painel Lateral Direito: Área ou opções não definidas na origem Excel\n+\n+- Painel Lateral Direito: Não há opções New confirmadas para este grupo\n+\n+- Painel Lateral Esquerdo: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado\n+\n+- Painel Lateral Direito: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.\n+</callout>\n+\n+<toggle>\n+Pendências técnicas\n+\n+- Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.\n+- Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.\n+- Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.\n+- Confirmar o número de faces e as condições físicas do boné.\n+</toggle>\n+</toggle>\n+\n+<toggle>\n+Fonte\n+\n+«Perfis de Personalização.xlsx», folha «PPs BRINDE TÊXTIL», bloco C9:F19. Revisão 5, metadados de 7 de outubro de 2026. Cópia anterior à versão atual.\n+</toggle>\n+\n+\n+\n+<toggle>\n+Histórico de apresentação\n+\n+PP_FULL_CONVERSION_V1 1a93dcddd00f321f3919c67bf00437f4419bd0a5d0bd78edb7eed3b640204573\n+\n+<toggle>\n+Origem Excel verificada\n+\n+PPs BRINDE TÊXTIL!C9:F20\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Célula\n+</td>\n+<td>\n+Texto original\n+</td>\n+</tr>\n+<tr>\n+<td>\n+C9\n+</td>\n+<td>\n+261\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D9\n+</td>\n+<td>\n+BONÉS 3P / 3F - Fecho Metálico\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D10\n+</td>\n+<td>\n+Boné 5 Painés \n+</td>\n+</tr>\n+<tr>\n+<td>\n+E10\n+</td>\n+<td>\n+Painel Frontal\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F10\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D11\n+</td>\n+<td>\n+Painel Frontal (TS2C+DTF+B)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F11\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D12\n+</td>\n+<td>\n+Painel Lateral Esquerdo (TS2C+DTF+B)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F12\n+</td>\n+<td>\n+Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D13\n+</td>\n+<td>\n+Painel Lateral Direito (TS2C+DTF+B)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E13\n+</td>\n+<td>\n+Verso Cima\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F13\n+</td>\n+<td>\n+Flex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D14\n+</td>\n+<td>\n+Verso Cima (F+B)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F14\n+</td>\n+<td>\n+Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D15\n+</td>\n+<td>\n+Verso Fecho METÁLICO (TS2C+DTF+B) &gt;Com Bordado\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E15\n+</td>\n+<td>\n+Verso Fecho \n+</td>\n+</tr>\n+<tr>\n+<td>\n+F15\n+</td>\n+<td>\n+Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D16\n+</td>\n+<td>\n+Ex: C10535\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F16\n+</td>\n+<td>\n+DTF - Até A8 (5,2x7,4cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F17\n+</td>\n+<td>\n+Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D18\n+</td>\n+<td>\n+No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n+</td>\n+</tr>\n+</table>\n+</toggle>\n+\n+<toggle>\n+Apresentação anterior preservada\n+\n ## Locais e personalização — nova configuração (proposta)\n \n <callout icon=\"📝\">\n@@ -101,14 +520,10 @@\n \n <image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n \n-<toggle>\n-Fonte\n-\n-«Perfis de Personalização.xlsx», folha «PPs BRINDE TÊXTIL», bloco C9:F19. Revisão 5, metadados de 7 de outubro de 2026. Cópia anterior à versão atual.\n-</toggle>\n-\n ## Notas\n \n - <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n - <b>Número de faces:</b> por confirmar.\n-- <b>Configuração:</b> peça única.+- <b>Configuração:</b> peça única.\n+</toggle>\n+</toggle>",
+  "excel": {
+    "area": "Brinde têxtil",
+    "article_types": [
+      "Boné 5 painéis"
+    ],
+    "blocked": [
+      "Local sem opções detalhadas; confirmar antes de importar"
+    ],
+    "code": "261",
+    "comments": [],
+    "description": "Boné 5 Painés",
+    "families": [
+      "Bonés"
+    ],
+    "groups": [
+      {
+        "locals": [
+          "Painel Frontal"
+        ],
+        "options": [
+          {
+            "cell": "F10",
+            "name": "Transfer — até 57 cm² — 2 cores",
+            "original": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+          },
+          {
+            "cell": "F11",
+            "name": "DTF — até A7",
+            "original": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          },
+          {
+            "cell": "F12",
+            "name": "Bordado — até 60 cm²",
+            "original": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)"
+          }
+        ],
+        "start_row": 10
+      },
+      {
+        "locals": [
+          "Verso Cima"
+        ],
+        "options": [
+          {
+            "cell": "F13",
+            "name": "Flex — até A7",
+            "original": "Flex - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          },
+          {
+            "cell": "F14",
+            "name": "Bordado — até 60 cm²",
+            "original": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)"
+          }
+        ],
+        "start_row": 13
+      },
+      {
+        "locals": [
+          "Verso Fecho"
+        ],
+        "options": [
+          {
+            "cell": "F15",
+            "name": "Transfer — até 12 cm² — 2 cores",
+            "original": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)"
+          },
+          {
+            "cell": "F16",
+            "name": "DTF — até A8",
+            "original": "DTF - Até A8 (5,2x7,4cm)"
+          },
+          {
+            "cell": "F17",
+            "name": "Bordado — até 60 cm²",
+            "original": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA"
+          }
+        ],
+        "start_row": 15
+      },
+      {
+        "locals": [
+          "Painel Lateral Esquerdo"
+        ],
+        "options": [],
+        "start_row": 12
+      },
+      {
+        "locals": [
+          "Painel Lateral Direito"
+        ],
+        "options": [],
+        "start_row": 13
+      }
+    ],
+    "images": [
+      "xl/media/image791.png",
+      "xl/media/image792.png"
+    ],
+    "notes": [
+      "Painel Frontal (TS2C+DTF+B)",
+      "Painel Lateral Esquerdo (TS2C+DTF+B)",
+      "Painel Lateral Direito (TS2C+DTF+B)",
+      "Verso Cima (F+B)",
+      "Verso Fecho METÁLICO (TS2C+DTF+B) >Com Bordado",
+      "Ex: C10535",
+      "No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+    ],
+    "raw": [
+      {
+        "cell": "C9",
+        "value": "261"
+      },
+      {
+        "cell": "D9",
+        "value": "BONÉS 3P / 3F - Fecho Metálico"
+      },
+      {
+        "cell": "D10",
+        "value": "Boné 5 Painés "
+      },
+      {
+        "cell": "E10",
+        "value": "Painel Frontal"
+      },
+      {
+        "cell": "F10",
+        "value": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      },
+      {
+        "cell": "D11",
+        "value": "Painel Frontal (TS2C+DTF+B)"
+      },
+      {
+        "cell": "F11",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      },
+      {
+        "cell": "D12",
+        "value": "Painel Lateral Esquerdo (TS2C+DTF+B)"
+      },
+      {
+        "cell": "F12",
+        "value": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)"
+      },
+      {
+        "cell": "D13",
+        "value": "Painel Lateral Direito (TS2C+DTF+B)"
+      },
+      {
+        "cell": "E13",
+        "value": "Verso Cima"
+      },
+      {
+        "cell": "F13",
+        "value": "Flex - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      },
+      {
+        "cell": "D14",
+        "value": "Verso Cima (F+B)"
+      },
+      {
+        "cell": "F14",
+        "value": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)"
+      },
+      {
+        "cell": "D15",
+        "value": "Verso Fecho METÁLICO (TS2C+DTF+B) >Com Bordado"
+      },
+      {
+        "cell": "E15",
+        "value": "Verso Fecho "
+      },
+      {
+        "cell": "F15",
+        "value": "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)"
+      },
+      {
+        "cell": "D16",
+        "value": "Ex: C10535"
+      },
+      {
+        "cell": "F16",
+        "value": "DTF - Até A8 (5,2x7,4cm)"
+      },
+      {
+        "cell": "F17",
+        "value": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA"
+      },
+      {
+        "cell": "D18",
+        "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+      }
+    ],
+    "review_flags": [
+      "Local apenas no resumo; limites por confirmar"
+    ],
+    "source": "PPs BRINDE TÊXTIL!C9:F20",
+    "title": "BONÉS 3P / 3F - Fecho Metálico"
+  },
+  "failure_status_operation": {
+    "eligible": true,
+    "id": "261-full-error-status",
+    "kind": "error_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "879b6705ae1f83d8bf1901bb02d359d5",
+      "properties": {
+        "Estado": "Erro"
+      }
+    }
+  },
+  "method_complete": false,
+  "new_groups": [
+    {
+      "locations": [
+        "Painel Frontal"
+      ],
+      "options": [
+        "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7"
+      ],
+      "shared_source_group": false
+    },
+    {
+      "locations": [
+        "Verso Cima"
+      ],
+      "options": [
+        "Flex - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7"
+      ],
+      "shared_source_group": false
+    },
+    {
+      "locations": [
+        "Verso Fecho"
+      ],
+      "options": [
+        "Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7"
+      ],
+      "shared_source_group": false
+    },
+    {
+      "locations": [
+        "Painel Lateral Esquerdo"
+      ],
+      "options": [
+        "Transfer — 2 cores; DTF; Bordado"
+      ],
+      "shared_source_group": false
+    },
+    {
+      "locations": [
+        "Painel Lateral Direito"
+      ],
+      "options": [
+        "Transfer — 2 cores; DTF; Bordado"
+      ],
+      "shared_source_group": false
+    }
+  ],
+  "operations": [
+    {
+      "eligible": true,
+      "id": "261-full-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "\n\n",
+            "old_str": "\n\n## Notas\n\n- <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n- <b>Número de faces:</b> por confirmar.\n- <b>Configuração:</b> peça única.",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "879b6705ae1f83d8bf1901bb02d359d5"
+      },
+      "region_evidence": {
+        "basis": "EXACT_TOP_LEVEL_SUPPORTED_LEAVES",
+        "bounded_observations": [],
+        "eligible": true,
+        "global_export_claimed": false,
+        "new_sha256": "98be486a01834c7bb83b3c7353edc3e046ca30fe710141f939aaec11f15c6407",
+        "old_sha256": "1ff56d211c5a930dbf4743babbd0f5eeb53a44e51f294af363f7d8f32f459093",
+        "prefix_sha256": "a66d1ed12c1ec1740e72feb9c962b915cb81e268e3c34d8b4f1da100589dea8d",
+        "suffix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+      }
+    },
+    {
+      "eligible": true,
+      "id": "261-full-body-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<image source=\"notion-file-block://bb3b6705-ae1f-8362-9eff-0178d9217203/25079a91-be58-4837-bda4-75e3661557eb?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_frente.png\" />\n\n<image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n\n- <b>Exemplo no Excel:</b> C10535; referência do fornecedor por confirmar.\n\n- <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n- <b>Número de faces:</b> por confirmar.\n- <b>Configuração:</b> peça única.\n\n<callout icon=\"📝\">\n<b>Revisão do PP 261</b>\n\n- [ ] Sim, aprovo a configuração New do PP 261.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPainel Frontal\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nVerso Cima\n</td>\n<td>\nFlex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nVerso Fecho\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Esquerdo\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Direito\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPainel Frontal\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nVerso Cima\n</td>\n<td>\nFlex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nVerso Fecho\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)<br />DTF - Até A8 (5,2x7,4cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Esquerdo\n</td>\n<td>\nPor confirmar na origem\n</td>\n</tr>\n<tr>\n<td>\nPainel Lateral Direito\n</td>\n<td>\nPor confirmar na origem\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Painel frontal\n\nTransfer de 2 cores → 1 cor por aprovar em IMP → New\n</toggle>\n\n<toggle>\nNew: Painel lateral esquerdo\n\nDTF / Bordado sem dimensões definidas; Transfer por aprovar\n</toggle>\n\n<toggle>\nNew: Painel lateral direito\n\nDTF / Bordado sem dimensões definidas; Transfer por aprovar\n</toggle>\n\n<toggle>\nNew: Verso cima\n\nConfirmar área e compatibilidade\n</toggle>\n\n<toggle>\nNew: Verso fecho metálico\n\nTransfer 1 cor pendente; validar acesso e Bordado junto ao fecho\n</toggle>\n\n<toggle>\nOld: Painel lateral esquerdo\n\nLimites por confirmar.\n</toggle>\n\n<toggle>\nOld: Painel lateral direito\n\nLimites por confirmar.\n</toggle>\n\n- Painel Frontal: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n\n- Verso Fecho: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)\n\n- Painel Lateral Esquerdo: Área ou opções não definidas na origem Excel\n\n- Painel Lateral Esquerdo: Não há opções New confirmadas para este grupo\n\n- Painel Lateral Direito: Área ou opções não definidas na origem Excel\n\n- Painel Lateral Direito: Não há opções New confirmadas para este grupo\n\n- Painel Lateral Esquerdo: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado\n\n- Painel Lateral Direito: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado\n\n<callout icon=\"📝\">\n<b>A rever.</b> Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.\n</callout>\n\n<toggle>\nPendências técnicas\n\n- Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.\n- Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.\n- Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.\n- Confirmar o número de faces e as condições físicas do boné.\n</toggle>\n</toggle>\n\n",
+            "old_str": "## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Painel frontal | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer de 2 cores → 1 cor por aprovar em IMP → New |\n| Painel lateral esquerdo | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Painel lateral direito | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Verso cima | Flex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Confirmar área e compatibilidade |\n| Verso fecho metálico | DTF - Até A8 (5,2x7,4cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer 1 cor pendente; validar acesso e Bordado junto ao fecho |\n\n<toggle>\nPendências técnicas\n\n- Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.\n- Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.\n- Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.\n- Confirmar o número de faces e as condições físicas do boné.\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"190\" />\n<col width=\"460\" />\n<col width=\"300\" />\n</colgroup>\n<tr color=\"gray_bg\">\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPainel frontal\n</td>\n<td>\nTransfer — até 57 cm² — 2 cores (7,5 × 7,5 cm)<br />DTF — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nPainel lateral esquerdo\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nPainel lateral direito\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nVerso cima\n</td>\n<td>\nFlex — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nVerso fecho metálico\n</td>\n<td>\nTransfer — até 12 cm² — 2 cores (aprox. 3,4 × 3,4 cm)<br />DTF — até A8 (5,2 × 7,4 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n</table>\n\n## Imagens\n\n<image source=\"notion-file-block://bb3b6705-ae1f-8362-9eff-0178d9217203/25079a91-be58-4837-bda4-75e3661557eb?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_frente.png\" />\n\n- <b>Exemplo no Excel:</b> C10535; referência do fornecedor por confirmar.\n\n<image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "879b6705ae1f83d8bf1901bb02d359d5"
+      },
+      "region_evidence": {
+        "basis": "EXACT_REVIEWED_BROWSER_REGION",
+        "bounded_observations": [
+          {
+            "global_export_claimed": false,
+            "native_region_id": "41ab6705-ae1f-8199-99db-c6398215f6e6",
+            "observation_sha256": "4bb909539e06b70aec0ac1a6ce8dc998e694ea81e1c6cfb435a5e992a86a3275",
+            "source_page_state_sha256": "fcf88cf55d1095d873f589f92ab61f3953b7b52d91a08e29d59622f81cb84754",
+            "source_region_sha256": "2289d9357d133fdb4905d4035dc3635cda2845972aff167afd9bc0df0ffdbdcf"
+          },
+          {
+            "global_export_claimed": false,
+            "native_region_id": "41ab6705-ae1f-813b-9b67-e00a8972e09e",
+            "observation_sha256": "c4673180d218bc5bfd888769002e1979df8eea1a63876ede6f13cedf09c7508e",
+            "source_page_state_sha256": "fcf88cf55d1095d873f589f92ab61f3953b7b52d91a08e29d59622f81cb84754",
+            "source_region_sha256": "4a6a527fe39bfd3e49b17d32d4a841cc7c6f78f10abd2cee1928269ec6fecc8f"
+          }
+        ],
+        "eligible": true,
+        "global_export_claimed": false,
+        "new_sha256": "49aa5c1c87f716f92df862c3ed9dacaf88d2d75c10e8c897b53907b943054c55",
+        "old_sha256": "816770ccb1a0ccd52d1c545a99515aa10f2ee340a386853a59a8d679cbe05608",
+        "prefix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "suffix_sha256": "605742fd6c6d323d1fe6ef03dfb4865a30e22e9ace424e10cc07208efc2a7faa"
+      }
+    },
+    {
+      "eligible": true,
+      "id": "261-full-body-3",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 1a93dcddd00f321f3919c67bf00437f4419bd0a5d0bd78edb7eed3b640204573\n\n<toggle>\nOrigem Excel verificada\n\nPPs BRINDE TÊXTIL!C9:F20\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC9\n</td>\n<td>\n261\n</td>\n</tr>\n<tr>\n<td>\nD9\n</td>\n<td>\nBONÉS 3P / 3F - Fecho Metálico\n</td>\n</tr>\n<tr>\n<td>\nD10\n</td>\n<td>\nBoné 5 Painés \n</td>\n</tr>\n<tr>\n<td>\nE10\n</td>\n<td>\nPainel Frontal\n</td>\n</tr>\n<tr>\n<td>\nF10\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n</tr>\n<tr>\n<td>\nD11\n</td>\n<td>\nPainel Frontal (TS2C+DTF+B)\n</td>\n</tr>\n<tr>\n<td>\nF11\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nD12\n</td>\n<td>\nPainel Lateral Esquerdo (TS2C+DTF+B)\n</td>\n</tr>\n<tr>\n<td>\nF12\n</td>\n<td>\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD13\n</td>\n<td>\nPainel Lateral Direito (TS2C+DTF+B)\n</td>\n</tr>\n<tr>\n<td>\nE13\n</td>\n<td>\nVerso Cima\n</td>\n</tr>\n<tr>\n<td>\nF13\n</td>\n<td>\nFlex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nD14\n</td>\n<td>\nVerso Cima (F+B)\n</td>\n</tr>\n<tr>\n<td>\nF14\n</td>\n<td>\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD15\n</td>\n<td>\nVerso Fecho METÁLICO (TS2C+DTF+B) &gt;Com Bordado\n</td>\n</tr>\n<tr>\n<td>\nE15\n</td>\n<td>\nVerso Fecho \n</td>\n</tr>\n<tr>\n<td>\nF15\n</td>\n<td>\nTransfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)\n</td>\n</tr>\n<tr>\n<td>\nD16\n</td>\n<td>\nEx: C10535\n</td>\n</tr>\n<tr>\n<td>\nF16\n</td>\n<td>\nDTF - Até A8 (5,2x7,4cm)\n</td>\n</tr>\n<tr>\n<td>\nF17\n</td>\n<td>\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n</td>\n</tr>\n<tr>\n<td>\nD18\n</td>\n<td>\nNo caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Painel frontal | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer de 2 cores → 1 cor por aprovar em IMP → New |\n| Painel lateral esquerdo | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Painel lateral direito | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Verso cima | Flex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Confirmar área e compatibilidade |\n| Verso fecho metálico | DTF - Até A8 (5,2x7,4cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer 1 cor pendente; validar acesso e Bordado junto ao fecho |\n\n<toggle>\nPendências técnicas\n\n- Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.\n- Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.\n- Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.\n- Confirmar o número de faces e as condições físicas do boné.\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"190\" />\n<col width=\"460\" />\n<col width=\"300\" />\n</colgroup>\n<tr color=\"gray_bg\">\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPainel frontal\n</td>\n<td>\nTransfer — até 57 cm² — 2 cores (7,5 × 7,5 cm)<br />DTF — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nPainel lateral esquerdo\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nPainel lateral direito\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nVerso cima\n</td>\n<td>\nFlex — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nVerso fecho metálico\n</td>\n<td>\nTransfer — até 12 cm² — 2 cores (aprox. 3,4 × 3,4 cm)<br />DTF — até A8 (5,2 × 7,4 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n</table>\n\n## Imagens\n\n<image source=\"notion-file-block://bb3b6705-ae1f-8362-9eff-0178d9217203/25079a91-be58-4837-bda4-75e3661557eb?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_frente.png\" />\n\n- <b>Exemplo no Excel:</b> C10535; referência do fornecedor por confirmar.\n\n<image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n\n## Notas\n\n- <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n- <b>Número de faces:</b> por confirmar.\n- <b>Configuração:</b> peça única.\n</toggle>\n</toggle>",
+        "page_id": "879b6705ae1f83d8bf1901bb02d359d5",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "append_sha256": "5eee799319087bd6dc531bd45cb91fcda847822cc247f14a3b4a2714eda1b0ac",
+        "basis": "APPEND_WITHOUT_CHANGING_EXISTING_BLOCKS",
+        "body_sha256": "51dab48b379df155a63f4d407364e2c44c82587e9fdf33a6949bd3e66dbc5e67",
+        "eligible": true,
+        "global_export_claimed": false
+      }
+    }
+  ],
+  "page_id": "879b6705ae1f83d8bf1901bb02d359d5",
+  "preservation": {
+    "idempotent": false,
+    "marker": "PP_FULL_CONVERSION_V1 1a93dcddd00f321f3919c67bf00437f4419bd0a5d0bd78edb7eed3b640204573",
+    "notes": [
+      {
+        "location": "Painel frontal",
+        "side": "New",
+        "text": "Transfer de 2 cores → 1 cor por aprovar em IMP → New"
+      },
+      {
+        "location": "Painel lateral esquerdo",
+        "side": "New",
+        "text": "DTF / Bordado sem dimensões definidas; Transfer por aprovar"
+      },
+      {
+        "location": "Painel lateral direito",
+        "side": "New",
+        "text": "DTF / Bordado sem dimensões definidas; Transfer por aprovar"
+      },
+      {
+        "location": "Verso cima",
+        "side": "New",
+        "text": "Confirmar área e compatibilidade"
+      },
+      {
+        "location": "Verso fecho metálico",
+        "side": "New",
+        "text": "Transfer 1 cor pendente; validar acesso e Bordado junto ao fecho"
+      },
+      {
+        "location": "Painel lateral esquerdo",
+        "side": "Old",
+        "text": "Limites por confirmar."
+      },
+      {
+        "location": "Painel lateral direito",
+        "side": "Old",
+        "text": "Limites por confirmar."
+      }
+    ]
+  },
+  "property_operations": [],
+  "reasons": [],
+  "rule_changes": [
+    {
+      "after": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+      "before": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)",
+      "locations": [
+        "Painel Frontal"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+      "before": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)",
+      "locations": [
+        "Verso Cima"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+      "before": "DTF - Até A8 (5,2x7,4cm)",
+      "locations": [
+        "Verso Fecho"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+      "before": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA",
+      "locations": [
+        "Verso Fecho"
+      ],
+      "reference_size": "A7"
+    }
+  ],
+  "source_body": "## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Painel frontal | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer de 2 cores → 1 cor por aprovar em IMP → New |\n| Painel lateral esquerdo | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Painel lateral direito | Por confirmar — áreas técnicas não definidas no original | DTF / Bordado sem dimensões definidas; Transfer por aprovar |\n| Verso cima | Flex - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Confirmar área e compatibilidade |\n| Verso fecho metálico | DTF - Até A8 (5,2x7,4cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7 | Transfer 1 cor pendente; validar acesso e Bordado junto ao fecho |\n\n<toggle>\nPendências técnicas\n\n- Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.\n- Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.\n- Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.\n- Confirmar o número de faces e as condições físicas do boné.\n</toggle>\n\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"190\" />\n<col width=\"460\" />\n<col width=\"300\" />\n</colgroup>\n<tr color=\"gray_bg\">\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPainel frontal\n</td>\n<td>\nTransfer — até 57 cm² — 2 cores (7,5 × 7,5 cm)<br />DTF — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nPainel lateral esquerdo\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nPainel lateral direito\n</td>\n<td>\nTransfer — 2 cores; DTF; Bordado\n</td>\n<td>\nLimites por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nVerso cima\n</td>\n<td>\nFlex — até A7 (7,4 × 10,5 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n<tr>\n<td>\nVerso fecho metálico\n</td>\n<td>\nTransfer — até 12 cm² — 2 cores (aprox. 3,4 × 3,4 cm)<br />DTF — até A8 (5,2 × 7,4 cm)<br />Bordado — até 60 cm² (aprox. 7,7 × 7,7 cm)\n</td>\n<td></td>\n</tr>\n</table>\n\n## Imagens\n\n<image source=\"notion-file-block://bb3b6705-ae1f-8362-9eff-0178d9217203/25079a91-be58-4837-bda4-75e3661557eb?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_frente.png\" />\n\n- <b>Exemplo no Excel:</b> C10535; referência do fornecedor por confirmar.\n\n<image source=\"notion-file-block://fc1b6705-ae1f-82c2-888f-81e1ce5fa499/03d407a1-08bf-4bef-994e-79e3c744b078?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP261_verso.png\" />\n\n<toggle>\nFonte\n\n«Perfis de Personalização.xlsx», folha «PPs BRINDE TÊXTIL», bloco C9:F19. Revisão 5, metadados de 7 de outubro de 2026. Cópia anterior à versão atual.\n</toggle>\n\n## Notas\n\n- <b>Bordado:</b> considerar «Repetição» apenas se o mesmo bordado já tiver sido realizado connosco no mesmo tamanho e cores.\n- <b>Número de faces:</b> por confirmar.\n- <b>Configuração:</b> peça única.",
+  "source_metadata": {
+    "cover": null,
+    "icon": null,
+    "properties": {
+      "Código PP": "261",
+      "Estado": "A rever",
+      "Faces": [
+        "Painel frontal",
+        "Painel lateral esquerdo",
+        "Painel lateral direito",
+        "Verso cima",
+        "Verso fecho metálico"
+      ],
+      "Família": [
+        "Bonés"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/d77afb6c-95cb-4758-b6b1-104900cfce63/PP261_frente.png"
+      ],
+      "Notas": "NPP",
+      "Número de locais possíveis": 5,
+      "Opções de personalização": [
+        "Transfer — até 57 cm² — 2 cores",
+        "DTF — até A7",
+        "Bordado — até 60 cm²",
+        "Flex — até A7",
+        "Transfer — até 12 cm² — 2 cores",
+        "DTF — até A8"
+      ],
+      "PP": "261 — Bonés 3P / 3F — Fecho Metálico",
+      "SKU / referência do fornecedor": "",
+      "Tipos de artigo compatíveis": [
+        "Boné 5 painéis"
+      ],
+      "Técnicas": [
+        "Transfer",
+        "DTF",
+        "Flex",
+        "Bordado"
+      ],
+      "url": "https://app.notion.com/p/879b6705ae1f83d8bf1901bb02d359d5",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_state_sha256": "fcf88cf55d1095d873f589f92ab61f3953b7b52d91a08e29d59622f81cb84754",
+  "status": "LAYOUT_ONLY_PENDING_BUSINESS",
+  "synthetic_capture": false,
+  "technical_unresolved": [
+    "Painel Frontal: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+    "Verso Fecho: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+    "Painel Lateral Esquerdo: Área ou opções não definidas na origem Excel",
+    "Painel Lateral Esquerdo: Não há opções New confirmadas para este grupo",
+    "Painel Lateral Direito: Área ou opções não definidas na origem Excel",
+    "Painel Lateral Direito: Não há opções New confirmadas para este grupo",
+    "Painel Lateral Esquerdo: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado",
+    "Painel Lateral Direito: opção actual ausente do Excel, preservada até revisão: Transfer — 2 cores; DTF; Bordado",
+    "Sincronização das propriedades pendente: Property write would invent an option or change an unsupported type"
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "existing_containers": "PRESERVE_OR_EXACT_REVIEWED_UI_REGION",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "leaf_contract": "MCP_MARKDOWN_INLINE_TABLE_CELLS_AND_LEAF_BLOCKS",
+    "name": "PP_FULL_CONVERSION",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  },
+  "wanted_properties": {}
+}

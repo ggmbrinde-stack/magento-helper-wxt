@@ -1,0 +1,140 @@
+{
+  "canonical_plan_sha256": "d9ec387aa4910c77b4841004e5ce2445bc3e5d44b2fd9ad596b992e078ff21a0",
+  "implementation_sha256": "87f30592f6c5ab2879cb2526481c3af7ef724df9adbaa8a5bee9b13d4f0a9eda",
+  "pages": [
+    {
+      "body_operations": 0,
+      "code": "428",
+      "method_complete": true,
+      "property_operations": 0,
+      "status": "NO_OP",
+      "technical_unresolved": []
+    },
+    {
+      "body_operations": 1,
+      "code": "429",
+      "method_complete": true,
+      "property_operations": 1,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": []
+    },
+    {
+      "body_operations": 3,
+      "code": "430",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Bolso Esquerdo: Por confirmar — sem opção aprovada em IMP → New",
+        "Bolso Esquerdo: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Bolso Direito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "body_operations": 3,
+      "code": "467",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Peito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Bolso: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Chapéu: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed"
+      ]
+    },
+    {
+      "body_operations": 2,
+      "code": "558",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Bolso Esquerdo: Por confirmar — sem opção aprovada em IMP → New",
+        "Bolso Esquerdo: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "body_operations": 3,
+      "code": "612",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Peito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Bolso: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed"
+      ]
+    },
+    {
+      "body_operations": 2,
+      "code": "633",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Bolso: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed"
+      ]
+    },
+    {
+      "body_operations": 3,
+      "code": "661",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Peito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Bolso Esquerdo: Por confirmar — sem opção aprovada em IMP → New",
+        "Bolso Esquerdo: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Bolso Direito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "body_operations": 3,
+      "code": "662",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Bolso Esquerdo: Por confirmar — sem opção aprovada em IMP → New",
+        "Bolso Esquerdo: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Bolso Direito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Exact category/location reference required: Caixa",
+        "Caixa: Box material and exact process/area remain unconfirmed; existing UV100 is provisional",
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "body_operations": 1,
+      "code": "786",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed"
+      ]
+    },
+    {
+      "body_operations": 3,
+      "code": "840",
+      "method_complete": false,
+      "property_operations": 0,
+      "status": "READY_FOR_REVIEW",
+      "technical_unresolved": [
+        "Peito: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Bolso: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed",
+        "Chapéu: Select exact one-colour Transfer/process and New allocation from the original source; no generic 428 exception assumed"
+      ]
+    }
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "contract_sha256": "f6f05377bff7a554a1fdad4d668bb9b1d7168fe883104d5b1418258e6a988dd6",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "name": "PP_METHOD_ROWS",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  }
+}

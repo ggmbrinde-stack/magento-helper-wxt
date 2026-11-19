@@ -1,0 +1,720 @@
+diff --git a/src/core/messages/ui.ts b/src/core/messages/ui.ts
+--- a/src/core/messages/ui.ts
++++ b/src/core/messages/ui.ts
+@@ -182,8 +182,17 @@
+   | { ok: true; tab: PpPreviewTab; snapshot: ScanPpDraftResponse }
+   | { ok: false; reason: string };
+ 
+-export type PpReferenceSource = 'options-grid' | 'exact-record';
+-export interface ReadPpFreshFormRequest { type: 'READ_PP_FRESH_FORM'; requestId: string; entityId: string; referenceSource?: PpReferenceSource }
++export type PpReferenceSource = 'options-grid' | 'exact-record' | 'current-draft';
++export interface PpSourceSelection { tabId: number; selectionToken: string }
++export interface PpConnectionTab extends PpSourceSelection { host: string; kind: 'options-grid' | 'edit'; loading: boolean }
++export interface CheckPpConnectionRequest {
++  type: 'CHECK_PP_CONNECTION'; entityId: string; referenceSource: PpReferenceSource; selection?: PpSourceSelection;
++}
++export interface PpConnectionResponse {
++  status: 'ready' | 'invalid' | 'no-source' | 'base-mismatch' | 'loading' | 'ambiguous' | 'changed' | 'unavailable';
++  reason: string; tabs: PpConnectionTab[]; grid?: PpGridCoverage;
++}
++export interface ReadPpFreshFormRequest { type: 'READ_PP_FRESH_FORM'; requestId: string; entityId: string; referenceSource?: PpReferenceSource; selection?: PpSourceSelection }
+ export interface CancelPpFreshFormRequest { type: 'CANCEL_PP_FRESH_FORM'; requestId: string }
+ export interface GetPpFreshFormStateRequest { type: 'GET_PP_FRESH_FORM_STATE' }
+ export interface PpReadinessCheckpoint {
+@@ -218,7 +227,7 @@
+   filtered?: boolean;
+ }
+ export interface PpFreshFormResponse {
+-  source: 'fresh-magento-form-load';
++  source: 'fresh-magento-form-load' | 'current-open-page-draft';
+   requestId: string;
+   entityId: string;
+   status: 'ok' | 'partial' | 'cancelled' | 'busy' | 'invalid' | 'unavailable' | 'auth' | 'cleanup-failed';
+diff --git a/src/dashboard/sections/ui/PpPreview.tsx b/src/dashboard/sections/ui/PpPreview.tsx
+--- a/src/dashboard/sections/ui/PpPreview.tsx
++++ b/src/dashboard/sections/ui/PpPreview.tsx
+@@ -1,6 +1,6 @@
+ import { h, Fragment } from 'preact';
+ import { useEffect, useRef, useState } from 'preact/hooks';
+-import type { PpFreshFormResponse, PpFreshFormState, PpReferenceSource } from '../../../core/messages';
++import type { PpFreshFormResponse, PpFreshFormState, PpReferenceSource, PpConnectionResponse, PpSourceSelection } from '../../../core/messages';
+ import { PP_CATALOG_DATABASE, PpCatalogResponseSchema, type PpCatalogResponse, type PpCatalogIndexRow } from '../../../shared/ppCatalog';
+ import { isPpDraftScanResponse } from '../../../entrypoints/background/ppPreview';
+ import { attributeSetConsistency, catalogProblems, loadPpIndex, ppPreviewRows, type PpIndexLoad } from './ppPreviewModel';
+@@ -15,6 +15,9 @@
+   const [checked, setChecked] = useState<string[]>([]), [activeId, setActiveId] = useState('');
+   const [entityId, setEntityId] = useState(''), [paired, setPaired] = useState(false);
+   const [referenceSource, setReferenceSource] = useState<PpReferenceSource>('options-grid');
++  const [connection, setConnection] = useState<PpConnectionResponse | null>(null);
++  const [selection, setSelection] = useState<PpSourceSelection | undefined>();
++  const [checking, setChecking] = useState(false);
+   const [busy, setBusy] = useState(false), [notice, setNotice] = useState('Load Notion V2 summaries, check PPs, then choose one to preview.');
+   const [helper, setHelper] = useState<PpFreshFormState>({ status: 'idle' });
+   const [result, setResult] = useState<{ desired: PpCatalogResponse; current?: PpFreshFormResponse } | null>(null);
+@@ -48,7 +51,7 @@
+     }
+   };
+   const invalidate = (): void => {
+-    generation.current++; setResult(null); setPaired(false); stopPreview();
++    generation.current++; setResult(null); setPaired(false); setConnection(null); setSelection(undefined); stopPreview();
+     setNotice('Selection changed. Previous preview is stale; pair and read the selected sources again.');
+   };
+   useEffect(() => {
+@@ -112,8 +115,21 @@
+       finally { if (mounted.current) setBusy(false); }
+     }
+   };
++  const checkConnection = async (): Promise<void> => {
++    const version = ++generation.current;
++    setChecking(true); setConnection(null); setResult(null); setPaired(false); stopPreview();
++    try {
++      const response = await chrome.runtime.sendMessage({ type: 'CHECK_PP_CONNECTION', entityId, referenceSource, selection }) as PpConnectionResponse;
++      if (!mounted.current || version !== generation.current) return;
++      if (!response || !Array.isArray(response.tabs) || typeof response.reason !== 'string') { setNotice('Connection response was invalid. Retry explicitly.'); return; }
++      setConnection(response);
++      if (selection && !response.tabs.some(tab => tab.tabId === selection.tabId && tab.selectionToken === selection.selectionToken)) setSelection(undefined);
++      if (response.status === 'ready' && !selection && response.tabs.length === 1 && referenceSource !== 'current-draft') setSelection(response.tabs[0]);
++    } catch { if (mounted.current && version === generation.current) setNotice('Connection check failed. Retry explicitly.'); }
++    finally { if (mounted.current) setChecking(false); }
++  };
+   const read = async (): Promise<void> => {
+-    if (previewJob.current || busy || !chosen || chosenProblem || !paired || !/^[1-9]\d{0,15}$/.test(entityId) || helper.status !== 'idle') return;
++    if (connection?.status !== 'ready' || !selection || checking || previewJob.current || busy || !chosen || chosenProblem || !paired || !/^[1-9]\d{0,15}$/.test(entityId) || helper.status !== 'idle') return;
+     const request = ++generation.current;
+     const job: PreviewRequest = { id: crypto.randomUUID(), stopped: false, phase: 'details', cancelSent: false }; previewJob.current = job;
+     setBusy(true); setResult(null); setNotice('Reading the selected Notion definition. No Magento tab opened yet.');
+@@ -127,14 +143,15 @@
+       }
+       const desired = parsed.data;
+       if (!['found', 'partial'].includes(desired.status) || !desired.definition) { setResult({ desired }); setNotice(desired.reason); return; }
+-      job.phase = 'form'; helperGeneration.current++; setHelper({ status: 'reading', requestId: job.id }); setNotice('Loading a fresh Magento form in a temporary helper tab…');
+-      const response = await chrome.runtime.sendMessage({ type: 'READ_PP_FRESH_FORM', requestId: job.id, entityId, referenceSource }) as PpFreshFormResponse;
++      job.phase = 'form'; helperGeneration.current++; setHelper({ status: 'reading', requestId: job.id });
++      setNotice(referenceSource === 'current-draft' ? 'Reading CURRENT OPEN-PAGE DRAFT, including unsaved edits...' : 'Loading a fresh Magento form in a temporary helper tab...');
++      const response = await chrome.runtime.sendMessage({ type: 'READ_PP_FRESH_FORM', requestId: job.id, entityId, referenceSource, selection }) as PpFreshFormResponse;
+       rememberCleanup(response);
+       if (!current()) return;
+-      if (!response || response.source !== 'fresh-magento-form-load' || response.requestId !== job.id || response.entityId !== entityId ||
++      if (!response || response.source !== (referenceSource === 'current-draft' ? 'current-open-page-draft' : 'fresh-magento-form-load') || response.requestId !== job.id || response.entityId !== entityId ||
+         !['ok', 'partial', 'cancelled', 'busy', 'invalid', 'unavailable', 'auth', 'cleanup-failed'].includes(response.status) ||
+         typeof response.reason !== 'string' || !['closed', 'failed', 'not-created'].includes(response.cleanup)) {
+-        setNotice('The fresh-form response was invalid. Check helper status before retrying.'); return;
++        setNotice('The Magento snapshot response was invalid. Check helper status before retrying.'); return;
+       }
+       if (response.reference && response.reference.kind !== referenceSource) { setNotice('The returned address source does not match the selected source. No snapshot accepted.'); return; }
+       if ((['ok', 'partial'].includes(response.status) && (!response.snapshot || response.snapshot.status !== response.status ||
+@@ -142,11 +159,11 @@
+         (response.snapshot && (!isPpDraftScanResponse(response.snapshot) || response.snapshot.entityId !== entityId ||
+         String(response.snapshot.providerEntityId) !== entityId ||
+         response.snapshot.routePath !== '/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/' + entityId))) {
+-        setNotice('The fresh form did not match the explicit target. No snapshot accepted.'); return;
++        setNotice('The Magento snapshot did not match the explicit target. No snapshot accepted.'); return;
+       }
+       if (response.cleanup !== 'failed') setHelper({ status: 'idle' });
+       setResult({ desired, current: response });
+-      setNotice('Manual pairing only, not a verified association. Fresh Magento form load, not a certified saved-server snapshot. Source changes require a new preview.');
++      setNotice(referenceSource === 'current-draft' ? 'Manual pairing only. CURRENT OPEN-PAGE DRAFT includes unsaved edits, not a fresh load or saved-server snapshot. Source changes require a new preview.' : 'Manual pairing only, not a verified association. Fresh Magento form load, not a certified saved-server snapshot. Source changes require a new preview.');
+     } catch {
+       if (current()) setNotice('The selected preview could not complete. Retry explicitly; no data was saved.');
+       if (job.phase === 'form') {
+@@ -176,7 +193,7 @@
+   const rows = desired && draft ? ppPreviewRows(desired, draft) : [];
+   return <div class="db-stack">
+     <section class="db-card"><h2>PP Preview <span class="db-badge">Read-only</span></h2>
+-      <p class="db-note">Choose Notion V2 records. Preview one selected PP at a time. Keep one Options Grid open with the exact target entity in its loaded results, or explicitly choose an exact-record edit tab as the address source. Your edit draft is not read or changed.</p>
++      <p class="db-note">Choose Notion V2 records. Preview one selected PP at a time. Keep one Options Grid open with the exact target entity in its loaded results, or explicitly choose an exact-record edit tab as the address source. To read unsaved edits, explicitly choose CURRENT DRAFT and select the exact edit tab. No Magento data is changed.</p>
+       <div class="db-actions"><button type="button" class="db-btn" disabled={loading} onClick={() => void load()}>Load PP catalogue</button>
+         <button type="button" class="db-btn" disabled={!loading} onClick={stopLoad}>Stop catalogue load</button></div>
+       <p role="status" aria-live="polite">Catalogue: {index.coverage}. {index.reason} Rows: {index.rows.length}. Read: {time(index.checkedAt)}</p>
+@@ -189,24 +206,33 @@
+     </section>
+     <section class="db-card"><h2>Preview one selected PP</h2>
+       <label class="db-field"><span>Magento address source</span><select value={referenceSource} onChange={event => { invalidate(); setReferenceSource(event.currentTarget.value as PpReferenceSource); }}>
+-        <option value="options-grid">Options Grid: loaded results only</option><option value="exact-record">Exact-record edit tab</option>
++        <option value="options-grid">Options Grid: loaded results only</option><option value="exact-record">Exact-record edit tab: address for fresh helper</option><option value="current-draft">Read CURRENT DRAFT: selected open edit tab</option>
+       </select></label>
+       <p class="db-note">{referenceSource === 'options-grid'
+         ? 'Only already-loaded Grid rows are read. Load the exact entity with native filters/paging yourself. The helper does not change the Grid or fetch more pages. Grid freshness and in-flight state are not verified.'
+-        : 'Keep one edit tab open for the exact Magento entity. Only its native address is copied privately into a fresh helper; the user draft is not read, navigated or reloaded. A general admin tab is not sufficient.'}</p>
++        : referenceSource === 'current-draft' ? 'Select the already-open exact PP edit tab below, then check the connection. This reads current provider state, including unsaved edits. The tab is never navigated, reloaded or closed.' : 'Keep one edit tab open for the exact Magento entity. Only its native address is copied privately into a fresh helper; the user draft is not read, navigated or reloaded. A general admin tab is not sufficient.'}</p>
+       <label class="db-field"><span>Selected Notion record</span><select value={activeId} onChange={event => { invalidate(); setActiveId(event.currentTarget.value); setEntityId(''); }}><option value="">Choose a checked PP explicitly</option>
+         {index.rows.filter(row => row.pageId && checked.includes(row.pageId)).map(row => <option key={row.pageId!} value={row.pageId!}>{row.code} · {row.name}</option>)}
+       </select></label>
+       <label class="db-field"><span>Exact Magento custom-option entity ID</span><input inputMode="numeric" value={entityId} maxLength={16} onInput={event => { invalidate(); setEntityId(event.currentTarget.value); }} />
+         <em>Enter the actual record ID separately. It is not the business code or Attribute Set ID. The selected source must match that exact entity and configured allowed HTTPS admin base. Do not paste a URL or session key.</em></label>
++      <div class="db-actions"><button type="button" class="db-btn" disabled={busy || checking || !/^[1-9]\d{0,15}$/.test(entityId)} onClick={() => void checkConnection()}>{checking ? 'Checking connection…' : 'Check Magento connection'}</button></div>
++      {connection ? <>
++        <p role="status" aria-live="polite">Connection: {connection.status}. {connection.reason}</p>
++        <label class="db-field"><span>Detected source tab</span><select value={selection?.tabId ?? ''} disabled={busy || checking} onChange={event => {
++          generation.current++; setResult(null); setPaired(false); stopPreview();
++          setSelection(connection.tabs.find(tab => String(tab.tabId) === event.currentTarget.value));
++          setConnection({ ...connection, status: 'changed', reason: 'Tab choice changed. Check the connection again, then confirm the pairing.' });
++        }}><option value="">Choose a detected tab explicitly</option>{connection.tabs.map(tab => <option key={tab.tabId} value={tab.tabId}>Tab {tab.tabId} · {tab.host} · {tab.kind}{tab.loading ? ' · loading' : ''}</option>)}</select></label>
++      </> : null}
+       <label><input type="checkbox" checked={paired} disabled={!chosen || !!chosenProblem || !/^[1-9]\d{0,15}$/.test(entityId)} onChange={event => { generation.current++; setResult(null); stopPreview(); setPaired(event.currentTarget.checked); }} /> I manually pair this Notion record with this Magento entity for this preview. The association is not verified.</label>
+-      <div class="db-actions"><button type="button" class="db-btn db-btn--primary" disabled={busy || helper.status !== 'idle' || !chosen || !!chosenProblem || !paired} aria-busy={busy} onClick={() => void read()}>{busy ? 'Reading selected PP…' : 'Preview selected PP'}</button>
++      <div class="db-actions"><button type="button" class="db-btn db-btn--primary" disabled={checking || connection?.status !== 'ready' || !selection || busy || helper.status !== 'idle' || !chosen || !!chosenProblem || !paired} aria-busy={busy} onClick={() => void read()}>{busy ? 'Reading selected PP…' : 'Preview selected PP'}</button>
+         <button type="button" class="db-btn" disabled={!busy && helper.status === 'idle'} onClick={() => void stopOrClose()}>Stop preview / close helper tab</button></div>
+       {helper.status === 'cleanup-failed' ? <p role="alert">Helper tab {helper.leftoverTabId} could not be closed. Further previews are blocked. Retry closing it or close that helper tab manually.</p> : null}
+       <p role="status" aria-live="polite">{notice}</p>
+     </section>
+     {result ? <div class="db-grid">
+-      <section class="db-card"><h2>Current: FRESH MAGENTO FORM LOAD</h2>
++      <section class="db-card"><h2>Current: {form?.source === 'current-open-page-draft' ? 'CURRENT OPEN-PAGE DRAFT (includes unsaved edits)' : 'FRESH MAGENTO FORM LOAD'}</h2>
+         <p>Status: {form?.status ?? 'not read'}. Helper cleanup: {form?.cleanup ?? 'not created'}</p><p>{form?.reason ?? 'No Magento read was started.'}</p>
+         {form?.reference ? <p class="db-note">Address source: {form.reference.kind}.
+           {form.reference.grid ? <> Loaded Grid: {form.reference.grid.status}; rows {form.reference.grid.loadedRows ?? 'unknown'} of {form.reference.grid.totalRows ?? 'unknown'};
+@@ -220,12 +246,12 @@
+           <p>Last scan: {form.readiness.lastScanStatus ?? 'not attempted'}. Warning codes: {form.readiness.warningCodes.join(', ') || 'none'}.
+             {form.readiness.last?.blockedAccessor ? ' An accessor was blocked.' : ''}</p>
+         </div> : null}
+-        <p class="db-note">Not an existing user draft and not a certified saved-server snapshot. Authentication, route support and initial provider state still need human live validation.</p>
++        <p class="db-note">{form?.source === 'current-open-page-draft' ? 'Current open-page draft, including unsaved edits. Freshness and saved state are not certified.' : 'Not an existing user draft and not a certified saved-server snapshot. Authentication, route support and initial provider state still need human live validation.'}</p>
+         {draft ? <><p>Host: {form?.host}. Entity ID: {draft.entityId}. Read: {time(form?.readAt)}</p>
+           <p>Provider entity: {show(draft.providerEntityId)}. Provider Attribute Set: {show(draft.providerAttributeSetId)}. General Attribute Set IDs: {show(draft.generalAttributeSetId)}</p>
+           <p>Native Attribute Set consistency: {attributeSetConsistency(draft)}. This does not verify a Notion association.</p>
+           {draft.warnings.map((warning, i) => <p class="db-note" key={i}>{warning}</p>)}
+-          <details><summary>Fresh form reference</summary><pre class="db-pp-data">{show(draft)}</pre></details></> : <p>No usable fresh form. Comparison blocked.</p>}
++          <details><summary>{form?.source === 'current-open-page-draft' ? 'Current draft reference' : 'Fresh form reference'}</summary><pre class="db-pp-data">{show(draft)}</pre></details></> : <p>No usable Magento snapshot. Comparison blocked.</p>}
+       </section>
+       <section class="db-card"><h2>Desired: Notion PP Catalog V2</h2><p>Business code: {desired?.code}. Status: {desired?.status}</p><p>{desired?.reason}</p>
+         <p>Read: {time(desired?.checkedAt)}. Edited: {time(desired?.definition?.lastEditedAt)}</p><p class="db-note">Source database: {PP_CATALOG_DATABASE}</p>
+@@ -236,7 +262,7 @@
+       </section>
+     </div> : null}
+     {rows.length ? <section class="db-card"><h2>Side-by-side reference</h2><p class="db-note">No verified native-field mapping. These are blocked reference rows, not executable changes. Blank desired fields never request deletion.</p>
+-      <div class="db-table-wrap"><table class="db-table"><thead><tr><th scope="col">Field</th><th scope="col">Fresh form</th><th scope="col">Desired reference</th><th scope="col">Comparison</th></tr></thead><tbody>
++      <div class="db-table-wrap"><table class="db-table"><thead><tr><th scope="col">Field</th><th scope="col">{form?.source === 'current-open-page-draft' ? 'Current draft (unsaved edits included)' : 'Fresh form'}</th><th scope="col">Desired reference</th><th scope="col">Comparison</th></tr></thead><tbody>
+         {rows.map(row => <tr key={row.field}><th scope="row">{row.field}</th><td><pre class="db-pp-data">{show(row.current)}</pre></td><td><pre class="db-pp-data">{show(row.desired)}</pre></td><td>Blocked: {row.reason}</td></tr>)}
+       </tbody></table></div></section> : null}
+   </div>;
+diff --git a/src/entrypoints/background/ppFreshForm.ts b/src/entrypoints/background/ppFreshForm.ts
+--- a/src/entrypoints/background/ppFreshForm.ts
++++ b/src/entrypoints/background/ppFreshForm.ts
+@@ -1,8 +1,8 @@
+-import type { PpFreshFormResponse, PpFreshFormState, PpFreshReadiness, PpReadinessCheckpoint, ScanPpDraftResponse, PpReferenceSource, PpGridCoverage } from '../../core/messages';
+-import { scanCurrentPpDraft, ppRoutePathFromUrl } from '../../page/features/pp-scan/page';
++import type { PpFreshFormResponse, PpFreshFormState, PpFreshReadiness, PpReadinessCheckpoint, ScanPpDraftResponse, PpReferenceSource, PpGridCoverage, PpSourceSelection, PpConnectionResponse, PpConnectionTab } from '../../core/messages';
++import { scanCurrentPpDraft, ppRoutePathFromUrl, ppEntityIdFromUrl } from '../../page/features/pp-scan/page';
+ import { readPpReadiness } from '../../page/features/pp-scan/readiness';
+ import { readLoadedPpGrid, type PpLoadedGridRead } from '../../page/features/pp-scan/grid';
+-import { isPpDraftScanResponse } from './ppPreview';
++import { isPpDraftScanResponse, ppTabSelectionToken } from './ppPreview';
+ 
+ const HOSTS = new Set(['bestofgifts.pt', 'bestofgifts.eu', 'bestofgifts.es', 'bestofgifts.fr', 'bestofgifts-pt-qa.toogas.net']);
+ const BASE_RULE = 'Use https on bestofgifts.pt, bestofgifts.eu, bestofgifts.es, bestofgifts.fr or bestofgifts-pt-qa.toogas.net, with one admin path segment such as /admin_xxx, and no port, query, key or extra path.';
+@@ -10,6 +10,7 @@
+ const POLL_MS = 500, EXTRACTION_GAP = (MAX_WAIT - 1000) / (MAX_INJECTIONS - 1);
+ interface ReadJob {
+   id: string; entityId: string; owner: number | undefined; cancelled: boolean; referenceSource: PpReferenceSource;
++  selection?: PpSourceSelection;
+   tabId?: number; close?: Promise<boolean>; done: Promise<PpFreshFormResponse>;
+   removed?: boolean; onRemoved?: (tabId: number) => void;
+   closeInFlight?: boolean;
+@@ -136,13 +137,18 @@
+   const wanted = new URL(target), gridPath = wanted.pathname.replace(/\/edit\/attributesetcustomoptions_id\/\d+\/$/, '/index/');
+   const gridTarget = wanted.origin + gridPath;
+   try {
+-    const tabs = (await chrome.tabs.query({ url: [gridTarget.replace(/\/$/, ''), gridTarget + '*'] }))
++    let tabs = (await bounded(chrome.tabs.query({ url: [gridTarget.replace(/\/$/, ''), gridTarget + '*'] }), 5000, job))
+       .filter(tab => typeof tab.id === 'number' && Number.isInteger(tab.id) && tab.id >= 0 && tab.status === 'complete' &&
+         !tab.pendingUrl && isNativePpReference(tab.url, gridTarget));
++    if (job.selection) {
++      const selected = tabs.find(tab => tab.id === job.selection!.tabId);
++      if (!selected || await ppTabSelectionToken(selected) !== job.selection.selectionToken) return empty('changed', 'Selected Options Grid changed. Check the connection and select it again.');
++      tabs = [selected];
++    }
+     if (job.cancelled) return empty('unavailable', 'Preview cancelled.');
+     if (!tabs.length) return empty('unavailable', 'Open one Magento Options Grid for the configured admin base and load the target record, or explicitly choose the exact-record reference source.');
+     if (tabs.length !== 1) return empty('ambiguous-source', 'Keep one Options Grid tab open for the configured admin base. No address selected.');
+-    const source = tabs[0]!, before = await chrome.tabs.get(source.id!);
++    const source = tabs[0]!, before = await bounded(chrome.tabs.get(source.id!), 5000, job);
+     if (job.cancelled) return empty('unavailable', 'Preview cancelled.');
+     if (before.status !== 'complete' || before.pendingUrl || before.url !== source.url || !isNativePpReference(before.url, gridTarget)) return empty('changed', 'Options Grid navigation changed. Wait for it to finish, then retry.');
+     let previous: PpLoadedGridRead | undefined, coverage: PpGridCoverage | undefined;
+@@ -164,7 +170,7 @@
+         args: [job.entityId, wanted.origin, gridPath],
+       }), 5000, job);
+       if (job.cancelled) return empty('unavailable', 'Preview cancelled.');
+-      const after = await chrome.tabs.get(source.id!);
++      const after = await bounded(chrome.tabs.get(source.id!), 5000, job);
+       if (after.url !== before.url || after.pendingUrl || after.status !== 'complete') return empty('changed', reasons.changed);
+       const result = injection?.result;
+       coverage = safeGridCoverage(result);
+@@ -184,7 +190,7 @@
+   let readiness: PpFreshReadiness | undefined, started = 0;
+   let reference: PpFreshFormResponse['reference'];
+   try {
+-    const settings = await chrome.storage.local.get(['adminBaseUrl']);
++    const settings = await bounded(chrome.storage.local.get(['adminBaseUrl']), 5000, job);
+     const target = freshFormUrl(settings.adminBaseUrl, job.entityId);
+     if (!target) {
+       const issue = freshFormIssue(settings.adminBaseUrl, job.entityId) ?? 'rejected-base';
+@@ -194,6 +200,7 @@
+     const wanted = new URL(target), safePath = ppRoutePathFromUrl(target)!;
+     reference = { kind: job.referenceSource };
+     let nativeUrl: string;
++    if (job.referenceSource === 'current-draft') return await readOpenDraft(job, target);
+     if (job.referenceSource === 'options-grid') {
+       const selected = await gridReference(job, target);
+       reference.grid = selected.grid;
+@@ -201,9 +208,14 @@
+       if (!selected.url) return { ...reply(job.id, job.entityId, 'unavailable', selected.reason), reference };
+       nativeUrl = selected.url;
+     } else {
+-      const references = (await chrome.tabs.query({ url: [target.replace(/\/$/, ''), `${target}*`] }))
++      let references = (await chrome.tabs.query({ url: [target.replace(/\/$/, ''), `${target}*`] }))
+         .filter(tab => typeof tab.id === 'number' && Number.isInteger(tab.id) && tab.id >= 0 &&
+           tab.status === 'complete' && !tab.pendingUrl && isNativePpReference(tab.url, target));
++      if (job.selection) {
++        const selected = references.find(tab => tab.id === job.selection!.tabId);
++        if (!selected || await ppTabSelectionToken(selected) !== job.selection.selectionToken) return reply(job.id, job.entityId, 'unavailable', 'Selected reference changed. Check the connection and select it again.');
++        references = [selected];
++      }
+       if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
+       if (!references.length) return reply(job.id, job.entityId, 'unavailable',
+         `Open Magento record ${job.entityId} as a reference tab, then retry. Its address is used privately; your draft remains untouched.`);
+@@ -324,9 +336,87 @@
+   return response;
+ }
+ 
+-export function readFreshForm(id: unknown, entityId: unknown, owner: number | undefined, referenceSource: unknown = 'exact-record'): Promise<PpFreshFormResponse> {
++
++function validSelection(value: unknown): value is PpSourceSelection {
++  if (!value || typeof value !== 'object') return false;
++  const s = value as PpSourceSelection;
++  return Number.isSafeInteger(s.tabId) && s.tabId >= 0 && typeof s.selectionToken === 'string' && /^[a-f0-9]{64}$/.test(s.selectionToken);
++}
++
++/** Only the scanner reads the chosen user tab; it is never an owned helper. */
++async function readOpenDraft(job: ReadJob, target: string): Promise<PpFreshFormResponse> {
++  const response = reply(job.id, job.entityId, 'unavailable', 'Selected draft is unavailable or changed. Check the connection and select it again.');
++  const deadline = Date.now() + MAX_WAIT;
++  const before = await bounded(chrome.tabs.get(job.selection!.tabId), deadline - Date.now(), job);
++  if (job.cancelled) return { ...response, status: 'cancelled', reason: 'Draft read cancelled.' };
++  if (before.status !== 'complete' || before.pendingUrl || !isNativePpReference(before.url, target) ||
++    await ppTabSelectionToken(before) !== job.selection!.selectionToken) return response;
++  if (job.cancelled || Date.now() >= deadline) return { ...response, status: job.cancelled ? 'cancelled' : 'unavailable' };
++  const [injection] = await bounded(chrome.scripting.executeScript({
++    target: { tabId: job.selection!.tabId, frameIds: [0] }, world: 'MAIN', func: scanCurrentPpDraft,
++  }), deadline - Date.now(), job);
++  const after = await bounded(chrome.tabs.get(job.selection!.tabId), deadline - Date.now(), job);
++  if (job.cancelled) return { ...response, status: 'cancelled', reason: 'Draft read cancelled.' };
++  const result: unknown = injection?.result;
++  if (after.status !== 'complete' || after.pendingUrl || after.url !== before.url ||
++    !isNativePpReference(after.url, target) || injection?.frameId !== 0 || !isPpDraftScanResponse(result) ||
++    !['ok', 'partial'].includes(result.status) || result.entityId !== job.entityId ||
++    String(result.providerEntityId) !== job.entityId || result.routePath !== ppRoutePathFromUrl(before.url!)) return response;
++  return { ...response, source: 'current-open-page-draft', status: result.status as 'ok' | 'partial',
++    reason: 'CURRENT OPEN-PAGE DRAFT, including unsaved edits. This is not a fresh load or saved-server snapshot.',
++    host: new URL(target).hostname, readAt: Date.now(), reference: { kind: 'current-draft' },
++    snapshot: { ...result, routePath: `/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${job.entityId}` } };
++}
++
++export async function checkPpConnection(entityId: unknown, referenceSource: unknown, selection?: PpSourceSelection): Promise<PpConnectionResponse> {
++  const result: PpConnectionResponse = { status: 'unavailable', reason: 'Connection could not be checked safely. Retry explicitly.', tabs: [] };
++  try {
++    if (!['options-grid', 'exact-record', 'current-draft'].includes(String(referenceSource)) || (selection !== undefined && !validSelection(selection))) return { ...result, status: 'invalid', reason: 'Choose a supported source and detected tab.' };
++    const settings = await bounded(chrome.storage.local.get(['adminBaseUrl']), 5000);
++    const issue = freshFormIssue(settings.adminBaseUrl, entityId);
++    if (issue) return { ...result, status: 'invalid', reason: issueReason(issue) };
++    const target = freshFormUrl(settings.adminBaseUrl, entityId)!, wanted = new URL(target);
++    const gridPath = wanted.pathname.replace(/\/edit\/attributesetcustomoptions_id\/\d+\/$/, '/index/');
++    const sourceTarget = referenceSource === 'options-grid' ? wanted.origin + gridPath : target;
++    const tabs = await bounded(chrome.tabs.query({ url: [...HOSTS].map(host => `https://${host}/*`) }), 5000);
++    let mismatched = false;
++    for (const tab of tabs) {
++      if (!Number.isSafeInteger(tab.id) || tab.id! < 0 || typeof tab.url !== 'string') continue;
++      const url = new URL(tab.url);
++      const route = referenceSource === 'options-grid'
++        ? /^\/[a-z0-9_-]+\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/index(?:\/key\/[A-Za-z0-9_-]{1,256})?\/?$/i.test(url.pathname)
++        : ppEntityIdFromUrl(tab.url) === entityId && /^\/[a-z0-9_-]+\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/[1-9]\d{0,15}(?:\/key\/[A-Za-z0-9_-]{1,256})?\/?$/i.test(url.pathname);
++      if (!HOSTS.has(url.hostname) || url.protocol !== 'https:' || !route) continue;
++      if (!isNativePpReference(tab.url, sourceTarget)) {
++        if (url.origin !== wanted.origin || url.pathname.split('/')[1] !== wanted.pathname.split('/')[1]) mismatched = true;
++        continue;
++      }
++      result.tabs.push({ tabId: tab.id!, selectionToken: await ppTabSelectionToken(tab), host: url.hostname,
++        kind: referenceSource === 'options-grid' ? 'options-grid' : 'edit', loading: tab.status !== 'complete' || !!tab.pendingUrl });
++    }
++    if (!result.tabs.length) return { ...result, status: mismatched ? 'base-mismatch' : 'no-source', reason: mismatched
++      ? 'A matching Magento page uses a different admin base. Open the target under the configured base or correct Settings.'
++      : referenceSource === 'options-grid' ? 'No eligible Options Grid tab. Open the Grid under the configured admin base and load the exact entity, or explicitly choose an open-page draft.'
++      : 'No eligible exact-record edit tab. Open the exact Magento entity under the configured admin base.' };
++    const chosen = selection ? result.tabs.find(tab => tab.tabId === selection.tabId && tab.selectionToken === selection.selectionToken) : result.tabs.length === 1 && referenceSource !== 'current-draft' ? result.tabs[0] : undefined;
++    if (!chosen) return { ...result, status: selection ? 'changed' : 'ambiguous', reason: 'Select the detected source tab explicitly. If it changed, check the connection again.' };
++    if (chosen.loading) return { ...result, status: 'loading', reason: 'Selected Magento tab is loading or navigating. Wait, then check the connection again.' };
++    if (referenceSource === 'options-grid') {
++      const job: ReadJob = { id: 'preflight', entityId: entityId as string, owner: undefined, cancelled: false, referenceSource, selection: chosen, done: undefined! };
++      const checked = await gridReference(job, target);
++      result.grid = checked.grid;
++      if (!checked.url) return { ...result, status: checked.grid.status === 'loading' ? 'loading' : checked.grid.status === 'changed' ? 'changed' : 'unavailable', reason: checked.reason };
++    }
++    return { ...result, status: 'ready', reason: referenceSource === 'current-draft'
++      ? 'Selected edit tab ready. Read CURRENT DRAFT includes unsaved edits; it does not certify saved state.'
++      : 'Connection ready for a fresh helper load. Source and entity are rechecked when reading.' };
++  } catch { return result; }
++}
++
++export function readFreshForm(id: unknown, entityId: unknown, owner: number | undefined, referenceSource: unknown = 'exact-record', selection?: PpSourceSelection): Promise<PpFreshFormResponse> {
+   if (typeof id !== 'string' || !/^[a-z0-9-]{1,80}$/i.test(id) || typeof entityId !== 'string' || !/^[1-9]\d{0,15}$/.test(entityId) ||
+-    (referenceSource !== 'options-grid' && referenceSource !== 'exact-record')) {
++    (referenceSource !== 'options-grid' && referenceSource !== 'exact-record' && referenceSource !== 'current-draft') ||
++    (selection !== undefined && !validSelection(selection)) || (referenceSource === 'current-draft' && !selection)) {
+     return Promise.resolve(reply('', '', 'invalid', 'Invalid preview identity. Enter the exact positive Magento entity ID.'));
+   }
+   if (stoppedBeforeStart.has(id) && stoppedBeforeStart.get(id) === owner) {
+@@ -336,8 +426,8 @@
+   if (leftover) return Promise.resolve({ ...reply(id, entityId, 'cleanup-failed', `Helper tab ${leftover.tabId} still needs closing before another preview.`),
+     cleanup: 'failed', leftoverTabId: leftover.tabId, cleanupRequestId: leftover.id });
+   if (active) return Promise.resolve(reply(id, entityId, 'busy', 'Another helper read is still running or closing. Stop it or wait before retrying.'));
+-  const job: ReadJob = { id, entityId, owner, cancelled: false, referenceSource, done: undefined! };
+-  active = job; job.done = run(job); return job.done;
++  const job: ReadJob = { id, entityId, owner, cancelled: false, referenceSource, selection, done: undefined! };
++  active = job; job.done = run(job).then(response => referenceSource === 'current-draft' ? { ...response, source: 'current-open-page-draft' as const } : response); return job.done;
+ }
+ 
+ export async function cancelFreshForm(id: unknown, owner: number | undefined): Promise<PpFreshFormResponse> {
+diff --git a/src/entrypoints/background/ppPreview.ts b/src/entrypoints/background/ppPreview.ts
+--- a/src/entrypoints/background/ppPreview.ts
++++ b/src/entrypoints/background/ppPreview.ts
+@@ -17,16 +17,21 @@
+   'bestofgifts-pt-qa.toogas.net',
+ ].map(host => `https://${host}/*toogas_attributesetcustomoptions/attributesetcustomoptions/edit/*`);
+ 
++export async function ppTabSelectionToken(tab: chrome.tabs.Tab): Promise<string> {
++  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${tab.id}\n${tab.url}`));
++  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
++}
++
+ export async function ppPreviewTab(tab: chrome.tabs.Tab): Promise<PpPreviewTab | null> {
+   const entityId = ppCatalogEntity(tab.url ?? '');
+   if (!entityId || typeof tab.id !== 'number' || !Number.isInteger(tab.id) || tab.id < 0 || tab.pendingUrl) return null;
+   const url = new URL(tab.url!);
+   // The private full URL detects navigation; only its digest crosses contexts.
+-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${tab.id}\n${tab.url}`));
++  const selectionToken = await ppTabSelectionToken(tab);
+   return {
+     tabId: tab.id, host: url.hostname, entityId,
+     routePath: `/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${entityId}`,
+-    selectionToken: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join(''),
++    selectionToken,
+   };
+ }
+ 
+diff --git a/src/entrypoints/background/routers/ui.ts b/src/entrypoints/background/routers/ui.ts
+--- a/src/entrypoints/background/routers/ui.ts
++++ b/src/entrypoints/background/routers/ui.ts
+@@ -12,7 +12,7 @@
+ 
+ import { selectAssociatedSkus } from '../../../page/features/assoc-bulk/page';
+ import { isPpPreviewSender, isPpDraftScanResponse, ppPreviewTab, PP_PREVIEW_TAB_URLS } from '../ppPreview';
+-import { readFreshForm, cancelFreshForm, freshFormState } from '../ppFreshForm';
++import { readFreshForm, cancelFreshForm, freshFormState, checkPpConnection } from '../ppFreshForm';
+ import {
+   ppEntityIdFromUrl,
+   ppRoutePathFromUrl,
+@@ -41,13 +41,19 @@
+ }
+ 
+ export const handleUiMessage: LaneRouter = (message, ctx) => {
++  if (message?.type === 'CHECK_PP_CONNECTION') {
++    if (!isPpPreviewSender(ctx)) ctx.sendResponse({ status: 'unavailable', reason: 'Open PP Preview in the extension dashboard.', tabs: [] });
++    else void checkPpConnection(message.entityId, message.referenceSource, message.selection).then(ctx.sendResponse);
++    return true;
++  }
++
+   if (['READ_PP_FRESH_FORM', 'CANCEL_PP_FRESH_FORM', 'GET_PP_FRESH_FORM_STATE'].includes(message?.type ?? '')) {
+     if (!isPpPreviewSender(ctx)) {
+       ctx.sendResponse({ source: 'fresh-magento-form-load', requestId: '', entityId: '', status: 'unavailable',
+         cleanup: 'not-created', reason: 'Open PP Preview in the extension dashboard.' });
+     } else if (message.type === 'GET_PP_FRESH_FORM_STATE') ctx.sendResponse(freshFormState(ctx.senderTabId));
+     else void (message.type === 'READ_PP_FRESH_FORM'
+-      ? readFreshForm(message.requestId, message.entityId, ctx.senderTabId, message.referenceSource)
++      ? readFreshForm(message.requestId, message.entityId, ctx.senderTabId, message.referenceSource, message.selection)
+       : cancelFreshForm(message.requestId, ctx.senderTabId)).then(ctx.sendResponse);
+     return true;
+   }
+diff --git a/tests/ppCatalogSelection.test.ts b/tests/ppCatalogSelection.test.ts
+--- a/tests/ppCatalogSelection.test.ts
++++ b/tests/ppCatalogSelection.test.ts
+@@ -86,7 +86,7 @@
+   } finally { globals.chrome = old; }
+ });
+ 
+-function fixture() {
++function fixture(connectionResult?: any) {
+   const dom = new JSDOM('<!doctype html><div id="app"></div>', { url: 'chrome-extension://fixture/dashboard.html#/ppPreview' });
+   const globals = globalThis as any, previous = new Map<string, PropertyDescriptor | undefined>();
+   for (const key of ['window', 'document', 'Event', 'HTMLElement']) { previous.set(key, Object.getOwnPropertyDescriptor(globalThis, key)); Object.defineProperty(globalThis, key, { configurable: true, value: dom.window[key] }); }
+@@ -95,6 +95,7 @@
+   globals.chrome = { runtime: { sendMessage: (message: any) => {
+     messages.push(message);
+     if (message.type === 'GET_PP_FRESH_FORM_STATE') return Promise.resolve({ status: 'idle' });
++    if (message.type === 'CHECK_PP_CONNECTION' && connectionResult !== 'pending') return Promise.resolve(connectionResult ?? { status: 'ready', reason: 'Connection ready', tabs: [{ tabId: 88, selectionToken: 'a'.repeat(64), host: 'bestofgifts.pt', kind: message.referenceSource === 'options-grid' ? 'options-grid' : 'edit', loading: false }] });
+     return new Promise((resolve, reject) => pending.push({ message, resolve, reject }));
+   } } };
+   const root = document.getElementById('app')!;
+@@ -107,9 +108,10 @@
+   const change = (name: string, value: string) => act(() => { const control = field(name); control.value = value; control.dispatchEvent(new dom.window.Event(control.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true })); });
+   const checkRow = (n: number) => act(() => root.querySelectorAll<HTMLInputElement>('table input[type="checkbox"]')[n]!.click());
+   const pair = () => act(() => root.querySelector<HTMLInputElement>('input[type="checkbox"]:not([aria-label])')!.click());
++  const connect = async () => { await act(async () => { button('Check Magento connection').click(); for (let i = 0; i < 30; i++) await Promise.resolve(); }); };
+   const prepare = async () => { click('Load PP catalogue'); await resolve('FETCH_PP_CATALOG_INDEX_PAGE', page([row(1, ' 0049 '), row(2, '50')])); checkRow(0); checkRow(1);
+-    change('Selected Notion record', row(1).pageId!); change('Exact Magento custom-option entity ID', '966'); pair(); };
+-  return { root, pending, messages, click, button, resolve, change, checkRow, pair, prepare,
++    change('Selected Notion record', row(1).pageId!); change('Exact Magento custom-option entity ID', '966'); await connect(); pair(); };
++  return { root, pending, messages, click, button, resolve, change, checkRow, pair, prepare, connect,
+     close: () => { act(() => render(null, root)); globals.chrome = oldChrome; dom.window.close(); for (const [key, descriptor] of previous) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); } } };
+ }
+ 
+@@ -189,7 +191,7 @@
+     assert.match(f.root.textContent!, /Helper tab 77 could not be closed/); assert.doesNotMatch(f.root.textContent!, /Fresh native title/);
+     assert.equal(f.button('Preview selected PP').disabled, true);
+     f.click('Stop preview / close helper tab'); await f.resolve('CANCEL_PP_FRESH_FORM', { ...fresh(request.requestId), status: 'cancelled' }, 1);
+-    f.pair(); assert.equal(f.button('Preview selected PP').disabled, false);
++    await f.connect(); f.pair(); assert.equal(f.button('Preview selected PP').disabled, false);
+   } finally { f.close(); }
+ });
+ 
+@@ -223,7 +225,7 @@
+     await f.prepare(); f.change('Magento address source', 'exact-record');
+     assert.equal(f.button('Preview selected PP').disabled, true); assert.match(f.root.textContent!, /2 selected/);
+     assert.match(f.root.textContent!, /Only its native address is copied privately/);
+-    f.pair(); f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    await f.connect(); f.pair(); f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
+     const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
+     assert.equal(request.referenceSource, 'exact-record');
+     await f.resolve('READ_PP_FRESH_FORM', { ...fresh(request.requestId), reference: { kind: 'exact-record' } });
+@@ -247,3 +249,51 @@
+     assert.equal((Array.from(f.root.querySelectorAll('label')).find(label => label.textContent!.startsWith('Magento address source'))!.querySelector('select')!).value, 'options-grid');
+   } finally { f.close(); }
+ });
++
++
++test('draft fallback requires an explicit tab and labels unsaved state throughout comparison', async () => {
++  const f = fixture();
++  try {
++    await f.prepare(); f.change('Magento address source', 'current-draft');
++    await f.connect(); assert.equal(f.button('Preview selected PP').disabled, true);
++    f.change('Detected source tab', '88'); await f.connect(); f.pair();
++    f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
++    assert.equal(request.referenceSource, 'current-draft'); assert.equal(request.selection.tabId, 88);
++    const response = fresh(request.requestId);
++    response.source = 'current-open-page-draft'; response.cleanup = 'not-created'; response.reason = 'Unsaved draft';
++    response.reference = { kind: 'current-draft' }; response.snapshot!.general.option_title = 'Unsaved edit';
++    await f.resolve('READ_PP_FRESH_FORM', response);
++    assert.match(f.root.textContent!, /CURRENT OPEN-PAGE DRAFT/);
++    assert.match(f.root.textContent!, /Unsaved edit/);
++    assert.match(f.root.textContent!, /Current draft \(unsaved edits included\)/);
++    assert.doesNotMatch(f.root.textContent!, /Current: FRESH MAGENTO FORM LOAD|Not an existing user draft/);
++    assert.equal(f.root.querySelector('details summary')!.textContent, 'Current draft reference');
++    f.change('Magento address source', 'options-grid');
++    assert.doesNotMatch(f.root.textContent!, /Unsaved edit/);
++    assert.equal(f.button('Preview selected PP').disabled, true);
++  } finally { f.close(); }
++});
++
++
++test('no eligible Grid connection blocks preview before Notion details or Magento read', async () => {
++  const f = fixture({ status: 'no-source', reason: 'No eligible Options Grid tab. Open the Grid or explicitly choose CURRENT DRAFT.', tabs: [] });
++  try {
++    await f.prepare();
++    assert.match(f.root.textContent!, /Connection: no-source/);
++    assert.equal(f.button('Preview selected PP').disabled, true);
++    f.click('Preview selected PP');
++    assert.equal(f.messages.some(m => m.type === 'FETCH_PP_PREVIEW_CATALOG' || m.type === 'READ_PP_FRESH_FORM'), false);
++  } finally { f.close(); }
++});
++
++test('connection replies after entity changes cannot enable or relabel a stale selection', async () => {
++  const f = fixture('pending');
++  try {
++    await f.prepare();
++    f.change('Exact Magento custom-option entity ID', '967');
++    await f.resolve('CHECK_PP_CONNECTION', { status: 'ready', reason: 'STALE CONNECTION', tabs: [{ tabId: 88, selectionToken: 'a'.repeat(64), host: 'bestofgifts.pt', kind: 'options-grid', loading: false }] });
++    assert.doesNotMatch(f.root.textContent!, /STALE CONNECTION/);
++    assert.equal(f.button('Preview selected PP').disabled, true);
++  } finally { f.close(); }
++});
+diff --git a/tests/ppConnection.test.ts b/tests/ppConnection.test.ts
+new file mode 100644
+--- /dev/null
++++ b/tests/ppConnection.test.ts
+@@ -0,0 +1,148 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { runInNewContext } from 'node:vm';
++import { checkPpConnection, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
++import { ppTabSelectionToken } from '../src/entrypoints/background/ppPreview';
++import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
++
++const base = 'https://bestofgifts.pt/admin_fixture';
++const route = '/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966';
++const edit = base + route + '/key/PRIVATE_SESSION/';
++const grid = base + '/toogas_attributesetcustomoptions/attributesetcustomoptions/index/key/PRIVATE_SESSION/';
++const flush = async () => { for (let i = 0; i < 50; i++) await Promise.resolve(); };
++function fixture(t: any) {
++  const globals = globalThis as any, old = globals.chrome;
++  const tab: any = { id: 88, url: edit, status: 'complete' };
++  let onInjection!: () => void;
++  const waitInjected = new Promise<void>(resolve => { onInjection = resolve; });
++  const state = { tabs: [tab] as any[], after: null as any, providerId: '966', frame: 0, hang: false, calls: 0, gets: 0, created: 0, removed: 0, injected: 0, gridReads: 0, gridStatus: 'found', changedGrid: false };
++  globals.chrome = {
++    runtime: { getURL: () => 'chrome-extension://fixture/dashboard.html' },
++    storage: { local: { get: async () => ({ adminBaseUrl: base }) } },
++    tabs: {
++      query: async () => state.tabs,
++      get: async () => { state.gets++; return state.gets > 1 && state.after ? state.after : tab; },
++      create: async () => { state.created++; assert.fail('No helper allowed in direct read'); },
++      remove: async () => { state.removed++; assert.fail('Never close user tab'); },
++      update: () => assert.fail('Never navigate'), reload: () => assert.fail('Never reload'),
++    },
++    scripting: { executeScript: async (options: any) => {
++      assert.deepEqual(options.target, { tabId: 88, frameIds: [0] });
++      assert.equal(options.world, 'MAIN');
++      if (options.func.name === 'readLoadedPpGrid') {
++        state.gridReads++;
++        return [{ frameId: 0, result: { status: state.gridStatus, freshness: 'loaded-unverified', loadedRows: 1, totalRows: 1, page: 1, pageSize: 20,
++          nativeUrl: edit, stamp: state.changedGrid ? String(state.gridReads) : 'stable' } }];
++      }
++      state.injected++; onInjection();
++      if (state.hang) return new Promise(() => {});
++      const data = { attributesetcustomoptions_id: state.providerId, attribute_set_id: '479', general: { option_title: 'Unsaved current title', attribute_set_id: ['479'] }, options: { sub_options: { sub_options: [] }, sub_options_items: { sub_options_items: [] } } };
++      const registry = Object.create({ get: () => ({ data }) });
++      const requireFn = Object.assign(() => assert.fail('No module load'), { s: { contexts: { _: { defined: { 'Magento_Ui/js/lib/registry/registry': registry } } } } });
++      const result = runInNewContext('(' + options.func.toString() + ')()', { window: { location: { pathname: new URL(edit).pathname }, require: requireFn } });
++      return [{ frameId: state.frame, result }];
++    } },
++  };
++  t.after(() => { globals.chrome = old; });
++  return { tab, state, waitInjected, selection: async () => ({ tabId: 88, selectionToken: await ppTabSelectionToken(tab) }) };
++}
++
++test('preflight distinguishes absent grid, mismatched base, loading and ambiguity without opening helpers', async t => {
++  const f = fixture(t);
++  f.state.tabs = [];
++  assert.equal((await checkPpConnection('966', 'options-grid')).status, 'no-source');
++  f.state.tabs = [{ ...f.tab, url: grid.replace('admin_fixture', 'another_admin') }];
++  assert.equal((await checkPpConnection('966', 'options-grid')).status, 'base-mismatch');
++  f.state.tabs = [{ ...f.tab, url: grid, status: 'loading' }];
++  assert.equal((await checkPpConnection('966', 'options-grid')).status, 'loading');
++  f.state.tabs = [{ ...f.tab, url: grid }, { ...f.tab, id: 89, url: grid }];
++  const response = await checkPpConnection('966', 'options-grid');
++  assert.equal(response.status, 'ambiguous'); assert.equal(response.tabs.length, 2);
++  assert.doesNotMatch(JSON.stringify(response), /PRIVATE|admin_fixture|\/key\//);
++  assert.equal(f.state.injected, 0); assert.equal(f.state.created, 0);
++});
++
++test('grid preflight reads only selected source, checks stability and reports provider loading', async t => {
++  const f = fixture(t); f.tab.url = grid;
++  f.state.tabs.push({ ...f.tab, id: 89 });
++  const selected = await f.selection();
++  const ready = await checkPpConnection('966', 'options-grid', selected);
++  assert.equal(ready.status, 'ready'); assert.equal(f.state.gridReads, 2);
++  assert.equal(ready.grid!.freshness, 'loaded-unverified');
++  f.state.gridStatus = 'loading';
++  assert.equal((await checkPpConnection('966', 'options-grid', selected)).status, 'loading');
++  f.state.gridStatus = 'found'; f.state.changedGrid = true;
++  assert.equal((await checkPpConnection('966', 'options-grid', selected)).status, 'changed');
++  assert.equal(f.state.created, 0);
++});
++
++test('draft preflight demands explicit selection and rejects stale token, wrong identity/base and invalid input', async t => {
++  const f = fixture(t);
++  assert.equal((await checkPpConnection('966', 'current-draft')).status, 'ambiguous');
++  assert.equal((await checkPpConnection('966', 'current-draft', await f.selection())).status, 'ready');
++  assert.equal((await checkPpConnection('966', 'current-draft', { tabId: 88, selectionToken: 'a'.repeat(64) })).status, 'changed');
++  assert.equal((await checkPpConnection('0966', 'current-draft')).status, 'invalid');
++  f.tab.url = edit.replace('/966/', '/42/');
++  assert.equal((await checkPpConnection('966', 'current-draft')).status, 'no-source');
++  f.tab.url = edit.replace('admin_fixture', 'other_admin');
++  assert.equal((await checkPpConnection('966', 'current-draft')).status, 'base-mismatch');
++  assert.equal(f.state.injected, 0);
++});
++
++test('selected draft reads unsaved provider state once, preserves identities and never owns/closes user tab', async t => {
++  const f = fixture(t);
++  const response = await readFreshForm('draft-positive', '966', 1, 'current-draft', await f.selection());
++  assert.equal(response.status, 'ok'); assert.equal(response.source, 'current-open-page-draft');
++  assert.equal(response.cleanup, 'not-created'); assert.equal(response.snapshot!.general.option_title, 'Unsaved current title');
++  assert.equal(response.snapshot!.providerAttributeSetId, '479'); assert.equal(response.entityId, '966');
++  assert.match(response.reason, /unsaved edits/); assert.equal(f.state.injected, 1);
++  assert.equal(f.state.created, 0); assert.equal(f.state.removed, 0); assert.equal(freshFormState(1).status, 'idle');
++  assert.doesNotMatch(JSON.stringify(response), /PRIVATE|admin_fixture|\/key\//);
++});
++
++for (const scenario of ['stale-token', 'loading', 'wrong-base', 'wrong-entity', 'provider-mismatch', 'navigation', 'pending', 'frame']) {
++  test('draft guard blocks ' + scenario + ' without helper or user-tab cleanup', async t => {
++    const f = fixture(t); const selection = await f.selection();
++    if (scenario === 'stale-token') f.tab.url = edit.replace('PRIVATE_SESSION', 'CHANGED');
++    if (scenario === 'loading') f.tab.status = 'loading';
++    if (scenario === 'wrong-base') f.tab.url = edit.replace('admin_fixture', 'another_admin');
++    if (scenario === 'wrong-entity') f.tab.url = edit.replace('/966/', '/42/');
++    if (scenario === 'provider-mismatch') f.state.providerId = '42';
++    if (scenario === 'navigation') f.state.after = { ...f.tab, url: edit.replace('/966/', '/42/') };
++    if (scenario === 'pending') f.state.after = { ...f.tab, pendingUrl: edit };
++    if (scenario === 'frame') f.state.frame = 2;
++    const response = await readFreshForm('draft-' + scenario, '966', 1, 'current-draft', selection);
++    assert.equal(response.status, 'unavailable'); assert.equal(response.snapshot, undefined);
++    assert.equal(response.source, 'current-open-page-draft'); assert.equal(f.state.created, 0); assert.equal(f.state.removed, 0);
++  });
++}
++
++test('draft cancel enforces owner and discards a hung extraction promptly without closing user tab', async t => {
++  const f = fixture(t); f.state.hang = true;
++  const pending = readFreshForm('draft-cancel', '966', 1, 'current-draft', await f.selection());
++  await f.waitInjected;
++  assert.equal((await cancelFreshForm('draft-cancel', 2)).status, 'unavailable');
++  assert.equal(freshFormState(1).status, 'reading');
++  const cancelled = await cancelFreshForm('draft-cancel', 1);
++  assert.equal(cancelled.status, 'cancelled'); assert.equal((await pending).snapshot, undefined);
++  assert.equal(f.state.created, 0); assert.equal(f.state.removed, 0); assert.equal(freshFormState(1).status, 'idle');
++});
++
++test('direct read rejects implicit source and dashboard permission protects preflight before any tab read', async t => {
++  const f = fixture(t);
++  assert.equal((await readFreshForm('no-selection', '966', 1, 'current-draft')).status, 'invalid');
++  const response: any = await new Promise(resolve => handleUiMessage({ type: 'CHECK_PP_CONNECTION', entityId: '966', referenceSource: 'current-draft' }, { senderUrl: edit, senderFrameId: 0, sendResponse: resolve }));
++  assert.equal(response.status, 'unavailable'); assert.equal(f.state.gets, 0); assert.equal(f.state.injected, 0);
++});
++
++
++test('hung direct extraction expires within the 30-second budget and leaves user tab open', async t => {
++  const f = fixture(t); f.state.hang = true;
++  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_900_000_000_000 });
++  const pending = readFreshForm('draft-timeout', '966', 1, 'current-draft', await f.selection());
++  await f.waitInjected; assert.equal(f.state.injected, 1);
++  t.mock.timers.tick(30_000); await flush();
++  const response = await pending;
++  assert.equal(response.status, 'unavailable'); assert.equal(response.source, 'current-open-page-draft');
++  assert.equal(response.snapshot, undefined); assert.equal(f.state.removed, 0); assert.equal(freshFormState(1).status, 'idle');
++});
+diff --git a/tests/ppFreshForm.test.ts b/tests/ppFreshForm.test.ts
+--- a/tests/ppFreshForm.test.ts
++++ b/tests/ppFreshForm.test.ts
+@@ -2,6 +2,7 @@
+ import assert from 'node:assert/strict';
+ import { runInNewContext } from 'node:vm';
+ import { freshFormUrl, freshFormIssue, isNativePpReference, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
++import { ppTabSelectionToken } from '../src/entrypoints/background/ppPreview';
+ import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
+ import type { PpFreshFormResponse } from '../src/core/messages';
+ import { readPpReadiness } from '../src/page/features/pp-scan/readiness';
+@@ -278,3 +279,15 @@
+   }
+   assert.equal(f.created.length, 0); assert.equal(f.removed.length, 0);
+ });
++
++
++test('explicit exact-record address choice works with multiple open references and rejects a stale choice', async t => {
++  const f = fixture(t, { scenario: 'multiple-sources' });
++  const selection = { tabId: 88, selectionToken: await ppTabSelectionToken({ id: 88, url: full } as chrome.tabs.Tab) };
++  const response = await readFreshForm('selected-reference', '966', 1, 'exact-record', selection);
++  assert.equal(response.status, 'ok'); assert.equal(response.source, 'fresh-magento-form-load');
++  assert.equal(f.created.length, 1); assert.deepEqual(f.removed, [77]);
++  selection.selectionToken = 'a'.repeat(64);
++  const stale = await readFreshForm('stale-reference', '966', 1, 'exact-record', selection);
++  assert.equal(stale.status, 'unavailable'); assert.equal(f.created.length, 1);
++});

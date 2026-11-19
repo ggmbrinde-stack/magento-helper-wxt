@@ -1,0 +1,11 @@
+--- 786-before
++++ 786-after
+@@ -31,7 +31,7 @@
+ 
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+-| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |
++| Bolso Peito<br />Bolso Esquerdo<br />Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso |
+ 
+ <toggle>
+ Pendências técnicas

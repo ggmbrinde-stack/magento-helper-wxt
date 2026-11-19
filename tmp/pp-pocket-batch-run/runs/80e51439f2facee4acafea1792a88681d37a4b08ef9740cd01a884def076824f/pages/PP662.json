@@ -1,0 +1,41 @@
+{
+  "code": "662",
+  "confirmed_receipts": [
+    {
+      "code": "662",
+      "operation": "662-pocket-row-1",
+      "saved_state_sha256": "b96eb526b4b7ba18e74d0f584930bb700ed7fe037f911b3a2f72f1c6e688d5d2",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "662",
+      "operation": "662-pocket-row-2",
+      "saved_state_sha256": "10ec2791543dd4587880dbc2e031cca87e76ad175964cfa18023f577e3f0a426",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "662",
+      "operation": "662-pocket-property-1",
+      "saved_state_sha256": "3e983f7d6beeafe8748d7d0cc8e2d5a216e7fc03b500091e379e6857564339d4",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "662",
+      "operation": "662-review-status",
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "1f1cda50b89d7e7b0bd850603d1cabc0be32b9a427756653dc14b52f53718311",
+      "status": "SUCCEEDED"
+    }
+  ],
+  "outcome": "SUCCESS",
+  "page_id": "ddbb6705ae1f820cb837013a1864964a",
+  "pending_receipts": [],
+  "readback": {
+    "edited_at": "2026-11-18T21:36:18.987Z",
+    "estado": "Para revisão",
+    "observed_body_sha256": "d45c46525175cc81ac20fcfcf6635cb45065ef87782123a4ed93cdd062855d6c",
+    "properties_sha256": "17fc1586b182d99eb28d3017388512ff80fc0c4b6bbd855e5324b094bf227980"
+  },
+  "saved_estado": "Para revisão",
+  "saved_state_sha256": "1f1cda50b89d7e7b0bd850603d1cabc0be32b9a427756653dc14b52f53718311"
+}

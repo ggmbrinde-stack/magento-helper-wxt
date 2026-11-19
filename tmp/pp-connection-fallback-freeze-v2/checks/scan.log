@@ -1,0 +1,28 @@
+
+> magento-helper-wxt@0.2.1 test:pp-scan
+> npx esbuild tests/ppScan.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/pp-scan-test.mjs --log-level=warning && node --test .output/pp-scan-test.mjs
+
+✔ reads allowlisted provider fields even when option tables are not rendered (38.2656ms)
+✔ reads the trusted registry get method from its prototype without invoking accessors (12.752ms)
+✔ serialized MAIN-world function runs standalone with inherited registry get and safe route (4.2317ms)
+✔ distinguishes missing collections from present empty collections (3.1318ms)
+✔ rejects provider identity mismatch without returning provider rows (2.9171ms)
+✔ reports a missing provider and duplicate identifiers without guessing parents (6.4877ms)
+✔ reports missing identity and parent fields while preserving explicit blanks (3.3145ms)
+✔ reports malformed translation JSON and bounds oversized collections (3.6262ms)
+✔ marks unrecognized provider rows as partial and reports their positions (2.7741ms)
+✔ sanitizes non-JSON provider values inside allowlisted fields (6.6493ms)
+✔ rejects non-top-frame and unsupported-host requests before tab access or injection (0.6172ms)
+✔ dispatches a validated scan to the sender tab main world (0.2578ms)
+✔ rejects malformed results returned by the main-world scan (0.1378ms)
+✔ keeps the Notion and draft-scan panels stable across repeated mounts (27.452ms)
+✔ shows an unavailable scan reason without rendering an empty snapshot (7.661ms)
+✔ does not auto-scan and drops responses after draft or native anchor changes (36.3805ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 706.4599

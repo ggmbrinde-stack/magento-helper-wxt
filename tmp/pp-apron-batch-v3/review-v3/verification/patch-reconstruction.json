@@ -1,0 +1,15 @@
+{
+  "exact_source_reconstruction": true,
+  "files": 43,
+  "patch_sha256": "9e40908e19b130dfbd845d9d9fd8005109f7957a2fdcb82214f575d763bc63d3",
+  "command": [
+    "git",
+    "-c",
+    "core.autocrlf=false",
+    "apply",
+    "--unsafe-paths",
+    "--directory=tmp/pp-apron-batch-v3/patch-check-lf",
+    "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-apron-batch-v3\\review-v3\\batch-v3-against-v2.patch"
+  ],
+  "note": "core.autocrlf=false is required for byte-exact reconstruction on this Windows checkout; the default converts new files to CRLF."
+}

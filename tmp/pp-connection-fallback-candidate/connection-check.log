@@ -1,0 +1,23 @@
+✔ preflight distinguishes absent grid, mismatched base, loading and ambiguity without opening helpers (7.7406ms)
+✔ grid preflight reads only selected source, checks stability and reports provider loading (2.4508ms)
+✔ draft preflight demands explicit selection and rejects stale token, wrong identity/base and invalid input (0.9646ms)
+✔ selected draft reads unsaved provider state once, preserves identities and never owns/closes user tab (2.5532ms)
+✔ draft guard blocks stale-token without helper or user-tab cleanup (1.2672ms)
+✔ draft guard blocks loading without helper or user-tab cleanup (0.3419ms)
+✔ draft guard blocks wrong-base without helper or user-tab cleanup (0.5168ms)
+✔ draft guard blocks wrong-entity without helper or user-tab cleanup (0.2949ms)
+✔ draft guard blocks provider-mismatch without helper or user-tab cleanup (0.8113ms)
+✔ draft guard blocks navigation without helper or user-tab cleanup (0.847ms)
+✔ draft guard blocks pending without helper or user-tab cleanup (0.7154ms)
+✔ draft guard blocks frame without helper or user-tab cleanup (0.703ms)
+✔ draft cancel enforces owner and discards a hung extraction promptly without closing user tab (0.5244ms)
+✔ direct read rejects implicit source and dashboard permission protects preflight before any tab read (0.4301ms)
+✔ hung direct extraction expires within the 30-second budget and leaves user tab open (0.965ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83.2495

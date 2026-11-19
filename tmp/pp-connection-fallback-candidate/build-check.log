@@ -1,0 +1,34 @@
+
+> magento-helper-wxt@0.2.1 prebuild
+> node scripts/sync-toolkit.mjs --check && node scripts/check-lanes.mjs && node scripts/check-features.mjs
+
+Lane check passed (L1-L5): 145 module(s) — ui 85, audit 32, automation 9, shared 14, core 5; all reachable from an entrypoint.
+  · untethered: form-fill: APPLY_FIELD handler — gated by WRITES_ENABLED, no toggle yet
+  · untethered: grid-search: SEARCH_MAGENTO handler — no toggle yet
+Feature check passed (F1-F5): 21 catalog entr(ies), 22 feature folder(s), 2 untethered.
+
+> magento-helper-wxt@0.2.1 build
+> wxt build
+
+
+WXT 0.19.29
+i Building chrome-mv3 for production with Vite 6.4.4
+√ Built extension in 2.252 s
+  ├─ .output\chrome-mv3\manifest.json                     1.99 kB  
+  ├─ .output\chrome-mv3\dashboard.html                    508 B    
+  ├─ .output\chrome-mv3\sidepanel.html                    344 B    
+  ├─ .output\chrome-mv3\background.js                     440.15 kB
+  ├─ .output\chrome-mv3\chunks\dashboard-Ah-h-9d_.js      301.34 kB
+  ├─ .output\chrome-mv3\chunks\sidepanel-BaWN4o2w.js      71.86 kB 
+  ├─ .output\chrome-mv3\chunks\ToolkitColors-DoACgNih.js  91.89 kB 
+  ├─ .output\chrome-mv3\content-scripts\content.js        372.33 kB
+  ├─ .output\chrome-mv3\assets\dashboard-Be5FiUcZ.css     40.19 kB 
+  ├─ .output\chrome-mv3\ui\toolkit.css                    50.36 kB 
+  ├─ .output\chrome-mv3\icon\128.png                      1.51 kB  
+  ├─ .output\chrome-mv3\icon\16.png                       332 B    
+  ├─ .output\chrome-mv3\icon\32.png                       510 B    
+  ├─ .output\chrome-mv3\icon\48.png                       686 B    
+  └─ .output\chrome-mv3\icon\96.png                       1.13 kB  
+Σ Total size: 1.38 MB                                   
+√ Finished in 2.373 s
+- Preparing...

@@ -1,0 +1,12 @@
+
+> magento-helper-wxt@0.2.1 pretypecheck
+> node scripts/sync-toolkit.mjs --check && node scripts/check-lanes.mjs && node scripts/check-features.mjs
+
+Lane check passed (L1-L5): 145 module(s) — ui 85, audit 32, automation 9, shared 14, core 5; all reachable from an entrypoint.
+  · untethered: form-fill: APPLY_FIELD handler — gated by WRITES_ENABLED, no toggle yet
+  · untethered: grid-search: SEARCH_MAGENTO handler — no toggle yet
+Feature check passed (F1-F5): 21 catalog entr(ies), 22 feature folder(s), 2 untethered.
+
+> magento-helper-wxt@0.2.1 typecheck
+> tsc --noEmit
+

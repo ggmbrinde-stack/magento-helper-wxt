@@ -1,0 +1,1069 @@
+diff --git a/package.json b/package.json
+index 2336f30..4becd84 100644
+--- a/package.json
++++ b/package.json
+@@ -26,6 +26,7 @@
+     "test:facts": "npx esbuild src/audit/__tests__/adminFacts.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/admin-facts-test.mjs --log-level=warning && node --test .output/admin-facts-test.mjs",
+     "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features",
+     "test:features": "npx esbuild src/shared/__tests__/features.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/features-test.mjs --log-level=warning && node --test .output/features-test.mjs",
++    "test:pp-scan": "npx esbuild tests/ppScan.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/pp-scan-test.mjs --log-level=warning && node --test .output/pp-scan-test.mjs",
+     "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs"
+   },
+   "dependencies": {
+diff --git a/src/core/messages/envelope.ts b/src/core/messages/envelope.ts
+index 27d46b9..d03efcf 100644
+--- a/src/core/messages/envelope.ts
++++ b/src/core/messages/envelope.ts
+@@ -31,6 +31,9 @@ export type MessageResponder = (response: unknown) => void;
+ export interface RouterContext {
+   /** Tab that sent the message, when the sender was a content script. */
+   senderTabId?: number;
++  /** Originating document metadata for messages that act on the sender tab. */
++  senderUrl?: string;
++  senderFrameId?: number;
+   sendResponse: MessageResponder;
+ }
+ 
+diff --git a/src/core/messages/ui.ts b/src/core/messages/ui.ts
+index 537c96a..4fbc3e1 100644
+--- a/src/core/messages/ui.ts
++++ b/src/core/messages/ui.ts
+@@ -106,3 +106,50 @@ export interface SelectAssociatedSkusResponse {
+   tickedOnScreen: number;
+   filterPasses: number;
+ }
++
++export type PpDraftValue =
++  | null
++  | boolean
++  | number
++  | string
++  | PpDraftValue[]
++  | { [key: string]: PpDraftValue };
++
++export interface PpDraftTranslation {
++  raw: PpDraftValue;
++  parsed?: PpDraftValue;
++  parseError?: string;
++}
++
++export interface PpDraftRow {
++  position: number;
++  values: Record<string, PpDraftValue>;
++  translations: Record<string, PpDraftTranslation>;
++}
++
++export interface PpDraftCollection {
++  state: 'available' | 'missing' | 'invalid';
++  rows: PpDraftRow[];
++  truncated: boolean;
++  identifierGaps: number;
++}
++
++export interface ScanPpDraftRequest {
++  type: 'SCAN_PP_DRAFT';
++}
++
++export interface ScanPpDraftResponse {
++  version: 1;
++  status: 'ok' | 'partial' | 'unavailable' | 'identity-mismatch';
++  entityId: string | null;
++  providerEntityId?: PpDraftValue;
++  routePath: string;
++  scannedAt?: number;
++  providerAttributeSetId?: PpDraftValue;
++  generalAttributeSetId?: PpDraftValue;
++  general: Record<string, PpDraftValue>;
++  generalTranslations?: PpDraftTranslation;
++  locations: PpDraftCollection;
++  items: PpDraftCollection;
++  warnings: string[];
++}
+diff --git a/src/entrypoints/background/index.ts b/src/entrypoints/background/index.ts
+index 3b9ade5..1a53956 100644
+--- a/src/entrypoints/background/index.ts
++++ b/src/entrypoints/background/index.ts
+@@ -51,7 +51,12 @@ export default defineBackground(() => {
+   resumeBatchOnWake();
+ 
+   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+-    const ctx = { senderTabId: sender.tab?.id, sendResponse };
++    const ctx = {
++      senderTabId: sender.tab?.id,
++      senderUrl: sender.url,
++      senderFrameId: sender.frameId,
++      sendResponse,
++    };
+     for (const route of ROUTERS) {
+       if (route(message, ctx)) return true;
+     }
+diff --git a/src/entrypoints/background/routers/ui.ts b/src/entrypoints/background/routers/ui.ts
+index abc9997..5fa7b9b 100644
+--- a/src/entrypoints/background/routers/ui.ts
++++ b/src/entrypoints/background/routers/ui.ts
+@@ -1,19 +1,96 @@
+ /**
+  * Lane A router — page + panel surface.
+  *
+- * Owns: browser-tab capability our own controls ask for. The page-domain
+- * messages (GET_CONFIG, GET_SKU, GET_FORM_STATE, APPLY_FIELD, SEARCH_MAGENTO)
+- * are answered by the content script, not here.
++ * Owns: browser-tab capabilities our controls ask for. SCAN_PP_DRAFT is the
++ * exception that reads Magento's already-loaded main-world registry.
+  *
+  * The audit lane drives error markup and the resolver; this router must not
+  * import audit internals.
+  */
+ 
+-import type { LaneRouter } from '../../../core/messages';
++import type { LaneRouter, ScanPpDraftResponse } from '../../../core/messages';
+ 
+ import { selectAssociatedSkus } from '../../../page/features/assoc-bulk/page';
++import {
++  ppEntityIdFromUrl,
++  scanCurrentPpDraft,
++} from '../../../page/features/pp-scan/page';
++
++const PP_ADMIN_HOSTS = new Set([
++  'bestofgifts-pt-qa.toogas.net',
++  'bestofgifts.pt',
++  'bestofgifts.eu',
++  'bestofgifts.es',
++  'bestofgifts.fr',
++]);
++
++function unavailablePpScan(entityId: string | null, routePath: string): ScanPpDraftResponse {
++  return {
++    version: 1,
++    status: 'unavailable',
++    entityId,
++    routePath: routePath.slice(0, 512),
++    general: {},
++    locations: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    items: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    warnings: ['The current Magento page could not be scanned safely.'],
++  };
++}
+ 
+ export const handleUiMessage: LaneRouter = (message, ctx) => {
++  if (message?.type === 'SCAN_PP_DRAFT') {
++    const senderEntity = ctx.senderUrl ? ppEntityIdFromUrl(ctx.senderUrl) : null;
++    const senderPath = (() => {
++      try { return new URL(ctx.senderUrl ?? '').pathname; } catch { return ''; }
++    })();
++    void (async () => {
++      if (
++        typeof ctx.senderTabId !== 'number' ||
++        ctx.senderFrameId !== 0 ||
++        !senderEntity ||
++        !ctx.senderUrl
++      ) {
++        ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++        return;
++      }
++      try {
++        const sender = new URL(ctx.senderUrl);
++        if (sender.protocol !== 'https:' || !PP_ADMIN_HOSTS.has(sender.hostname)) {
++          ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++          return;
++        }
++        const tab = await chrome.tabs.get(ctx.senderTabId);
++        const current = new URL(tab.url ?? '');
++        if (
++          current.protocol !== 'https:' ||
++          current.hostname !== sender.hostname ||
++          current.pathname !== sender.pathname ||
++          ppEntityIdFromUrl(tab.url ?? '') !== senderEntity
++        ) {
++          ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++          return;
++        }
++        const [injection] = await chrome.scripting.executeScript({
++          target: { tabId: ctx.senderTabId },
++          world: 'MAIN',
++          func: scanCurrentPpDraft,
++        });
++        const result = injection?.result as ScanPpDraftResponse | undefined;
++        if (
++          !result || result.entityId !== senderEntity ||
++          result.routePath !== senderPath
++        ) {
++          ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++          return;
++        }
++        ctx.sendResponse(result);
++      } catch {
++        ctx.sendResponse(unavailablePpScan(senderEntity, senderPath));
++      }
++    })();
++    return true;
++  }
++
+   if (message?.type === 'OPEN_TAB_GROUP') {
+     const urls = (message.urls ?? []) as string[];
+     const groupName = String(message.groupName ?? 'Magento');
+diff --git a/src/entrypoints/content.ts b/src/entrypoints/content.ts
+index 54cc5fe..6d1743f 100644
+--- a/src/entrypoints/content.ts
++++ b/src/entrypoints/content.ts
+@@ -18,7 +18,7 @@ import type {
+ // label, page detection, default) and the mounts in
+ // `src/page/features/registry.ts`. This file only runs the chain.
+ import { FEATURE_CATALOG, detectFeatureIds } from '../shared/featureCatalog';
+-import { FEATURE_MOUNTS } from '../page/features/registry';
++import { FEATURE_MOUNTS, unmountPpScan } from '../page/features/registry';
+ import { extractColorGroups } from '../page/features/config-groups';
+ import { applyErrorMarkup } from '../page/features/error-markup';
+ import { handleApplyField } from '../page/features/form-fill';
+@@ -41,7 +41,10 @@ let lastDetectedFeatures: string[] | undefined;
+  */
+ function scan(options: { categoryTreeChanged?: boolean } = {}): void {
+   const f = getFeatureSettings();
+-  if (!f.extensionEnabled) return;
++  if (!f.extensionEnabled) {
++    unmountPpScan();
++    return;
++  }
+   const detectedFeatures = detectFeatureIds(document);
+   if (
+     !lastDetectedFeatures ||
+@@ -62,7 +65,10 @@ function scan(options: { categoryTreeChanged?: boolean } = {}): void {
+   for (const feature of FEATURE_CATALOG) {
+     const key = feature.id;
+     if (key === 'extensionEnabled') continue;
+-    if (!f[key]) continue;
++    if (!f[key]) {
++      if (key === 'ppScan') unmountPpScan();
++      continue;
++    }
+     if (key === 'categoryTree' && options.categoryTreeChanged === false) continue;
+     safe(key, FEATURE_MOUNTS[key]);
+   }
+diff --git a/src/page/features/registry.ts b/src/page/features/registry.ts
+index 8f235ca..c2e1859 100644
+--- a/src/page/features/registry.ts
++++ b/src/page/features/registry.ts
+@@ -29,6 +29,7 @@ import { addOptionsCompanion } from './options-companion';
+ import { enhanceOptionsItems } from './options-items';
+ import { renderTierPricesButtons } from './tier-prices';
+ import { enhanceAssocBulk } from './assoc-bulk';
++import { mountPpScan, unmountPpScan } from './pp-scan';
+ 
+ /** Every key except the master switch, which gates the whole run. */
+ export type MountableFeatureKey = Exclude<FeatureKey, 'extensionEnabled'>;
+@@ -64,4 +65,7 @@ export const FEATURE_MOUNTS: Record<MountableFeatureKey, () => void> = {
+   optionsCompanion: addOptionsCompanion,
+   optionsItems: enhanceOptionsItems,
+   assocBulk: enhanceAssocBulk,
++  ppScan: mountPpScan,
+ };
++
++export { unmountPpScan };
+diff --git a/src/shared/__tests__/features.test.ts b/src/shared/__tests__/features.test.ts
+index 192c67a..4c396fb 100644
+--- a/src/shared/__tests__/features.test.ts
++++ b/src/shared/__tests__/features.test.ts
+@@ -41,6 +41,7 @@ test('the catalog still declares every storage key with its default', () => {
+     tierPrices: true,
+     navToggle: true,
+     rowActions: true,
++    assocBulk: true,
+     massactions: true,
+     paging: true,
+     activeFilters: true,
+@@ -54,6 +55,7 @@ test('the catalog still declares every storage key with its default', () => {
+     errorMarkup: true,
+     optionsCompanion: true,
+     optionsItems: true,
++    ppScan: true,
+   };
+   assert.deepEqual(FEATURE_DEFAULTS, expected);
+ });
+@@ -117,6 +119,18 @@ test('a product edit page detects the product-form features', () => {
+   }
+ });
+ 
++test('the PP scan is detected only on the native custom-option edit route', () => {
++  const dom = new JSDOM(
++    '<div data-bind="scope: \'toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas\'"></div>',
++    { url: 'https://bestofgifts.pt/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/secret' },
++  );
++  assert.ok(detectFeatureIds(dom.window.document).includes('ppScan'));
++  const other = new JSDOM('<div class="custom-options"></div>', {
++    url: 'https://bestofgifts.pt/catalog/product/edit/id/1',
++  });
++  assert.ok(!detectFeatureIds(other.window.document).includes('ppScan'));
++});
++
+ test('detection ids are unique and follow catalog order', () => {
+   const detected = detectFeatureIds(
+     docWith('<div class="data-grid"></div><div class="store-switcher"></div>'),
+diff --git a/src/shared/featureCatalog.ts b/src/shared/featureCatalog.ts
+index c08bd8c..374304f 100644
+--- a/src/shared/featureCatalog.ts
++++ b/src/shared/featureCatalog.ts
+@@ -39,7 +39,8 @@ export type FeatureKey =
+   | 'configButtons'
+   | 'errorMarkup'
+   | 'optionsCompanion'
+-  | 'optionsItems';
++  | 'optionsItems'
++  | 'ppScan';
+ 
+ /** Panel heading a feature is listed under. */
+ export type FeatureGroup =
+@@ -84,6 +85,10 @@ const has = (doc: Document, selector: string): boolean =>
+ const GRID = '.data-grid';
+ const PRODUCT_FORM = '#product_form, .product-edit, [data-ui-id="product-form"]';
+ const CUSTOM_OPTIONS = '.custom-options, .options';
++const PP_OPTIONS_ROUTE =
++  /\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/\d+(?:\/|$)/i;
++const PP_OPTIONS_ANCHOR =
++  '[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]';
+ 
+ export const FEATURE_CATALOG: readonly FeatureMeta[] = [
+   {
+@@ -277,6 +282,18 @@ export const FEATURE_CATALOG: readonly FeatureMeta[] = [
+     available: true,
+     detect: (doc) => has(doc, CUSTOM_OPTIONS),
+   },
++  {
++    id: 'ppScan',
++    label: 'Scan current PP draft',
++    description:
++      'Read a bounded snapshot of the current unsaved custom-option draft. The scan never saves or changes Magento data.',
++    group: 'Product form',
++    defaultOn: true,
++    available: true,
++    detect: (doc) =>
++      PP_OPTIONS_ROUTE.test(doc.defaultView?.location.pathname ?? '') &&
++      has(doc, PP_OPTIONS_ANCHOR),
++  },
+ ];
+ 
+ /** Storage keys and their defaults, derived from the catalog. */
+diff --git a/src/page/features/pp-scan/index.ts b/src/page/features/pp-scan/index.ts
+new file mode 100644
+index 0000000..aa8c89e
+--- /dev/null
++++ b/src/page/features/pp-scan/index.ts
+@@ -0,0 +1,123 @@
++import type {
++  ScanPpDraftRequest,
++  ScanPpDraftResponse,
++} from '../../../core/messages';
++import { ppEntityIdFromUrl } from './page';
++
++const ANCHOR_SELECTOR =
++  '[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]';
++const PANEL_ID = 'mhx-pp-draft-scan';
++
++let mounted:
++  | { panel: HTMLElement; anchor: HTMLElement; entityId: string; destroy: () => void }
++  | undefined;
++
++function isScanResponse(value: unknown): value is ScanPpDraftResponse {
++  if (!value || typeof value !== 'object') return false;
++  const result = value as ScanPpDraftResponse;
++  return (
++    result.version === 1 &&
++    ['ok', 'partial', 'unavailable', 'identity-mismatch'].includes(result.status) &&
++    (typeof result.entityId === 'string' || result.entityId === null) &&
++    typeof result.routePath === 'string' &&
++    !!result.general && typeof result.general === 'object' &&
++    !!result.locations && Array.isArray(result.locations.rows) &&
++    !!result.items && Array.isArray(result.items.rows) &&
++    Array.isArray(result.warnings)
++  );
++}
++
++export function unmountPpScan(): void {
++  mounted?.destroy();
++  mounted = undefined;
++}
++
++export function mountPpScan(): void {
++  const entityId = ppEntityIdFromUrl(window.location.href);
++  const anchor = document.querySelector<HTMLElement>(ANCHOR_SELECTOR);
++  if (
++    mounted &&
++    (!mounted.panel.isConnected || mounted.entityId !== entityId ||
++      mounted.anchor !== anchor || !anchor || mounted.panel.nextElementSibling !== anchor)
++  ) unmountPpScan();
++  if (!entityId || !anchor?.parentElement || mounted) return;
++
++  const pageDocument = document;
++  const routePath = window.location.pathname;
++  let generation = 0;
++  const panel = document.createElement('section');
++  panel.id = PANEL_ID;
++  panel.setAttribute('aria-label', 'Current Magento custom-option draft scan');
++  const heading = document.createElement('h2');
++  heading.textContent = 'Current Magento draft (read-only)';
++  const explanation = document.createElement('p');
++  explanation.textContent =
++    'Scans the current unsaved draft. It does not save or change Magento data.';
++  const scanButton = document.createElement('button');
++  scanButton.type = 'button';
++  scanButton.textContent = 'Scan current PP';
++  const status = document.createElement('p');
++  status.setAttribute('role', 'status');
++  status.setAttribute('aria-live', 'polite');
++  status.textContent = 'Scan when the custom-option form has finished loading.';
++  const details = document.createElement('details');
++  const summary = document.createElement('summary');
++  summary.textContent = 'Snapshot';
++  const output = document.createElement('pre');
++  output.setAttribute('aria-label', 'Current custom-option draft snapshot');
++  details.append(summary, output);
++  panel.append(heading, explanation, scanButton, status, details);
++  anchor.parentElement.insertBefore(panel, anchor);
++
++  const stillCurrent = (request: number): boolean =>
++    request === generation && pageDocument === document && panel.isConnected &&
++    anchor.isConnected && document.querySelector(ANCHOR_SELECTOR) === anchor &&
++    window.location.pathname === routePath &&
++    ppEntityIdFromUrl(window.location.href) === entityId;
++  const onDraftChange = (): void => {
++    generation += 1;
++    scanButton.disabled = false;
++    output.textContent = '';
++    status.textContent = 'The draft changed. Scan again to refresh the snapshot.';
++  };
++  const scan = async (): Promise<void> => {
++    const request = ++generation;
++    scanButton.disabled = true;
++    output.textContent = '';
++    status.textContent = 'Reading the current unsaved Magento draft…';
++    try {
++      const payload: ScanPpDraftRequest = { type: 'SCAN_PP_DRAFT' };
++      const response: unknown = await chrome.runtime.sendMessage(payload);
++      if (!stillCurrent(request)) return;
++      if (!isScanResponse(response) || response.entityId !== entityId || response.routePath !== routePath) {
++        status.textContent = 'The scan response was invalid or the page identity changed. Scan again.';
++        return;
++      }
++      status.textContent = `${response.status}: snapshot of Magento entity ${entityId}. Item parent values remain raw; no Notion or location assignment is inferred.`;
++      output.textContent = JSON.stringify(response, null, 2);
++      details.open = true;
++    } catch {
++      if (!stillCurrent(request)) return;
++      status.textContent = 'The scan could not complete. Retry after Magento has finished loading.';
++    } finally {
++      if (stillCurrent(request)) scanButton.disabled = false;
++    }
++  };
++  const onClick = (): void => { void scan(); };
++  scanButton.addEventListener('click', onClick);
++  anchor.addEventListener('input', onDraftChange, true);
++  anchor.addEventListener('change', onDraftChange, true);
++
++  mounted = {
++    panel,
++    anchor,
++    entityId,
++    destroy: () => {
++      generation += 1;
++      scanButton.removeEventListener('click', onClick);
++      anchor.removeEventListener('input', onDraftChange, true);
++      anchor.removeEventListener('change', onDraftChange, true);
++      panel.remove();
++    },
++  };
++}
+diff --git a/src/page/features/pp-scan/page.ts b/src/page/features/pp-scan/page.ts
+new file mode 100644
+index 0000000..49952d8
+--- /dev/null
++++ b/src/page/features/pp-scan/page.ts
+@@ -0,0 +1,331 @@
++import type {
++  PpDraftCollection,
++  PpDraftRow,
++  PpDraftTranslation,
++  PpDraftValue,
++  ScanPpDraftResponse,
++} from '../../../core/messages';
++
++const ROUTE =
++  /\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/(\d+)(?:\/|$)/i;
++export function ppEntityIdFromUrl(url: string): string | null {
++  try {
++    return new URL(url).pathname.match(ROUTE)?.[1] ?? null;
++  } catch {
++    return null;
++  }
++}
++
++/** Runs in Magento's main world and reads only the already-loaded registry provider. */
++export function scanCurrentPpDraft(): ScanPpDraftResponse {
++  const providerName =
++    'toogas_attributesetcustomoptions_attributesetcustomoptions_form.attributesetcustomoptions_form_data_source';
++  const registryModuleName = 'Magento_Ui/js/lib/registry/registry';
++  const maxRows = 100;
++  const maxString = 1024;
++  const maxObjectKeys = 40;
++  const route = window.location.pathname.match(
++    /\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/(\d+)(?:\/|$)/i,
++  );
++  const entityId = route?.[1] ?? null;
++  const base: ScanPpDraftResponse = {
++    version: 1,
++    status: 'unavailable',
++    entityId,
++    routePath: window.location.pathname.slice(0, 512),
++    general: {},
++    locations: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    items: { state: 'missing', rows: [], truncated: false, identifierGaps: 0 },
++    warnings: [],
++  };
++  if (!entityId) {
++    base.warnings.push('This is not a recognized custom-option edit route.');
++    return base;
++  }
++
++  let clipped = false;
++  let sanitized = false;
++  type Read = { found: boolean; value?: unknown };
++  const read = (source: unknown, key: string): Read => {
++    if (
++      source === null ||
++      (typeof source !== 'object' && typeof source !== 'function')
++    ) return { found: false };
++    const descriptor = Object.getOwnPropertyDescriptor(source, key);
++    if (descriptor && !('value' in descriptor)) sanitized = true;
++    return descriptor && 'value' in descriptor
++      ? { found: true, value: descriptor.value }
++      : { found: false };
++  };
++  const path = (source: unknown, keys: string[]): Read => {
++    let current = source;
++    for (const key of keys) {
++      const next = read(current, key);
++      if (!next.found) return { found: false };
++      current = next.value;
++    }
++    return { found: true, value: current };
++  };
++  const safeValue = (
++    value: unknown,
++    seen = new Set<object>(),
++    depth = 0,
++  ): PpDraftValue => {
++    if (value === null || typeof value === 'boolean') return value;
++    if (typeof value === 'number') {
++      if (!Number.isFinite(value)) sanitized = true;
++      return Number.isFinite(value) ? value : null;
++    }
++    if (typeof value === 'string') {
++      if (value.length > maxString) clipped = true;
++      return value.slice(0, maxString);
++    }
++    if (typeof value !== 'object') {
++      sanitized = true;
++      return null;
++    }
++    if (seen.has(value)) {
++      sanitized = true;
++      return '[Circular]';
++    }
++    if (depth >= 4) {
++      clipped = true;
++      return '[Depth limit]';
++    }
++    seen.add(value);
++    if (Array.isArray(value)) {
++      const out: PpDraftValue[] = [];
++      const length = Math.min(value.length, maxRows);
++      if (value.length > length) clipped = true;
++      for (let index = 0; index < length; index += 1) {
++        const item = read(value, String(index));
++        out.push(item.found ? safeValue(item.value, seen, depth + 1) : null);
++      }
++      seen.delete(value);
++      return out;
++    }
++    const out: Record<string, PpDraftValue> = {};
++    const keys: string[] = [];
++    for (const key in value) {
++      if (!Object.prototype.hasOwnProperty.call(value, key)) continue;
++      keys.push(key);
++      if (keys.length > maxObjectKeys) break;
++    }
++    if (keys.length > maxObjectKeys) clipped = true;
++    for (const key of keys.slice(0, maxObjectKeys)) {
++      const item = read(value, key);
++      if (item.found) out[key.slice(0, 80)] = safeValue(item.value, seen, depth + 1);
++    }
++    seen.delete(value);
++    return out;
++  };
++  const fieldValues = (
++    source: unknown,
++    fields: string[],
++  ): Record<string, PpDraftValue> => {
++    const values: Record<string, PpDraftValue> = {};
++    for (const field of fields) {
++      const found = read(source, field);
++      if (found.found) values[field] = safeValue(found.value);
++    }
++    return values;
++  };
++  const translation = (value: unknown): PpDraftTranslation => {
++    const result: PpDraftTranslation = { raw: safeValue(value) };
++    if (typeof value !== 'string' || !value.trim()) return result;
++    if (value.length > maxString) {
++      clipped = true;
++      result.parseError = 'Translation JSON exceeds the scan limit.';
++      return result;
++    }
++    const trimmed = value.trim();
++    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return result;
++    try {
++      result.parsed = safeValue(JSON.parse(value));
++    } catch {
++      result.parseError = 'Invalid translation JSON.';
++    }
++    return result;
++  };
++  const collection = (
++    found: Read,
++    fields: string[],
++    translatedFields: string[],
++    identifierFields: string[],
++  ): PpDraftCollection => {
++    if (!found.found || found.value === null || found.value === undefined) {
++      return { state: 'missing', rows: [], truncated: false, identifierGaps: 0 };
++    }
++    if (!Array.isArray(found.value) && typeof found.value !== 'object') {
++      return { state: 'invalid', rows: [], truncated: false, identifierGaps: 0 };
++    }
++    const source = found.value as object;
++    const keys: string[] = [];
++    if (Array.isArray(source)) {
++      const length = Math.min(source.length, maxRows + 1);
++      for (let index = 0; index < length; index += 1) keys.push(String(index));
++    } else {
++      for (const key in source) {
++        if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
++        keys.push(key);
++        if (keys.length > maxRows) break;
++      }
++    }
++    const rows: PpDraftRow[] = [];
++    const truncated = keys.length > maxRows;
++    let identifierGaps = 0;
++    for (let index = 0; index < Math.min(keys.length, maxRows); index += 1) {
++      const key = keys[index];
++      if (key === undefined) continue;
++      const row = read(source, key);
++      if (!row.found || !row.value || typeof row.value !== 'object') continue;
++      const values = fieldValues(row.value, fields);
++      if (Object.keys(values).length === 0) continue;
++      if (identifierFields.some((field) => {
++        const value = read(row.value, field);
++        return !value.found || value.value === null || value.value === undefined || value.value === '';
++      })) identifierGaps += 1;
++      const translations: Record<string, PpDraftTranslation> = {};
++      for (const field of translatedFields) {
++        const value = read(row.value, field);
++        if (!value.found) continue;
++        translations[field] = translation(value.value);
++      }
++      rows.push({ position: index, values, translations });
++    }
++    return { state: 'available', rows, truncated, identifierGaps };
++  };
++
++  try {
++    const requireFn = (window as Window & { require?: unknown }).require;
++    const contexts = read(requireFn, 's');
++    const context = path(contexts.value, ['contexts', '_']);
++    const defined = read(context.value, 'defined');
++    const registryModule = read(defined.value, registryModuleName);
++    const get = read(registryModule.value, 'get');
++    if (!contexts.found || !context.found || !defined.found || !registryModule.found || typeof get.value !== 'function') {
++      base.warnings.push('The already-loaded Magento registry is unavailable.');
++      return base;
++    }
++    const provider = (get.value as (name: string) => unknown).call(
++      registryModule.value,
++      providerName,
++    );
++    if (!provider) {
++      base.warnings.push('The Magento custom-option provider is not loaded.');
++      return base;
++    }
++    const dataRead = read(provider, 'data');
++    if (!dataRead.found || !dataRead.value || typeof dataRead.value !== 'object') {
++      base.warnings.push('The Magento provider data is unavailable.');
++      return base;
++    }
++    const data = dataRead.value;
++    const providerId = read(data, 'attributesetcustomoptions_id');
++    if (providerId.found) base.providerEntityId = safeValue(providerId.value);
++    if (providerId.found && String(providerId.value) !== entityId) {
++      base.status = 'identity-mismatch';
++      base.warnings.push('The route entity and provider entity do not match.');
++      return base;
++    }
++
++    const general = path(data, ['general']);
++    const generalValid = general.found && !!general.value && typeof general.value === 'object';
++    if (generalValid) {
++      base.general = fieldValues(general.value, [
++        'option_title', 'attribute_set_id', 'option_type', 'is_required',
++        'sort_order', 'description', 'info_message', 'placeholder', 'price',
++        'max_characters', 'allowed_extensions', 'translationsData', 'translations',
++      ]);
++      const translations = read(general.value, 'translationsData');
++      if (translations.found) base.generalTranslations = translation(translations.value);
++      const setId = read(general.value, 'attribute_set_id');
++      if (setId.found) base.generalAttributeSetId = safeValue(setId.value);
++    } else {
++      base.warnings.push('General provider data is missing or invalid.');
++    }
++    const providerSetId = read(data, 'attribute_set_id');
++    if (providerSetId.found) base.providerAttributeSetId = safeValue(providerSetId.value);
++
++    const locationFields = [
++      'record_id', 'key_id', 'name', 'description', 'img', 'price', 'sort',
++      'store_view', 'visible', 'is_visible', 'hidden', 'disabled', 'delete',
++    ];
++    const itemFields = [
++      'record_id', 'parent', 'name', 'name_option', 'price', 'sort',
++      'store_view', 'visible', 'is_visible', 'hidden', 'disabled', 'delete',
++    ];
++    base.locations = collection(
++      path(data, ['options', 'sub_options', 'sub_options']),
++      locationFields,
++      ['name', 'description'],
++      ['record_id', 'key_id'],
++    );
++    base.items = collection(
++      path(data, ['options', 'sub_options_items', 'sub_options_items']),
++      itemFields,
++      ['name'],
++      ['record_id', 'parent'],
++    );
++    base.scannedAt = Date.now();
++    base.status = 'ok';
++    if (!generalValid || base.locations.state !== 'available' || base.items.state !== 'available') {
++      base.status = 'partial';
++      if (base.locations.state !== 'available') base.warnings.push(`Location collection is ${base.locations.state}.`);
++      if (base.items.state !== 'available') base.warnings.push(`Item collection is ${base.items.state}.`);
++    }
++    if (base.generalTranslations?.parseError) {
++      base.status = 'partial';
++      base.warnings.push(base.generalTranslations.parseError);
++    }
++    if ([...base.locations.rows, ...base.items.rows].some((row) =>
++      Object.values(row.translations).some((value) => Boolean(value.parseError)),
++    )) {
++      base.status = 'partial';
++      base.warnings.push('One or more row translation values contain invalid JSON.');
++    }
++    if (base.locations.identifierGaps || base.items.identifierGaps) {
++      base.status = 'partial';
++      base.warnings.push(
++        `Rows with missing or blank identity/parent fields: locations ${base.locations.identifierGaps}, items ${base.items.identifierGaps}.`,
++      );
++    }
++    if (base.locations.truncated || base.items.truncated || clipped) {
++      base.status = 'partial';
++      base.warnings.push('The snapshot reached a safety limit; some values or rows may be truncated.');
++    }
++    if (sanitized) {
++      base.status = 'partial';
++      base.warnings.push('Some provider values were omitted or sanitized because they were not safe JSON values.');
++    }
++    const duplicateValues = (rows: PpDraftRow[], field: string): boolean => {
++      const seen = new Set<string>();
++      for (const row of rows) {
++        const value = row.values[field];
++        if (typeof value !== 'string' && typeof value !== 'number') continue;
++        const key = String(value);
++        if (seen.has(key)) return true;
++        seen.add(key);
++      }
++      return false;
++    };
++    if (
++      duplicateValues(base.locations.rows, 'record_id') ||
++      duplicateValues(base.locations.rows, 'key_id') ||
++      duplicateValues(base.items.rows, 'record_id')
++    ) {
++      base.status = 'partial';
++      base.warnings.push('Duplicate row identifiers were found; review relationships manually.');
++    }
++    base.warnings.push('Item parent values are preserved raw; this scan does not infer location assignments.');
++    base.warnings.push('Absent provider fields are omitted; explicit blank values remain visible as empty strings.');
++    return base;
++  } catch {
++    base.status = 'unavailable';
++    base.general = {};
++    base.locations = { state: 'missing', rows: [], truncated: false, identifierGaps: 0 };
++    base.items = { state: 'missing', rows: [], truncated: false, identifierGaps: 0 };
++    base.warnings.push('The provider could not be read safely. Retry the scan after Magento finishes loading.');
++    return base;
++  }
++}
+diff --git a/tests/ppScan.test.ts b/tests/ppScan.test.ts
+new file mode 100644
+index 0000000..a0d071a
+--- /dev/null
++++ b/tests/ppScan.test.ts
+@@ -0,0 +1,253 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++// @ts-expect-error - jsdom ships no types and is only used by DOM tests.
++import { JSDOM } from 'jsdom';
++
++import type { ScanPpDraftResponse } from '../src/core/messages/ui';
++import { mountPpScan, unmountPpScan } from '../src/page/features/pp-scan';
++import { scanCurrentPpDraft } from '../src/page/features/pp-scan/page';
++import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
++
++const ROUTE =
++  'https://bestofgifts.pt/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/session';
++const REGISTRY_MODULE = 'Magento_Ui/js/lib/registry/registry';
++const PROVIDER_NAME =
++  'toogas_attributesetcustomoptions_attributesetcustomoptions_form.attributesetcustomoptions_form_data_source';
++
++function withProvider<T>(data: unknown, run: (dom: any) => T, present = true): T {
++  const dom = new JSDOM('<!doctype html><main id="root"></main>', { url: ROUTE });
++  const registry = {
++    get(name: string) { return present && name === PROVIDER_NAME ? { data } : undefined; },
++  };
++  const requireFn = Object.assign(() => undefined, {
++    s: { contexts: { _: { defined: { [REGISTRY_MODULE]: registry } } } },
++  });
++  Object.defineProperty(dom.window, 'require', { value: requireFn, configurable: true });
++  const oldWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
++  Object.defineProperty(globalThis, 'window', { value: dom.window, configurable: true });
++  try { return run(dom); }
++  finally {
++    dom.window.close();
++    if (oldWindow) Object.defineProperty(globalThis, 'window', oldWindow);
++    else Reflect.deleteProperty(globalThis, 'window');
++  }
++}
++
++function liveData(): Record<string, unknown> {
++  return {
++    attributesetcustomoptions_id: '966',
++    attribute_set_id: '479',
++    secret: 'must not leave the provider',
++    general: {
++      option_title: 'PP profile',
++      attribute_set_id: ['479'],
++      option_type: 6,
++      sort_order: '',
++      translationsData: '{"1":{"option_title":"PT"}}',
++    },
++    options: {
++      sub_options: { sub_options: [
++        { record_id: 0, key_id: 'face-key', name: '{"1":"Face 1"}', sort: '', visible: false, hidden: true, disabled: true, delete: true, secret: 'strip' },
++        { record_id: 1, key_id: 'face-key-2', name: '{"1":"Face 2"}', sort: 0 },
++      ] },
++      sub_options_items: { sub_options_items: [
++        { record_id: 0, parent: 'face-key', name: '', name_option: '6', price: 0, sort: 0, disabled: true, delete: false },
++      ] },
++    },
++  };
++}
++
++test('reads allowlisted provider fields even when option tables are not rendered', () => {
++  withProvider(liveData(), (dom) => {
++    dom.window.document.body.innerHTML += '<table data-index="sub_options"><tbody><tr><td>DOM-only false row</td></tr></tbody></table><div class="mhx-items-panel">clone</div>';
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'ok');
++    assert.equal(result.entityId, '966');
++    assert.equal(result.providerAttributeSetId, '479');
++    assert.deepEqual(result.generalAttributeSetId, ['479']);
++    assert.equal(result.locations.rows.length, 2);
++    assert.equal(result.locations.rows[0]?.values.sort, '');
++    assert.equal(result.locations.rows[1]?.values.sort, 0);
++    assert.equal(result.locations.rows[0]?.values.disabled, true);
++    assert.equal(result.locations.rows[0]?.values.visible, false);
++    assert.equal(result.locations.rows[0]?.values.hidden, true);
++    assert.equal(result.locations.rows[0]?.values.delete, true);
++    assert.deepEqual(result.locations.rows[0]?.translations.name?.parsed, { '1': 'Face 1' });
++    assert.equal(result.items.rows[0]?.values.parent, 'face-key');
++    assert.equal(result.items.rows[0]?.values.name, '');
++    assert.equal(result.items.rows[0]?.values.price, 0);
++    assert.equal(result.items.rows[0]?.values.disabled, true);
++    assert.equal(result.items.rows[0]?.values.delete, false);
++    assert.ok(result.warnings.some((warning) => warning.includes('does not infer')));
++    assert.ok(!JSON.stringify(result).includes('must not leave'));
++    assert.ok(!JSON.stringify(result).includes('strip'));
++  });
++});
++
++test('distinguishes missing collections from present empty collections', () => {
++  withProvider({ ...liveData(), options: { sub_options: { sub_options: [] } } }, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.locations.state, 'available');
++    assert.deepEqual(result.locations.rows, []);
++    assert.equal(result.items.state, 'missing');
++    assert.equal(result.status, 'partial');
++  });
++});
++
++test('rejects provider identity mismatch without returning provider rows', () => {
++  withProvider({ ...liveData(), attributesetcustomoptions_id: '967' }, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'identity-mismatch');
++    assert.equal(result.entityId, '966');
++    assert.equal(result.providerEntityId, '967');
++    assert.deepEqual(result.locations.rows, []);
++  });
++});
++
++test('reports a missing provider and duplicate identifiers without guessing parents', () => {
++  withProvider({}, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'unavailable');
++    assert.ok(result.warnings.some((warning) => warning.includes('provider is not loaded')));
++  }, false);
++  const data = liveData() as any;
++  data.options.sub_options.sub_options[1].key_id = 'face-key';
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.ok(result.warnings.some((warning) => warning.includes('Duplicate row identifiers')));
++    assert.equal(result.items.rows[0]?.values.parent, 'face-key');
++    assert.ok(result.warnings.some((warning) => warning.includes('does not infer location assignments')));
++  });
++});
++
++test('reports missing identity and parent fields while preserving explicit blanks', () => {
++  const data = liveData() as any;
++  delete data.options.sub_options.sub_options[0].key_id;
++  delete data.options.sub_options_items.sub_options_items[0].parent;
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.equal(result.locations.identifierGaps, 1);
++    assert.equal(result.items.identifierGaps, 1);
++    assert.equal(result.locations.rows[0]?.values.sort, '');
++    assert.ok(result.warnings.some((warning) => warning.includes('locations 1, items 1')));
++  });
++});
++
++test('reports malformed translation JSON and bounds oversized collections', () => {
++  const data = liveData() as any;
++  data.general.translationsData = '{invalid';
++  data.options.sub_options.sub_options[0].name = '{invalid';
++  data.options.sub_options.sub_options.push(...Array.from({ length: 110 }, (_, i) => ({ record_id: i + 2, key_id: `k${i}` })));
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.equal(result.locations.rows.length, 100);
++    assert.equal(result.locations.truncated, true);
++    assert.equal(result.generalTranslations?.parseError, 'Invalid translation JSON.');
++    assert.equal(result.locations.rows[0]?.translations.name?.parseError, 'Invalid translation JSON.');
++  });
++});
++
++test('sanitizes non-JSON provider values inside allowlisted fields', () => {
++  const data = liveData() as any;
++  const cycle: any = {};
++  cycle.self = cycle;
++  data.general.placeholder = cycle;
++  data.general.translations = { '1': { option_title: 'PT', unsafe: () => 'secret' } };
++  withProvider(data, () => {
++    const result = scanCurrentPpDraft();
++    assert.equal(result.status, 'partial');
++    assert.deepEqual(result.general.placeholder, { self: '[Circular]' });
++    assert.deepEqual(result.general.translations, { '1': { option_title: 'PT', unsafe: null } });
++    assert.ok(!JSON.stringify(result).includes('secret'));
++  });
++});
++
++test('rejects non-top-frame and unsupported-host requests before tab access or injection', async () => {
++  const oldChrome = Object.getOwnPropertyDescriptor(globalThis, 'chrome');
++  let tabLookups = 0;
++  let injections = 0;
++  const responses: unknown[] = [];
++  Object.defineProperty(globalThis, 'chrome', {
++    value: {
++      tabs: { get: async () => { tabLookups += 1; throw new Error('must not read this tab'); } },
++      scripting: { executeScript: async () => { injections += 1; return []; } },
++    },
++    configurable: true,
++  });
++  try {
++    for (const context of [
++      { senderTabId: 5, senderUrl: ROUTE, senderFrameId: 2 },
++      { senderTabId: 5, senderUrl: ROUTE.replace('bestofgifts.pt', 'evil.example'), senderFrameId: 0 },
++    ]) {
++      assert.equal(handleUiMessage(
++        { type: 'SCAN_PP_DRAFT' },
++        { ...context, sendResponse: (value) => { responses.push(value); } },
++      ), true);
++    }
++    await Promise.resolve();
++    await Promise.resolve();
++    assert.equal(responses.length, 2);
++    assert.ok(responses.every((response) => (response as ScanPpDraftResponse).status === 'unavailable'));
++    assert.equal(tabLookups, 0);
++    assert.equal(injections, 0);
++  } finally {
++    if (oldChrome) Object.defineProperty(globalThis, 'chrome', oldChrome);
++    else Reflect.deleteProperty(globalThis, 'chrome');
++  }
++});
++
++test('does not auto-scan and drops responses after draft or native anchor changes', async () => {
++  const dom = new JSDOM(
++    '<form><div data-bind="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"><input></div></form>',
++    { url: ROUTE },
++  );
++  const oldWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
++  const oldDocument = Object.getOwnPropertyDescriptor(globalThis, 'document');
++  const oldChrome = Object.getOwnPropertyDescriptor(globalThis, 'chrome');
++  let submitCount = 0;
++  Object.defineProperty(globalThis, 'window', { value: dom.window, configurable: true });
++  Object.defineProperty(globalThis, 'document', { value: dom.window.document, configurable: true });
++  let resolveMessage!: (value: unknown) => void;
++  const sent: unknown[] = [];
++  Object.defineProperty(globalThis, 'chrome', {
++    value: { runtime: { sendMessage: (message: unknown) => {
++      sent.push(message);
++      return new Promise((resolve) => { resolveMessage = resolve; });
++    } } },
++    configurable: true,
++  });
++  try {
++    dom.window.document.querySelector('form')?.addEventListener('submit', () => { submitCount += 1; });
++    mountPpScan();
++    assert.equal(sent.length, 0);
++    const button = dom.window.document.querySelector('button');
++    assert.ok(button);
++    assert.equal(button.type, 'button');
++    button.click();
++    assert.equal(submitCount, 0);
++    assert.equal(sent.length, 1);
++    dom.window.document.querySelector('input')?.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
++    resolveMessage({ version: 1, status: 'ok', entityId: '966', routePath: dom.window.location.pathname, general: {}, locations: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, items: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, warnings: [] } satisfies ScanPpDraftResponse);
++    await new Promise((resolve) => setTimeout(resolve, 0));
++    assert.equal(dom.window.document.querySelector('pre')?.textContent, '');
++    assert.match(dom.window.document.querySelector('[role="status"]')?.textContent ?? '', /draft changed/i);
++
++    const secondButton = dom.window.document.querySelector<HTMLButtonElement>(`#mhx-pp-draft-scan button`);
++    assert.ok(secondButton);
++    secondButton.click();
++    dom.window.document.querySelector('[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]')?.remove();
++    mountPpScan();
++    resolveMessage({ version: 1, status: 'ok', entityId: '966', routePath: dom.window.location.pathname, general: {}, locations: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, items: { state: 'available', rows: [], truncated: false, identifierGaps: 0 }, warnings: [] } satisfies ScanPpDraftResponse);
++    await new Promise((resolve) => setTimeout(resolve, 0));
++    assert.equal(dom.window.document.querySelector('#mhx-pp-draft-scan'), null);
++  } finally {
++    unmountPpScan();
++    dom.window.close();
++    if (oldWindow) Object.defineProperty(globalThis, 'window', oldWindow); else Reflect.deleteProperty(globalThis, 'window');
++    if (oldDocument) Object.defineProperty(globalThis, 'document', oldDocument); else Reflect.deleteProperty(globalThis, 'document');
++    if (oldChrome) Object.defineProperty(globalThis, 'chrome', oldChrome); else Reflect.deleteProperty(globalThis, 'chrome');
++  }
++});

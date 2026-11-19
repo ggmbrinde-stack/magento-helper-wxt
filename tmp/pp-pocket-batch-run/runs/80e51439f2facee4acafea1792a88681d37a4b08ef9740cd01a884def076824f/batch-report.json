@@ -1,0 +1,182 @@
+{
+  "pages": {
+    "558": {
+      "code": "558",
+      "confirmed_receipts": [
+        {
+          "code": "558",
+          "operation": "558-pocket-row-1",
+          "saved_state_sha256": "5f796f1d543ac73c1557dbc994b35d3d6bd53a80f6de9b2e2f11e41bcde31d96",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "558",
+          "operation": "558-pocket-property-1",
+          "saved_state_sha256": "ec22627ffb661e123b817ae37501efc68b24e4c3af6928ddb1b7cf1e21690dbb",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "558",
+          "operation": "558-review-status",
+          "saved_estado": "Para revisão",
+          "saved_state_sha256": "37cd5d58a64f15ce4375bf06095f90633975efd880cc7aa27d1d1e65ea24bdfc",
+          "status": "SUCCEEDED"
+        }
+      ],
+      "outcome": "SUCCESS",
+      "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+      "pending_receipts": [],
+      "readback": {
+        "edited_at": "2026-11-18T21:34:14.338Z",
+        "estado": "Para revisão",
+        "observed_body_sha256": "84cd20a3fe08a54c93d483a9bf11db5b3b39300fd0a716e1eef5e30ca768ad51",
+        "properties_sha256": "ea4eb29fab680291fb5066a583f0b4cff7e1b6bc664d65f1f092cf264ea57eb0"
+      },
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "37cd5d58a64f15ce4375bf06095f90633975efd880cc7aa27d1d1e65ea24bdfc"
+    },
+    "661": {
+      "code": "661",
+      "confirmed_receipts": [
+        {
+          "code": "661",
+          "operation": "661-pocket-row-1",
+          "saved_state_sha256": "09d5bbe35341baabd6a473a29283853feb358aa3078b12e52b9f347352619a86",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "661",
+          "operation": "661-pocket-row-2",
+          "saved_state_sha256": "0f938fed69183d46a4678162b10f32f0cd62132a41c343de5eb500469613672e",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "661",
+          "operation": "661-review-status",
+          "saved_estado": "Para revisão",
+          "saved_state_sha256": "1f31afaba9445cded512261595af0921caee7aae96bceed2b0a21f81da4df7e7",
+          "status": "SUCCEEDED"
+        }
+      ],
+      "outcome": "SUCCESS",
+      "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16",
+      "pending_receipts": [],
+      "readback": {
+        "edited_at": "2026-11-18T21:35:10.125Z",
+        "estado": "Para revisão",
+        "observed_body_sha256": "4ea7d88270c76c77a06f4d4eaf756a5ece2927e5e5ebefa0c5f086acb4da04d8",
+        "properties_sha256": "b4c6ce5f18df0a23073641c3413d32563c9dde7bb106cdf97b7ed48c8f7a0e21"
+      },
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "1f31afaba9445cded512261595af0921caee7aae96bceed2b0a21f81da4df7e7"
+    },
+    "662": {
+      "code": "662",
+      "confirmed_receipts": [
+        {
+          "code": "662",
+          "operation": "662-pocket-row-1",
+          "saved_state_sha256": "b96eb526b4b7ba18e74d0f584930bb700ed7fe037f911b3a2f72f1c6e688d5d2",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "662",
+          "operation": "662-pocket-row-2",
+          "saved_state_sha256": "10ec2791543dd4587880dbc2e031cca87e76ad175964cfa18023f577e3f0a426",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "662",
+          "operation": "662-pocket-property-1",
+          "saved_state_sha256": "3e983f7d6beeafe8748d7d0cc8e2d5a216e7fc03b500091e379e6857564339d4",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "662",
+          "operation": "662-review-status",
+          "saved_estado": "Para revisão",
+          "saved_state_sha256": "1f1cda50b89d7e7b0bd850603d1cabc0be32b9a427756653dc14b52f53718311",
+          "status": "SUCCEEDED"
+        }
+      ],
+      "outcome": "SUCCESS",
+      "page_id": "ddbb6705ae1f820cb837013a1864964a",
+      "pending_receipts": [],
+      "readback": {
+        "edited_at": "2026-11-18T21:36:18.987Z",
+        "estado": "Para revisão",
+        "observed_body_sha256": "d45c46525175cc81ac20fcfcf6635cb45065ef87782123a4ed93cdd062855d6c",
+        "properties_sha256": "17fc1586b182d99eb28d3017388512ff80fc0c4b6bbd855e5324b094bf227980"
+      },
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "1f1cda50b89d7e7b0bd850603d1cabc0be32b9a427756653dc14b52f53718311"
+    }
+  },
+  "plan_sha256": "82f8dbf4370ed4a0c3ee65db4253db332df91109f6916842203f3a0aa6aeb0b2",
+  "receipts": [
+    {
+      "code": "558",
+      "operation": "558-pocket-row-1",
+      "saved_state_sha256": "5f796f1d543ac73c1557dbc994b35d3d6bd53a80f6de9b2e2f11e41bcde31d96",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "558",
+      "operation": "558-pocket-property-1",
+      "saved_state_sha256": "ec22627ffb661e123b817ae37501efc68b24e4c3af6928ddb1b7cf1e21690dbb",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "558",
+      "operation": "558-review-status",
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "37cd5d58a64f15ce4375bf06095f90633975efd880cc7aa27d1d1e65ea24bdfc",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "661",
+      "operation": "661-pocket-row-1",
+      "saved_state_sha256": "09d5bbe35341baabd6a473a29283853feb358aa3078b12e52b9f347352619a86",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "661",
+      "operation": "661-pocket-row-2",
+      "saved_state_sha256": "0f938fed69183d46a4678162b10f32f0cd62132a41c343de5eb500469613672e",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "661",
+      "operation": "661-review-status",
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "1f31afaba9445cded512261595af0921caee7aae96bceed2b0a21f81da4df7e7",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "662",
+      "operation": "662-pocket-row-1",
+      "saved_state_sha256": "b96eb526b4b7ba18e74d0f584930bb700ed7fe037f911b3a2f72f1c6e688d5d2",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "662",
+      "operation": "662-pocket-row-2",
+      "saved_state_sha256": "10ec2791543dd4587880dbc2e031cca87e76ad175964cfa18023f577e3f0a426",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "662",
+      "operation": "662-pocket-property-1",
+      "saved_state_sha256": "3e983f7d6beeafe8748d7d0cc8e2d5a216e7fc03b500091e379e6857564339d4",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "662",
+      "operation": "662-review-status",
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "1f1cda50b89d7e7b0bd850603d1cabc0be32b9a427756653dc14b52f53718311",
+      "status": "SUCCEEDED"
+    }
+  ],
+  "status": "COMPLETE"
+}

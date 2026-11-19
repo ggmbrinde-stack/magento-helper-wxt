@@ -1,0 +1,18 @@
+{
+  "authorisation": "EXPLICIT_HUMAN_APPROVAL",
+  "authorisation_reference": "Direct human scope: confirmed four pocket corrections, Para revisão after verified success, Erro with durable reason on error, skip failed PP and continue next approved independent PP",
+  "plan_sha256": "14e2f3f867eb430e46f58ced9560954e5b9860b52ecdfccbb1ba536d2e8ea962",
+  "implementation_sha256": "ff4fca13269a007af0ed59829053036df3b7e23623b3b5104d3ee6681a4df06e",
+  "review_reference": "PP-POCKET-BATCH-V1-20261118-ACCEPTED",
+  "approved_codes": [
+    "430"
+  ],
+  "approved_operation_ids": [
+    "430-pocket-row-1",
+    "430-pocket-row-2",
+    "430-pocket-property-1",
+    "430-review-status",
+    "430-error-status"
+  ],
+  "condition": "Actual independent review required; no invented acceptance reference"
+}

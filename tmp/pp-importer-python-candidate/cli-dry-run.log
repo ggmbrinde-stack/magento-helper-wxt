@@ -1,0 +1,21 @@
+Fonte de dados de destino: 00000000-0000-0000-0000-000000000001
+{
+  "blocos": 2,
+  "codigos_distintos": 2,
+  "blocos_bloqueados": 2,
+  "blocos_com_observacoes": 0,
+  "titulos_sem_codigo": 0,
+  "opcoes": 10,
+  "codigos_repetidos": {},
+  "folhas_fora_do_catalogo_de_impressao": []
+}
+[
+  {
+    "codigo": "428",
+    "origem": "PPs BRINDE TÊXTIL!M9:P20",
+    "bloqueios": [
+      "Focused offline preview only; full-workbook extraction and review required"
+    ]
+  }
+]
+Pré-visualização: nenhuma alteração enviada ao Notion.

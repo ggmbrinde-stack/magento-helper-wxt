@@ -1,0 +1,17 @@
+{
+  "runtime_bytes_identical_to_v1": true,
+  "canonical_plan_hashes": {
+    "full": "fa2a8f3c34575a32f94d5aeffe1d072d8a653f7e5a421babd717fa24c52c178e",
+    "pilot": "11f0555bc14cfa54039db1f0c419a83f0bd3023ec81ccd7656dbfc3188dfbd33",
+    "rest": "dbf3d075863991eb5a648509261b0a4e6e127a436ce051294bcd0df0db76902a"
+  },
+  "changed_source_files": [
+    "README.md",
+    "tests/test_batch.py",
+    "tests/test_method.py",
+    "tests/test_pocket.py"
+  ],
+  "patch_reconstructs_exact_source": true,
+  "bytecode_caches_excluded": true,
+  "runtime_max_journal_temp_path_characters": 196
+}

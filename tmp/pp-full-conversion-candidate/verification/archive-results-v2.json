@@ -1,0 +1,14 @@
+{
+  "zip_sha256": "36a9241f8e751dd9488ef9a51a762c1755916a495c9afada13b353bd9ee815cd",
+  "manifest_sha256": "a66b26f10f9361eca92e6d8355510955e2dcd04078188d9f3af714f9a0f776f7",
+  "implementation_sha256": "dafc80c641d650fb9311a66cd6c3298c229e2775f8bb8d2e43acc42b1178a676",
+  "plans": {
+    "pilot39": "a203c32efa2d97c1f367fbd402c75888abc73d6bf5a77e71d7de9d2542d70887",
+    "representative": "5af25462abc9e16a37dc502d2085826a28bbb5a2a2f39e4a068495eb9f66667c"
+  },
+  "focused_python_tests": 6,
+  "passed": true,
+  "archive_hashes_verified": true,
+  "v1_manifest_unchanged": true,
+  "v1_zip_unchanged": true
+}

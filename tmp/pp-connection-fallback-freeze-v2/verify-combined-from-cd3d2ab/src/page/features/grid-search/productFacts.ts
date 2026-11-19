@@ -1,0 +1,715 @@
+/**
+ * Read the two facts the resolver cannot get from the storefront: the PP and the
+ * assigned category path.
+ *
+ * PP is not a field of its own in this store. It is encoded in the Attribute Set
+ * name, e.g. `AS>PP0957_CONJ ESCRITA 2 Peças - ...`. That is the value shown in
+ * the product edit header, so it is read from the Attribute Set control (or its
+ * static label/value form once Magento locks it).
+ *
+ * Categories are the checked nodes of the Categories tab. On a tab the
+ * extension owns (`activateCategoryTab`) the reader may click the tab, because
+ * Magento loads its content over AJAX; on the operator's own tab it never
+ * navigates - it reads whatever is already in the DOM.
+ *
+ * Pure DOM reading. Nothing here saves, clicks a category, or changes a value.
+ */
+
+import type { ResolverMagentoFacts } from '../../../shared/resolver';
+
+const ATTRIBUTE_SET_SELECT = [
+  'select[name="product[attribute_set_id]"]',
+  'select[name="attribute_set_id"]',
+  'select#attribute_set_id',
+].join(', ');
+
+/**
+ * Magento 2.4.7+ shows the set as a text field with a "change" dialog instead
+ * of a dropdown, so the name arrives as a plain input value. Themes also render
+ * it as a custom picker, so the control is matched by name or id, not by tag.
+ */
+const ATTRIBUTE_SET_INPUT = [
+  '[name="attribute-set-name"]',
+  '#attribute-set-name',
+  '[name="attribute_set_name"]',
+  '[id$="attribute-set-name" i]',
+].join(', ');
+
+/** Value of any control: a select's label, an input's value, else its text. */
+function controlValue(node: Element | null): string {
+  if (!node) return '';
+  if (node instanceof HTMLSelectElement) {
+    return optionsText(node) || squash(node.value);
+  }
+  if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
+    return squash(node.value) || squash(node.defaultValue);
+  }
+  return squash(node.textContent);
+}
+
+/**
+ * The "change attribute set" dialog. It holds a select named `attribute-set-name`
+ * whose options are every set in the store, and its selection is the dialog's
+ * starting point (`Default`), not the product's set. Reading it reported a value
+ * that exists on the page but describes nothing, so it is excluded everywhere.
+ */
+const ATTRIBUTE_SET_DIALOG = [
+  '[data-role="affected-attribute-set-selector"]',
+  '.affected-attribute-set',
+  '#choose-affected-attribute-set',
+].join(', ');
+
+/**
+ * Any modal/overlay body. The set picker is a modal in every build we support,
+ * and a modal is never the product's own field - whatever its classes are
+ * called. Matching only the known dialog wrappers missed builds that render the
+ * picker as a plain `.admin__modal`, whose select then reported its placeholder
+ * ("All Options") as if it were the product's set.
+ */
+const MODAL = [
+  '.admin__modal',
+  '[data-role="modal"]',
+  '.modal-slide',
+  '.modal-popup',
+  '.ui-dialog',
+].join(', ');
+
+function inModal(node: Element | null): boolean {
+  return Boolean(node?.closest(MODAL));
+}
+
+function inSetChangeDialog(node: Element | null): boolean {
+  return Boolean(node?.closest(ATTRIBUTE_SET_DIALOG)) || inModal(node);
+}
+
+/** Is this node inside something the markup labels as an attribute-set widget? */
+function inAttributeSetWidget(node: Element): boolean {
+  let current: Element | null = node;
+  for (let depth = 0; depth < 6 && current; depth += 1) {
+    if (/attribute[_-]?set/i.test(`${current.id} ${current.className}`)) return true;
+    current = current.parentElement;
+  }
+  return false;
+}
+
+/**
+ * The current choice of a custom attribute-set picker: the option a theme marks
+ * as selected, but only inside a widget whose own id/class names the set. A
+ * picked option from any other widget would be a wrong value, not a fallback.
+ */
+function selectedSetOption(): string {
+  const options = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      '[aria-selected="true"], [aria-checked="true"], option:checked',
+    ),
+  );
+  for (const option of options) {
+    if (option instanceof HTMLOptionElement && !option.selected) continue;
+    if (inSetChangeDialog(option)) continue;
+    if (!inAttributeSetWidget(option)) continue;
+    // The picker's own label ("All Options", "Default") is not a product value.
+    const text = cleanSetName(option.textContent);
+    if (text) return text;
+  }
+  return '';
+}
+
+const CATEGORY_TAB_LABEL =
+  /^(categories|categorias|categorías|catégories|kategorien)$/i;
+
+/** Product-edit category roots seen across Magento versions/themes. */
+const CATEGORY_ROOTS = [
+  '#product-categories',
+  '[data-role="product-categories"]',
+  '.category-tree',
+  '.categories-tree',
+  '#category-tree',
+].join(', ');
+
+/** Checkbox names used by the product category tree across Magento builds. */
+const CATEGORY_BOX_SELECTORS = [
+  'input[type="checkbox"][name="category_ids[]"]',
+  'input[type="checkbox"][name="product[categories][]"]',
+  'input[type="checkbox"][name="product[category_ids][]"]',
+  'input[type="checkbox"][name="add_category_ids[]"]',
+  'input.category-checkbox',
+  'input[type="checkbox"][name*="categor" i]',
+];
+
+export interface ReadProductFactsOptions {
+  /**
+   * Activate the Categories tab when its tree is not in the DOM. Only pass true
+   * for a tab the extension opened and will close.
+   */
+  activateCategoryTab?: boolean;
+}
+
+/** Parse `PP0957`, `PP-957`, `PP 957` out of an Attribute Set name. */
+export function ppCodeFromAttributeSet(name: string): string {
+  const match = /(?:^|[^A-Za-z0-9])[\s>_:.-]*PP\s*[-_ ]?(\d{1,6})(?!\d)/i.exec(name ?? '');
+  return match?.[1] ?? '';
+}
+
+/** PP codes compare by number: `0957` and `957` are the same profile. */
+export function samePpCode(a: string, b: string): boolean {
+  const left = Number.parseInt((a ?? '').replace(/\D+/g, ''), 10);
+  const right = Number.parseInt((b ?? '').replace(/\D+/g, ''), 10);
+  if (!Number.isFinite(left) || !Number.isFinite(right)) {
+    return (a ?? '').trim().toLowerCase() === (b ?? '').trim().toLowerCase();
+  }
+  return left === right;
+}
+
+function squash(raw: string | null | undefined): string {
+  return (raw ?? '').replace(/\s+/g, ' ').trim();
+}
+
+/** Remove Magento scope hints and the required asterisk from a label. */
+function fieldLabelText(raw: string | null | undefined): string {
+  return squash(raw)
+    .replace(/\s*\((?:global|store view|website|all store views)\)\s*$/i, '')
+    .replace(/\s*\[[^\]]*\]\s*$/g, '')
+    .replace(/\s*\*+\s*$/, '')
+    .trim();
+}
+
+function optionsText(select: HTMLSelectElement): string {
+  const option = select.options[select.selectedIndex];
+  const text = squash(option?.textContent) || squash(option?.value);
+  return /^(select\.{0,3}|--\s*please select\s*--|-)$/i.test(text) ? '' : text;
+}
+
+/** Text of a field's visible value when it is not an input/select. */
+function staticFieldValue(field: Element): string {
+  const control =
+    field.querySelector<HTMLElement>('.admin__field-control') ??
+    field.querySelector<HTMLElement>('[data-role="field-value"]');
+  return control ? staticFieldText(control) : '';
+}
+
+/** The label and nothing else: "Choose existing Attribute Set" is not it. */
+const ATTRIBUTE_SET_LABEL_ONLY =
+  /^(?:attribute\s*set|conjunto\s+de\s+atributos|jeu\s+d'?attributs)\s*:?\s*$/i;
+
+/** The field container Magento gives the set, even when its label is hidden. */
+const ATTRIBUTE_SET_FIELD = [
+  '[data-index="attribute_set_id"]',
+  '[data-index="attribute-set-name"]',
+  '.field-attribute_set_id',
+  '.field-attribute-set-name',
+].join(', ');
+
+/** Picker words that are never a set name. */
+const NOT_A_SET_NAME =
+  /^(?:all options|all|any|none|no|yes|select\.{0,3}|--\s*please select\s*--|please select(?:\s+\w+)*|choose(?:\s+\w+)*|all store views|all websites|-+|—|–)\s*:?\s*$/i;
+
+/** Text inside a block with its controls removed (a `<select>`'s text is not a value). */
+function staticFieldText(node: Element): string {
+  const clone = node.cloneNode(true) as Element;
+  clone
+    .querySelectorAll('input, select, textarea, button, script, style, [class*="mhx-"]')
+    .forEach((child) => child.remove());
+  return squash(clone.textContent);
+}
+
+/** A field's text, preferring a readable input value over its static text. */
+function candidateFieldText(node: Element): string {
+  const input = (
+    node.matches('input, textarea')
+      ? node
+      : node.querySelector(
+          'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea',
+        )
+  ) as HTMLInputElement | HTMLTextAreaElement | null;
+  if (input && squash(input.value)) return squash(input.value);
+  return staticFieldText(node);
+}
+
+/**
+ * A set name, or nothing.
+ *
+ * Rejects everything a picker can show instead of a product value: a label on
+ * its own, a placeholder ("All Options", "Please select…"), a concatenation of
+ * every set in the store (several `AS>PP` names, which is what a `<select>`'s
+ * textContent looks like), and a row/container of several fields.
+ */
+function cleanSetName(raw: string): string {
+  const text = squash(raw)
+    .replace(
+      /^(?:attribute\s*set|conjunto\s+de\s+atributos|jeu\s+d'?attributs)\s*[:\-–]?\s*/i,
+      '',
+    )
+    .replace(/\s+(?:change|alterar|editar|modifier|ändern)$/i, '')
+    .trim();
+  if (!text || NOT_A_SET_NAME.test(text)) return '';
+  if (/^(?:attribute\s*set|conjunto\s+de\s+atributos|jeu\s+d'?attributs)$/i.test(text)) {
+    return '';
+  }
+  // A container of several fields is not a value.
+  if (text.length > 200) return '';
+  // A list of sets is not a value.
+  const ppMatches = text.match(/AS>PP/gi);
+  if (ppMatches && ppMatches.length > 1) return '';
+  if (isConcatenatedAttributeSetText(text)) return '';
+  return text;
+}
+
+/**
+ * The set name printed beside the "Attribute Set" label.
+ *
+ * There the set is neither a dropdown nor a hidden field: the form shows the
+ * name as static text (or a read-only input) next to the label, while a select
+ * in the same row lists every set in the store - its textContent is a
+ * concatenation of all set names and its selected option can be a placeholder.
+ * Neither is the product's value, so every candidate goes through cleanSetName.
+ */
+function headerSetValue(): string {
+  const labels = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      '.admin__field-label, label, dt, th, span, div, strong',
+    ),
+  ).filter(
+    (node) =>
+      node.children.length === 0 &&
+      ATTRIBUTE_SET_LABEL_ONLY.test(fieldLabelText(node.textContent)),
+  );
+  const found: string[] = [];
+  for (const label of labels) {
+    if (inSetChangeDialog(label)) continue;
+    const row = label.parentElement;
+    if (!row) continue;
+    const field = label.closest('.admin__field, .field, fieldset, tr') ?? row;
+    const candidates: (Element | null)[] = [
+      label.nextElementSibling,
+      row.nextElementSibling,
+      field.querySelector('.admin__field-value, [data-role="field-value"]'),
+      field.querySelector('.admin__field-control'),
+      row,
+    ];
+    for (const candidate of candidates) {
+      if (!candidate || candidate.contains(label)) continue;
+      if (candidate.matches('a, button')) continue;
+      if (inSetChangeDialog(candidate)) continue;
+      const name = cleanSetName(candidateFieldText(candidate));
+      if (name) found.push(name);
+    }
+  }
+  // A set name carries `AS>` (or a PP code); when a neighbour also reads as
+  // plain text (another header field), the set-looking value wins.
+  return found.find((name) => /AS>|PP\s*\d/i.test(name)) ?? found[0] ?? '';
+}
+
+/** Check if this text looks like a concatenated list (from the UI bug) */
+function isConcatenatedAttributeSetText(text: string): boolean {
+  // A concatenated list typically starts with "Attribute Set" and contains multiple AS>PP patterns
+  if (!text) return false;
+  const trimmed = text.trim();
+  // Check if it starts with "Attribute Set" followed by multiple set names
+  if (/^Attribute\s+Set\s+/i.test(trimmed)) {
+    const ppMatches = trimmed.match(/AS>PP/gi);
+    return ppMatches !== null && ppMatches.length > 1;
+  }
+  return false;
+}
+
+/** The value of a labelled admin field (select/input, else static text). */
+function labelledFieldValue(labelPattern: RegExp): string {
+  const labels = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      '.admin__field-label, .admin__field-label span, label, th.label, .label',
+    ),
+  );
+  for (const label of labels) {
+    if (inSetChangeDialog(label)) continue;
+    const labelText = fieldLabelText(label.textContent);
+    if (!labelPattern.test(labelText)) continue;
+    const field =
+      label.closest('.admin__field, .field, tr, fieldset') ??
+      label.parentElement;
+    if (!field) continue;
+    // Each source is validated, not trusted: a select can be showing a
+    // placeholder ("All Options") and its text is every option at once.
+    const select = field.querySelector<HTMLSelectElement>('select');
+    if (select && !inSetChangeDialog(select)) {
+      const text = cleanSetName(optionsText(select));
+      if (text) return text;
+    }
+    const input = field.querySelector<HTMLInputElement>(
+      'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])',
+    );
+    if (input && !inSetChangeDialog(input)) {
+      const text = cleanSetName(input.value);
+      if (text) return text;
+    }
+    const hidden = field.querySelector<HTMLInputElement>('input[type="hidden"]');
+    if (hidden && !inSetChangeDialog(hidden)) {
+      const text = cleanSetName(hidden.value);
+      if (text) return text;
+    }
+    const text = cleanSetName(staticFieldValue(field));
+    if (text) return text;
+  }
+  return '';
+}
+
+/** Attribute Set name exactly as the product edit page shows it. */
+export function readAttributeSetName(): string {
+  // 1. The product's own control, when the page has one. Anything inside the
+  //    change-set dialog (or any modal) is the picker, not this product. More
+  //    than one control can share the name, so every candidate is tried.
+  for (const named of Array.from(document.querySelectorAll(ATTRIBUTE_SET_INPUT))) {
+    if (inSetChangeDialog(named)) continue;
+    const value = cleanSetName(controlValue(named));
+    if (value) return value;
+  }
+  // 2. The classic dropdown.
+  const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
+  if (select && !inSetChangeDialog(select)) {
+    const value = cleanSetName(optionsText(select) || squash(select.value));
+    if (value) return value;
+  }
+  // 3. Some builds replace the select with a static value plus a hidden input.
+  const hidden = document.querySelector<HTMLInputElement>(
+    'input[name="product[attribute_set_id]"], input[name="attribute_set_id"]',
+  );
+  if (hidden && !inSetChangeDialog(hidden) && squash(hidden.value)) {
+    const selected = document.querySelector<HTMLElement>(
+      `[data-attribute-set-id="${CSS.escape(hidden.value)}"]`,
+    );
+    if (selected && !inSetChangeDialog(selected)) {
+      const value = cleanSetName(staticFieldText(selected));
+      if (value) return value;
+    }
+  }
+  // 4. The newer form prints the name as plain text beside the label, so read
+  //    the field itself before falling back to any picker widget.
+  for (const field of Array.from(document.querySelectorAll(ATTRIBUTE_SET_FIELD))) {
+    if (inSetChangeDialog(field)) continue;
+    const control =
+      field.querySelector(
+        '.admin__field-value, [data-role="field-value"], .admin__field-control',
+      ) ?? field;
+    const value = cleanSetName(candidateFieldText(control));
+    if (value) return value;
+  }
+  const header = headerSetValue();
+  if (header) return header;
+  const labelled = labelledFieldValue(ATTRIBUTE_SET_LABEL_ONLY);
+  if (labelled) return labelled;
+  // 5. A custom picker marks its choice with aria-selected/aria-checked.
+  return selectedSetOption();
+}
+
+/**
+ * PP, Attribute Set name and id from the product edit page, in one read.
+ *
+ * PP is the only fact here that the storefront cannot supply, so it is kept in
+ * one place: the value shown in the "Attribute Set" dropdown (or its static
+ * form), the id beside it, and the `PPnnnn` code parsed out of the name. No PP
+ * in the name means an empty code — never a guessed one.
+ */
+export interface AttributeSetProfile {
+  name: string;
+  id: string;
+  ppCode: string;
+}
+
+export function readAttributeSetProfile(): AttributeSetProfile {
+  const name = readAttributeSetName();
+  return { name, id: readAttributeSetId(), ppCode: ppCodeFromAttributeSet(name) };
+}
+
+/** Attribute Set id from the select/hidden input, when the page exposes it. */
+export function readAttributeSetId(): string {
+  const named = document.querySelector<HTMLInputElement>(
+    'input[name="attribute-set-id"], input#attribute-set-id',
+  );
+  if (named && !inSetChangeDialog(named) && squash(named.value)) {
+    return squash(named.value);
+  }
+  const select = document.querySelector<HTMLSelectElement>(ATTRIBUTE_SET_SELECT);
+  if (select && !inSetChangeDialog(select) && squash(select.value)) {
+    return squash(select.value);
+  }
+  const hidden = document.querySelector<HTMLInputElement>(
+    'input[name="product[attribute_set_id]"], input[name="attribute_set_id"]',
+  );
+  return hidden && !inSetChangeDialog(hidden) ? squash(hidden.value) : '';
+}
+
+/** The checkout checkboxes currently in the DOM (tree may not be loaded yet). */
+function categoryBoxes(): HTMLInputElement[] {
+  const boxes = new Set<HTMLInputElement>();
+  const roots = Array.from(document.querySelectorAll<HTMLElement>(CATEGORY_ROOTS));
+  for (const root of roots) {
+    root
+      .querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+      .forEach((box) => boxes.add(box));
+  }
+  for (const selector of CATEGORY_BOX_SELECTORS) {
+    document.querySelectorAll<HTMLInputElement>(selector).forEach((box) => boxes.add(box));
+  }
+  return Array.from(boxes);
+}
+
+/** The label of one tree node, without its children or helper chrome. */
+function nodeLabel(li: HTMLLIElement): string {
+  const direct = li.querySelector<HTMLElement>(':scope > label');
+  if (direct) {
+    const text = squash(direct.textContent).replace(/^\s*\*+\s*/, '');
+    if (text) return text;
+  }
+  const clone = li.cloneNode(true) as HTMLLIElement;
+  clone
+    .querySelectorAll(
+      'ul, ol, input, select, textarea, button, script, style, [class*="mhx-"], .admin__field-error, .tooltip',
+    )
+    .forEach((node) => node.remove());
+  return squash(clone.textContent).replace(/^[\s>*•·\-–—]+/, '');
+}
+
+/**
+ * Ancestor names of one tree item, root first.
+ *
+ * Supports both shapes Magento has shipped: nested (`li > ul > li`) and the
+ * sibling form the mass-update tree uses (`li` followed by its child `ul`).
+ */
+function ancestorItems(box: HTMLInputElement): HTMLLIElement[] {
+  let li = box.closest<HTMLLIElement>('li');
+  if (!li) return [];
+  const items: HTMLLIElement[] = [];
+  const seen = new Set<HTMLLIElement>();
+  while (li && !seen.has(li)) {
+    seen.add(li);
+    items.unshift(li);
+
+    // Nested tree: the list sits inside its parent li.
+    const nested: HTMLLIElement | null =
+      li.parentElement?.closest<HTMLLIElement>('li') ?? null;
+    if (nested && nested !== li) {
+      li = nested;
+      continue;
+    }
+    // Sibling tree: the list is preceded by the parent li.
+    const sibling: Element | null = li.parentElement?.previousElementSibling ?? null;
+    li = sibling instanceof HTMLLIElement ? sibling : null;
+  }
+  return items;
+}
+
+/**
+ * Category name + id per ancestor, kept aligned: a node whose own checkbox is
+ * not found still contributes its name, and its id slot is empty rather than
+ * shifting every later id onto the wrong name.
+ */
+function categoryEntryFor(box: HTMLInputElement): CategoryEntry {
+  const path: string[] = [];
+  const ids: string[] = [];
+  for (const li of ancestorItems(box)) {
+    const name = nodeLabel(li);
+    if (!name) continue;
+    path.push(name);
+    const own = li.querySelector<HTMLInputElement>(
+      ':scope > input[type="checkbox"], :scope > label > input[type="checkbox"]',
+    );
+    ids.push(own?.value ?? '');
+  }
+  return { path, ids };
+}
+
+interface CategoryEntry {
+  path: string[];
+  ids: string[];
+}
+
+/** De-duplicate by path, keep ids aligned, deepest first (the real home). */
+function uniqueEntries(entries: CategoryEntry[]): CategoryEntry[] {
+  const seen = new Set<string>();
+  const out: CategoryEntry[] = [];
+  for (const raw of entries) {
+    const path = raw.path.map((name) => squash(name)).filter(Boolean);
+    if (path.length === 0) continue;
+    const key = path.join(' > ').toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ path, ids: raw.ids.slice(0, path.length) });
+  }
+  // Deepest first: that is the category the product actually sits in.
+  return out.sort((a, b) => b.path.length - a.path.length);
+}
+
+function findCategoryTab(): HTMLElement | null {
+  // Exact ids shipped by Magento's product edit tabs.
+  const direct = document.querySelector<HTMLElement>(
+    'a[href="#product_info_tabs_categories"], a#product_info_tabs_categories, a[href="#product_info_tabs_categories_content"]',
+  );
+  if (direct) return direct;
+
+  const tabs = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      '.admin__page-nav-link, [role="tab"], .tabs a, .ui-tabs-anchor, a',
+    ),
+  );
+  for (const tab of tabs) {
+    if (!CATEGORY_TAB_LABEL.test(squash(tab.textContent))) continue;
+    if (tab.closest('.admin__page-nav, [role="tablist"], .tabs, .ui-tabs')) {
+      return tab;
+    }
+  }
+  return null;
+}
+
+async function waitFor(predicate: () => boolean, timeoutMs: number): Promise<boolean> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (predicate()) return true;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return predicate();
+}
+
+/** The product form container, as every build we support names it. */
+const PRODUCT_FORM =
+  '#product_form, .product-edit, [data-ui-id="product-form"], form[data-role="product-form"]';
+
+/**
+ * Is this the product edit page, and not a grid/dashboard that happens to have
+ * a field labelled "Attribute Set"? The URL is the cheapest proof; the form
+ * container covers builds whose route is rewritten.
+ */
+function onProductEditPage(): boolean {
+  if (/\/catalog\/product\/edit(\/|$)/i.test(location.pathname)) return true;
+  return document.querySelector(PRODUCT_FORM) !== null;
+}
+
+/**
+ * Wait until the edit form is actually built and parsed.
+ *
+ * The pass is often requested on a tab the resolver just opened, so the message
+ * can arrive while the document is still parsing: the Attribute Set select (near
+ * the top of the markup) is already there, while price, stock, visibility and
+ * the tab bar further down are not. Reading then reported PP correctly and every
+ * other fact as "not read". Wait for the form plus one commercial field, which
+ * only exist once the page is complete.
+ */
+async function waitForEditForm(): Promise<void> {
+  const commercial = [
+    'input[name="product[price]"]',
+    'input#price',
+    'select[name="product[status]"]',
+    'select#status',
+    'input[name="product[status]"]',
+    'input[name="product[sku]"]',
+    'input[name="product[name]"]',
+    'input[name="attribute-set-name"]',
+    'select[name="product[attribute_set_id]"]',
+  ].join(', ');
+  const ready = (): boolean =>
+    document.readyState !== 'loading' &&
+    document.querySelector(PRODUCT_FORM) !== null &&
+    document.querySelector(commercial) !== null;
+  if (ready()) return;
+  await waitFor(ready, 8_000);
+}
+
+/**
+ * Read PP + categories from the open product edit page.
+ *
+ * Returns `null` when this is not a product edit page (no Attribute Set and no
+ * category tree), so the caller can tell "not read" from "read and empty".
+ */
+function categorySelectEntries(): CategoryEntry[] {
+  const selects = document.querySelectorAll<HTMLSelectElement>(
+    'select[name*="categor" i], select[id*="categor" i]',
+  );
+  const out: CategoryEntry[] = [];
+  for (const select of selects) {
+    const options =
+      select.selectedOptions.length > 0
+        ? Array.from(select.selectedOptions)
+        : Array.from(select.options).filter((option) => option.selected);
+    for (const option of options) {
+      const text = squash(option.textContent);
+      if (text) out.push({ path: [text], ids: option.value ? [option.value] : [] });
+    }
+  }
+  return uniqueEntries(out);
+}
+
+export async function readProductFacts(
+  options: ReadProductFactsOptions = {},
+): Promise<ResolverMagentoFacts | null> {
+  // Never read a page that is not the product form. The product grid also has
+  // fields labelled "Attribute Set" (and selects showing placeholders such as
+  // "All Options"), so reading there produced a snapshot full of other pages'
+  // text - and it was cached as if it described the product.
+  if (!onProductEditPage()) return null;
+  // The pass can be requested on a tab that is still parsing, so the form is
+  // awaited before anything is read rather than reporting it as unreadable.
+  await waitForEditForm();
+  const attributeSet = readAttributeSetName();
+  let boxes = categoryBoxes();
+  let selectEntries = categorySelectEntries();
+  let categoryReason = '';
+
+  if (boxes.length === 0 && selectEntries.length === 0 && options.activateCategoryTab) {
+    const tab = findCategoryTab();
+    if (tab) {
+      tab.click();
+      const loaded = await waitFor(() => categoryBoxes().length > 0, 4_000);
+      boxes = categoryBoxes();
+      selectEntries = categorySelectEntries();
+      if (!loaded) {
+        categoryReason = 'the Categories tab did not load its tree';
+      }
+    } else {
+      categoryReason = 'no Categories tab was found on this page';
+    }
+  } else if (boxes.length === 0 && selectEntries.length === 0) {
+    categoryReason = 'the category selector is not loaded in this tab';
+  }
+
+  const checkedEntries = uniqueEntries(
+    boxes.filter((box) => box.checked).map(categoryEntryFor),
+  );
+  const entries = checkedEntries.length > 0 ? checkedEntries : selectEntries;
+  const categoryPaths = entries.map((entry) => entry.path);
+  const categoryIds = entries.map((entry) => entry.ids);
+  const categoryRead =
+    checkedEntries.length > 0 || selectEntries.length > 0 || boxes.length > 0;
+
+  if (categoryRead && categoryPaths.length === 0 && !categoryReason) {
+    categoryReason = 'no category is checked';
+  }
+
+  // No Attribute Set and no category selector: not a product edit page we can read.
+  if (!attributeSet && !categoryRead) return null;
+
+  return {
+    // Base fields only. `readAdminFacts` raises the version and fills the rest.
+    factsVersion: 1,
+    attributeSet,
+    attributeSetId: readAttributeSetId(),
+    ppCode: ppCodeFromAttributeSet(attributeSet),
+    categoryPaths,
+    categoryIds,
+    categoryRead,
+    categoryReason: categoryReason || undefined,
+    tierPrices: [],
+    tierRead: false,
+    tierReason: 'tier prices are read by the full admin facts pass',
+    priceRead: false,
+    price: { price: null, specialPrice: null, cost: null, taxClass: '' },
+    stockRead: false,
+    stock: { qty: null, isInStock: null, backorders: '' },
+    visibilityRead: false,
+    visibility: '',
+    statusRead: false,
+    status: '',
+    websitesRead: false,
+    websites: [],
+    weightRead: false,
+    weight: null,
+    readAt: new Date().toISOString(),
+  };
+}

@@ -1,0 +1,13 @@
+{
+  "v4_manifest_sha256": "86793e053519ae40aa1d8ee80bbc8be9a7a4de97a6abf8a694477963c360ce07",
+  "v4_zip_sha256": "9455e6958dcac8d0e28aa5d455585174f5d485d04d9d8830757f5df598cdffcf",
+  "page_inputs": "Frozen V4 source captures, unchanged; not fresh reads or complete backup",
+  "fresh_connector_calls": {
+    "markdown_spec_read": 1,
+    "page_reads": 0,
+    "comments_reads": 0,
+    "writes": 0
+  },
+  "policy_authorisation": "Explicit human clarification relayed by Engineering Lead for V5",
+  "local_review_bundle": "tmp/pp-apron-local-review-20261118 not modified or treated as complete evidence"
+}

@@ -1,0 +1,27 @@
+{
+  "authorisation": "EXPLICIT_HUMAN_APPROVAL",
+  "authorisation_reference": "Explicit four-profile correction and code-only application, recorded in current Working Copy rules; coordinator applies after independent review",
+  "source_reference": {
+    "page_id": "417b6705ae1f81aabd8bf1130a9b991c",
+    "section_sha256": "50b68776d8ceaed06111772ae703f7986983356773d02757aaace9fc87d25371",
+    "source_edited_at": "2026-11-18T14:30:39.044Z"
+  },
+  "plan_sha256": "afed3965ac1994346fc01930df4746b696eac42bccc3ed6b8d657b8c9046c13f",
+  "implementation_sha256": "87f30592f6c5ab2879cb2526481c3af7ef724df9adbaa8a5bee9b13d4f0a9eda",
+  "review_reference": "",
+  "approved_codes": [
+    "558",
+    "661",
+    "662"
+  ],
+  "approved_operation_ids": [
+    "558-pocket-row-1",
+    "558-pocket-property-1",
+    "661-pocket-row-1",
+    "661-pocket-row-2",
+    "662-pocket-row-1",
+    "662-pocket-row-2",
+    "662-pocket-property-1"
+  ],
+  "condition": "Human scope authorised; actual independent review reference required. Rest only after accepted pilot."
+}

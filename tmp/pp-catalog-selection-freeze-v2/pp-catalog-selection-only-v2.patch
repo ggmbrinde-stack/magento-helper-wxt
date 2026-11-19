@@ -1,0 +1,1379 @@
+diff --git a/package.json b/package.json
+index 0b4507e..cc64fe2 100644
+--- a/package.json
++++ b/package.json
+@@ -27,7 +27,7 @@
+     "test:makito": "npx esbuild src/audit/__tests__/makitoImages.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/makito-images-test.mjs --log-level=warning && node --test .output/makito-images-test.mjs",
+     "test:enable": "npx esbuild src/audit/__tests__/enableFlow.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/enable-flow-test.mjs --log-level=warning && node --test .output/enable-flow-test.mjs",
+     "test:facts": "npx esbuild src/audit/__tests__/adminFacts.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --outfile=.output/admin-facts-test.mjs --log-level=warning && node --test .output/admin-facts-test.mjs",
+-    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features && npm run test:batch && npm run test:ui && npm run test:notion-retry && npm run test:enable-freshness && npm run test:pp-catalog && npm run test:pp-scan && npm run test:pp-preview",
++    "test": "npm run test:supplier && npm run test:makito && npm run test:enable && npm run test:facts && npm run test:attribute-set && npm run test:features && npm run test:batch && npm run test:ui && npm run test:notion-retry && npm run test:enable-freshness && npm run test:pp-catalog && npm run test:pp-scan && npm run test:pp-preview && npm run test:pp-selection",
+     "test:batch": "node --test src/automation/__tests__/batchRunner.test.mjs",
+     "test:ui": "npx esbuild tests/uiControls.test.ts tests/assocBulk.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outdir=.output/ui-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/ui-tests/uiControls.test.mjs .output/ui-tests/assocBulk.test.mjs",
+     "test:notion-retry": "npx esbuild scripts/__tests__/notionRetry.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outfile=.output/notion-retry-test.mjs --log-level=warning && node --test .output/notion-retry-test.mjs",
+@@ -36,7 +36,8 @@
+     "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs",
+     "test:pp-catalog": "esbuild tests/ppCatalog.test.ts tests/ppCatalogUi.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outdir=.output/pp-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/pp-tests/ppCatalog.test.mjs .output/pp-tests/ppCatalogUi.test.mjs",
+     "test:pp-scan": "npx esbuild tests/ppScan.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/pp-scan-test.mjs --log-level=warning && node --test .output/pp-scan-test.mjs",
+-    "test:pp-preview": "esbuild tests/ppPreview.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --external:node:test --external:jsdom --loader:.json=json --outfile=.output/pp-preview-test.mjs --log-level=warning && node --test .output/pp-preview-test.mjs"
++    "test:pp-preview": "esbuild tests/ppPreview.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --external:node:test --external:jsdom --loader:.json=json --outfile=.output/pp-preview-test.mjs --log-level=warning && node --test .output/pp-preview-test.mjs",
++    "test:pp-selection": "esbuild tests/ppCatalogSelection.test.ts tests/ppFreshForm.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --external:node:test --external:jsdom --loader:.json=json --outdir=.output/pp-selection-tests --out-extension:.js=.mjs --log-level=warning && node --test .output/pp-selection-tests/ppCatalogSelection.test.mjs .output/pp-selection-tests/ppFreshForm.test.mjs"
+   },
+   "dependencies": {
+     "preact": "^10.29.8",
+diff --git a/src/audit/ppCatalog.ts b/src/audit/ppCatalog.ts
+index c521a1f..7dd18d6 100644
+--- a/src/audit/ppCatalog.ts
++++ b/src/audit/ppCatalog.ts
+@@ -3,6 +3,7 @@ import {
+ } from '../shared/notion/client';
+ import {
+   PP_CATALOG_DATABASE, type PpCatalogDefinition, type PpCatalogResponse,
++  type PpCatalogIndexPage,
+ } from '../shared/ppCatalog';
+ 
+ const record = (value: unknown): Record<string, unknown> =>
+@@ -18,6 +19,40 @@ function text(value: unknown): string | null {
+   return parts.every(part => typeof part === 'string') ? parts.join('') : null;
+ }
+ 
++/** Summaries only. The dashboard schedules bounded pages after an explicit click. */
++export async function loadPpCatalogIndexPage(cursor?: unknown): Promise<PpCatalogIndexPage> {
++  const failure = (status: PpCatalogIndexPage['status'], reason: string): PpCatalogIndexPage =>
++    ({ status, rows: [], hasMore: false, nextCursor: null, checkedAt: new Date().toISOString(), reason });
++  if (cursor !== undefined && (typeof cursor !== 'string' || !cursor || cursor.length > 512)) {
++    return failure('invalid', 'The catalogue cursor is invalid. Reload the catalogue.');
++  }
++  try {
++    const { notionToken } = await loadSettings();
++    if (!notionToken) return failure('auth', 'Configure the existing Notion integration in Settings.');
++    const properties = record(record(await getDatabase(notionToken, PP_CATALOG_DATABASE)).properties);
++    if (record(properties['Código PP']).type !== 'rich_text' || record(properties.PP).type !== 'title') {
++      return failure('unavailable', 'Catalogue schema incompatible: Código PP must be rich text and PP must be title.');
++    }
++    const page = await queryDatabasePage(notionToken, PP_CATALOG_DATABASE, undefined, 100, cursor as string | undefined);
++    if (page.results.length > 100) return failure('unavailable', 'The catalogue page exceeded the supported page size.');
++    return { status: 'page', rows: page.results.map(value => {
++      const row = record(value), props = record(row.properties), review = record(props.Estado);
++      const reviewName = record(review[review.type === 'status' ? 'status' : 'select']).name;
++      return { pageId: typeof row.id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(row.id) ? row.id : null,
++        code: text(record(props['Código PP']).rich_text), name: text(record(props.PP).title),
++        reviewStatus: typeof reviewName === 'string' ? reviewName : null };
++    }), hasMore: page.hasMore, nextCursor: page.nextCursor, checkedAt: new Date().toISOString(),
++    reason: 'Summary page read. Uniqueness and completeness depend on the remaining pages.' };
++  } catch (error) {
++    if (error instanceof NotionApiError) {
++      if (error.status === 401) return failure('auth', 'Notion authentication failed. Check Settings.');
++      if (error.status === 403 || error.status === 404) return failure('access', 'The integration cannot access PP Catalog V2.');
++      if (error.status === 400 || error.code === 'invalid_response') return failure('unavailable', 'Catalogue API or schema response is incompatible.');
++    }
++    return failure('network', 'The catalogue read failed. Loaded rows remain incomplete; retry explicitly.');
++  }
++}
++
+ function labels(value: unknown): string[] | null {
+   const prop = record(value);
+   if (prop.type !== 'multi_select' || !Array.isArray(prop.multi_select)) return null;
+diff --git a/src/core/messages/audit.ts b/src/core/messages/audit.ts
+index c6b9608..95cbbd6 100644
+--- a/src/core/messages/audit.ts
++++ b/src/core/messages/audit.ts
+@@ -452,3 +452,9 @@ export interface FetchPpPreviewCatalogRequest {
+   type: 'FETCH_PP_PREVIEW_CATALOG';
+   code: string;
+ }
++
++export interface FetchPpCatalogIndexPageRequest {
++  type: 'FETCH_PP_CATALOG_INDEX_PAGE';
++  cursor?: string;
++}
++export type { PpCatalogIndexPage } from '../../shared/ppCatalog';
+diff --git a/src/core/messages/ui.ts b/src/core/messages/ui.ts
+index 0010298..db150ac 100644
+--- a/src/core/messages/ui.ts
++++ b/src/core/messages/ui.ts
+@@ -181,3 +181,25 @@ export interface ReadPpPreviewDraftRequest {
+ export type ReadPpPreviewDraftResponse =
+   | { ok: true; tab: PpPreviewTab; snapshot: ScanPpDraftResponse }
+   | { ok: false; reason: string };
++
++export interface ReadPpFreshFormRequest { type: 'READ_PP_FRESH_FORM'; requestId: string; entityId: string }
++export interface CancelPpFreshFormRequest { type: 'CANCEL_PP_FRESH_FORM'; requestId: string }
++export interface GetPpFreshFormStateRequest { type: 'GET_PP_FRESH_FORM_STATE' }
++export interface PpFreshFormResponse {
++  source: 'fresh-magento-form-load';
++  requestId: string;
++  entityId: string;
++  status: 'ok' | 'partial' | 'cancelled' | 'busy' | 'invalid' | 'unavailable' | 'auth' | 'cleanup-failed';
++  reason: string;
++  cleanup: 'not-created' | 'closed' | 'failed';
++  host?: string;
++  readAt?: number;
++  snapshot?: ScanPpDraftResponse;
++  leftoverTabId?: number;
++  cleanupRequestId?: string;
++}
++export interface PpFreshFormState {
++  status: 'idle' | 'reading' | 'cleanup-failed';
++  requestId?: string;
++  leftoverTabId?: number;
++}
+diff --git a/src/dashboard/sections/ui/PpPreview.tsx b/src/dashboard/sections/ui/PpPreview.tsx
+index 852edfb..b9eaf23 100644
+--- a/src/dashboard/sections/ui/PpPreview.tsx
++++ b/src/dashboard/sections/ui/PpPreview.tsx
+@@ -1,121 +1,223 @@
+ import { h, Fragment } from 'preact';
+ import { useEffect, useRef, useState } from 'preact/hooks';
+-import type { PpPreviewTab, ReadPpPreviewDraftResponse } from '../../../core/messages';
+-import { PP_CATALOG_DATABASE, type PpCatalogResponse } from '../../../shared/ppCatalog';
+-import { attributeSetConsistency, isPpPreviewTab, ppPreviewRows, readPreviewResponses } from './ppPreviewModel';
++import type { PpFreshFormResponse, PpFreshFormState } from '../../../core/messages';
++import { PP_CATALOG_DATABASE, PpCatalogResponseSchema, type PpCatalogResponse, type PpCatalogIndexRow } from '../../../shared/ppCatalog';
++import { isPpDraftScanResponse } from '../../../entrypoints/background/ppPreview';
++import { attributeSetConsistency, catalogProblems, loadPpIndex, ppPreviewRows, type PpIndexLoad } from './ppPreviewModel';
+ 
+ const show = (value: unknown): string => value === undefined || value === null ? 'Unknown / not supplied' : JSON.stringify(value, null, 2);
+ const time = (value: string | number | undefined | null): string => value == null ? 'Unknown' : new Date(value).toLocaleString();
++interface PreviewRequest { id: string; stopped: boolean; phase: 'details' | 'form'; cancelSent: boolean }
+ 
+ export function PpPreview() {
+-  const [tabs, setTabs] = useState<PpPreviewTab[]>([]);
+-  const [selectedToken, setSelectedToken] = useState('');
+-  const [code, setCode] = useState('');
+-  const [paired, setPaired] = useState(false);
+-  const [busy, setBusy] = useState(false);
+-  const [notice, setNotice] = useState('List open PP tabs, then choose one and enter the exact Notion business code.');
+-  const [result, setResult] = useState<{ desired: PpCatalogResponse; current: ReadPpPreviewDraftResponse } | null>(null);
+-  const generation = useRef(0);
+-  useEffect(() => () => { generation.current++; }, []);
+-  const selected = tabs.find(tab => tab.selectionToken === selectedToken);
++  const [index, setIndex] = useState<PpIndexLoad>({ rows: [], coverage: 'partial', reason: 'Catalogue not loaded.' });
++  const [loading, setLoading] = useState(false), [filter, setFilter] = useState('');
++  const [checked, setChecked] = useState<string[]>([]), [activeId, setActiveId] = useState('');
++  const [entityId, setEntityId] = useState(''), [paired, setPaired] = useState(false);
++  const [busy, setBusy] = useState(false), [notice, setNotice] = useState('Load Notion V2 summaries, check PPs, then choose one to preview.');
++  const [helper, setHelper] = useState<PpFreshFormState>({ status: 'idle' });
++  const [result, setResult] = useState<{ desired: PpCatalogResponse; current?: PpFreshFormResponse } | null>(null);
++  const mounted = useRef(true), generation = useRef(0);
++  const catalogueJob = useRef<{ stopped: boolean; timedOut: boolean; timer?: ReturnType<typeof setTimeout> } | null>(null);
++  const previewJob = useRef<PreviewRequest | null>(null);
++  const helperGeneration = useRef(0);
++  const problems = catalogProblems(index.rows);
++  const chosen = index.rows.find(row => row.pageId === activeId && checked.includes(activeId));
++  const chosenProblem = problems[index.rows.findIndex(row => row === chosen)];
++  const visible = index.rows.map((row, position) => ({ row, position })).filter(({ row }) =>
++    (row.code ?? '').toLowerCase().includes(filter.toLowerCase()) || (row.name ?? '').toLowerCase().includes(filter.toLowerCase()));
+ 
++  const rememberCleanup = (response: PpFreshFormResponse): void => {
++    if (!mounted.current || !response) return;
++    helperGeneration.current++;
++    if (response.cleanup === 'failed') setHelper({ status: 'cleanup-failed', requestId: response.cleanupRequestId ?? response.requestId, leftoverTabId: response.leftoverTabId });
++    else if (response.cleanup === 'closed' || response.status === 'cancelled') setHelper(previous =>
++      !previous.requestId || previous.requestId === response.requestId ? { status: 'idle' } : previous);
++  };
++  const stopPreview = (): void => {
++    const job = previewJob.current;
++    if (job) {
++      job.stopped = true;
++      if (job.phase === 'form' && !job.cancelSent) {
++        job.cancelSent = true;
++        void chrome.runtime.sendMessage({ type: 'CANCEL_PP_FRESH_FORM', requestId: job.id }).then(rememberCleanup).catch(() => {
++          if (mounted.current) setNotice('Stop could not be confirmed. Wait for the helper read to finish and check its cleanup status.');
++        });
++      }
++    }
++  };
+   const invalidate = (): void => {
+-    generation.current++;
+-    setResult(null);
+-    setPaired(false);
+-    setBusy(false);
+-    setNotice('Selection changed. Read both sources again; the previous preview is stale.');
++    generation.current++; setResult(null); setPaired(false); stopPreview();
++    setNotice('Selection changed. Previous preview is stale; pair and read the selected sources again.');
+   };
+-  const listTabs = async (): Promise<void> => {
+-    invalidate();
+-    setTabs([]); setSelectedToken(''); setBusy(true);
+-    const request = generation.current;
++  useEffect(() => {
++    mounted.current = true;
++    const version = helperGeneration.current;
++    void chrome.runtime.sendMessage({ type: 'GET_PP_FRESH_FORM_STATE' }).then(state => {
++      if (mounted.current && version === helperGeneration.current && state && ['idle', 'reading', 'cleanup-failed'].includes(state.status)) setHelper(state);
++    }).catch(() => { if (mounted.current) setNotice('Helper status could not be checked. A new read will still enforce worker concurrency and cleanup guards.'); });
++    return () => {
++      mounted.current = false; generation.current++;
++      if (catalogueJob.current) { catalogueJob.current.stopped = true; clearTimeout(catalogueJob.current.timer); }
++      stopPreview();
++    };
++  }, []);
++  useEffect(() => {
++    const valid = new Set(index.rows.filter((row, i) => row.pageId && !problems[i]).map(row => row.pageId!));
++    setChecked(previous => previous.filter(id => valid.has(id)));
++    if (activeId && !valid.has(activeId)) { invalidate(); setActiveId(''); setEntityId(''); }
++  }, [index.rows]);
++
++  const load = async (): Promise<void> => {
++    if (catalogueJob.current) { catalogueJob.current.stopped = true; clearTimeout(catalogueJob.current.timer); }
++    const job = { stopped: false, timedOut: false }; catalogueJob.current = job;
++    invalidate(); setChecked([]); setActiveId(''); setEntityId('');
++    setIndex({ rows: [], coverage: 'partial', reason: 'Loading summaries. Catalogue completeness is not established.' }); setLoading(true);
++    const timer = setTimeout(() => {
++      job.stopped = true; job.timedOut = true;
++      if (mounted.current && catalogueJob.current === job) {
++        setLoading(false); setIndex(previous => ({ ...previous, coverage: 'partial', reason: 'Catalogue time limit reached. Coverage is incomplete; an in-flight request may finish.' }));
++      }
++    }, 60_000);
++    catalogueJob.current.timer = timer;
+     try {
+-      const response = await chrome.runtime.sendMessage({ type: 'LIST_PP_PREVIEW_TABS' });
+-      if (request !== generation.current) return;
+-      if (!response?.ok || !Array.isArray(response.tabs) || !response.tabs.every(isPpPreviewTab)) throw new Error('Cannot list supported PP tabs. Retry explicitly.');
+-      setTabs(response.tabs);
+-      setNotice(response.tabs.length ? 'Choose an existing Magento PP edit tab. No tab is selected automatically.' : 'No supported PP edit tabs found. Open one yourself, then list tabs again.');
+-    } catch {
+-      if (request === generation.current) setNotice('Cannot list supported PP tabs. Retry explicitly.');
+-    } finally { if (request === generation.current) setBusy(false); }
++      const response = await loadPpIndex(cursor => chrome.runtime.sendMessage({ type: 'FETCH_PP_CATALOG_INDEX_PAGE', ...(cursor ? { cursor } : {}) }),
++        (rows, checkedAt) => { if (mounted.current && catalogueJob.current === job && !job.stopped) setIndex({ rows, checkedAt, coverage: 'partial', reason: 'Loading summaries. Coverage and uniqueness are incomplete.' }); },
++        () => !mounted.current || catalogueJob.current !== job || job.stopped);
++      if (mounted.current && catalogueJob.current === job) setIndex(job.timedOut ? { ...response, coverage: 'partial', reason: 'Catalogue time limit reached. Coverage is incomplete.' } : response);
++    } finally {
++      clearTimeout(timer);
++      if (catalogueJob.current === job) { catalogueJob.current = null; if (mounted.current) setLoading(false); }
++    }
++  };
++  const stopLoad = (): void => {
++    if (catalogueJob.current) { catalogueJob.current.stopped = true; clearTimeout(catalogueJob.current.timer); }
++    setLoading(false); setIndex(previous => ({ ...previous, coverage: 'cancelled', reason: 'Catalogue load stopped. An in-flight request may finish; no further pages will be requested.' }));
++  };
++  const stopOrClose = async (): Promise<void> => {
++    generation.current++; setResult(null);
++    if (previewJob.current) { stopPreview(); setNotice('Stopping preview; waiting for the current request and owned-tab cleanup.'); return; }
++    if (helper.requestId) {
++      setBusy(true);
++      try {
++        const response = await chrome.runtime.sendMessage({ type: 'CANCEL_PP_FRESH_FORM', requestId: helper.requestId });
++        rememberCleanup(response);
++        if (mounted.current) setNotice(response?.reason ?? 'Check helper cleanup status.');
++        const version = helperGeneration.current;
++        const state = await chrome.runtime.sendMessage({ type: 'GET_PP_FRESH_FORM_STATE' });
++        if (mounted.current && version === helperGeneration.current && state && ['idle', 'reading', 'cleanup-failed'].includes(state.status)) setHelper(state);
++      }
++      catch { setNotice('Helper cleanup could not be confirmed. Check the helper tab manually.'); }
++      finally { if (mounted.current) setBusy(false); }
++    }
+   };
+   const read = async (): Promise<void> => {
+-    if (!selected || !paired || !code.trim() || code.length > 128) return;
++    if (previewJob.current || busy || !chosen || chosenProblem || !paired || !/^[1-9]\d{0,15}$/.test(entityId) || helper.status !== 'idle') return;
+     const request = ++generation.current;
+-    setResult(null); setBusy(true); setNotice('Reading the manually paired sources…');
++    const job: PreviewRequest = { id: crypto.randomUUID(), stopped: false, phase: 'details', cancelSent: false }; previewJob.current = job;
++    setBusy(true); setResult(null); setNotice('Reading the selected Notion definition. No Magento tab opened yet.');
++    const current = (): boolean => mounted.current && request === generation.current && !job.stopped;
+     try {
+-      const [desired, current] = await Promise.all([
+-        chrome.runtime.sendMessage({ type: 'FETCH_PP_PREVIEW_CATALOG', code }),
+-        chrome.runtime.sendMessage({ type: 'READ_PP_PREVIEW_DRAFT', tabId: selected.tabId, selectionToken: selected.selectionToken }),
+-      ]);
+-      if (request !== generation.current) return;
+-      setResult(readPreviewResponses(code, selected, desired, current));
+-      setNotice('Manual pairing only. The PP association is not verified. These are timed snapshots; changes in either source require a new read.');
+-    } catch (error) {
+-      if (request === generation.current) setNotice(error instanceof Error ? error.message : 'The sources could not be read. Retry explicitly.');
+-    } finally { if (request === generation.current) setBusy(false); }
++      const parsed = PpCatalogResponseSchema.safeParse(await chrome.runtime.sendMessage({ type: 'FETCH_PP_PREVIEW_CATALOG', code: chosen.code }));
++      if (!current()) return;
++      if (!parsed.success || parsed.data.code !== chosen.code || (parsed.data.definition &&
++        (parsed.data.definition.pageId !== chosen.pageId || parsed.data.definition.code !== chosen.code))) {
++        setNotice('The exact detail response does not match the selected Notion record. No Magento read started.'); return;
++      }
++      const desired = parsed.data;
++      if (!['found', 'partial'].includes(desired.status) || !desired.definition) { setResult({ desired }); setNotice(desired.reason); return; }
++      job.phase = 'form'; helperGeneration.current++; setHelper({ status: 'reading', requestId: job.id }); setNotice('Loading a fresh Magento form in a temporary helper tab…');
++      const response = await chrome.runtime.sendMessage({ type: 'READ_PP_FRESH_FORM', requestId: job.id, entityId }) as PpFreshFormResponse;
++      rememberCleanup(response);
++      if (!current()) return;
++      if (!response || response.source !== 'fresh-magento-form-load' || response.requestId !== job.id || response.entityId !== entityId ||
++        !['ok', 'partial', 'cancelled', 'busy', 'invalid', 'unavailable', 'auth', 'cleanup-failed'].includes(response.status) ||
++        typeof response.reason !== 'string' || !['closed', 'failed', 'not-created'].includes(response.cleanup)) {
++        setNotice('The fresh-form response was invalid. Check helper status before retrying.'); return;
++      }
++      if ((['ok', 'partial'].includes(response.status) && (!response.snapshot || response.snapshot.status !== response.status ||
++        typeof response.readAt !== 'number' || !Number.isFinite(response.readAt))) ||
++        (response.snapshot && (!isPpDraftScanResponse(response.snapshot) || response.snapshot.entityId !== entityId ||
++        String(response.snapshot.providerEntityId) !== entityId ||
++        response.snapshot.routePath !== '/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/' + entityId))) {
++        setNotice('The fresh form did not match the explicit target. No snapshot accepted.'); return;
++      }
++      if (response.cleanup !== 'failed') setHelper({ status: 'idle' });
++      setResult({ desired, current: response });
++      setNotice('Manual pairing only, not a verified association. Fresh Magento form load, not a certified saved-server snapshot. Source changes require a new preview.');
++    } catch {
++      if (current()) setNotice('The selected preview could not complete. Retry explicitly; no data was saved.');
++      if (job.phase === 'form') {
++        const version = ++helperGeneration.current;
++        void chrome.runtime.sendMessage({ type: 'GET_PP_FRESH_FORM_STATE' }).then(state => {
++          if (mounted.current && version === helperGeneration.current && state && ['idle', 'reading', 'cleanup-failed'].includes(state.status)) setHelper(state);
++        }).catch(() => {});
++      }
++    }
++    finally {
++      if (previewJob.current === job) {
++        previewJob.current = null;
++        if (mounted.current) {
++          setBusy(false);
++          if (job.stopped) setNotice('Preview stopped or invalidated. Check helper cleanup status before retrying.');
++        }
++      }
++    }
+   };
+-  const desired = result?.desired;
+-  const current = result?.current;
+-  const draft = current?.ok ? current.snapshot : null;
+-  const usableDraft = draft && ['ok', 'partial'].includes(draft.status) ? draft : null;
+-  const rows = desired && usableDraft ? ppPreviewRows(desired, usableDraft) : [];
+-
++  const setRow = (row: PpCatalogIndexRow, value: boolean): void => {
++    if (!row.pageId) return;
++    setChecked(previous => value ? [...new Set([...previous, row.pageId!])] : previous.filter(id => id !== row.pageId));
++    if (!value && activeId === row.pageId) { invalidate(); setActiveId(''); setEntityId(''); }
++  };
++  const desired = result?.desired, form = result?.current;
++  const draft = form && ['ok', 'partial'].includes(form.status) ? form.snapshot : undefined;
++  const rows = desired && draft ? ppPreviewRows(desired, draft) : [];
+   return <div class="db-stack">
+-    <section class="db-card">
+-      <h2>PP Preview <span class="db-badge">Read-only</span></h2>
+-      <p class="db-note">Notion V2 is the desired-definition source. Magento is the current open draft, including unsaved edits, not a saved-server snapshot.</p>
+-      <div class="db-actions"><button type="button" class="db-btn" disabled={busy} onClick={() => void listTabs()}>List open PP tabs</button></div>
+-      <label class="db-field"><span>Magento PP edit tab</span>
+-        <select value={selectedToken} onChange={event => { invalidate(); setSelectedToken(event.currentTarget.value); }}>
+-          <option value="">Select a tab explicitly</option>
+-          {tabs.map(tab => <option key={tab.selectionToken} value={tab.selectionToken}>{tab.host} · entity {tab.entityId} · tab {tab.tabId}</option>)}
+-        </select>
+-      </label>
+-      <label class="db-field"><span>Exact Notion business PP code</span>
+-        <input value={code} maxLength={128} autoComplete="off" onInput={event => { invalidate(); setCode(event.currentTarget.value); }} />
+-        <em>Exact text, including zeros and spaces. No aliases and no code derived from the Magento entity or Attribute Set ID.</em>
+-      </label>
+-      <label><input type="checkbox" checked={paired} disabled={!selected || !code.trim()} onChange={event => { generation.current++; setResult(null); setBusy(false); setPaired(event.currentTarget.checked); setNotice('Manual pairing changed. Read both sources again.'); }} /> I manually pair this code with this tab for this preview. This does not verify their association.</label>
+-      <div class="db-actions"><button type="button" class="db-btn db-btn--primary" disabled={busy || !paired || !selected || !code.trim()} aria-busy={busy} onClick={() => void read()}>{busy ? 'Reading…' : 'Read paired preview'}</button></div>
++    <section class="db-card"><h2>PP Preview <span class="db-badge">Read-only</span></h2>
++      <p class="db-note">Choose Notion V2 records. Preview one selected PP at a time. No existing Magento edit tab is needed.</p>
++      <div class="db-actions"><button type="button" class="db-btn" disabled={loading} onClick={() => void load()}>Load PP catalogue</button>
++        <button type="button" class="db-btn" disabled={!loading} onClick={stopLoad}>Stop catalogue load</button></div>
++      <p role="status" aria-live="polite">Catalogue: {index.coverage}. {index.reason} Rows: {index.rows.length}. Read: {time(index.checkedAt)}</p>
++      <label class="db-field"><span>Search loaded codes or titles</span><input value={filter} onInput={event => setFilter(event.currentTarget.value)} /></label>
++      <p>{checked.length} selected · {visible.length} visible. Search filters the list, not the exact code used for lookup.</p>
++      <div class="db-table-wrap"><table class="db-table"><thead><tr><th scope="col">Select</th><th scope="col">Exact code</th><th scope="col">Notion title</th><th scope="col">Review</th><th scope="col">Identity status</th></tr></thead><tbody>
++        {visible.map(({ row, position }) => <tr key={row.pageId ?? 'invalid-' + position}><td><input type="checkbox" aria-label={'Select PP ' + (row.code ?? 'missing code')} disabled={!!problems[position]} checked={!!row.pageId && checked.includes(row.pageId)} onChange={event => setRow(row, event.currentTarget.checked)} /></td>
++          <td><pre class="db-pp-data">{row.code === null ? 'Unknown' : row.code}</pre></td><td>{row.name ?? 'Unknown'}</td><td>{row.reviewStatus ?? 'Unknown'}</td><td>{problems[position] ?? (index.coverage === 'complete' ? 'Unique exact code in loaded catalogue' : 'Uniqueness not established until coverage completes; detail lookup rechecks it')}</td></tr>)}
++      </tbody></table></div>
++    </section>
++    <section class="db-card"><h2>Preview one selected PP</h2>
++      <label class="db-field"><span>Selected Notion record</span><select value={activeId} onChange={event => { invalidate(); setActiveId(event.currentTarget.value); setEntityId(''); }}><option value="">Choose a checked PP explicitly</option>
++        {index.rows.filter(row => row.pageId && checked.includes(row.pageId)).map(row => <option key={row.pageId!} value={row.pageId!}>{row.code} · {row.name}</option>)}
++      </select></label>
++      <label class="db-field"><span>Exact Magento custom-option entity ID</span><input inputMode="numeric" value={entityId} maxLength={16} onInput={event => { invalidate(); setEntityId(event.currentTarget.value); }} />
++        <em>Enter the actual record ID separately. It is not the business code or Attribute Set ID. The configured allowed HTTPS admin base is used; do not paste a URL or session key.</em></label>
++      <label><input type="checkbox" checked={paired} disabled={!chosen || !!chosenProblem || !/^[1-9]\d{0,15}$/.test(entityId)} onChange={event => { generation.current++; setResult(null); stopPreview(); setPaired(event.currentTarget.checked); }} /> I manually pair this Notion record with this Magento entity for this preview. The association is not verified.</label>
++      <div class="db-actions"><button type="button" class="db-btn db-btn--primary" disabled={busy || helper.status !== 'idle' || !chosen || !!chosenProblem || !paired} aria-busy={busy} onClick={() => void read()}>{busy ? 'Reading selected PP…' : 'Preview selected PP'}</button>
++        <button type="button" class="db-btn" disabled={!busy && helper.status === 'idle'} onClick={() => void stopOrClose()}>Stop preview / close helper tab</button></div>
++      {helper.status === 'cleanup-failed' ? <p role="alert">Helper tab {helper.leftoverTabId} could not be closed. Further previews are blocked. Retry closing it or close that helper tab manually.</p> : null}
+       <p role="status" aria-live="polite">{notice}</p>
+     </section>
+-    {result ? <>
+-      <div class="db-grid">
+-        <section class="db-card"><h2>Current: Magento draft</h2>
+-          {selected ? <p>{selected.host} · entity {selected.entityId} · tab {selected.tabId}</p> : null}
+-          <p>Status: {draft?.status ?? 'unavailable'}. Scanned: {time(draft?.scannedAt)}</p>
+-          {current && !current.ok ? <p role="alert">{current.reason}</p> : null}
+-          {draft?.warnings.map((warning, i) => <p class="db-note" key={i}>{warning}</p>)}
+-          {usableDraft ? <>
+-            <p>Provider entity ID: {show(usableDraft.providerEntityId)}</p>
+-            <p>Provider Attribute Set ID: {show(usableDraft.providerAttributeSetId)}</p>
+-            <p>General Attribute Set IDs: {show(usableDraft.generalAttributeSetId)}</p>
+-            <p>Native Attribute Set consistency: {attributeSetConsistency(usableDraft)}. This does not verify a Notion association.</p>
+-            <p>Locations: {usableDraft.locations.state}, {usableDraft.locations.rows.length} read. Items: {usableDraft.items.state}, {usableDraft.items.rows.length} read. Missing collections are not empty lists.</p>
+-            <details><summary>Current draft reference</summary><pre class="db-pp-data">{show(usableDraft)}</pre></details>
+-          </> : <p role="alert">No usable current draft. Comparison is blocked.</p>}
+-        </section>
+-        <section class="db-card"><h2>Desired: Notion PP Catalog V2</h2>
+-          <p>Business code: {desired?.code}. Status: {desired?.status}</p>
+-          <p>Read: {time(desired?.checkedAt)}. Edited: {time(desired?.definition?.lastEditedAt)}</p>
+-          <p>{desired?.reason}</p>
+-          <p class="db-note">Source database: {PP_CATALOG_DATABASE}</p>
+-          {desired?.definition ? <>
+-            <p>Notion page ID: {desired.definition.pageId}</p>
+-            <p>Review status: {desired.definition.reviewStatus ?? 'Unknown'}. A rever, partial or missing data needs manual review.</p>
+-            {desired.definition.warnings.map((warning, i) => <p class="db-note" key={i}>{warning}</p>)}
+-            <details><summary>Desired definition and body reference</summary><pre class="db-pp-data">{show(desired.definition)}</pre></details>
+-          </> : <p>No unique desired definition. Comparison is blocked.</p>}
+-        </section>
+-      </div>
+-      {rows.length ? <section class="db-card"><h2>Side-by-side reference</h2>
+-        <p class="db-note">No verified native-field mapping is available. These rows explain the blockers; they are not executable changes. Blank desired values never request removal.</p>
+-        <div class="db-table-wrap"><table class="db-table"><thead><tr><th scope="col">Field</th><th scope="col">Current draft</th><th scope="col">Desired reference</th><th scope="col">Comparison</th></tr></thead><tbody>
+-          {rows.map(row => <tr key={row.field}><th scope="row">{row.field}</th><td><pre class="db-pp-data">{show(row.current)}</pre></td><td><pre class="db-pp-data">{show(row.desired)}</pre></td><td>Blocked: {row.reason}</td></tr>)}
+-        </tbody></table></div>
+-      </section> : null}
+-    </> : null}
++    {result ? <div class="db-grid">
++      <section class="db-card"><h2>Current: FRESH MAGENTO FORM LOAD</h2>
++        <p>Status: {form?.status ?? 'not read'}. Helper cleanup: {form?.cleanup ?? 'not created'}</p><p>{form?.reason ?? 'No Magento read was started.'}</p>
++        <p class="db-note">Not an existing user draft and not a certified saved-server snapshot. Authentication, route support and initial provider state still need human live validation.</p>
++        {draft ? <><p>Host: {form?.host}. Entity ID: {draft.entityId}. Read: {time(form?.readAt)}</p>
++          <p>Provider entity: {show(draft.providerEntityId)}. Provider Attribute Set: {show(draft.providerAttributeSetId)}. General Attribute Set IDs: {show(draft.generalAttributeSetId)}</p>
++          <p>Native Attribute Set consistency: {attributeSetConsistency(draft)}. This does not verify a Notion association.</p>
++          {draft.warnings.map((warning, i) => <p class="db-note" key={i}>{warning}</p>)}
++          <details><summary>Fresh form reference</summary><pre class="db-pp-data">{show(draft)}</pre></details></> : <p>No usable fresh form. Comparison blocked.</p>}
++      </section>
++      <section class="db-card"><h2>Desired: Notion PP Catalog V2</h2><p>Business code: {desired?.code}. Status: {desired?.status}</p><p>{desired?.reason}</p>
++        <p>Read: {time(desired?.checkedAt)}. Edited: {time(desired?.definition?.lastEditedAt)}</p><p class="db-note">Source database: {PP_CATALOG_DATABASE}</p>
++        {desired?.definition ? <><p>Notion page ID: {desired.definition.pageId}. Review: {desired.definition.reviewStatus ?? 'Unknown'}</p>
++          <p class="db-note">A rever, partial and unknown data require manual review.</p>
++          {desired.definition.warnings.map((warning, i) => <p class="db-note" key={i}>{warning}</p>)}
++          <details><summary>Desired definition and body reference</summary><pre class="db-pp-data">{show(desired.definition)}</pre></details></> : <p>No unique desired definition. Comparison blocked.</p>}
++      </section>
++    </div> : null}
++    {rows.length ? <section class="db-card"><h2>Side-by-side reference</h2><p class="db-note">No verified native-field mapping. These are blocked reference rows, not executable changes. Blank desired fields never request deletion.</p>
++      <div class="db-table-wrap"><table class="db-table"><thead><tr><th scope="col">Field</th><th scope="col">Fresh form</th><th scope="col">Desired reference</th><th scope="col">Comparison</th></tr></thead><tbody>
++        {rows.map(row => <tr key={row.field}><th scope="row">{row.field}</th><td><pre class="db-pp-data">{show(row.current)}</pre></td><td><pre class="db-pp-data">{show(row.desired)}</pre></td><td>Blocked: {row.reason}</td></tr>)}
++      </tbody></table></div></section> : null}
+   </div>;
+ }
+diff --git a/src/dashboard/sections/ui/ppPreviewModel.ts b/src/dashboard/sections/ui/ppPreviewModel.ts
+index 09b1083..75ba00a 100644
+--- a/src/dashboard/sections/ui/ppPreviewModel.ts
++++ b/src/dashboard/sections/ui/ppPreviewModel.ts
+@@ -1,5 +1,6 @@
+ import type { PpPreviewTab, ScanPpDraftResponse, ReadPpPreviewDraftResponse } from '../../../core/messages';
+ import { ppCatalogEntity, PpCatalogResponseSchema, type PpCatalogResponse } from '../../../shared/ppCatalog';
++import { PpCatalogIndexPageSchema, type PpCatalogIndexRow } from '../../../shared/ppCatalog';
+ 
+ export function isPpPreviewTab(value: unknown): value is PpPreviewTab {
+   if (!value || typeof value !== 'object') return false;
+@@ -11,6 +12,61 @@ export function isPpPreviewTab(value: unknown): value is PpPreviewTab {
+     typeof tab.selectionToken === 'string' && /^[a-f0-9]{64}$/.test(tab.selectionToken);
+ }
+ 
++export function catalogProblems(rows: PpCatalogIndexRow[]): (string | null)[] {
++  const counts = new Map<string, number>();
++  for (const row of rows) if (row.code !== null) counts.set(row.code, (counts.get(row.code) ?? 0) + 1);
++  return rows.map(row => {
++    if (!row.pageId) return 'Missing or invalid Notion page ID';
++    if (row.code === null || !row.code.trim()) return 'Missing business code';
++    if (row.code.length > 128) return 'Unsupported business code length';
++    if ((counts.get(row.code) ?? 0) > 1) return 'Duplicate exact business code';
++    if (row.name === null) return 'Unreadable title';
++    return null;
++  });
++}
++
++export interface PpIndexLoad {
++  rows: PpCatalogIndexRow[];
++  coverage: 'complete' | 'partial' | 'cancelled' | 'error';
++  reason: string;
++  checkedAt?: string;
++}
++
++/** One page at a time; stopping never schedules another queued Notion request. */
++export async function loadPpIndex(
++  fetchPage: (cursor?: string) => Promise<unknown>,
++  progress: (rows: PpCatalogIndexRow[], checkedAt: string) => void,
++  stopped: () => boolean,
++): Promise<PpIndexLoad> {
++  const rows: PpCatalogIndexRow[] = [], cursors = new Set<string>(), ids = new Set<string>();
++  let cursor: string | undefined, checkedAt: string | undefined;
++  const deadline = Date.now() + 60_000;
++  const result = (coverage: PpIndexLoad['coverage'], reason: string): PpIndexLoad => ({ rows, coverage, reason, checkedAt });
++  try {
++    for (let page = 0; page < 50; page++) {
++      if (stopped()) return result('cancelled', 'Catalogue load stopped. An in-flight request may finish; no further pages will be requested.');
++      if (Date.now() >= deadline) return result('partial', 'Catalogue time limit reached. Coverage is incomplete.');
++      const raw = await fetchPage(cursor);
++      if (stopped()) return result('cancelled', 'Catalogue load stopped. Coverage is incomplete.');
++      if (Date.now() >= deadline) return result('partial', 'Catalogue time limit reached. Coverage is incomplete.');
++      const parsed = PpCatalogIndexPageSchema.safeParse(raw);
++      if (!parsed.success) return result('partial', 'Invalid catalogue page. Coverage is incomplete.');
++      const response = parsed.data;
++      if (response.status !== 'page') return result(rows.length ? 'partial' : 'error', response.reason);
++      for (const row of response.rows) {
++        if (row.pageId && ids.has(row.pageId)) return result('partial', 'Repeated Notion record identity. Reload the incomplete catalogue.');
++        if (row.pageId) ids.add(row.pageId);
++        rows.push(row);
++      }
++      checkedAt = response.checkedAt; progress([...rows], checkedAt);
++      if (!response.hasMore) return result('complete', 'All catalogue pages were read. Duplicate and missing identities still require review.');
++      if (!response.nextCursor || cursors.has(response.nextCursor)) return result('partial', 'Missing or repeated catalogue cursor. Coverage is incomplete.');
++      cursors.add(response.nextCursor); cursor = response.nextCursor;
++    }
++    return result('partial', 'Catalogue coverage limit reached (50 pages / 5,000 rows). The list is incomplete.');
++  } catch { return result(rows.length ? 'partial' : 'error', 'Catalogue request failed. Reload explicitly; coverage is incomplete.'); }
++}
++
+ export function readPreviewResponses(code: string, selected: PpPreviewTab, rawDesired: unknown, rawCurrent: unknown): {
+   desired: PpCatalogResponse; current: ReadPpPreviewDraftResponse;
+ } {
+diff --git a/src/entrypoints/background/ppFreshForm.ts b/src/entrypoints/background/ppFreshForm.ts
+new file mode 100644
+index 0000000..c26b599
+--- /dev/null
++++ b/src/entrypoints/background/ppFreshForm.ts
+@@ -0,0 +1,166 @@
++import type { PpFreshFormResponse, PpFreshFormState } from '../../core/messages';
++import { scanCurrentPpDraft, ppRoutePathFromUrl } from '../../page/features/pp-scan/page';
++import { isPpDraftScanResponse } from './ppPreview';
++
++const HOSTS = new Set(['bestofgifts.pt', 'bestofgifts.eu', 'bestofgifts.es', 'bestofgifts.fr', 'bestofgifts-pt-qa.toogas.net']);
++const MAX_WAIT = 30_000, MAX_INJECTIONS = 10;
++interface ReadJob {
++  id: string; entityId: string; owner: number | undefined; cancelled: boolean;
++  tabId?: number; close?: Promise<boolean>; done: Promise<PpFreshFormResponse>;
++  removed?: boolean; onRemoved?: (tabId: number) => void;
++  closeInFlight?: boolean;
++}
++let active: ReadJob | null = null;
++let leftover: ReadJob | null = null;
++const stoppedBeforeStart = new Map<string, number | undefined>();
++
++const reply = (id: string, entityId: string, status: PpFreshFormResponse['status'], reason: string): PpFreshFormResponse =>
++  ({ source: 'fresh-magento-form-load', requestId: id, entityId, status, reason, cleanup: 'not-created' });
++
++export function freshFormUrl(base: unknown, entityId: unknown): string | null {
++  if (typeof base !== 'string' || typeof entityId !== 'string' || !/^[1-9]\d{0,15}$/.test(entityId)) return null;
++  try {
++    const url = new URL(base);
++    if (url.protocol !== 'https:' || !HOSTS.has(url.hostname) || url.port || url.username || url.password ||
++      url.search || url.hash || !/^\/[a-z0-9_-]+\/?$/i.test(url.pathname)) return null;
++    return `${url.origin}${url.pathname.replace(/\/$/, '')}/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${entityId}/`;
++  } catch { return null; }
++}
++
++async function closeOwned(job: ReadJob): Promise<boolean> {
++  if (job.tabId === undefined || job.removed) return true;
++  if (!job.close) {
++    job.closeInFlight = true;
++    job.close = chrome.tabs.remove(job.tabId).then(() => true, () => false).finally(() => { job.closeInFlight = false; });
++  }
++  return job.close;
++}
++
++function bounded<T>(promise: Promise<T>, milliseconds: number): Promise<T> {
++  return new Promise((resolve, reject) => {
++    const timer = setTimeout(() => reject(new Error('Read timed out')), Math.max(1, milliseconds));
++    promise.then(value => { clearTimeout(timer); resolve(value); }, error => { clearTimeout(timer); reject(error); });
++  });
++}
++
++export function freshFormState(owner: number | undefined): PpFreshFormState {
++  if (leftover) return { status: 'cleanup-failed', requestId: leftover.id, leftoverTabId: leftover.tabId };
++  if (active && active.owner === owner) return { status: 'reading', requestId: active.id };
++  return { status: 'idle' };
++}
++
++async function run(job: ReadJob): Promise<PpFreshFormResponse> {
++  let response = reply(job.id, job.entityId, 'unavailable', 'The fresh Magento form could not be read. Check the admin session and target entity.');
++  try {
++    const settings = await chrome.storage.local.get(['adminBaseUrl']);
++    const target = freshFormUrl(settings.adminBaseUrl, job.entityId);
++    if (!target) return reply(job.id, job.entityId, 'invalid', 'Configure an allowed HTTPS admin base and enter the exact positive Magento entity ID. Do not supply an edit URL or session key.');
++    if (job.cancelled) return reply(job.id, job.entityId, 'cancelled', 'Preview cancelled before opening a helper tab.');
++    const wanted = new URL(target), safePath = ppRoutePathFromUrl(target)!;
++    const created = await chrome.tabs.create({ url: target, active: false });
++    if (typeof created.id !== 'number') throw new Error('No owned tab');
++    job.tabId = created.id;
++    job.onRemoved = id => {
++      if (id !== job.tabId) return;
++      job.removed = true;
++      if (leftover === job) leftover = null;
++      if (job.onRemoved) chrome.tabs.onRemoved.removeListener(job.onRemoved);
++    };
++    chrome.tabs.onRemoved.addListener(job.onRemoved);
++    const deadline = Date.now() + MAX_WAIT;
++    let attempts = 0;
++    while (Date.now() < deadline && !job.cancelled) {
++      const before = await bounded(chrome.tabs.get(job.tabId), deadline - Date.now());
++      if (job.cancelled) break;
++      if (before.status === 'complete' && !before.pendingUrl) {
++        const url = new URL(before.url ?? '');
++        if (/\/(?:auth\/login|admin\/index\/index)(?:\/|$)/i.test(url.pathname)) {
++          response = reply(job.id, job.entityId, 'auth', 'Magento redirected to sign-in. Sign in yourself, then retry.'); break;
++        }
++        if (url.origin !== wanted.origin || ppRoutePathFromUrl(url.href) !== safePath) {
++          response = reply(job.id, job.entityId, 'unavailable', 'Magento redirected away from the requested PP entity. No snapshot accepted.'); break;
++        }
++        attempts++;
++        const [injection] = await bounded(chrome.scripting.executeScript({
++          target: { tabId: job.tabId, frameIds: [0] }, world: 'MAIN', func: scanCurrentPpDraft,
++        }), deadline - Date.now());
++        if (job.cancelled) break;
++        const after = await bounded(chrome.tabs.get(job.tabId), deadline - Date.now());
++        const result: unknown = injection?.result;
++        if (after.url !== before.url || after.pendingUrl || after.status !== 'complete' || injection?.frameId !== 0 ||
++          !isPpDraftScanResponse(result) || result.entityId !== job.entityId || result.routePath !== safePath) {
++          response = reply(job.id, job.entityId, 'unavailable', 'The helper document changed or returned an invalid identity. No snapshot accepted.'); break;
++        }
++        if (result.status === 'identity-mismatch' || (result.providerEntityId !== undefined && String(result.providerEntityId) !== job.entityId)) {
++          response = reply(job.id, job.entityId, 'unavailable', 'The Magento route and provider entity do not match. No snapshot accepted.'); break;
++        }
++        if ((result.status === 'ok' || result.status === 'partial') && String(result.providerEntityId) === job.entityId) {
++          response = { ...reply(job.id, job.entityId, result.status, 'Fresh Magento form load. This is not a certified saved-server snapshot or an existing user draft.'),
++            host: wanted.hostname, readAt: Date.now(), snapshot: { ...result,
++              routePath: `/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/${job.entityId}` } };
++          break;
++        }
++        if (attempts >= MAX_INJECTIONS) {
++          response = reply(job.id, job.entityId, 'unavailable', 'The PP provider did not become available with a matching entity within the bounded read attempts.'); break;
++        }
++      }
++      await new Promise(resolve => setTimeout(resolve, 500));
++    }
++    if (job.cancelled) response = reply(job.id, job.entityId, 'cancelled', 'Preview cancelled. No further reads will run.');
++  } catch {
++    response = reply(job.id, job.entityId, job.cancelled ? 'cancelled' : 'unavailable',
++      job.cancelled ? 'Preview cancelled.' : 'The fresh Magento form read failed or timed out. Retry explicitly.');
++  } finally {
++    const closed = await closeOwned(job);
++    if (closed && job.onRemoved) chrome.tabs.onRemoved.removeListener(job.onRemoved);
++    if (job.tabId !== undefined) {
++      response.cleanup = closed ? 'closed' : 'failed';
++      if (!closed) {
++        leftover = job;
++        response.status = 'cleanup-failed'; response.leftoverTabId = job.tabId;
++        response.reason = `Helper tab ${job.tabId} could not be closed. Retry closing it or close that helper tab manually. Further previews are blocked.`;
++      }
++    }
++    if (active === job) active = null;
++  }
++  return response;
++}
++
++export function readFreshForm(id: unknown, entityId: unknown, owner: number | undefined): Promise<PpFreshFormResponse> {
++  if (typeof id !== 'string' || !/^[a-z0-9-]{1,80}$/i.test(id) || typeof entityId !== 'string' || !/^[1-9]\d{0,15}$/.test(entityId)) {
++    return Promise.resolve(reply('', '', 'invalid', 'Invalid preview identity. Enter the exact positive Magento entity ID.'));
++  }
++  if (stoppedBeforeStart.has(id) && stoppedBeforeStart.get(id) === owner) {
++    stoppedBeforeStart.delete(id);
++    return Promise.resolve(reply(id, entityId, 'cancelled', 'Preview cancelled before opening a helper tab.'));
++  }
++  if (leftover) return Promise.resolve({ ...reply(id, entityId, 'cleanup-failed', `Helper tab ${leftover.tabId} still needs closing before another preview.`),
++    cleanup: 'failed', leftoverTabId: leftover.tabId, cleanupRequestId: leftover.id });
++  if (active) return Promise.resolve(reply(id, entityId, 'busy', 'Another helper read is still running or closing. Stop it or wait before retrying.'));
++  const job: ReadJob = { id, entityId, owner, cancelled: false, done: undefined! };
++  active = job; job.done = run(job); return job.done;
++}
++
++export async function cancelFreshForm(id: unknown, owner: number | undefined): Promise<PpFreshFormResponse> {
++  const job = leftover ?? active;
++  if (!job || job.id !== id || (job !== leftover && job.owner !== owner)) {
++    if (typeof id === 'string' && /^[a-z0-9-]{1,80}$/i.test(id)) {
++      if (stoppedBeforeStart.size >= 100) stoppedBeforeStart.delete(stoppedBeforeStart.keys().next().value!);
++      stoppedBeforeStart.set(id, owner);
++    }
++    return reply('', '', 'unavailable', 'No matching helper read to stop or close.');
++  }
++  job.cancelled = true;
++  if (job === leftover) {
++    if (!job.closeInFlight) job.close = undefined;
++    const closed = await closeOwned(job);
++    if (closed) {
++      leftover = null;
++      if (job.onRemoved) chrome.tabs.onRemoved.removeListener(job.onRemoved);
++      return { ...reply(job.id, job.entityId, 'cancelled', 'Helper tab closed.'), cleanup: 'closed' };
++    }
++    return { ...reply(job.id, job.entityId, 'cleanup-failed', `Helper tab ${job.tabId} still could not be closed.`), cleanup: 'failed', leftoverTabId: job.tabId };
++  }
++  if (job.tabId !== undefined) await closeOwned(job);
++  return job.done;
++}
+diff --git a/src/entrypoints/background/ppPreview.ts b/src/entrypoints/background/ppPreview.ts
+index d17617b..a097484 100644
+--- a/src/entrypoints/background/ppPreview.ts
++++ b/src/entrypoints/background/ppPreview.ts
+@@ -1,4 +1,4 @@
+-import type { RouterContext, PpPreviewTab } from '../../core/messages';
++import type { RouterContext, PpPreviewTab, ScanPpDraftResponse } from '../../core/messages';
+ import { ppCatalogEntity } from '../../shared/ppCatalog';
+ 
+ /** Only the extension's dashboard document can request a cross-tab PP read. */
+@@ -29,3 +29,28 @@ export async function ppPreviewTab(tab: chrome.tabs.Tab): Promise<PpPreviewTab |
+     selectionToken: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join(''),
+   };
+ }
++
++export function isPpDraftScanResponse(value: unknown): value is ScanPpDraftResponse {
++  if (!value || typeof value !== 'object') return false;
++  const result = value as ScanPpDraftResponse;
++  const isRecord = (item: unknown): item is Record<string, unknown> =>
++    !!item && typeof item === 'object' && !Array.isArray(item);
++  const validCollection = (collection: unknown): boolean => {
++    if (!isRecord(collection) || !Array.isArray(collection.rows) ||
++      !Array.isArray(collection.skippedPositions) ||
++      !collection.skippedPositions.every((position) => typeof position === 'number' && Number.isInteger(position) && position >= 0) ||
++      !['available', 'missing', 'invalid'].includes(String(collection.state)) ||
++      typeof collection.truncated !== 'boolean' || typeof collection.identifierGaps !== 'number' ||
++      !Number.isInteger(collection.identifierGaps) || collection.identifierGaps < 0) return false;
++    return collection.rows.every((row) => isRecord(row) &&
++      typeof row.position === 'number' && Number.isInteger(row.position) && row.position >= 0 &&
++      isRecord(row.values) && isRecord(row.translations));
++  };
++  return result.version === 1 &&
++    ['ok', 'partial', 'unavailable', 'identity-mismatch'].includes(result.status) &&
++    (typeof result.entityId === 'string' || result.entityId === null) &&
++    typeof result.routePath === 'string' && isRecord(result.general) &&
++    validCollection(result.locations) && validCollection(result.items) &&
++    Array.isArray(result.warnings) && result.warnings.every((warning) => typeof warning === 'string') &&
++    (result.scannedAt === undefined || (typeof result.scannedAt === 'number' && Number.isFinite(result.scannedAt)));
++}
+diff --git a/src/entrypoints/background/routers/audit.ts b/src/entrypoints/background/routers/audit.ts
+index 8baf7c3..b2d4a5b 100644
+--- a/src/entrypoints/background/routers/audit.ts
++++ b/src/entrypoints/background/routers/audit.ts
+@@ -1,5 +1,5 @@
+ import { ppCatalogEntity } from '../../../shared/ppCatalog';
+-import { loadPpCatalog } from '../../../audit';
++import { loadPpCatalog, loadPpCatalogIndexPage } from '../../../audit';
+ import { isPpPreviewSender } from '../ppPreview';
+ /**
+  * Lane B router — audit.
+@@ -89,6 +89,13 @@ async function findAdminTabId(): Promise<number | undefined> {
+ export const handleAuditMessage: LaneRouter = (message, ctx) => {
+   const { sendResponse } = ctx;
+ 
++  if (message?.type === 'FETCH_PP_CATALOG_INDEX_PAGE') {
++    if (!isPpPreviewSender(ctx)) sendResponse({ status: 'unavailable', rows: [], hasMore: false,
++      nextCursor: null, checkedAt: new Date().toISOString(), reason: 'Open PP Preview in the extension dashboard.' });
++    else void loadPpCatalogIndexPage(message.cursor).then(sendResponse);
++    return true;
++  }
++
+   if (message?.type === 'FETCH_PP_PREVIEW_CATALOG') {
+     if (!isPpPreviewSender(ctx)) {
+       sendResponse({ status: 'unavailable', code: typeof message.code === 'string' ? message.code : '',
+diff --git a/src/entrypoints/background/routers/ui.ts b/src/entrypoints/background/routers/ui.ts
+index b81dfa6..0749006 100644
+--- a/src/entrypoints/background/routers/ui.ts
++++ b/src/entrypoints/background/routers/ui.ts
+@@ -11,7 +11,8 @@
+ import type { LaneRouter, ScanPpDraftResponse } from '../../../core/messages';
+ 
+ import { selectAssociatedSkus } from '../../../page/features/assoc-bulk/page';
+-import { isPpPreviewSender, ppPreviewTab, PP_PREVIEW_TAB_URLS } from '../ppPreview';
++import { isPpPreviewSender, isPpDraftScanResponse, ppPreviewTab, PP_PREVIEW_TAB_URLS } from '../ppPreview';
++import { readFreshForm, cancelFreshForm, freshFormState } from '../ppFreshForm';
+ import {
+   ppEntityIdFromUrl,
+   ppRoutePathFromUrl,
+@@ -26,31 +27,6 @@ const PP_ADMIN_HOSTS = new Set([
+   'bestofgifts.fr',
+ ]);
+ 
+-function isPpDraftScanResponse(value: unknown): value is ScanPpDraftResponse {
+-  if (!value || typeof value !== 'object') return false;
+-  const result = value as ScanPpDraftResponse;
+-  const isRecord = (item: unknown): item is Record<string, unknown> =>
+-    !!item && typeof item === 'object' && !Array.isArray(item);
+-  const validCollection = (collection: unknown): boolean => {
+-    if (!isRecord(collection) || !Array.isArray(collection.rows) ||
+-      !Array.isArray(collection.skippedPositions) ||
+-      !collection.skippedPositions.every((position) => typeof position === 'number' && Number.isInteger(position) && position >= 0) ||
+-      !['available', 'missing', 'invalid'].includes(String(collection.state)) ||
+-      typeof collection.truncated !== 'boolean' || typeof collection.identifierGaps !== 'number' ||
+-      !Number.isInteger(collection.identifierGaps) || collection.identifierGaps < 0) return false;
+-    return collection.rows.every((row) => isRecord(row) &&
+-      typeof row.position === 'number' && Number.isInteger(row.position) && row.position >= 0 &&
+-      isRecord(row.values) && isRecord(row.translations));
+-  };
+-  return result.version === 1 &&
+-    ['ok', 'partial', 'unavailable', 'identity-mismatch'].includes(result.status) &&
+-    (typeof result.entityId === 'string' || result.entityId === null) &&
+-    typeof result.routePath === 'string' && isRecord(result.general) &&
+-    validCollection(result.locations) && validCollection(result.items) &&
+-    Array.isArray(result.warnings) && result.warnings.every((warning) => typeof warning === 'string') &&
+-    (result.scannedAt === undefined || (typeof result.scannedAt === 'number' && Number.isFinite(result.scannedAt)));
+-}
+-
+ function unavailablePpScan(entityId: string | null, routePath: string): ScanPpDraftResponse {
+   return {
+     version: 1,
+@@ -65,6 +41,17 @@ function unavailablePpScan(entityId: string | null, routePath: string): ScanPpDr
+ }
+ 
+ export const handleUiMessage: LaneRouter = (message, ctx) => {
++  if (['READ_PP_FRESH_FORM', 'CANCEL_PP_FRESH_FORM', 'GET_PP_FRESH_FORM_STATE'].includes(message?.type ?? '')) {
++    if (!isPpPreviewSender(ctx)) {
++      ctx.sendResponse({ source: 'fresh-magento-form-load', requestId: '', entityId: '', status: 'unavailable',
++        cleanup: 'not-created', reason: 'Open PP Preview in the extension dashboard.' });
++    } else if (message.type === 'GET_PP_FRESH_FORM_STATE') ctx.sendResponse(freshFormState(ctx.senderTabId));
++    else void (message.type === 'READ_PP_FRESH_FORM'
++      ? readFreshForm(message.requestId, message.entityId, ctx.senderTabId)
++      : cancelFreshForm(message.requestId, ctx.senderTabId)).then(ctx.sendResponse);
++    return true;
++  }
++
+   if (message?.type === 'LIST_PP_PREVIEW_TABS' || message?.type === 'READ_PP_PREVIEW_DRAFT') {
+     void (async () => {
+       const unavailable = (): void => ctx.sendResponse({ ok: false,
+diff --git a/src/shared/ppCatalog.ts b/src/shared/ppCatalog.ts
+index ee041e4..31dd4fb 100644
+--- a/src/shared/ppCatalog.ts
++++ b/src/shared/ppCatalog.ts
+@@ -28,6 +28,21 @@ export const PpCatalogResponseSchema = z.object({
+ }).refine(response => response.status !== 'found' || response.definition !== undefined);
+ export type PpCatalogResponse = z.infer<typeof PpCatalogResponseSchema>;
+ 
++export const PpCatalogIndexRowSchema = z.object({
++  pageId: PpCatalogDefinitionSchema.shape.pageId.nullable(),
++  code: z.string().nullable(),
++  name: z.string().nullable(),
++  reviewStatus: z.string().nullable(),
++});
++export type PpCatalogIndexRow = z.infer<typeof PpCatalogIndexRowSchema>;
++export const PpCatalogIndexPageSchema = z.object({
++  status: z.enum(['page', 'auth', 'access', 'network', 'unavailable', 'invalid']),
++  rows: z.array(PpCatalogIndexRowSchema).max(100),
++  hasMore: z.boolean(), nextCursor: z.string().nullable(),
++  checkedAt: z.string(), reason: z.string(),
++});
++export type PpCatalogIndexPage = z.infer<typeof PpCatalogIndexPageSchema>;
++
+ /** A supported edit record, never a storefront or create/duplicate route. */
+ export function ppCatalogEntity(url: string): string | null {
+   try {
+diff --git a/tests/ppCatalog.test.ts b/tests/ppCatalog.test.ts
+index 3811b07..ab9031f 100644
+--- a/tests/ppCatalog.test.ts
++++ b/tests/ppCatalog.test.ts
+@@ -1,6 +1,6 @@
+ import test, { type TestContext } from 'node:test';
+ import assert from 'node:assert/strict';
+-import { loadPpCatalog } from '../src/audit/ppCatalog';
++import { loadPpCatalog, loadPpCatalogIndexPage } from '../src/audit/ppCatalog';
+ import { PP_CATALOG_DATABASE, PP_CATALOG_DATA_SOURCE } from '../src/shared/ppCatalog';
+ 
+ const id = 'cbbb6705-ae1f-8227-90c6-01b6be542afc';
+@@ -94,6 +94,35 @@ test('code is kept verbatim without trimming, prefix or numeric aliases', async
+     { property: 'Código PP', rich_text: { equals: ' 0049 ' } });
+ });
+ 
++test('index reads only summary properties, preserves exact codes and missing fields, and never reads bodies', async t => {
++  const first = page(' 0049 '), second: any = page('0049'); second.id = tableId;
++  delete second.properties['Código PP']; second.properties.PP.title = null;
++  const calls = fixture(t, { rows: [first, second], more: true });
++  const result = await settle(t, loadPpCatalogIndexPage('requested-cursor'));
++  assert.equal(result.status, 'page'); assert.equal(result.hasMore, true); assert.equal(result.nextCursor, 'next');
++  assert.equal(result.rows[0]!.code, ' 0049 '); assert.equal(result.rows[0]!.reviewStatus, 'A rever');
++  assert.equal(result.rows[1]!.code, null); assert.equal(result.rows[1]!.name, null);
++  assert.deepEqual(Object.keys(result.rows[0]!).sort(), ['code', 'name', 'pageId', 'reviewStatus']);
++  assert.equal(calls.length, 2); assert.ok(calls.every(call => !call.url.includes('/blocks/')));
++  assert.deepEqual(calls[1]!.body, { page_size: 100, start_cursor: 'requested-cursor' });
++});
++
++test('index rejects invalid cursors without network access', async t => {
++  const calls = fixture(t);
++  for (const cursor of ['', 1, 'x'.repeat(513)]) assert.equal((await loadPpCatalogIndexPage(cursor)).status, 'invalid');
++  assert.equal(calls.length, 0);
++});
++
++for (const config of [{ token: '' }, { status: 401 }, { status: 403 }, { schema: 'number' }, { malformed: true }, { network: true }]) {
++  test('index fails explicitly and respects existing bounded retries: ' + JSON.stringify(config), async t => {
++    const calls = fixture(t, config);
++    const result = await settle(t, loadPpCatalogIndexPage());
++    assert.notEqual(result.status, 'page'); assert.equal(result.rows.length, 0);
++    assert.ok(calls.length <= 6, 'no more than the existing five retries plus initial read');
++    assert.ok(calls.every(call => !call.url.includes('/blocks/')));
++  });
++}
++
+ for (const [index, scenario] of ([
+   { rows: [], expected: 'not-found' },
+   { rows: [page(), page()], expected: 'multiple' },
+diff --git a/tests/ppCatalogSelection.test.ts b/tests/ppCatalogSelection.test.ts
+new file mode 100644
+index 0000000..e997127
+--- /dev/null
++++ b/tests/ppCatalogSelection.test.ts
+@@ -0,0 +1,215 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { h, render } from 'preact';
++import { act } from 'preact/test-utils';
++// @ts-expect-error - untyped transitive dependency
++import { JSDOM } from 'jsdom';
++import { PpPreview } from '../src/dashboard/sections/ui/PpPreview';
++import { catalogProblems, loadPpIndex } from '../src/dashboard/sections/ui/ppPreviewModel';
++import { handleAuditMessage } from '../src/entrypoints/background/routers/audit';
++import type { PpCatalogIndexRow, PpCatalogResponse } from '../src/shared/ppCatalog';
++import type { PpFreshFormResponse } from '../src/core/messages';
++
++const row = (n: number, code = String(n)): PpCatalogIndexRow => ({ pageId: '00000000-0000-0000-0000-' + String(n).padStart(12, '0'), code, name: 'PP ' + n, reviewStatus: 'A rever' });
++const page = (rows: PpCatalogIndexRow[], next: string | null = null) => ({ status: 'page', rows, hasMore: !!next, nextCursor: next, checkedAt: '2026-11-16T10:00:00Z', reason: 'Summary page' });
++const desired = (record = row(1, ' 0049 ')): PpCatalogResponse => ({ status: 'found', code: record.code!, checkedAt: '2026-11-16T10:00:00Z', reason: 'Reference read',
++  definition: { pageId: record.pageId!, code: record.code!, name: '<img src=x onerror=alert(1)>', reviewStatus: 'A rever', faces: ['Face 1'],
++    options: ['Laser'], techniques: null, faceCount: null, locationCount: 6, body: ['No established assignments'], warnings: ['Global lists do not establish per-location assignments'], lastEditedAt: null } });
++const fresh = (requestId: string, entityId = '966'): PpFreshFormResponse => ({ source: 'fresh-magento-form-load', requestId, entityId, status: 'partial',
++  cleanup: 'closed', reason: 'Fresh form loaded', host: 'bestofgifts.pt', readAt: 1_900_000_000_000,
++  snapshot: { version: 1, status: 'partial', entityId, providerEntityId: entityId, providerAttributeSetId: '479', generalAttributeSetId: ['479'],
++    routePath: '/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/' + entityId,
++    scannedAt: 1_900_000_000_000, general: { option_title: 'Fresh native title', sort_order: '', price: 0 },
++    locations: { state: 'available', rows: [], skippedPositions: [], identifierGaps: 0, truncated: false },
++    items: { state: 'missing', rows: [], skippedPositions: [], identifierGaps: 0, truncated: false }, warnings: ['Item collection missing'] } });
++
++test('index loads pages sequentially, preserves exact identities and certifies coverage only at exhaustion', async () => {
++  const calls: (string | undefined)[] = [], progress: number[] = [];
++  const result = await loadPpIndex(async cursor => { calls.push(cursor); return cursor ? page([row(2, '0049')]) : page([row(1, ' 0049 ')], 'next'); }, rows => progress.push(rows.length), () => false);
++  assert.deepEqual(calls, [undefined, 'next']); assert.deepEqual(progress, [1, 2]); assert.equal(result.coverage, 'complete');
++  assert.deepEqual(result.rows.map(r => r.code), [' 0049 ', '0049']); assert.deepEqual(catalogProblems(result.rows), [null, null]);
++});
++
++test('duplicate codes and missing/null/invalid identities remain explicit without aliases', () => {
++  const rows = [row(1, '49'), row(2, '49'), row(3, '0049'), { ...row(4), code: null }, { ...row(5), pageId: null },
++    { ...row(6), name: null }, row(7, ' '), row(8, 'x'.repeat(129))];
++  assert.deepEqual(catalogProblems(rows), ['Duplicate exact business code', 'Duplicate exact business code', null,
++    'Missing business code', 'Missing or invalid Notion page ID', 'Unreadable title', 'Missing business code', 'Unsupported business code length']);
++});
++
++for (const scenario of ['cursor-missing', 'cursor-repeated', 'id-repeated', 'malformed', 'auth', 'network']) {
++  test('index incomplete state: ' + scenario, async () => {
++    let calls = 0;
++    const result = await loadPpIndex(async () => {
++      calls++;
++      if (scenario === 'malformed') return {};
++      if (scenario === 'auth') return { ...page([]), status: 'auth', reason: 'Authentication required' };
++      if (scenario === 'network' && calls > 1) throw new Error('PRIVATE');
++      if (scenario === 'cursor-missing') return { ...page([row(1)]), hasMore: true };
++      return page([row(scenario === 'id-repeated' ? 1 : calls)], 'same-cursor');
++    }, () => {}, () => false);
++    assert.notEqual(result.coverage, 'complete'); assert.ok(calls <= 2); assert.doesNotMatch(result.reason, /PRIVATE/);
++    if (scenario === 'network') assert.equal(result.rows.length, 1);
++  });
++}
++
++test('cancellation stops page scheduling and ignores the in-flight page result', async () => {
++  let stopped = false, calls = 0;
++  const result = await loadPpIndex(async () => { calls++; stopped = true; return page([row(1)], 'next'); }, () => assert.fail('late progress'), () => stopped);
++  assert.equal(result.coverage, 'cancelled'); assert.equal(calls, 1); assert.deepEqual(result.rows, []);
++  stopped = false; calls = 0;
++  const kept = await loadPpIndex(async () => { calls++; return page([row(1)], 'next'); }, () => { stopped = true; }, () => stopped);
++  assert.equal(kept.coverage, 'cancelled'); assert.equal(kept.rows.length, 1); assert.equal(calls, 1);
++});
++
++test('page and wall-clock coverage caps are explicit partial results', async t => {
++  let calls = 0;
++  const capped = await loadPpIndex(async () => page([row(++calls)], 'cursor-' + calls), () => {}, () => false);
++  assert.equal(calls, 50); assert.equal(capped.coverage, 'partial'); assert.match(capped.reason, /50 pages/);
++  t.mock.timers.enable({ apis: ['Date'], now: 1_900_000_000_000 });
++  const timed = await loadPpIndex(async () => { t.mock.timers.tick(60_001); return page([row(1)]); }, () => assert.fail('expired result'), () => false);
++  assert.equal(timed.coverage, 'partial'); assert.match(timed.reason, /time limit/); assert.equal(timed.rows.length, 0);
++});
++
++test('index request requires the exact extension dashboard sender', async () => {
++  const globals = globalThis as any, old = globals.chrome;
++  let storageCalls = 0;
++  globals.chrome = { runtime: { getURL: () => 'chrome-extension://fixture/dashboard.html' }, storage: { local: { get: async () => { storageCalls++; return {}; } } } };
++  try {
++    for (const senderUrl of ['https://bestofgifts.pt/admin/', 'chrome-extension://other/dashboard.html', 'chrome-extension://fixture/sidepanel.html']) {
++      const response: any = await new Promise(resolve => handleAuditMessage({ type: 'FETCH_PP_CATALOG_INDEX_PAGE' }, { senderUrl, sendResponse: resolve }));
++      assert.equal(response.status, 'unavailable');
++    }
++    assert.equal(storageCalls, 0);
++    const response: any = await new Promise(resolve => handleAuditMessage({ type: 'FETCH_PP_CATALOG_INDEX_PAGE' }, { senderUrl: 'chrome-extension://fixture/dashboard.html#/ppPreview', senderFrameId: 0, sendResponse: resolve }));
++    assert.equal(response.status, 'auth'); assert.equal(storageCalls, 1);
++  } finally { globals.chrome = old; }
++});
++
++function fixture() {
++  const dom = new JSDOM('<!doctype html><div id="app"></div>', { url: 'chrome-extension://fixture/dashboard.html#/ppPreview' });
++  const globals = globalThis as any, previous = new Map<string, PropertyDescriptor | undefined>();
++  for (const key of ['window', 'document', 'Event', 'HTMLElement']) { previous.set(key, Object.getOwnPropertyDescriptor(globalThis, key)); Object.defineProperty(globalThis, key, { configurable: true, value: dom.window[key] }); }
++  const oldChrome = globals.chrome;
++  const pending: { message: any; resolve: (value: any) => void; reject: (reason: Error) => void }[] = [], messages: any[] = [];
++  globals.chrome = { runtime: { sendMessage: (message: any) => {
++    messages.push(message);
++    if (message.type === 'GET_PP_FRESH_FORM_STATE') return Promise.resolve({ status: 'idle' });
++    return new Promise((resolve, reject) => pending.push({ message, resolve, reject }));
++  } } };
++  const root = document.getElementById('app')!;
++  act(() => render(h(PpPreview, {}), root));
++  const button = (text: string) => Array.from(root.querySelectorAll('button')).find(b => b.textContent === text)!;
++  const click = (text: string) => act(() => button(text).click());
++  const resolve = async (type: string, value: any, occurrence = 0) => { const item = pending.filter(p => p.message.type === type)[occurrence]!;
++    assert.ok(item, type); await act(async () => { item.resolve(value); for (let i = 0; i < 30; i++) await Promise.resolve(); }); };
++  const field = (name: string) => Array.from(root.querySelectorAll('label')).find(label => label.textContent!.startsWith(name))!.querySelector<HTMLInputElement | HTMLSelectElement>('input,select')!;
++  const change = (name: string, value: string) => act(() => { const control = field(name); control.value = value; control.dispatchEvent(new dom.window.Event(control.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true })); });
++  const checkRow = (n: number) => act(() => root.querySelectorAll<HTMLInputElement>('table input[type="checkbox"]')[n]!.click());
++  const pair = () => act(() => root.querySelector<HTMLInputElement>('input[type="checkbox"]:not([aria-label])')!.click());
++  const prepare = async () => { click('Load PP catalogue'); await resolve('FETCH_PP_CATALOG_INDEX_PAGE', page([row(1, ' 0049 '), row(2, '50')])); checkRow(0); checkRow(1);
++    change('Selected Notion record', row(1).pageId!); change('Exact Magento custom-option entity ID', '966'); pair(); };
++  return { root, pending, messages, click, button, resolve, change, checkRow, pair, prepare,
++    close: () => { act(() => render(null, root)); globals.chrome = oldChrome; dom.window.close(); for (const [key, descriptor] of previous) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key); } } };
++}
++
++test('multi-selection survives filtering, exact selected details precede the fresh read, and rendering remains read-only/text-safe', async () => {
++  const f = fixture();
++  try {
++    assert.equal(f.pending.length, 0); assert.equal(f.button('Preview selected PP').disabled, true);
++    await f.prepare(); assert.match(f.root.textContent!, /2 selected/);
++    f.change('Search loaded codes or titles', '50'); assert.match(f.root.textContent!, /2 selected · 1 visible/);
++    f.change('Search loaded codes or titles', ''); assert.equal(f.root.querySelectorAll('table input:checked').length, 2);
++    f.click('Preview selected PP');
++    assert.deepEqual(f.pending.find(p => p.message.type === 'FETCH_PP_PREVIEW_CATALOG')!.message, { type: 'FETCH_PP_PREVIEW_CATALOG', code: ' 0049 ' });
++    assert.equal(f.pending.some(p => p.message.type === 'READ_PP_FRESH_FORM'), false);
++    await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
++    assert.equal(request.entityId, '966'); assert.equal('tabId' in request, false);
++    await f.resolve('READ_PP_FRESH_FORM', fresh(request.requestId));
++    assert.match(f.root.textContent!, /FRESH MAGENTO FORM LOAD/); assert.match(f.root.textContent!, /not a certified saved-server snapshot/);
++    assert.match(f.root.textContent!, /Fresh native title/); assert.match(f.root.textContent!, /A rever/); assert.match(f.root.textContent!, /Blocked:/);
++    assert.equal(f.root.querySelector('img'), null); assert.match(f.root.textContent!, /<img src=x/);
++    assert.ok(Array.from(f.root.querySelectorAll('button')).every(b => b.type === 'button' && !/apply|save|batch|execute/i.test(b.textContent!)));
++    assert.ok(f.messages.every(m => !['LIST_PP_PREVIEW_TABS', 'READ_PP_PREVIEW_DRAFT'].includes(m.type)));
++    assert.doesNotMatch(f.root.innerHTML, /PRIVATE|form_key|\/key\//);
++  } finally { f.close(); }
++});
++
++test('duplicate/missing catalogue rows are blocked; new loads clear selections and discard older pages', async () => {
++  const f = fixture();
++  try {
++    f.click('Load PP catalogue'); f.click('Stop catalogue load'); f.click('Load PP catalogue');
++    await f.resolve('FETCH_PP_CATALOG_INDEX_PAGE', page([row(2, 'dup'), row(3, 'dup'), { ...row(4), code: null }]), 1);
++    await f.resolve('FETCH_PP_CATALOG_INDEX_PAGE', page([row(1, 'OLD')]), 0);
++    assert.doesNotMatch(f.root.textContent!, /OLD/); assert.match(f.root.textContent!, /Duplicate exact business code|Missing business code/);
++    assert.ok(Array.from(f.root.querySelectorAll<HTMLInputElement>('table input')).every(input => input.disabled));
++    f.click('Load PP catalogue'); await f.resolve('FETCH_PP_CATALOG_INDEX_PAGE', page([row(1)]), 2); f.checkRow(0);
++    assert.match(f.root.textContent!, /1 selected/); f.click('Load PP catalogue'); assert.match(f.root.textContent!, /0 selected/);
++  } finally { f.close(); }
++});
++
++test('selected Notion page mismatch or non-unique details never starts Magento', async () => {
++  const f = fixture();
++  try {
++    await f.prepare(); f.click('Preview selected PP');
++    const wrong = desired(); wrong.definition!.pageId = row(2).pageId!;
++    await f.resolve('FETCH_PP_PREVIEW_CATALOG', wrong); assert.match(f.root.textContent!, /does not match the selected Notion record/);
++    assert.equal(f.pending.some(p => p.message.type === 'READ_PP_FRESH_FORM'), false);
++    f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', { status: 'multiple', code: ' 0049 ', checkedAt: '2026-11-16', reason: 'Multiple exact matches' }, 1);
++    assert.match(f.root.textContent!, /Multiple exact matches/); assert.equal(f.pending.some(p => p.message.type === 'READ_PP_FRESH_FORM'), false);
++  } finally { f.close(); }
++});
++
++test('a duplicate discovered on a later page clears the affected selection and active pairing', async () => {
++  const f = fixture();
++  try {
++    f.click('Load PP catalogue'); await f.resolve('FETCH_PP_CATALOG_INDEX_PAGE', page([row(1, '49')], 'next'));
++    f.checkRow(0); f.change('Selected Notion record', row(1).pageId!); f.change('Exact Magento custom-option entity ID', '966'); f.pair();
++    assert.match(f.root.textContent!, /1 selected/);
++    await f.resolve('FETCH_PP_CATALOG_INDEX_PAGE', page([row(2, '49')]), 1);
++    assert.match(f.root.textContent!, /0 selected/); assert.match(f.root.textContent!, /Duplicate exact business code/);
++    assert.equal(f.button('Preview selected PP').disabled, true);
++    assert.equal(f.pending.some(p => p.message.type === 'FETCH_PP_PREVIEW_CATALOG'), false);
++  } finally { f.close(); }
++});
++
++test('identity edits invalidate both sources, prevent overlapping previews, and retain cleanup failure even for stale reads', async () => {
++  const f = fixture();
++  try {
++    await f.prepare(); f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
++    f.change('Exact Magento custom-option entity ID', '967'); assert.equal(f.root.querySelector<HTMLButtonElement>('button[aria-busy]')!.disabled, true);
++    assert.equal(f.pending.find(p => p.message.type === 'CANCEL_PP_FRESH_FORM')!.message.requestId, request.requestId);
++    const failed = { ...fresh(request.requestId), status: 'cleanup-failed', cleanup: 'failed', leftoverTabId: 77, reason: 'Helper could not close' };
++    await f.resolve('CANCEL_PP_FRESH_FORM', failed); await f.resolve('READ_PP_FRESH_FORM', failed);
++    assert.match(f.root.textContent!, /Helper tab 77 could not be closed/); assert.doesNotMatch(f.root.textContent!, /Fresh native title/);
++    assert.equal(f.button('Preview selected PP').disabled, true);
++    f.click('Stop preview / close helper tab'); await f.resolve('CANCEL_PP_FRESH_FORM', { ...fresh(request.requestId), status: 'cancelled' }, 1);
++    f.pair(); assert.equal(f.button('Preview selected PP').disabled, false);
++  } finally { f.close(); }
++});
++
++test('stop during selected detail read prevents subsequent Magento work and leaving the section discards late results', async () => {
++  const f = fixture();
++  try {
++    await f.prepare(); f.click('Preview selected PP'); f.click('Stop preview / close helper tab');
++    await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    assert.equal(f.pending.some(p => p.message.type === 'READ_PP_FRESH_FORM'), false); assert.doesNotMatch(f.root.textContent!, /Desired: Notion/);
++    f.click('Preview selected PP');
++    act(() => render(null, f.root)); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired(), 1);
++    assert.equal(f.root.textContent, ''); assert.equal(f.pending.some(p => p.message.type === 'READ_PP_FRESH_FORM'), false);
++  } finally { f.close(); }
++});
++
++test('a mismatched fresh-form snapshot is rejected without rendering either associated preview', async () => {
++  const f = fixture();
++  try {
++    await f.prepare(); f.click('Preview selected PP'); await f.resolve('FETCH_PP_PREVIEW_CATALOG', desired());
++    const request = f.pending.find(p => p.message.type === 'READ_PP_FRESH_FORM')!.message;
++    const response = fresh(request.requestId); response.snapshot!.providerEntityId = '49';
++    await f.resolve('READ_PP_FRESH_FORM', response);
++    assert.match(f.root.textContent!, /did not match the explicit target/);
++    assert.doesNotMatch(f.root.textContent!, /Fresh native title|Desired: Notion/);
++  } finally { f.close(); }
++});
+diff --git a/tests/ppFreshForm.test.ts b/tests/ppFreshForm.test.ts
+new file mode 100644
+index 0000000..6b34ba5
+--- /dev/null
++++ b/tests/ppFreshForm.test.ts
+@@ -0,0 +1,135 @@
++import test, { type TestContext } from 'node:test';
++import assert from 'node:assert/strict';
++import { runInNewContext } from 'node:vm';
++import { freshFormUrl, readFreshForm, cancelFreshForm, freshFormState } from '../src/entrypoints/background/ppFreshForm';
++import { handleUiMessage } from '../src/entrypoints/background/routers/ui';
++import type { PpFreshFormResponse } from '../src/core/messages';
++
++const base = 'https://bestofgifts.pt/admin_fixture';
++const full = base + '/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/PRIVATE_SESSION/';
++const globals = globalThis as unknown as Record<string, unknown>;
++const flush = async () => { for (let i = 0; i < 30; i++) await Promise.resolve(); };
++async function settle<T>(t: TestContext, promise: Promise<T>): Promise<T> {
++  let done = false; void promise.then(() => { done = true; }, () => { done = true; });
++  for (let i = 0; i < 90 && !done; i++) { await flush(); t.mock.timers.tick(500); }
++  await flush(); assert.equal(done, true, 'bounded lifecycle completed'); return promise;
++}
++
++function fixture(t: TestContext, config: { scenario?: string; removeFail?: boolean; createWait?: Promise<any>; injectionWait?: Promise<any> } = {}) {
++  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_900_000_000_000 });
++  const previous = globals.chrome, removedListeners = new Set<(id: number) => void>();
++  const created: any[] = [], removed: number[] = [], injected: any[] = [];
++  let gets = 0, loaderCalls = 0;
++  const nativeData: any = { attributesetcustomoptions_id: '966', attribute_set_id: '479', general: { option_title: 'Fresh native form', attribute_set_id: ['479'] },
++    options: { sub_options: { sub_options: [] }, sub_options_items: { sub_options_items: [] } } };
++  if (config.scenario === 'identity') nativeData.attributesetcustomoptions_id = '49';
++  if (config.scenario === 'partial') delete nativeData.options.sub_options_items;
++  const registry = Object.create({ get: () => config.scenario === 'provider' ? undefined : { data: nativeData } });
++  const requireFn = Object.assign(() => { loaderCalls++; }, { s: { contexts: { _: { defined: { 'Magento_Ui/js/lib/registry/registry': registry } } } } });
++  globals.chrome = { runtime: { getURL: () => 'chrome-extension://fixture/dashboard.html' },
++    storage: { local: { get: async (keys: string[]) => { assert.deepEqual(keys, ['adminBaseUrl']); return { adminBaseUrl: config.scenario === 'base' ? 'https://example.org/admin' : base }; } } },
++    tabs: { create: async (options: any) => { created.push(options); if (config.scenario === 'create') throw new Error('PRIVATE_SESSION'); return config.createWait ?? { id: 77 }; },
++      get: async (id: number) => { assert.equal(id, 77); gets++;
++        const url = config.scenario === 'login' ? base + '/admin/auth/login/' :
++          config.scenario === 'redirect' ? 'https://example.org/admin/' :
++          config.scenario === 'entity-route' || (config.scenario === 'stale' && gets > 1) ? full.replace('/966/', '/49/') : full;
++        return { id, url, status: config.scenario === 'timeout' ? 'loading' : 'complete' };
++      }, remove: async (id: number) => { assert.equal(id, 77); removed.push(id); if (config.removeFail) throw new Error('remove failed');
++        for (const listener of [...removedListeners]) listener(id);
++      }, onRemoved: { addListener: (fn: (id: number) => void) => removedListeners.add(fn), removeListener: (fn: (id: number) => void) => removedListeners.delete(fn) },
++      query: () => { throw new Error('No tab enumeration'); }, update: () => { throw new Error('No tab navigation'); } },
++    scripting: { executeScript: async (options: any) => { injected.push(options); assert.deepEqual(options.target, { tabId: 77, frameIds: [0] }); assert.equal(options.world, 'MAIN');
++      if (config.injectionWait) return config.injectionWait;
++      return [{ frameId: config.scenario === 'frame' ? 2 : 0,
++        result: runInNewContext('(' + options.func.toString() + ')()', { window: { location: { pathname: new URL(full).pathname }, require: requireFn } }) }];
++    } } };
++  t.after(() => { globals.chrome = previous; });
++  return { config, created, removed, injected, nativeData, loaderCalls: () => loaderCalls, manualClose: () => { for (const fn of [...removedListeners]) fn(77); }, listeners: removedListeners };
++}
++
++test('fresh target accepts only a configured allowed HTTPS admin base and exact positive entity', () => {
++  assert.equal(freshFormUrl(base, '966'), full.replace('/key/PRIVATE_SESSION/', '/'));
++  for (const invalid of ['http://bestofgifts.pt/admin', 'https://example.org/admin', 'https://bestofgifts.pt:444/admin',
++    base + '/key/SECRET/', base + '?key=SECRET', base + '#SECRET', 'https://user:pass@bestofgifts.pt/admin', 'https://bestofgifts.pt/']) assert.equal(freshFormUrl(invalid, '966'), null);
++  for (const id of ['', '0', '0966', ' 966', '966/49', '-1', 966]) assert.equal(freshFormUrl(base, id), null);
++});
++
++test('fresh load uses a new inactive tab and serialized inherited-registry reader, then closes only the owned tab', async t => {
++  const f = fixture(t);
++  const response = await settle(t, readFreshForm('positive', '966', 1));
++  assert.equal(response.status, 'ok'); assert.equal(response.source, 'fresh-magento-form-load'); assert.equal(response.cleanup, 'closed');
++  assert.equal(response.snapshot!.general.option_title, 'Fresh native form'); assert.equal(f.loaderCalls(), 0);
++  assert.equal(f.created.length, 1); assert.equal(f.created[0].active, false); assert.doesNotMatch(f.created[0].url, /key\//);
++  assert.deepEqual(f.removed, [77]); assert.equal(f.listeners.size, 0); assert.equal(freshFormState(1).status, 'idle');
++  assert.doesNotMatch(JSON.stringify(response), /PRIVATE|admin_fixture|key\//);
++});
++
++for (const scenario of ['base', 'create', 'login', 'redirect', 'entity-route', 'identity', 'provider', 'timeout', 'stale', 'frame', 'partial']) {
++  test(`fresh lifecycle: ${scenario} is explicit and always cleans up created tabs`, async t => {
++    const f = fixture(t, { scenario });
++    const response = await settle(t, readFreshForm('case-' + scenario, '966', 1));
++    assert.equal(response.status, scenario === 'base' ? 'invalid' : scenario === 'login' ? 'auth' : scenario === 'partial' ? 'partial' : 'unavailable');
++    assert.equal(response.cleanup, ['base', 'create'].includes(scenario) ? 'not-created' : 'closed');
++    assert.equal(f.removed.length, ['base', 'create'].includes(scenario) ? 0 : 1);
++    assert.ok(f.injected.length <= 10); assert.doesNotMatch(JSON.stringify(response), /PRIVATE|key\//);
++    if (scenario !== 'partial') assert.equal(response.snapshot, undefined);
++  });
++}
++
++test('cancellation before creation resolves closes the owned tab without injection; duplicate reads are blocked', async t => {
++  let resolveCreate!: (value: any) => void;
++  const f = fixture(t, { createWait: new Promise(resolve => { resolveCreate = resolve; }) });
++  const pending = readFreshForm('cancel-create', '966', 1); await flush();
++  assert.equal((await readFreshForm('duplicate', '966', 1)).status, 'busy');
++  const cancelled = cancelFreshForm('cancel-create', 1); resolveCreate({ id: 77 });
++  const response = await settle(t, pending);
++  assert.equal(response.status, 'cancelled'); assert.equal(response.cleanup, 'closed'); assert.equal(f.injected.length, 0);
++  assert.deepEqual(f.removed, [77]); assert.equal((await cancelled).cleanup, 'closed');
++});
++
++test('cancellation during a pending injection closes immediately and ignores late extraction', async t => {
++  let resolveInjection!: (value: any) => void;
++  const f = fixture(t, { injectionWait: new Promise(resolve => { resolveInjection = resolve; }) });
++  const pending = readFreshForm('cancel-injection', '966', 1); await flush();
++  const cancelled = cancelFreshForm('cancel-injection', 1); await flush(); assert.deepEqual(f.removed, [77]);
++  resolveInjection([{ frameId: 0, result: {} }]);
++  const response = await settle(t, pending); assert.equal(response.status, 'cancelled'); assert.equal(response.snapshot, undefined);
++  assert.equal((await cancelled).cleanup, 'closed'); assert.equal(f.removed.length, 1);
++});
++
++test('cancel arriving before read prevents an unrequested tab; a different dashboard cannot cancel another job', async t => {
++  const f = fixture(t, { scenario: 'timeout' });
++  await cancelFreshForm('early-cancel', 1);
++  assert.equal((await readFreshForm('early-cancel', '966', 1)).status, 'cancelled'); assert.equal(f.created.length, 0);
++  const pending = readFreshForm('owner', '966', 1); await flush();
++  assert.equal((await cancelFreshForm('owner', 2)).status, 'unavailable'); assert.equal(f.removed.length, 0);
++  const cancelled = cancelFreshForm('owner', 1); await settle(t, pending); await cancelled;
++  assert.deepEqual(f.removed, [77]);
++});
++
++test('cleanup failure is returned, blocks further reads, and can be retried or manually closed', async t => {
++  const f = fixture(t, { removeFail: true });
++  const response = await settle(t, readFreshForm('cleanup', '966', 1));
++  assert.equal(response.status, 'cleanup-failed'); assert.equal(response.leftoverTabId, 77); assert.equal(response.cleanup, 'failed');
++  assert.equal(freshFormState(1).status, 'cleanup-failed');
++  assert.equal(freshFormState(2).status, 'cleanup-failed', 'leftover helper remains visible in another own dashboard');
++  assert.equal((await readFreshForm('blocked', '966', 1)).status, 'cleanup-failed'); assert.equal(f.created.length, 1);
++  assert.equal((await cancelFreshForm('cleanup', 1)).cleanup, 'failed');
++  f.config.removeFail = false;
++  assert.equal((await cancelFreshForm('cleanup', 2)).cleanup, 'closed'); assert.equal(freshFormState(1).status, 'idle');
++  f.config.removeFail = true;
++  await settle(t, readFreshForm('manual-cleanup', '966', 1)); f.manualClose();
++  assert.equal(freshFormState(1).status, 'idle'); assert.equal(f.listeners.size, 0);
++});
++
++test('fresh messages reject non-dashboard senders before browser or settings access', async t => {
++  const f = fixture(t);
++  for (const type of ['READ_PP_FRESH_FORM', 'CANCEL_PP_FRESH_FORM', 'GET_PP_FRESH_FORM_STATE']) {
++    for (const senderUrl of [full, 'chrome-extension://other/dashboard.html', 'chrome-extension://fixture/sidepanel.html']) {
++      let response: PpFreshFormResponse | undefined;
++      assert.equal(handleUiMessage({ type, requestId: 'guard', entityId: '966' }, { senderUrl, senderFrameId: 0, sendResponse: raw => { response = raw as PpFreshFormResponse; } }), true);
++      assert.equal(response?.status, 'unavailable');
++    }
++  }
++  assert.equal(f.created.length, 0); assert.equal(f.removed.length, 0);
++});
+diff --git a/tests/ppPreview.test.ts b/tests/ppPreview.test.ts
+index 9394e41..ed6a76b 100644
+--- a/tests/ppPreview.test.ts
++++ b/tests/ppPreview.test.ts
+@@ -170,117 +170,3 @@ test('preview retains unknowns, raw values and blocked semantics without fabrica
+   assert.throws(() => readPreviewResponses('49', target, desired('0049'), draftResponse()), /exact business code/);
+   assert.throws(() => readPreviewResponses(' 0049 ', target, desired(), { ...draftResponse(), tab: { ...target, entityId: '49' } }), /selected tab/);
+ });
+-
+-function uiFixture() {
+-  const dom = new JSDOM('<!doctype html><div id="app"></div>', { url: dashboard });
+-  const previous = new Map<string, PropertyDescriptor | undefined>();
+-  for (const key of ['window', 'document', 'Event', 'HTMLElement']) {
+-    previous.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+-    Object.defineProperty(globalThis, key, { value: dom.window[key], configurable: true });
+-  }
+-  const pending: { message: any; resolve: (value: any) => void; reject: (reason: Error) => void }[] = [];
+-  const restoreChrome = setChrome({ runtime: { sendMessage: (message: any) => new Promise((resolve, reject) => pending.push({ message, resolve, reject })) } });
+-  const root = document.getElementById('app')!;
+-  act(() => render(h(PpPreview, {}), root));
+-  const button = (name: string) => Array.from(root.querySelectorAll('button')).find(b => b.textContent === name)!;
+-  const click = (name: string) => act(() => button(name).click());
+-  const input = (code: string) => act(() => {
+-    const field = root.querySelector<HTMLInputElement>('input:not([type="checkbox"])')!;
+-    field.value = code; field.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+-  });
+-  const select = (token: string) => act(() => {
+-    const field = root.querySelector('select')!; field.value = token; field.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+-  });
+-  const pair = () => act(() => root.querySelector<HTMLInputElement>('input[type="checkbox"]')!.click());
+-  const resolve = async (index: number, value: any) => { await act(async () => {
+-    pending[index]!.resolve(value);
+-    for (let i = 0; i < 12; i++) await Promise.resolve();
+-  }); };
+-  const prepare = async () => {
+-    click('List open PP tabs'); await resolve(pending.length - 1, { ok: true, tabs: [target] });
+-    select(target.selectionToken); input(' 0049 '); pair();
+-  };
+-  return { dom, root, pending, button, click, input, select, pair, resolve, prepare,
+-    close: () => { act(() => render(null, root)); restoreChrome(); dom.window.close(); for (const [key, descriptor] of previous) {
+-      if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key);
+-    } } };
+-}
+-
+-test('dashboard requires explicit pairing, reads both sources, renders text safely and has no write controls', async () => {
+-  const f = uiFixture();
+-  try {
+-    assert.equal(f.pending.length, 0); assert.equal(f.button('Read paired preview').disabled, true);
+-    await f.prepare(); assert.equal(f.pending.length, 1);
+-    f.click('Read paired preview');
+-    assert.deepEqual(f.pending[1]!.message, { type: 'FETCH_PP_PREVIEW_CATALOG', code: ' 0049 ' });
+-    assert.deepEqual(f.pending[2]!.message, { type: 'READ_PP_PREVIEW_DRAFT', tabId: 7, selectionToken: target.selectionToken });
+-    await f.resolve(1, desired()); await f.resolve(2, draftResponse());
+-    assert.match(f.root.textContent!, /Unsaved current title/); assert.match(f.root.textContent!, /A rever/);
+-    assert.match(f.root.textContent!, /association is not verified/); assert.match(f.root.textContent!, /Blocked:/);
+-    assert.match(f.root.textContent!, /missing, 0 read/); assert.match(f.root.textContent!, /<img src=x/);
+-    assert.equal(f.root.querySelector('img'), null);
+-    assert.equal(f.root.querySelectorAll('th[scope="col"]').length, 4);
+-    assert.ok(Array.from(f.root.querySelectorAll('button')).every(b => b.type === 'button'));
+-    assert.ok(!Array.from(f.root.querySelectorAll('button')).some(b => /apply|save|batch|execute/i.test(b.textContent!)));
+-    assert.doesNotMatch(f.root.innerHTML, /PRIVATE|form_key|\/key\//);
+-    f.input('0049'); assert.doesNotMatch(f.root.textContent!, /Unsaved current title|Desired: Notion/);
+-    assert.equal(f.button('Read paired preview').disabled, true);
+-  } finally { f.close(); }
+-});
+-
+-test('identity changes invalidate both sources and discard late/out-of-order responses', async () => {
+-  const f = uiFixture();
+-  try {
+-    await f.prepare(); f.click('Read paired preview');
+-    f.input('49'); f.pair(); f.click('Read paired preview');
+-    await f.resolve(3, desired('49')); await f.resolve(4, draftResponse());
+-    assert.match(f.root.textContent!, /Business code: 49/);
+-    await f.resolve(1, desired()); await f.resolve(2, draftResponse());
+-    assert.match(f.root.textContent!, /Business code: 49/); assert.doesNotMatch(f.root.textContent!, /Business code:  0049/);
+-    f.select(''); assert.doesNotMatch(f.root.textContent!, /Desired: Notion|Current: Magento draft/);
+-    assert.match(f.root.textContent!, /previous preview is stale/);
+-  } finally { f.close(); }
+-});
+-
+-test('tab changes and leaving the section discard pending source responses', async () => {
+-  const f = uiFixture();
+-  try {
+-    await f.prepare(); f.click('Read paired preview'); f.select('');
+-    await f.resolve(1, desired()); await f.resolve(2, draftResponse());
+-    assert.doesNotMatch(f.root.textContent!, /Desired: Notion|Current: Magento draft/);
+-    f.select(target.selectionToken); f.pair(); f.click('Read paired preview');
+-    act(() => render(null, f.root));
+-    await f.resolve(3, desired()); await f.resolve(4, draftResponse());
+-    assert.equal(f.root.textContent, '');
+-  } finally { f.close(); }
+-});
+-
+-test('listing errors, empty results and rejected reads have explicit retry states', async () => {
+-  const f = uiFixture();
+-  try {
+-    f.click('List open PP tabs'); await f.resolve(0, { ok: true, tabs: [] });
+-    assert.match(f.root.textContent!, /No supported PP edit tabs/);
+-    f.click('List open PP tabs'); await f.resolve(1, { ok: false, reason: 'Unavailable' });
+-    assert.match(f.root.textContent!, /Cannot list supported PP tabs/);
+-    await f.prepare(); f.click('Read paired preview');
+-    await act(async () => { f.pending[3]!.reject(new Error('Read failed')); for (let i = 0; i < 12; i++) await Promise.resolve(); });
+-    assert.match(f.root.textContent!, /Read failed/); assert.equal(f.root.querySelector('table'), null);
+-    assert.equal(f.button('Read paired preview').disabled, false);
+-  } finally { f.close(); }
+-});
+-
+-test('unavailable/partial/error responses remain explicit without a successful comparison', async () => {
+-  const f = uiFixture();
+-  try {
+-    await f.prepare(); f.click('Read paired preview');
+-    await f.resolve(1, { status: 'multiple', code: ' 0049 ', checkedAt: '2026-11-16T10:00:00Z', reason: 'Multiple records. No reference selected.' });
+-    await f.resolve(2, { ok: false, reason: 'Selected tab changed' });
+-    assert.match(f.root.textContent!, /Multiple records/); assert.match(f.root.textContent!, /Selected tab changed/);
+-    assert.match(f.root.textContent!, /No usable current draft/); assert.equal(f.root.querySelector('table'), null);
+-    f.click('Read paired preview');
+-    const draft = snapshot(); draft.status = 'unavailable'; draft.warnings = ['Registry unavailable'];
+-    await f.resolve(3, desired(' 0049 ', 'partial')); await f.resolve(4, { ...draftResponse(), snapshot: draft });
+-    assert.match(f.root.textContent!, /Registry unavailable|Status: unavailable/); assert.match(f.root.textContent!, /Status: partial/);
+-    assert.equal(f.root.querySelector('table'), null);
+-  } finally { f.close(); }
+-});

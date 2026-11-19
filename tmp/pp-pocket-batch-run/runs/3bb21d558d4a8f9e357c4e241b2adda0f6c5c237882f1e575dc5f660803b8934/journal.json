@@ -1,0 +1,575 @@
+{
+  "approval_sha256": "9c52ed25856a233d7cf35f83f1a56213d770a727dd0124d6bad74af7245f2828",
+  "events": [
+    {
+      "kind": "FETCH_PAGE",
+      "nonce": "a42f3e0ed9b4463ca959b20d390dee0f",
+      "op_index": 0,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_RULES",
+      "nonce": "9fe276889bc24a348f22aa4254bf942b",
+      "op_index": 0,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_PREWRITE",
+      "nonce": "c7bfb02ce5984ab8824743f3f97d85ab",
+      "op_index": 0,
+      "page_index": 0
+    },
+    {
+      "before_hash": "a183e9d4c6547b98c7cb84d16ab1e798d3c897e4d46b488ec70cb7fbeeef8c06",
+      "kind": "ATTEMPTED",
+      "operation": "430-pocket-row-1"
+    },
+    {
+      "kind": "WRITE_PENDING",
+      "nonce": "9ef0a1880c4f43ef9b4ec9c7ed5e4ae4",
+      "op_index": 0,
+      "page_index": 0
+    },
+    {
+      "isError": false,
+      "kind": "WRITE_RESULT",
+      "warnings": null
+    },
+    {
+      "kind": "VERIFY_PAGE",
+      "nonce": "8820782b6f1a4cdfa4757aa90edfcc12",
+      "op_index": 0,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_PAGE",
+      "nonce": "2943eb2b4e824e28b0da066e2dbed3a2",
+      "op_index": 1,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_RULES",
+      "nonce": "c45ad84f0dc448a1a4fdf9edcf845e0c",
+      "op_index": 1,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_PREWRITE",
+      "nonce": "6964ef30cf114bfbaccbfaad2650388d",
+      "op_index": 1,
+      "page_index": 0
+    },
+    {
+      "before_hash": "8c25abf2e6610f3fd41eb214cc4ffdbe3da3ad41dd5201126756f8f47bec3614",
+      "kind": "ATTEMPTED",
+      "operation": "430-pocket-row-2"
+    },
+    {
+      "kind": "WRITE_PENDING",
+      "nonce": "3894cdb7bc7b4d08ab4672072cddfd24",
+      "op_index": 1,
+      "page_index": 0
+    },
+    {
+      "isError": false,
+      "kind": "WRITE_RESULT",
+      "warnings": null
+    },
+    {
+      "kind": "VERIFY_PAGE",
+      "nonce": "b588cc10e85b41a8bc54b6a3066cad9e",
+      "op_index": 1,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_PAGE",
+      "nonce": "2169f051c66346219b4e01f8d49974a4",
+      "op_index": 2,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_RULES",
+      "nonce": "7836f9a9749a4e98a6ad68089e0cdcda",
+      "op_index": 2,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_SCHEMA",
+      "nonce": "53ecc87d556947c68d10adb068ef112f",
+      "op_index": 2,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_PREWRITE",
+      "nonce": "77a8202ecccc41c4bfa0d17f4828b056",
+      "op_index": 2,
+      "page_index": 0
+    },
+    {
+      "before_hash": "166950ddd8ebceeefc395e9f940b5c1e0699171865c349df66691fd9ad5f102c",
+      "kind": "ATTEMPTED",
+      "operation": "430-pocket-property-1"
+    },
+    {
+      "kind": "WRITE_PENDING",
+      "nonce": "06da3e4a16ac4da98864c6a01eee9591",
+      "op_index": 2,
+      "page_index": 0
+    },
+    {
+      "isError": false,
+      "kind": "WRITE_RESULT",
+      "warnings": null
+    },
+    {
+      "kind": "VERIFY_PAGE",
+      "nonce": "90445d6c018d402f8b71184091a68e26",
+      "op_index": 2,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_PAGE",
+      "nonce": "601a61d772074e67a0bdeca560fa3092",
+      "op_index": 3,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_SUCCESS_SCHEMA",
+      "nonce": "8eb55b88e7c34ea38780f199a699c3bb",
+      "op_index": 3,
+      "page_index": 0
+    },
+    {
+      "kind": "FETCH_SUCCESS_PAGE",
+      "nonce": "ec6c723a0dad4be687068bcfc6a94d09",
+      "op_index": 3,
+      "page_index": 0
+    },
+    {
+      "code": "430",
+      "estado": "Para revisão",
+      "kind": "STATUS_INTENT",
+      "operation": "430-review-status"
+    },
+    {
+      "kind": "SUCCESS_WRITE_PENDING",
+      "nonce": "a7de8847d49f43fe96fabe6ceb7b189d",
+      "op_index": 3,
+      "page_index": 0
+    },
+    {
+      "kind": "VERIFY_SUCCESS_STATUS",
+      "nonce": "927cb832e13d487aa907a55adf6d9684",
+      "op_index": 3,
+      "page_index": 0
+    }
+  ],
+  "fake": false,
+  "nonce": "927cb832e13d487aa907a55adf6d9684",
+  "op_index": 0,
+  "page_index": 1,
+  "page_reports": {
+    "430": {
+      "code": "430",
+      "confirmed_receipts": [
+        {
+          "code": "430",
+          "operation": "430-pocket-row-1",
+          "saved_state_sha256": "094c4d4f6923e5f8cb2374faf1bd9c7d9241e4a8eaf68f9acec69fae7ea79df0",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "430",
+          "operation": "430-pocket-row-2",
+          "saved_state_sha256": "96263ddae8697621af4d44ec9c5c6b33409663715b55d98e3cb852e0fa5f5e73",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "430",
+          "operation": "430-pocket-property-1",
+          "saved_state_sha256": "445c9ee9910b08040ad187d2ee4e790d6ec92713523e4379a4811eb4077b6ee4",
+          "status": "SUCCEEDED"
+        },
+        {
+          "code": "430",
+          "operation": "430-review-status",
+          "saved_estado": "Para revisão",
+          "saved_state_sha256": "a4dbcca553cfe9875a433156116ff8ee0194b926b03baa2e843eae429d1071b4",
+          "status": "SUCCEEDED"
+        }
+      ],
+      "outcome": "SUCCESS",
+      "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+      "pending_receipts": [],
+      "readback": {
+        "edited_at": "2026-11-18T21:31:30.258Z",
+        "estado": "Para revisão",
+        "observed_body_sha256": "6d4469c8ec70a4e5bf4f1dd70e72772a89ca8179c0826623ba40d20e075f2fb2",
+        "properties_sha256": "49b89c44a9b013823dedd5953039d30a8a0555d2fb0853f047d8be40eb291f42"
+      },
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "a4dbcca553cfe9875a433156116ff8ee0194b926b03baa2e843eae429d1071b4"
+    }
+  },
+  "phase": "STOPPED",
+  "plan_sha256": "14e2f3f867eb430e46f58ced9560954e5b9860b52ecdfccbb1ba536d2e8ea962",
+  "preexisting_quarantines": {},
+  "quarantines": {},
+  "queue": [
+    {
+      "ops": [
+        {
+          "eligible": true,
+          "id": "430-pocket-row-1",
+          "kind": "body",
+          "payload": {
+            "command": "update_content",
+            "content_updates": [
+              {
+                "new_str": "| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |",
+                "old_str": "| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |",
+                "replace_all_matches": false
+              }
+            ],
+            "page_id": "3cab6705ae1f820dab27015d0d5e85ea"
+          },
+          "region_evidence": {
+            "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+            "body_notes_preserved": true,
+            "eligible": true,
+            "global_export_claimed": false,
+            "native_comment_anchors_claimed": false,
+            "new_section_sha256": "c8fefb05cb10336df65f729c31ce9240819fdc1afeea0d464bf1a988c5532c9e",
+            "old_note_scopes": [
+              "Bolso Esquerdo"
+            ],
+            "old_section_sha256": "464496cfcd034866365d7f4e3bdd53f423d6c23d02cdf3e2faa02559040bf1d7",
+            "visible_prefix_sha256": "e2bbe66e7158d256dc6e9ab78809aaf6112a40ed35308596ff1f1353d34e7312",
+            "visible_suffix_sha256": "15e76f4929fc6a75a4c73269dd08ee4cd51e1b59d41511736e0700ea3f00f9a7"
+          }
+        },
+        {
+          "eligible": true,
+          "id": "430-pocket-row-2",
+          "kind": "body",
+          "payload": {
+            "command": "update_content",
+            "content_updates": [
+              {
+                "new_str": "| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | DTF A7 da fonte original; confirmar dimensão útil |",
+                "old_str": "| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |",
+                "replace_all_matches": false
+              }
+            ],
+            "page_id": "3cab6705ae1f820dab27015d0d5e85ea"
+          },
+          "region_evidence": {
+            "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+            "body_notes_preserved": true,
+            "eligible": true,
+            "global_export_claimed": false,
+            "native_comment_anchors_claimed": false,
+            "new_section_sha256": "a00dfe91a755a11072613e2d09507a1afbc04dec40b59eba52bbb2921f81f073",
+            "old_note_scopes": [
+              "Bolso Direito"
+            ],
+            "old_section_sha256": "639a2967edea27f874b6fd2b42e1509c0736295e760abcfc830019d19a81052f",
+            "visible_prefix_sha256": "9ae1408e18c3d0c6db6c88eb69e9170478a5e708cb0657305a7a1395cb9a563f",
+            "visible_suffix_sha256": "4967f80cd1ca35c7e26762909a08a35c86bf580d1c058a6efdd03f10cd625c69"
+          }
+        },
+        {
+          "after_value": [
+            "Estamparia — até A4 — 4 cores",
+            "DTF — até A5",
+            "DTF — até A4",
+            "Bordado — até 120 cm²",
+            "Bordado — até 240 cm²",
+            "Bordado — até 360 cm²",
+            "Transfer — até 126 cm² — 1 cor",
+            "DTF — até A7"
+          ],
+          "before_value": [
+            "Estamparia — até A4 — 4 cores",
+            "DTF — até A5",
+            "DTF — até A4",
+            "Bordado — até 120 cm²",
+            "Bordado — até 240 cm²",
+            "Bordado — até 360 cm²",
+            "Transfer — até 126 cm² — 2 cores",
+            "DTF — até A7"
+          ],
+          "eligible": true,
+          "id": "430-pocket-property-1",
+          "kind": "properties",
+          "payload": {
+            "command": "update_properties",
+            "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+            "properties": {
+              "Opções de personalização": [
+                "Estamparia — até A4 — 4 cores",
+                "DTF — até A5",
+                "DTF — até A4",
+                "Bordado — até 120 cm²",
+                "Bordado — até 240 cm²",
+                "Bordado — até 360 cm²",
+                "Transfer — até 126 cm² — 1 cor",
+                "DTF — até A7"
+              ]
+            }
+          }
+        },
+        {
+          "eligible": true,
+          "id": "430-review-status",
+          "kind": "success_status",
+          "payload": {
+            "command": "update_properties",
+            "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+            "properties": {
+              "Estado": "Para revisão"
+            }
+          }
+        }
+      ],
+      "page": {
+        "code": "430",
+        "completion_status_operation": {
+          "eligible": true,
+          "id": "430-review-status",
+          "kind": "success_status",
+          "payload": {
+            "command": "update_properties",
+            "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+            "properties": {
+              "Estado": "Para revisão"
+            }
+          }
+        },
+        "desired_body": "## Imagens\n\n<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M6295\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 430</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 430.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | DTF A7 da fonte original; confirmar dimensão útil |\n\n<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M41:P51<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M41 | 430 |\n| N41 | AVENTAL grande vários bolsos - 3F |\n| O42 | Peito |\n| P42 | Estamparia - Até A4 - 4 Cores |\n| N43 | Ex: M6295 |\n| P43 | DTF - Até A5 (14,8x21,0 cm) |\n| P44 | DTF - Até A4 (21x29,7cm) |\n| N45 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P45 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P46 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P47 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O48 | Bolso Esquerdo |\n| P48 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O49 | Bolso Direito |\n| P49 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+        "diff": "--- 430-before\n+++ 430-after\n@@ -34,8 +34,8 @@\n | Face / local | Opções propostas | Nota |\n | --- | --- | --- |\n | Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n+| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n+| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | DTF A7 da fonte original; confirmar dimensão útil |\n \n <toggle>\n Pendências técnicas\n",
+        "failure_status_operation": {
+          "conditional": true,
+          "eligible": true,
+          "id": "430-error-status",
+          "kind": "error_status",
+          "observed_option_available": true,
+          "payload": {
+            "command": "update_properties",
+            "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+            "properties": {
+              "Estado": "Erro"
+            }
+          },
+          "requires_existing_option": true
+        },
+        "method_complete": true,
+        "operations": [
+          {
+            "eligible": true,
+            "id": "430-pocket-row-1",
+            "kind": "body",
+            "payload": {
+              "command": "update_content",
+              "content_updates": [
+                {
+                  "new_str": "| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |",
+                  "old_str": "| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |",
+                  "replace_all_matches": false
+                }
+              ],
+              "page_id": "3cab6705ae1f820dab27015d0d5e85ea"
+            },
+            "region_evidence": {
+              "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+              "body_notes_preserved": true,
+              "eligible": true,
+              "global_export_claimed": false,
+              "native_comment_anchors_claimed": false,
+              "new_section_sha256": "c8fefb05cb10336df65f729c31ce9240819fdc1afeea0d464bf1a988c5532c9e",
+              "old_note_scopes": [
+                "Bolso Esquerdo"
+              ],
+              "old_section_sha256": "464496cfcd034866365d7f4e3bdd53f423d6c23d02cdf3e2faa02559040bf1d7",
+              "visible_prefix_sha256": "e2bbe66e7158d256dc6e9ab78809aaf6112a40ed35308596ff1f1353d34e7312",
+              "visible_suffix_sha256": "15e76f4929fc6a75a4c73269dd08ee4cd51e1b59d41511736e0700ea3f00f9a7"
+            }
+          },
+          {
+            "eligible": true,
+            "id": "430-pocket-row-2",
+            "kind": "body",
+            "payload": {
+              "command": "update_content",
+              "content_updates": [
+                {
+                  "new_str": "| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | DTF A7 da fonte original; confirmar dimensão útil |",
+                  "old_str": "| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |",
+                  "replace_all_matches": false
+                }
+              ],
+              "page_id": "3cab6705ae1f820dab27015d0d5e85ea"
+            },
+            "region_evidence": {
+              "basis": "documented inline-only cells; complete exact data row; public targeted replacement contract",
+              "body_notes_preserved": true,
+              "eligible": true,
+              "global_export_claimed": false,
+              "native_comment_anchors_claimed": false,
+              "new_section_sha256": "a00dfe91a755a11072613e2d09507a1afbc04dec40b59eba52bbb2921f81f073",
+              "old_note_scopes": [
+                "Bolso Direito"
+              ],
+              "old_section_sha256": "639a2967edea27f874b6fd2b42e1509c0736295e760abcfc830019d19a81052f",
+              "visible_prefix_sha256": "9ae1408e18c3d0c6db6c88eb69e9170478a5e708cb0657305a7a1395cb9a563f",
+              "visible_suffix_sha256": "4967f80cd1ca35c7e26762909a08a35c86bf580d1c058a6efdd03f10cd625c69"
+            }
+          }
+        ],
+        "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+        "pocket_locations": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "property_operations": [
+          {
+            "after_value": [
+              "Estamparia — até A4 — 4 cores",
+              "DTF — até A5",
+              "DTF — até A4",
+              "Bordado — até 120 cm²",
+              "Bordado — até 240 cm²",
+              "Bordado — até 360 cm²",
+              "Transfer — até 126 cm² — 1 cor",
+              "DTF — até A7"
+            ],
+            "before_value": [
+              "Estamparia — até A4 — 4 cores",
+              "DTF — até A5",
+              "DTF — até A4",
+              "Bordado — até 120 cm²",
+              "Bordado — até 240 cm²",
+              "Bordado — até 360 cm²",
+              "Transfer — até 126 cm² — 2 cores",
+              "DTF — até A7"
+            ],
+            "eligible": true,
+            "id": "430-pocket-property-1",
+            "kind": "properties",
+            "payload": {
+              "command": "update_properties",
+              "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+              "properties": {
+                "Opções de personalização": [
+                  "Estamparia — até A4 — 4 cores",
+                  "DTF — até A5",
+                  "DTF — até A4",
+                  "Bordado — até 120 cm²",
+                  "Bordado — até 240 cm²",
+                  "Bordado — até 360 cm²",
+                  "Transfer — até 126 cm² — 1 cor",
+                  "DTF — até A7"
+                ]
+              }
+            }
+          }
+        ],
+        "reasons": [],
+        "scope_complete": true,
+        "source_body": "## Imagens\n\n<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M6295\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 430</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 430.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n\n<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M41:P51<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M41 | 430 |\n| N41 | AVENTAL grande vários bolsos - 3F |\n| O42 | Peito |\n| P42 | Estamparia - Até A4 - 4 Cores |\n| N43 | Ex: M6295 |\n| P43 | DTF - Até A5 (14,8x21,0 cm) |\n| P44 | DTF - Até A4 (21x29,7cm) |\n| N45 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P45 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P46 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P47 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O48 | Bolso Esquerdo |\n| P48 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O49 | Bolso Direito |\n| P49 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+        "source_metadata": {
+          "cover": {
+            "file": {
+              "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png"
+            },
+            "type": "file"
+          },
+          "icon": null,
+          "properties": {
+            "Código PP": "430",
+            "Estado": "A rever",
+            "Faces": [
+              "Peito",
+              "Bolso Esquerdo",
+              "Bolso Direito"
+            ],
+            "Família": [
+              "Aventais"
+            ],
+            "Imagem principal": [
+              "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png"
+            ],
+            "Notas": "NPP",
+            "Número de locais possíveis": 3,
+            "Opções de personalização": [
+              "Estamparia — até A4 — 4 cores",
+              "DTF — até A5",
+              "DTF — até A4",
+              "Bordado — até 120 cm²",
+              "Bordado — até 240 cm²",
+              "Bordado — até 360 cm²",
+              "Transfer — até 126 cm² — 2 cores",
+              "DTF — até A7"
+            ],
+            "PP": "430 — AVENTAL grande vários bolsos - 3F",
+            "SKU / referência do fornecedor": "Ex: M6295",
+            "Tipos de artigo compatíveis": [
+              "Avental"
+            ],
+            "Técnicas": [
+              "Estamparia",
+              "DTF",
+              "Bordado",
+              "Transfer"
+            ],
+            "url": "https://app.notion.com/p/3cab6705ae1f820dab27015d0d5e85ea",
+            "Área": "Brinde têxtil"
+          }
+        },
+        "source_state_sha256": "61fd811f08ae8d5fcb0f1555e3e27c77c831ac22c3055c1bc96691f9ae9e19cf",
+        "status": "READY_FOR_REVIEW",
+        "technical_unresolved": [],
+        "unaffected_open_choices": "661 chest, 662 box, cores mapping, DTF sizes/allocation and other full-method decisions are preserved and excluded",
+        "validation_policy": {
+          "body_notes_required": true,
+          "contract_sha256": "f6f05377bff7a554a1fdad4d668bb9b1d7168fe883104d5b1418258e6a988dd6",
+          "fresh_read_before_each_operation": true,
+          "global_export_claimed": false,
+          "name": "PP_METHOD_ROWS",
+          "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+          "version": 1
+        },
+        "whole_profile_method_complete": false
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "code": "430",
+      "operation": "430-pocket-row-1",
+      "saved_state_sha256": "094c4d4f6923e5f8cb2374faf1bd9c7d9241e4a8eaf68f9acec69fae7ea79df0",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "430",
+      "operation": "430-pocket-row-2",
+      "saved_state_sha256": "96263ddae8697621af4d44ec9c5c6b33409663715b55d98e3cb852e0fa5f5e73",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "430",
+      "operation": "430-pocket-property-1",
+      "saved_state_sha256": "445c9ee9910b08040ad187d2ee4e790d6ec92713523e4379a4811eb4077b6ee4",
+      "status": "SUCCEEDED"
+    },
+    {
+      "code": "430",
+      "operation": "430-review-status",
+      "saved_estado": "Para revisão",
+      "saved_state_sha256": "a4dbcca553cfe9875a433156116ff8ee0194b926b03baa2e843eae429d1071b4",
+      "status": "SUCCEEDED"
+    }
+  ],
+  "review_reference": "PP-POCKET-BATCH-V1-20261118-ACCEPTED",
+  "status": "COMPLETE"
+}

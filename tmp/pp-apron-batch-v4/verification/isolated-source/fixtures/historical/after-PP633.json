@@ -1,0 +1,62 @@
+{
+  "code": "633",
+  "title": "633 — AVENTAL Non-woven grande com bolso - 2F",
+  "url": "https://app.notion.com/p/f7bb6705ae1f826b848d819549bc3c03",
+  "pageLastEditedAt": "2026-11-17T13:50:38.403Z",
+  "verification": {
+    "state": "unverified"
+  },
+  "content": "## Imagens\n\n<image source=\"notion-file-block://a9cb6705-ae1f-83b6-9f4b-816c3a038e52/e75de3c8-39e8-4152-b3b1-4ea9b37c946c?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP633_1.png\" />\n\n## Descrição e notas do perfil\n\nAventais com bolso apx 100cm altura\n\nEx: M3897\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 633</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 633.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm) | Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven |\n| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia A4 1 Cor já existe no Excel; DTF A4 proposto; validar Non-Woven\n- Bolso: DTF A7 do Excel; Transfer 1 Cor existente na origem mas ausente de IMP → New; validar bolso\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso | Estamparia - Até A4 - 1 Cor<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M21:P32<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M21 | 633 |\n| N21 | AVENTAL Non-woven grande com bolso - 2F |\n| N22 | Aventais com bolso apx 100cm altura |\n| O22 | Peito |\n| P22 | Estamparia - Até A4 - 1 Cor |\n| N23 | Ex: M3897 |\n| P23 | DTF - Até A5 (14,8x21,0 cm) |\n| P24 | DTF - Até A4 (21x29,7cm) |\n| N25 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| O25 | Bolso |\n| P25 | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) |\n| P26 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "properties": {
+    "Código PP": "633",
+    "Estado": "A rever",
+    "Faces": [
+      "Peito",
+      "Bolso"
+    ],
+    "Família": [
+      "Aventais"
+    ],
+    "Imagem principal": [
+      "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png"
+    ],
+    "Notas": "",
+    "Número de locais possíveis": 2,
+    "Opções de personalização": [
+      "Estamparia — até A4 — 1 cor",
+      "DTF — até A5",
+      "DTF — até A4",
+      "Transfer — até 126 cm² — 1 cor",
+      "DTF — até A7"
+    ],
+    "PP": "633 — AVENTAL Non-woven grande com bolso - 2F",
+    "SKU / referência do fornecedor": "Ex: M3897",
+    "Tipos de artigo compatíveis": [
+      "Avental"
+    ],
+    "Técnicas": [
+      "Estamparia",
+      "DTF",
+      "Transfer"
+    ],
+    "url": "https://app.notion.com/p/f7bb6705ae1f826b848d819549bc3c03",
+    "Área": "Brinde têxtil"
+  },
+  "icon": null,
+  "cover": {
+    "type": "file",
+    "file": {
+      "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/e75de3c8-39e8-4152-b3b1-4ea9b37c946c/PP633_1.png",
+      "expiry_time": "2026-11-17T13:56:03.111Z"
+    }
+  },
+  "validation": {
+    "code": "633",
+    "descExact": true,
+    "sourceExact": true,
+    "newExact": true,
+    "oldExact": true,
+    "afterReview": true,
+    "columns": 2
+  }
+}

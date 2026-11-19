@@ -1,0 +1,44 @@
+Retrieves details about a Notion entity (page, database, data source, or saved database view) by URL or ID.
+
+Provide a URL or ID in `id`. Make multiple calls for multiple entities.
+
+For pages, use path, verification, edit time, and truncation metadata to assess the source. Treat recency as context, not proof. Report material uncertainty when sources conflict.
+
+Pages use Notion-flavored Markdown. For the complete specification, read the MCP resource `notion://docs/notion-flavored-markdown-spec` through your MCP client's resource-reading interface, or call the Notion "fetch" tool with this URI if your client does not support reading MCP resources. Do NOT pass this URI to any other URL-fetching tool.
+
+Pass a `notion://docs/*` URI as `id` to read that MCP documentation resource.
+
+Databases return data sources in `<data-source url="collection://...">` tags. Fetch the collection:// URL for its schema and use it with update_data_source or query_data_sources. Multi-source databases return more than one data source.
+
+Saved views return filters, sorts, and display settings. To query their rows, use query_data_sources with `mode: "view"`.
+
+A null cover or icon means none; an omitted one means unavailable, not absent. Keep a page's Markdown icon attribute for edit round trips. File URLs expire; re-fetch to refresh them. Uploaded media blocks use stable `notion-file-block://` sources; keep them when editing or copying Markdown. Get download URLs with get_file_download_urls, or set `include_file_urls` to true for a `references` map. Before relying on page content, check `truncated`, `unknown_block_count`, and `unknown_block_ids` for omitted subtrees.
+
+Set `include_discussions` to true for discussion counts, markers, previews, and `discussion://` URLs that correlate with get_comments. This tool is part of plugin `Notion`.
+
+Create docs, tasks, databases
+
+MCP server instructions: Notion holds docs, notes, wikis, and projects. Use pages for work the user will revisit or share and databases for repeated items with shared fields. Keep one-off answers in chat. When Notion fits, offer it once, say why, and let the user choose.
+
+Save pages where the user asks. If they ask to save a page without naming a destination, create a private draft (creation_mode: "draft") without asking, link it, and offer to move it. For edge cases, read notion://docs/when-to-create-a-notion-page-or-database.
+
+No...
+
+exec tool declaration:
+```ts
+declare const tools: { mcp__codex_apps__notion_fetch(args: {
+  // The ID or URL of the Notion page, database, or data source to fetch. Supports notion.so URLs, Notion Sites URLs (*.notion.site), raw UUIDs, and data source URLs (collection://...). Pass "memory" to fetch the connected user's About page and memory database in this workspace without creating them. Pass a notion://docs/* URI to read that documentation resource. Also accepts an explicit saved view URL (view://...) from a database response. If a database block ID returns a validation error, use the collection:// URL from that error. Example: <example>notion://docs/notion-flavored-markdown-spec</example>.
+  id: string;
+  // Whether to include discussion/comment indicators in the page output. When true, adds a <page-discussions> summary with discussion count, preview snippets, and discussion:// URLs. Use with the get_comments tool to retrieve full discussion content. Defaults to false.
+  include_discussions?: boolean;
+  // Whether to return signed download URLs for uploaded files. Defaults to false. When false, page Markdown cites uploaded files by stable notion-file-block:// references and the response has no references map; call get_file_download_urls with the references when you need those files' contents. When true, the response's references map gives the signed URL for each reference.
+  include_file_urls?: boolean;
+  // Whether to include meeting note transcripts. Defaults to false. When true, full transcripts are included; when false, a placeholder with the meeting note URL is shown instead.
+  include_transcript?: boolean;
+  // Notion setup instructions version, such as 0.0.2. Omit if unknown.
+  instructions_version?: string;
+  // For tracking only: the name of the agent skill you are following for this task, such as notion-meeting-prep. Omit if you are not following a skill.
+  skill?: string;
+  [key: string]: unknown;
+}): Promise<CallToolResult>; };
+```

@@ -1,0 +1,406 @@
+{
+  "checks": {
+    "new_mapping_unchanged": true,
+    "old_repaired": true,
+    "old_rows": [
+      [
+        "Peito",
+        "Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+      ],
+      [
+        "Bolso Esquerdo<br />Bolso Direito",
+        "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)"
+      ],
+      [
+        "Caixa",
+        "Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia &gt; 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)"
+      ]
+    ],
+    "technical_notes": [
+      {
+        "location": "Peito",
+        "side": "New",
+        "text": "Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido"
+      },
+      {
+        "location": "Bolso Esquerdo",
+        "side": "New",
+        "text": "Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New"
+      },
+      {
+        "location": "Bolso Direito",
+        "side": "New",
+        "text": "DTF A7 da fonte original; confirmar área útil"
+      },
+      {
+        "location": "Caixa",
+        "side": "New",
+        "text": "Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada"
+      }
+    ]
+  },
+  "code": "662",
+  "comments": {
+    "empty": false,
+    "reason": "Comment discovery unavailable after initial capability failure"
+  },
+  "desired_body": "<image source=\"notion-file-block://150b6705-ae1f-8395-af57-81d591e234b2/182f8a51-2cf2-4893-ab80-7178b89130e2?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP662_1.png\" />\n\nEx: MO6260\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 662</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 662.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo\n</td>\n<td>\nPor confirmar — sem opção aprovada em IMP → New\n</td>\n</tr>\n<tr>\n<td>\nBolso Direito\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nCaixa\n</td>\n<td>\nUV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nCaixa\n</td>\n<td>\nSerigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia &gt; 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nEstamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n</toggle>\n\n<toggle>\nNew: Bolso Esquerdo\n\nApenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n</toggle>\n\n<toggle>\nNew: Bolso Direito\n\nDTF A7 da fonte original; confirmar área útil\n</toggle>\n\n<toggle>\nNew: Caixa\n\nConfirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M74:P94<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M74 | 662 |\n| N74 | AVENTAL grande vários bolsos (3F) + Caixa |\n| O75 | Peito |\n| P75 | Estamparia - Até A4 - 4 Cores |\n| N76 | Ex: MO6260 |\n| P76 | DTF - Até A5 (14,8x21,0 cm) |\n| P77 | DTF - Até A4 (21x29,7cm) |\n| N78 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P78 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P79 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P80 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O81 | Bolso Esquerdo |\n| P81 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O82 | Bolso Direito |\n| P82 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O83 | Caixa |\n| P83 | Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores |\n| P84 | Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores |\n| P85 | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) |\n| P86 | UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS) |\n| P87 | UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.) |\n| P88 | Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm) |\n| P89 | Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc) |\n| P90 | Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M74:P94; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+  "diff": "--- 662-before\n+++ 662-after\n@@ -1,14 +1,8 @@\n-## Imagens\n-\n <image source=\"notion-file-block://150b6705-ae1f-8395-af57-81d591e234b2/182f8a51-2cf2-4893-ab80-7178b89130e2?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP662_1.png\" />\n \n-## Descrição e notas do perfil\n-\n Ex: MO6260\n \n No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n-\n-## Notas\n \n - Grupo com vários locais ou sem local: confirmar a distribuição das opções\n \n@@ -27,36 +21,124 @@\n <column ratio=\"50\">\n ## New (proposta)\n \n-<callout icon=\"📝\">\n-<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n-</callout>\n-\n-| Face / local | Opções propostas | Nota |\n-| --- | --- | --- |\n-| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n-| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n-\n-<toggle>\n-Pendências técnicas\n-\n-- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n-- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n-- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n-- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n-</toggle>\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções propostas\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso Esquerdo\n+</td>\n+<td>\n+Por confirmar — sem opção aprovada em IMP → New\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso Direito\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Caixa\n+</td>\n+<td>\n+UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)\n+</td>\n+</tr>\n+</table>\n </column>\n <column ratio=\"50\">\n ## Old (original)\n \n-### Locais e personalização\n-\n-| Face / local | Opções completas e especificações | Notas |\n-| --- | --- | --- |\n-| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso Esquerdo<br />Bolso Direito\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Caixa\n+</td>\n+<td>\n+Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia &gt; 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)\n+</td>\n+</tr>\n+</table>\n </column>\n </columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Peito\n+\n+Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n+</toggle>\n+\n+<toggle>\n+New: Bolso Esquerdo\n+\n+Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n+</toggle>\n+\n+<toggle>\n+New: Bolso Direito\n+\n+DTF A7 da fonte original; confirmar área útil\n+</toggle>\n+\n+<toggle>\n+New: Caixa\n+\n+Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n+</toggle>\n+</toggle>\n \n <toggle>\n Fonte e original do Excel\n@@ -89,4 +171,69 @@\n | P88 | Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm) |\n | P89 | Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc) |\n | P90 | Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+<toggle>\n+New\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n+</callout>\n+</toggle>\n+\n+<toggle>\n+Old\n+\n+### Locais e personalização\n+</toggle>\n+\n+## Imagens\n+\n+## Descrição e notas do perfil\n+\n+## Notas\n+\n+<toggle>\n+Original preservado antes da revisão de layout e associações Excel\n+\n+Proveniência: M74:P94; grupos e células verificados no plano.\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n+</callout>\n+\n+| Face / local | Opções propostas | Nota |\n+| --- | --- | --- |\n+| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n+| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n+| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n+| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n+\n+<toggle>\n+Pendências técnicas\n+\n+- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n+- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n+- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n+- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n+</toggle>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+### Locais e personalização\n+\n+| Face / local | Opções completas e especificações | Notas |\n+| --- | --- | --- |\n+| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+</column>\n+</columns>\n+</toggle>\n </toggle>",
+  "excel": {
+    "groups": [
+      {
+        "locations": [
+          {
+            "cell": "O75",
+            "text": "Peito"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P75",
+            "text": "Estamparia - Até A4 - 4 Cores"
+          },
+          {
+            "cell": "P76",
+            "text": "DTF - Até A5 (14,8x21,0 cm)"
+          },
+          {
+            "cell": "P77",
+            "text": "DTF - Até A4 (21x29,7cm)"
+          },
+          {
+            "cell": "P78",
+            "text": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+          },
+          {
+            "cell": "P79",
+            "text": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+          },
+          {
+            "cell": "P80",
+            "text": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "cell": "O81",
+            "text": "Bolso Esquerdo"
+          },
+          {
+            "cell": "O82",
+            "text": "Bolso Direito"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P81",
+            "text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+          },
+          {
+            "cell": "P82",
+            "text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "cell": "O83",
+            "text": "Caixa"
+          }
+        ],
+        "options": [
+          {
+            "cell": "P83",
+            "text": "Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores"
+          },
+          {
+            "cell": "P84",
+            "text": "Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores"
+          },
+          {
+            "cell": "P85",
+            "text": "UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS | OUTROS)"
+          },
+          {
+            "cell": "P86",
+            "text": "UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES | OUTROS)"
+          },
+          {
+            "cell": "P87",
+            "text": "UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)"
+          },
+          {
+            "cell": "P88",
+            "text": "Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)"
+          },
+          {
+            "cell": "P89",
+            "text": "Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)"
+          },
+          {
+            "cell": "P90",
+            "text": "Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)"
+          }
+        ]
+      }
+    ],
+    "range": "M74:P94",
+    "title": "AVENTAL grande vários bolsos (3F) + Caixa"
+  },
+  "operations": [
+    {
+      "after_region": "",
+      "before_region": "## Imagens\n\n",
+      "eligible": false,
+      "id": "662-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Imagens\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "ddbb6705ae1f820cb837013a1864964a"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Descrição e notas do perfil\n\n",
+      "eligible": false,
+      "id": "662-body-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Descrição e notas do perfil\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "ddbb6705ae1f820cb837013a1864964a"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "",
+      "before_region": "## Notas\n\n",
+      "eligible": false,
+      "id": "662-body-3",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "",
+            "old_str": "## Notas\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "ddbb6705ae1f820cb837013a1864964a"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo\n</td>\n<td>\nPor confirmar — sem opção aprovada em IMP → New\n</td>\n</tr>\n<tr>\n<td>\nBolso Direito\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nCaixa\n</td>\n<td>\nUV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nCaixa\n</td>\n<td>\nSerigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia &gt; 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nEstamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n</toggle>\n\n<toggle>\nNew: Bolso Esquerdo\n\nApenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n</toggle>\n\n<toggle>\nNew: Bolso Direito\n\nDTF A7 da fonte original; confirmar área útil\n</toggle>\n\n<toggle>\nNew: Caixa\n\nConfirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</toggle>\n\n",
+      "before_region": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n",
+      "eligible": false,
+      "id": "662-body-4",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo\n</td>\n<td>\nPor confirmar — sem opção aprovada em IMP → New\n</td>\n</tr>\n<tr>\n<td>\nBolso Direito\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nCaixa\n</td>\n<td>\nUV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nCaixa\n</td>\n<td>\nSerigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia &gt; 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito\n\nEstamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n</toggle>\n\n<toggle>\nNew: Bolso Esquerdo\n\nApenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n</toggle>\n\n<toggle>\nNew: Bolso Direito\n\nDTF A7 da fonte original; confirmar área útil\n</toggle>\n\n<toggle>\nNew: Caixa\n\nConfirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</toggle>\n\n",
+            "old_str": "<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "ddbb6705ae1f820cb837013a1864964a"
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    },
+    {
+      "after_region": "<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M74:P94; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+      "before_region": null,
+      "eligible": false,
+      "id": "662-body-5",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\n<toggle>\nNew\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nOld\n\n### Locais e personalização\n</toggle>\n\n## Imagens\n\n## Descrição e notas do perfil\n\n## Notas\n\n<toggle>\nOriginal preservado antes da revisão de layout e associações Excel\n\nProveniência: M74:P94; grupos e células verificados no plano.\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+        "page_id": "ddbb6705ae1f820cb837013a1864964a",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "excel_original_groups_verified": true,
+        "fully_parsed_supported_export": true,
+        "server_region_completeness_attested": false,
+        "unique_match": true
+      }
+    }
+  ],
+  "page_id": "ddbb6705ae1f820cb837013a1864964a",
+  "property_operations": [],
+  "property_proposals": [
+    {
+      "before": [
+        "Estamparia",
+        "DTF",
+        "Bordado",
+        "Transfer",
+        "Serigrafia",
+        "UV",
+        "Laser CO2"
+      ],
+      "candidate_known_subset": [
+        "Estamparia",
+        "DTF",
+        "Bordado",
+        "UV"
+      ],
+      "property": "Técnicas",
+      "reasons": [
+        "New contains unresolved choices; no partial property synchronisation"
+      ],
+      "resolved": false
+    },
+    {
+      "before": [
+        "Estamparia — até A4 — 4 cores",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Bordado — até 120 cm²",
+        "Bordado — até 240 cm²",
+        "Bordado — até 360 cm²",
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7",
+        "Serigrafia — até 120 cm² — 2 cores",
+        "Serigrafia — > 120 cm² — 2 cores",
+        "UV — até 100 cm²",
+        "UV — até 200 cm²",
+        "UV — até 300 cm²",
+        "Laser CO2 (Madeira) — até 120 cm²",
+        "Laser CO2 (Madeira) — até 250 cm²",
+        "Laser CO2 (Madeira) — até 360 cm²"
+      ],
+      "candidate_known_subset": [
+        "Estamparia — até A4 — 1 cor",
+        "DTF — até A4",
+        "Bordado — até 240 cm²",
+        "DTF — até A7",
+        "UV — até 100 cm²"
+      ],
+      "property": "Opções de personalização",
+      "reasons": [
+        "New contains unresolved choices; no partial property synchronisation"
+      ],
+      "resolved": false
+    }
+  ],
+  "reasons": [
+    "Global coverage UNKNOWN; no independently attested complete target-region export. Unique/balanced text and Excel agreement do not prove absence of omitted content.",
+    "Comment discovery unavailable after initial capability failure"
+  ],
+  "review_callout_sha256": [
+    "b35e725be7b5c4cf67ea7ff2b7090da59e898512d3ca87099e40166ce563f880"
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://150b6705-ae1f-8395-af57-81d591e234b2/182f8a51-2cf2-4893-ab80-7178b89130e2?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP662_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: MO6260\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 662</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 662.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |\n| Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |\n\n<toggle>\nPendências técnicas\n\n- Peito: Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar área útil\n- Caixa: Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito<br />Caixa | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores<br />Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores<br />UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS)<br />UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS)<br />UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.)<br />Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)<br />Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)<br />Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M74:P94<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M74 | 662 |\n| N74 | AVENTAL grande vários bolsos (3F) + Caixa |\n| O75 | Peito |\n| P75 | Estamparia - Até A4 - 4 Cores |\n| N76 | Ex: MO6260 |\n| P76 | DTF - Até A5 (14,8x21,0 cm) |\n| P77 | DTF - Até A4 (21x29,7cm) |\n| N78 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P78 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P79 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P80 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O81 | Bolso Esquerdo |\n| P81 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O82 | Bolso Direito |\n| P82 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| O83 | Caixa |\n| P83 | Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores |\n| P84 | Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores |\n| P85 | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \\| OUTROS) |\n| P86 | UV - Até 200 cm2 (Aprox. 14x14cm - BLOCOS GRANDES \\| OUTROS) |\n| P87 | UV - Até 300 cm2 (Aprox. 17x17cm - CAIXAS CONJ BLOCOS, etc.) |\n| P88 | Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm) |\n| P89 | Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc) |\n| P90 | Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm) |\n</toggle>",
+  "source_capture_sha256": "7d754bbb9df9df3cc4550ac09dd6dfdcaeed96b7a8b23a5c3ec8a316bd0481c5",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/182f8a51-2cf2-4893-ab80-7178b89130e2/PP662_1.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "662",
+      "Estado": "A rever",
+      "Faces": [
+        "Peito",
+        "Bolso Esquerdo",
+        "Bolso Direito",
+        "Caixa"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/182f8a51-2cf2-4893-ab80-7178b89130e2/PP662_1.png"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 4,
+      "Opções de personalização": [
+        "Estamparia — até A4 — 4 cores",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Bordado — até 120 cm²",
+        "Bordado — até 240 cm²",
+        "Bordado — até 360 cm²",
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7",
+        "Serigrafia — até 120 cm² — 2 cores",
+        "Serigrafia — > 120 cm² — 2 cores",
+        "UV — até 100 cm²",
+        "UV — até 200 cm²",
+        "UV — até 300 cm²",
+        "Laser CO2 (Madeira) — até 120 cm²",
+        "Laser CO2 (Madeira) — até 250 cm²",
+        "Laser CO2 (Madeira) — até 360 cm²"
+      ],
+      "PP": "662 — AVENTAL grande vários bolsos (3F) + Caixa",
+      "SKU / referência do fornecedor": "Ex: MO6260",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Estamparia",
+        "DTF",
+        "Bordado",
+        "Transfer",
+        "Serigrafia",
+        "UV",
+        "Laser CO2"
+      ],
+      "url": "https://app.notion.com/p/ddbb6705ae1f820cb837013a1864964a",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_observed_hash": "8d325612f9d6a9a70193d4e563a88d07d68fd43f90a1b57c3d9cf5e98c294f39",
+  "source_state_sha256": "983c9df9567e65dd01f0549495bf4dddadf067515556f4f21c9b1999edf5e7a6",
+  "status": "BLOCKED",
+  "technical_unresolved": [
+    "Por confirmar — sem opção aprovada em IMP → New"
+  ]
+}

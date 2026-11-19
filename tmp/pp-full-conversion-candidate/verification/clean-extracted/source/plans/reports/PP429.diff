@@ -1,0 +1,11 @@
+--- 429-before
++++ 429-after
+@@ -31,7 +31,7 @@
+ 
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+-| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |
++| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |
+ 
+ <toggle>
+ Pendências técnicas

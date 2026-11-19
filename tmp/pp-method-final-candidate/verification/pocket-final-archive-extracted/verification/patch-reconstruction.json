@@ -1,0 +1,13 @@
+{
+  "exact": true,
+  "source_files": 157,
+  "command": [
+    "git",
+    "-c",
+    "core.autocrlf=false",
+    "apply",
+    "--unsafe-paths",
+    "--directory=tmp/pp-method-final-candidate/verification/pocket-patch-reconstructed-v2",
+    "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-method-final-candidate\\review-pocket-v1\\pocket-against-v5.patch"
+  ]
+}

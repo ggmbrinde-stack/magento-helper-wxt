@@ -1,0 +1,735 @@
+--- a/README.md
++++ b/README.md
+@@ -1,108 +1,75 @@
+-# Lote de aventais V4
+-
+-Candidato executável para os PP 428, 429, 430, 467, 558, 612, 633, 661, 662, 786 e 840. Não aprovado para aplicação real. Não foi feita nenhuma escrita no Notion.
+-
+-O Python prepara os planos e mantém o estado; não se liga ao MCP. `session_bridge.js` corre numa sessão com ferramentas e utiliza o conector já disponível: `mcp__codex_apps__notion_fetch`, `mcp__codex_apps__notion_notion_get_comments` e `mcp__codex_apps__notion_notion_update_page`. Usa `exec_command` para o motor local e `apply_patch` para ficheiros temporários de resposta. Não necessita de credenciais adicionais nem de dependências externas. Requer Python 3.11 ou posterior; os testes da ponte usam Node.
+-
+-## Estado e preservação
+-
+-PP428 permanece sem alterações, incluindo a escolha «Não» e o motivo. É referência visual, não fonte das escolhas técnicas dos outros perfis. Old é reconstruído pelos grupos/células confirmados no Excel. PP633 fica com Peito 3 opções e Bolso 2. Os grupos partilhados mantêm-se partilhados; PP786 tem três locais e duas opções, e P55 contém espaços.
+-
+-Cada página mantém o próprio New, revisão/motivo, imagem, origem e metadados. O conteúdo anterior fica também no histórico. Notas repetidas são consolidadas por lado, local e texto; casos ambíguos são preservados. O histórico de texto não preserva, por si só, os comentários ligados a blocos.
+-
+-As propriedades são propostas separadamente, apenas nos campos/opções existentes. Propostas incompletas não originam operações aplicáveis. Não há alterações ao esquema. As operações de corpo substituem secções completas e únicas com `update_content`, `replace_all_matches:false`, ou acrescentam histórico no fim. Consultar o conteúdo integral das operações: uma secção pode conter tabelas, colunas e toggles. Nunca se substitui a página inteira.
+-
+-As onze leituras actuais omitem `truncated`, `unknown_block_count` e `unknown_block_ids`. As consultas de comentários dos PP428 e PP633 devolvem apenas `upgrade_required`; as restantes não foram repetidas após essa falha de capacidade. Isto não prova ausência de comentários ou sugestões. As dez páginas que necessitam de alterações estão bloqueadas.
+-
+-É necessária prova fiável de completude da região afectada ou um contrato documentado de edição que preserve conteúdo omitido, além de prova de preservação dos comentários e das ligações aos blocos. Não foi encontrado esse contrato. Actualmente, o motor admite apenas a via conservadora de exportação explicitamente completa e comentários/sugestões explicitamente vazios, sem marcadores de discussão. A via positiva foi testada com dados sintéticos, não observada no conector real. Uma via contratual alternativa exige alteração e nova revisão do código. Não acrescentar indicadores às capturas nem alterar a elegibilidade manualmente.
+-
+-## Preparar e rever
+-
+-Trabalhar no candidato ou numa cópia, nunca dentro de `review-v4`. Estes comandos são locais:
+-
+-```powershell
+-Set-Location 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4'
+-python -B batch_cli.py prepare --captures captures/current --workbook 'C:/Users/user/Desktop/CLEAN__Perfis de Personalização.xlsx' --evidence captures/current/excel-evidence.json --output plans/batch.json
+-python -B batch_cli.py inspect --plan plans/batch.json
+-python -B -m unittest discover -s tests
+-node --test tests/test_session_bridge.cjs
+-```
+-
+-`prepare` valida o hash do livro, a folha, códigos, títulos, células/grupos, Working Copy e fonte de dados. Gera `plans/batch.json` e diferenças/provas por página em `plans/reports/`, com propriedades propostas e dúvidas técnicas. Os mesmos ficheiros produzem o mesmo plano. As leituras actuais estão em `captures/current/`; as restantes capturas e os testes herdados são regressões históricas.
+-
+-Rever todas as operações e diferenças, grupos Excel, New específico, revisão/motivo, conteúdo exterior às secções, origem, histórico, imagens, notas e propriedades. O hash canónico apresentado por `inspect` não é o hash dos bytes do JSON. O hash da implementação inclui os oito ficheiros de execução. O manifesto contém também hashes dos bytes de todos os ficheiros do pacote.
+-
+-## Aprovação imutável e piloto
+-
+-1. Obter revisão independente do candidato e resolver falhas. A opinião de adequação da sessão Notion Manutenção não equivale a revisão integral.
+-2. Resolver as provas externas em falta, obter novas capturas reais e preparar/rever um novo plano. Não inventar correcções para escolhas «por confirmar».
+-3. Após autorização humana explícita, seleccionar uma única página elegível para piloto. PP428, sem escrita, não valida esse caminho. Rever o resultado antes de autorizar o resto do lote.
+-4. Copiar `approval.example.json`. Preencher hash canónico do plano, hash da implementação, referência da revisão, códigos e IDs de operações autorizados. Só após autorização real usar `EXPLICIT_HUMAN_APPROVAL`. O exemplo é deliberadamente inválido.
+-
+-A aprovação inclui todas as operações de corpo das páginas seleccionadas. Operações de propriedades resolvidas são opcionais, com os respectivos IDs explícitos. Operações bloqueadas não podem ser aprovadas. Qualquer alteração ao plano/implementação exige nova revisão. O livro e a prova Excel têm caminhos absolutos e hashes verificados em execução; uma mudança de localização exige preparar/rever um novo plano.
+-
+-## Ponte na sessão
+-
+-A sessão precisa das cinco ferramentas acima. Carregar o código local revisto e confirmar o hash contra `review-v4/manifest-v3.json`, campo `files["source/session_bridge.js"]`. Exemplo para `functions.exec`, com o hash retirado do manifesto revisto:
+-
+-```javascript
+-const loaded = await tools.exec_command({
+-  cmd: "python -B 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4/review-v4/source/batch_cli.py' bridge-source",
+-  max_output_tokens: 8000
+-});
+-if (loaded.exit_code !== 0) throw new Error('Falha ao carregar a ponte');
+-const bridge = JSON.parse(loaded.output);
+-if (bridge.sha256 !== '<SHA256 DO MANIFESTO REVISTO>') throw new Error('Ponte alterada');
+-const run = eval(bridge.source);
+-text(await run({
+-  script: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4/review-v4/source/batch_cli.py',
+-  plan: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v4/plans/batch.json'
+-}, tools));
+-```
+-
+-Sem `apply:true`, só há inspecção local, sem conector nem criação de execução. O exemplo usa um plano de trabalho fora do congelamento. Para aplicação explicitamente autorizada, usar o novo plano realmente revisto e acrescentar à configuração:
+-
+-```javascript
+-apply: true,
+-approval: 'C:/caminho/autorizado/approval.json',
+-approvedPlanSha: '<HASH CANÓNICO DO PLANO APROVADO>'
+-```
+-
+-Isto não torna o plano actual elegível. A execução recusa páginas bloqueadas, dados sintéticos, hashes divergentes e aprovações incompletas. Não aplicar com base apenas neste documento.
+-
+-Respostas do conector passam por ficheiros JSON locais, com consultas HTTPS assinadas removidas. O caminho, não o corpo, vai na linha de comando, evitando o limite do Windows. Os ficheiros `<plano>.event-<nonce>.json` são eliminados após processamento; uma interrupção pode deixá-los para diagnóstico. Referências assinadas no corpo são recusadas. Capturas/registos continuam privados.
+-
+-## Resultado incerto e recuperação
+-
+-`session-start`, `session-step` e `session-reconcile` são o protocolo da ponte. Todos exigem `--plan`, `--approval`, `--approved-plan-sha` e `--apply`; sem `--apply`, só inspeccionam. `session-step` recebe `--event-file` ou `--event-base64` para eventos pequenos. Não usar o protocolo para enviar operações manuais.
+-
+-O registo fica em `plans/runs/<hash-canónico>/journal.json`. A barreira `plans/runs/.batch-apply-active.json` impede outra execução nesse directório. Usar uma única cópia operacional e um escritor; a barreira não coordena outros directórios/utilizadores.
+-
+-Antes de cada escrita, o motor confirma identidade, conteúdo, revisão, propriedades, tempo de edição, completude, comentários e, quando necessário, esquema. Persiste a intenção antes de devolver a operação. Uma leitura posterior confirma corpo/metadados exactos antes da operação seguinte. Estes controlos locais não são uma condição atómica no servidor: alterações humanas entre leitura e escrita continuam a ser um risco. Evitar escritores concorrentes durante um eventual piloto.
+-
+-Falha de transporte, erro do conector ou divergência posterior pára a execução. Não reiniciar, repetir o pedido, apagar a barreira/registo nem restaurar conteúdo antigo automaticamente. Pode haver operações anteriores concluídas; consultar `receipts` no registo.
+-
+-Para reconciliar, carregar a mesma ponte com a mesma aprovação/configuração, `apply:true` e `reconcileOnly:true`. Esta via só lê:
+-
+-| Resultado | Passo seguinte |
+-|---|---|
+-| `RECONCILED_STOPPED` | Estado novo confirmado; não repetir. Preparar/rever o restante trabalho. |
+-| `NOT_APPLIED_CONFIRMED` | Estado antigo confirmado; não repetir automaticamente. Preparar/rever novo plano. |
+-| `RECONCILIATION_CONFLICT` | Estado parcial ou alteração humana; preservar e investigar. A barreira permanece. |
+-| `UNCERTAIN` | Leitura inconclusiva; resolver antes de continuar. A barreira permanece. |
+-
+-Uma interrupção em `WRITE_PENDING` ou `VERIFY_PAGE` exige reconciliação. Nenhum resultado é retomado automaticamente. Normalização benigna de Markdown pode falhar a comparação estrita; investigar/rever, sem enfraquecer o controlo durante a execução. Um `.step.lock` residual só deve ser removido depois de confirmar ausência de processo activo e inspeccionar a fase persistida. Nunca apagar uma barreira de escrita incerta para forçar outra execução.
+-
+-## Evidência e limites
+-
+-`review-v4` contém código, testes, capturas, planos, diferenças, resultados e manifesto para revisão independente. Os congelamentos anteriores da V2 e do importador mantêm os hashes originais. `catalog_names.py` reutiliza apenas funções determinísticas de nomes do importador, sem o escritor.
+-
+-Os testes positivos usam conector simulado e completude sintética. Não demonstram capacidades reais do serviço, estabilidade dos blocos, preservação de comentários, apresentação visual ou comportamento autenticado. Não houve piloto, aplicação real, alteração Magento, commit, push ou publicação. Revisão independente, provas aplicáveis e autorização humana continuam em falta.
+-
+-## Correcções da V4 e teste isolado
+-
+-A validação de comentários compara as representações estruturada e textual quando ambas existem. Uma contradição, erro, formato desconhecido, omissão ou paginação impede a prova de ausência de comentários. Aceita apenas os formatos completos conhecidos: objecto estruturado, objecto JSON textual ou XML textual com estado explícito, e representações duplas JSON iguais. Indicadores XML e externos de sugestões também têm de concordar. Metadados adicionais desconhecidos são recusados até serem documentados e revistos.
+-
+-Os 20 ficheiros em `fixtures/historical/` estão incluídos no pacote e identificados no manifesto. São regressões históricas, nunca prova de estado actual. Copiar ou extrair `source/` para uma pasta de trabalho e executar os testes a partir daí. Os testes não requerem o Excel real nem pastas vizinhas. Apenas a preparação operacional do plano exige o livro e a prova Excel nos caminhos indicados. Os geradores de relatórios herdados não fazem parte da bateria nem da preparação V4; `tests/build_reports.py` conserva referências antigas a entradas nativas externas e não é um comando de verificação deste pacote.
+-
+-A V3 permanece imutável. Os resultados de testes da V3 no ambiente de desenvolvimento não demonstravam que o seu pacote incluía todas as entradas; a V4 documenta explicitamente os testes executados a partir de uma cópia isolada e de um arquivo extraído. Os bloqueios externos e a necessidade de revisão independente/piloto mantêm-se.
++# Lote de aventais V5
++
++Candidato para revisão independente, sem autorização de aplicação real. A política aprovada exclui os comentários/sugestões nativos do Notion. Os comentários, notas, tabelas de revisão, decisões Sim/Não e motivos escritos no corpo continuam protegidos. Não é feita qualquer afirmação de ausência de comentários nativos ou preservação das suas ligações aos blocos.
++
++## Contrato e limite confirmado
++
++`targeted-contract.json` define `TARGETED_SECTION/1`, ligado ao hash do plano, da implementação e das descrições/especificação efectivamente consultadas em `captures/contract/`. A documentação descreve `update_content` como pesquisa e substituição dirigida, com o menor `old_str` exacto e único. É o contrato público para limitar a alteração; não é uma prova da implementação interna do serviço nem uma validação real de escrita.
++
++A especificação estabelece que títulos Markdown simples não têm filhos. O adaptador consegue certificar essa fronteira para os títulos de apresentação conhecidos. Nesses casos, a falta de indicadores globais não bloqueia a operação. Um contentor equilibrado, porém, pode ter descendentes que não aparecem na exportação. Não foi encontrado um contrato que ateste a completude dos descendentes de colunas, toggles ou tabelas exportados. Essas operações continuam bloqueadas sem prova explícita de completude do conteúdo afectado. Indicadores negativos de truncagem/conteúdo desconhecido ou formatos recusados continuam a impedir a execução. Não são fabricados campos nem declarada uma exportação global completa.
++
++Nos planos reais deste candidato: PP428 é NO_OP; há 28 operações de títulos elegíveis individualmente e 20 operações de contentores bloqueadas. As dez páginas permanecem BLOCKED, pois a aprovação tem de incluir todo o plano de corpo de cada página. Não se inicia uma execução parcial apenas para remover títulos. O candidato ainda não está pronto para um piloto real do lote completo.
++
++As entradas locais são capturas congeladas herdadas da V4, não leituras novas, nem uma cópia de segurança integral. A única chamada real nesta tarefa foi a leitura da especificação. Nenhuma escrita ou piloto foi feito.
++
++## Preparar e rever
++
++Python 3.11 ou posterior, biblioteca padrão. Node só para os testes da ponte. Trabalhar numa cópia, nunca em `review-v5`:
++
++```powershell
++Set-Location 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v5'
++python -B batch_cli.py prepare --captures captures/current --workbook 'C:/Users/user/Desktop/CLEAN__Perfis de Personalização.xlsx' --evidence captures/current/excel-evidence.json --output plans/batch.json
++python -B batch_cli.py inspect --plan plans/batch.json
++python -I -B -m unittest discover -s tests -v
++node --test tests/test_session_bridge.cjs
++```
++
++`prepare` valida códigos, títulos, células/grupos e hash do Excel, Working Copy e fonte de dados. Produz `plans/batch.json` e provas/diferenças em `plans/reports/`. As operações usam exclusivamente `update_content` com um único `old_str` exacto, único e limitado a uma secção de topo completa, `replace_all_matches:false`. A inclusão de histórico usa a última secção existente como âncora exacta, com o conteúdo original preservado no novo texto; sendo um contentor, exige a respectiva prova local. Não há substituição da página inteira, `insert_content`, alterações a propriedades, esquema, aprovação ou opções técnicas novas nesta política. As propriedades continuam como propostas separadas; as dúvidas dos PP430/558/661/662 mantêm-se explícitas.
++
++Rever cada secção, respectivas fronteiras e separadores, New próprio, Old verificado, texto de revisão, motivos, notas, imagens, fonte e histórico. Os snapshots registam hashes do texto protegido e da sua associação a contentores, incluindo tabelas de comentários e notas em células. Mudanças de texto, associação ou ordem dentro da secção bloqueiam a operação; copiar para o histórico não basta. Os prefixos/sufixos visíveis são verificados à parte. O adaptador conserva também a recusa conservadora de formatos exportados não suportados.
++
++Os 20 ficheiros `fixtures/historical/` estão incluídos e têm hashes no manifesto. São regressões históricas. Os testes não precisam do Excel real nem de pastas vizinhas. O gerador herdado `tests/build_reports.py` conserva entradas nativas externas e não é um comando de preparação/verificação V5.
++
++## Aprovação e ponte
++
++Obter revisão independente e resolver as provas das operações bloqueadas antes de preparar um novo plano. Uma aprovação humana explícita posterior tem de identificar o hash canónico do plano, hash da implementação, referência da revisão, códigos e todos os IDs de operações de corpo seleccionados. Copiar `approval.example.json`, deliberadamente inválido; só depois de autorização real usar `EXPLICIT_HUMAN_APPROVAL`. Qualquer mudança ao código, contrato, política, plano ou caminhos/prova Excel exige nova revisão e aprovação. O hash canónico apresentado por `inspect` não é o hash dos bytes do JSON.
++
++Python não se liga ao MCP. `session_bridge.js` corre numa sessão com `exec_command`, `apply_patch` e o conector Notion. Na via V5 só chama `mcp__codex_apps__notion_fetch` e `mcp__codex_apps__notion_notion_update_page`; não consulta comentários nativos. O parser legado de comentários permanece apenas para compatibilidade/testes da via anterior.
++
++Exemplo para `functions.exec`. Substituir o hash pelo valor revisto de `review-v5/manifest-v5.json`, campo `files["source/session_bridge.js"]`:
++
++```javascript
++const loaded = await tools.exec_command({
++  cmd: "python -B 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v5/review-v5/source/batch_cli.py' bridge-source",
++  max_output_tokens: 8000
++});
++if (loaded.exit_code !== 0) throw new Error('Falha ao carregar a ponte');
++const bridge = JSON.parse(loaded.output);
++if (bridge.sha256 !== '<SHA256 DO MANIFESTO REVISTO>') throw new Error('Ponte alterada');
++const run = eval(bridge.source);
++text(await run({
++  script: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v5/review-v5/source/batch_cli.py',
++  plan: 'C:/Users/user/Videos/BestOfGifts_Master/magento-helper-wxt/tmp/pp-apron-batch-v5/plans/batch.json'
++}, tools));
++```
++
++Sem `apply:true`, só inspecção local. Uma aplicação realmente autorizada acrescentaria `apply:true`, `approval:'C:/caminho/approval.json'` e `approvedPlanSha:'<HASH CANÓNICO APROVADO>'`. Isso não torna operações bloqueadas elegíveis. Planos sintéticos nunca usam a via real. Fazer primeiro um piloto de uma única página elegível, explicitamente autorizado e revisto antes de autorizar o lote restante. PP428 sem escrita não comprova aplicação.
++
++## Execução, cancelamento e reconciliação
++
++Antes de cada operação, leituras actuais confirmam identidade exacta de página/fonte, selecção autorizada, texto/hash/fronteira da secção revista, edição, corpo e propriedades observados. Uma segunda leitura imediatamente antes da escrita detecta alterações entretanto ocorridas. A intenção é gravada antes do envio. Após a escrita, o motor confirma o resultado da secção, prefixo/sufixo visíveis, texto protegido e metadados antes de avançar. Estes são controlos locais, não uma condição atómica no servidor nem uma afirmação de que foi lido todo o conteúdo omitido. Um escritor concorrente continua a ser um risco.
++
++Registo: `plans/runs/<hash-canónico>/journal.json`. Barreira: `plans/runs/.batch-apply-active.json`. Usar uma cópia operacional e um único escritor; a barreira não coordena outras pastas/utilizadores. Respostas privadas, sem consultas HTTPS assinadas, passam por ficheiros `<plano>.event-<nonce>.json`, evitando limites de tamanho no Windows. São eliminados após processamento; uma interrupção pode deixá-los para diagnóstico. Referências assinadas no corpo são recusadas.
++
++Falhas, avisos com resultado divergente ou mudanças visíveis impedem a operação seguinte. Não repetir uma escrita incerta, não reiniciar, apagar a barreira ou repor conteúdo antigo automaticamente. Consultar `receipts` para operações anteriores concluídas. O mesmo plano/aprovação pode ser usado na ponte com `apply:true,reconcileOnly:true`, via apenas de leitura:
++
++| Estado | Interpretação |
++|---|---|
++| RECONCILED_STOPPED | Resultado dirigido confirmado; não repetir. Preparar/rever o restante trabalho. |
++| NOT_APPLIED_CONFIRMED | Estado anterior confirmado; não repetir automaticamente. Preparar/rever novo plano. |
++| RECONCILIATION_CONFLICT | Estado parcial ou alteração humana; preservar e investigar. Barreira mantida. |
++| UNCERTAIN | Ainda não é possível concluir. Resolver a leitura antes de continuar. |
++
++Para parar antes de outra escrita, usar a mesma configuração com `apply:true,cancelOnly:true`. Não combinar com `reconcileOnly`. O cancelamento conserva os recibos e devolve CANCELLED quando não há escrita pendente; se houver intenção enviada/por esclarecer, devolve UNCERTAIN e exige reconciliação, conservando a barreira. Não envia alterações ao Notion. Os comandos internos são `session-start`, `session-step`, `session-reconcile` e `session-cancel`; todos exigem plano/aprovação/hash e `--apply`. Sem `--apply`, só inspecção. Um `.step.lock` residual só pode ser removido após confirmar que não existe processo activo e inspeccionar o registo; nunca apagar a barreira para contornar uma escrita incerta.
++
++A comparação estrita pode parar perante normalização benigna de Markdown. Não enfraquecer a verificação durante a execução. Todos os testes positivos de escrita usam transporte simulado, explicitamente identificado. Não comprovam apresentação visual, comportamento autenticado, preservação de comentários nativos ou completude de contentores reais.
+--- a/batch_apply.py
++++ b/batch_apply.py
+@@ -12,6 +12,7 @@
+ import batch_plan as b
+ import rendered_layout as r
+ import excel_proof
++import targeted_section as scoped
+ 
+ 
+ def capture_response(response,page_id):
+@@ -89,6 +90,10 @@
+ class Session:
+     def __init__(self,bundle,approval,fake=False,reconcile_only=False):
+         self.bundle=bundle;self.fake=fake
++        validation=bundle.get('validation_policy')
++        self.scoped=validation is not None
++        if self.scoped and validation!=scoped.policy():raise ValueError('Targeted policy/contract changed')
++        if bundle.get('version')==5 and not self.scoped:raise ValueError('V5 requires the reviewed targeted policy')
+         if approval.get('plan_sha256')!=r.digest(bundle) or approval.get('implementation_sha256')!=bundle['implementation_sha256'] or bundle['implementation_sha256']!=b.implementation_sha():
+             raise ValueError('Plan/implementation approval hash mismatch')
+         if approval.get('authorisation')!=('OFFLINE_FAKE_CONNECTOR_TEST' if fake else 'EXPLICIT_HUMAN_APPROVAL') or not approval.get('review_reference'):
+@@ -102,13 +107,16 @@
+         allowed=set(approval.get('approved_operation_ids',[]));queue=[];expected=set()
+         for code in codes:
+             page=pages[code]
++            if self.scoped and page.get('validation_policy')!=validation:raise ValueError('Page and plan validation policies differ')
+             if page['status']=='BLOCKED':raise ValueError('Page remains blocked: '+code+'; '+'; '.join(page['reasons']))
+             ops=copy.deepcopy(page['operations'])
+             expected.update(o['id'] for o in ops)
+             for op in page.get('property_operations',[]):
+                 if op['id'] in allowed:ops.append(copy.deepcopy(op));expected.add(op['id'])
+             if any(not o.get('eligible') for o in ops):raise ValueError('Operation lacks required region/property evidence')
+-            for op in ops:validated_payload(op,page['page_id'])
++            for op in ops:
++                payload=validated_payload(op,page['page_id'])
++                if self.scoped and payload['command']!='update_content':raise ValueError('Targeted contract permits update_content only')
+             queue.append({'page':copy.deepcopy(page),'ops':ops})
+         if allowed!=expected:raise ValueError('Approval must include every selected body operation and only reviewed resolved property operations')
+         if not reconcile_only:verify_sources(bundle,fake)
+@@ -152,26 +160,39 @@
+                 state['before_hash']=b.observed_hash(current);state['last_state_hash']=current['source_state_sha256']
+                 if not item['ops']:
+                     state['receipts'].append({'code':page['code'],'status':'NO_OP'});return self.next_page(state)
++                if self.scoped:
++                    return self.fetch(state,'FETCH_PREWRITE')
+                 if current['coverage']['state']!='EXPLICIT_COMPLETE_EXPORT' or current['discussion_markers']:
+                     return self.stop(state,'BLOCKED','No complete target-region/coverage proof; global absence is not false/zero')
+                 return self.issue(state,'FETCH_COMMENTS',{'page_id':page['page_id'],'include_resolved':True})
+             if phase=='FETCH_PREWRITE':
+-                if current['source_state_sha256']!=state['last_state_hash'] or current['coverage']['state']!='EXPLICIT_COMPLETE_EXPORT' or current['discussion_markers']:
++                if current['source_state_sha256']!=state['last_state_hash'] or (not self.scoped and (current['coverage']['state']!='EXPLICIT_COMPLETE_EXPORT' or current['discussion_markers'])):
+                     return self.stop(state,'STALE','Immediate pre-write page/review/property precondition changed')
++                if self.scoped:
++                    op=item['ops'][state['op_index']]
++                    evidence=scoped.inspect_operation(current,op['payload'])
++                    if not evidence['eligible'] or evidence!=op['region_evidence']:
++                        return self.stop(state,'BLOCKED','Affected section or its reviewed evidence is not valid')
++                    state['last_before_body']=current['body']
+                 state['expected_body']=current['body'];state['expected_metadata']=b.stable_metadata(current)
+                 state['before_hash']=b.observed_hash(current)
+                 return self.write(state,item['ops'][state['op_index']],page)
+-            if current['coverage']['state']!='EXPLICIT_COMPLETE_EXPORT' or current['discussion_markers']:
++            if not self.scoped and (current['coverage']['state']!='EXPLICIT_COMPLETE_EXPORT' or current['discussion_markers']):
+                 return self.stop(state,'UNCERTAIN','Saved-state coverage or discussion preservation is unproved; reconcile before further work')
+             after_hash=r.digest({'page_id':page['page_id'],'body':state['expected_body'],'metadata':state['expected_metadata']})
+             actual=b.observed_hash(current)
++            matched=actual==after_hash
++            if self.scoped:
++                op=item['ops'][state['op_index']]
++                try:matched=scoped.saved_result(state['last_before_body'],current['body'],op['payload']) and b.stable_metadata(current)==state['expected_metadata']
++                except ValueError:matched=False
+             if phase=='RECONCILE_PAGE':
+-                if actual==after_hash:
++                if matched:
+                     state['receipts'].append({'code':page['code'],'operation':item['ops'][state['op_index']]['id'],'status':'RECONCILED_SUCCEEDED'})
+                     return self.stop(state,'RECONCILED_STOPPED','Write exists; no retry. Prepare/review remaining work separately.')
+                 if actual==state['before_hash']:return self.stop(state,'NOT_APPLIED_CONFIRMED','Old state confirmed; no automatic retry. Prepare a new reviewed remainder.')
+                 return self.stop(state,'RECONCILIATION_CONFLICT','Intervening/partial changes require manual review; no rollback')
+-            if actual!=after_hash:return self.stop(state,'UNCERTAIN','Saved state does not match expected exact body/metadata; preserve intervening edits')
++            if not matched:return self.stop(state,'UNCERTAIN','Saved targeted result or visible outside/protected text/metadata differs; preserve intervening edits')
+             state['receipts'].append({'code':page['code'],'operation':item['ops'][state['op_index']]['id'],'status':'SUCCEEDED','saved_state_sha256':current['source_state_sha256']})
+             state['op_index']+=1;state['last_state_hash']=current['source_state_sha256']
+             if state['op_index']==len(item['ops']):return self.next_page(state)
+@@ -205,6 +226,11 @@
+         state['status']='RECONCILING'
+         return self.fetch(state,'RECONCILE_PAGE')
+ 
++    def cancel(self,state):
++        if state['phase'] in ('WRITE_PENDING','VERIFY_PAGE','RECONCILE_PAGE') or state['status'] in ('UNCERTAIN','RECONCILING','RECONCILIATION_CONFLICT'):
++            return self.stop(state,'UNCERTAIN','Cancellation cannot discard a pending write; read-only reconciliation required')
++        return self.stop(state,'CANCELLED','Stopped before further writes; completed receipts remain recorded')
++
+ 
+ class FileSession:
+     """Persist intent before returning an action; never re-emit a pending write."""
+@@ -220,14 +246,14 @@
+         state=copy.deepcopy(self.engine.initial);action=self.engine.begin(state);atomic(self.path,state)
+         return action
+ 
+-    def event(self,event=None,reconcile=False):
++    def event(self,event=None,reconcile=False,cancel=False):
+         lock=self.root/'.step.lock'
+         with lock.open('x',encoding='utf-8'):pass
+         try:
+             state=json.loads(self.path.read_text(encoding='utf-8'))
+             if state['plan_sha256']!=self.engine.initial['plan_sha256']:raise ValueError('Journal/plan mismatch')
+             if state['approval_sha256']!=self.engine.initial['approval_sha256']:raise ValueError('Approval changed during session')
+-            action=self.engine.reconcile(state) if reconcile else self.engine.step(state,event)
++            action=self.engine.cancel(state) if cancel else self.engine.reconcile(state) if reconcile else self.engine.step(state,event)
+             atomic(self.path,state)
+             if action['type']=='FINISH' and action['status'] not in ('UNCERTAIN','RECONCILIATION_CONFLICT'):
+                 if self.fence.exists():
+--- a/batch_cli.py
++++ b/batch_cli.py
+@@ -11,6 +11,7 @@
+ import batch_apply as a
+ import excel_proof
+ import rendered_layout as r
++import targeted_section as scoped
+ 
+ 
+ def load(path):
+@@ -33,10 +34,10 @@
+     pages=[]
+     for code in r.PAGES:
+         path=captures/('comments'+code+'.json')
+-        page=b.prepare_page(inputs[code],load(path) if path.exists() else None,proof,template,schema)
++        page=b.prepare_page(inputs[code],None,proof,template,schema,validation_policy=scoped.policy())
+         page['property_operations']=[]
+         for index,proposal in enumerate(page['property_proposals'],1):
+-            if proposal['resolved']:
++            if proposal['resolved'] and page['validation_policy'] is None:
+                 page['property_operations'].append({'id':code+'-property-'+str(index),'kind':'properties',
+                     'eligible':page['status']!='BLOCKED' and b.page_state(inputs[code])['coverage']['state']=='EXPLICIT_COMPLETE_EXPORT',
+                     'payload':{'command':'update_properties','page_id':page['page_id'],'properties':{proposal['property']:proposal['after']}},
+@@ -45,7 +46,7 @@
+         for op in page['operations']:body,meta=a.apply_model(body,meta,op['payload'])
+         if body!=page['desired_body']:raise ValueError('Exact executable operations do not reproduce reviewed body')
+         pages.append(page)
+-    bundle={'version':4,'apply_allowed_now':False,'synthetic':any(c.get('capture',{}).get('synthetic') for c in inputs.values()),
++    bundle={'version':5,'validation_policy':scoped.policy(),'input_freshness':'FROZEN_CAPTURE_NOT_A_FRESH_READ','apply_allowed_now':False,'synthetic':any(c.get('capture',{}).get('synthetic') for c in inputs.values()),
+             'working_copy':b.HOME,'collection':b.COLLECTION,'excel':proof,'evidence_path':str(Path(evidence).resolve()),
+             'schema_state':schema,'schema_state_sha256':r.digest(schema),'implementation_sha256':b.implementation_sha(),
+             'template_capture_sha256':r.digest(inputs['428']),'pages':pages}
+@@ -69,7 +70,7 @@
+     for name in ('captures','workbook','evidence','output'):prep.add_argument('--'+name,type=Path,required=True)
+     inspect=sub.add_parser('inspect');inspect.add_argument('--plan',type=Path,required=True)
+     bridge=sub.add_parser('bridge-source')
+-    for command in ('session-start','session-step','session-reconcile'):
++    for command in ('session-start','session-step','session-reconcile','session-cancel'):
+         action=sub.add_parser(command);action.add_argument('--plan',type=Path,required=True);action.add_argument('--approval',type=Path,required=True)
+         action.add_argument('--approved-plan-sha',required=True);action.add_argument('--apply',action='store_true')
+         if command=='session-step':
+@@ -83,6 +84,7 @@
+         bundle=load(args.plan)
+         if args.command=='inspect' or not args.apply:
+             result={'dry_run':True,'plan_sha256':r.digest(bundle),'implementation_sha256':bundle['implementation_sha256'],
++                    'validation_policy':bundle.get('validation_policy'),
+                     'collection':bundle['collection'],'pages':[{'code':p['code'],'page_id':p['page_id'],'status':p['status'],'reasons':p['reasons']} for p in bundle['pages']]}
+         else:
+             if args.approved_plan_sha!=r.digest(bundle):raise ValueError('Operator supplied a different approved plan hash')
+@@ -91,6 +93,7 @@
+             session=a.FileSession(run,bundle,approval,reconcile_only=args.command=='session-reconcile')
+             if args.command=='session-start':result=session.start()
+             elif args.command=='session-reconcile':result=session.event(reconcile=True)
++            elif args.command=='session-cancel':result=session.event(cancel=True)
+             else:
+                 if args.event_file:
+                     expected_parent=args.plan.resolve().parent
+--- a/batch_plan.py
++++ b/batch_plan.py
+@@ -10,6 +10,7 @@
+ import unicodedata
+ 
+ import rendered_layout as r
++import targeted_section as scoped
+ from catalog_names import option_name, option_tech
+ 
+ COLLECTION = 'collection://431b6705-ae1f-83db-b71c-0739778f9e1a'
+@@ -259,34 +260,47 @@
+     return proposals,unresolved
+ 
+ 
+-def prepare_page(capture,comments,proof,template,schema):
++def prepare_page(capture,comments,proof,template,schema,validation_policy=None):
+     state=page_state(capture);code=state['code'];record=proof['records'][code]
+     desired,checks=desired_body(state,record,template)
+     # The corrected result must not archive a second copy on rerun.
+     second=copy.deepcopy(state);second['body']=desired
+     if desired_body(second,record,template)[0]!=desired: raise ValueError('Corrected layout is not idempotent')
+     ops=operations(state['body'],desired,state['page_id'])
++    if validation_policy is not None:
++        if validation_policy!=scoped.policy():raise ValueError('Unknown targeted validation policy')
++        ops=scoped.update_only(ops,state['body'])
+     proposals,unresolved=property_proposals(state,schema)
+     comment_state=comments_proof(comments)
+     reasons=[]
+-    if ops and state['coverage']['state']!='EXPLICIT_COMPLETE_EXPORT':
++    if validation_policy is None and ops and state['coverage']['state']!='EXPLICIT_COMPLETE_EXPORT':
+         reasons.append('Global coverage UNKNOWN; no independently attested complete target-region export. Unique/balanced text and Excel agreement do not prove absence of omitted content.')
+-    if ops and (not comment_state['empty'] or state['discussion_markers']): reasons.append(comment_state['reason'] or 'Discussion anchors must not be moved or duplicated')
++    if validation_policy is None and ops and (not comment_state['empty'] or state['discussion_markers']): reasons.append(comment_state['reason'] or 'Discussion anchors must not be moved or duplicated')
++    sequential=copy.deepcopy(state)
+     for index,op in enumerate(ops):
+         op['id']=code+'-body-'+str(index+1)
+         op['region_evidence']={'unique_match':op['kind']=='append' or state['body'].count(op['before_region'])==1,
+                                'fully_parsed_supported_export':True,'excel_original_groups_verified':True,
+                                'server_region_completeness_attested':state['coverage']['state']=='EXPLICIT_COMPLETE_EXPORT'}
+         op['eligible']=not reasons
++        if validation_policy is not None:
++            try:evidence=scoped.inspect_operation(sequential,op['payload'])
++            except ValueError as error:evidence={'eligible':False,'reasons':[str(error)]}
++            op['region_evidence']=evidence;op['eligible']=evidence['eligible']
++            reasons.extend(op['id']+': '+reason for reason in evidence['reasons'])
++            edit=op['payload']['content_updates'][0]
++            sequential['body']=sequential['body'].replace(edit['old_str'],edit['new_str'],1)
+     return {'code':code,'page_id':state['page_id'],'status':'NO_OP' if not ops else 'BLOCKED' if reasons else 'READY',
+             'reasons':reasons,'source_capture_sha256':r.digest(capture),'source_state_sha256':state['source_state_sha256'],
+             'source_observed_hash':observed_hash(state),'source_body':state['body'],'desired_body':desired,
+             'source_metadata':stable_metadata(state),'review_callout_sha256':[r.digest(n.raw) for n in r.parse(state['body']) if r.review_state(n,code) is not None],
+-            'operations':ops,'property_proposals':proposals,'technical_unresolved':unresolved,'comments':comment_state,
++            'operations':ops,'property_proposals':proposals,'technical_unresolved':unresolved,
++            'comments':comment_state if validation_policy is None else {'policy':'EXCLUDED_BY_EXPLICIT_HUMAN_POLICY','empty_attested':False,'native_anchors_preserved_claimed':False},
++            'validation_policy':validation_policy,'body_preservation_snapshot':scoped.protected_snapshot(state['body']),
+             'excel':record,'checks':checks,'diff':''.join(difflib.unified_diff(state['body'].splitlines(True),desired.splitlines(True),fromfile=code+'-before',tofile=code+'-after'))}
+ 
+ 
+ def implementation_sha():
+     root=Path(__file__).resolve().parent
+-    names=['batch_plan.py','excel_proof.py','catalog_names.py','batch_apply.py','batch_cli.py','session_bridge.js','rendered_layout.py','format_layout.py']
++    names=['batch_plan.py','excel_proof.py','catalog_names.py','batch_apply.py','batch_cli.py','session_bridge.js','rendered_layout.py','format_layout.py','targeted_section.py','targeted-contract.json']
+     return r.digest({n:hashlib.sha256((root/n).read_bytes()).hexdigest() for n in names})
+--- /dev/null
++++ b/captures/contract/markdown-spec.json
+@@ -0,0 +1 @@
++{"content":[{"type":"text","text":"{\"id\":\"notion://docs/notion-flavored-markdown-spec\",\"title\":\"Notion-flavored Markdown Specification\",\"text\":\"# Notion-flavored Markdown\\n\\nCommonMark + GFM tables, task lists, strikethrough; custom emoji :smile:; inline math $...$; display math uses bare $$ lines around the equation (never same-line $$...$$ or \\\\[...\\\\]); citations [^URL] only (no footnotes). Notion XML tags below. Never write other HTML tags (e.g. <div>, <details>, <figure>, <small>, <sup>, <sub>, <mark>); they are saved as literal text.\\n\\nRules:\\n- Escape literal tags in text as \\\\<tag> or &lt;tag&gt;; never inside code or mention labels, which are already literal.\\n- Always fence code blocks; never indent them. One-copyable-block rule: make the opening and closing fence longer than the longest backtick run in the content. Triple-backtick content requires four-backtick outer fences; never use triple backticks both outside and inside.\\n- Hard line break = trailing \\\\ replacing the space before it. Empty paragraph = <p />.\\n- Blocks (tables, lists, headings, etc.) start on new lines after blank lines, never inline.\\n\\nInline tags:\\n- <b>, <i>, <s>, <u> (the only underline); required when styled text has leading/trailing spaces.\\n- <span color=\\\"...\\\" discussion-urls=\\\"url,url\\\">text</span>; nest to combine: <span color=\\\"orange\\\"><u>word</u></span>.\\n- Use <mention url=\\\"...\\\">Label</mention> or <mention url=\\\"...\\\" /> for mentioning Notion entities user://..., HTTPS page URLs, collection://..., agent://..., group://.... Database mentions use type=\\\"database\\\" to distinguish them from page mentions. Regular links use [text](url).\\n- <date start=\\\"YYYY-MM-DD\\\" end=\\\"YYYY-MM-DD\\\" start-time=\\\"HH:mm\\\" end-time=\\\"HH:mm\\\" time-zone=\\\"IANA_TZ\\\" />\\n- <link-preview url=\\\"...\\\" source=\\\"...\\\" /> is a read-only marker. Preserve it when editing existing content; never add one to create a link preview.\\n\\nBlock tags: always use the tag form when a block needs attributes, children, or edge whitespace — <quote> not >, <li> not -. Most accept color=\\\"gray|brown|orange|yellow|green|blue|purple|pink|red\\\" (text) or _bg forms like \\\"blue_bg\\\" (background). Color a whole block or cell with its color attribute; use <span color> only for words inside text.\\n\\nOne container shape for <p>, <h1>-<h4>, <quote>, <toggle heading=\\\"h1|h2|h3|h4\\\" color=\\\"...\\\">, <li color=\\\"...\\\"> in <ul>/<ol type=\\\"1|a|i\\\">, <column> in <columns>, <tab icon=\\\"emoji or Notion Icon\\\"> in <tabs>, <mail to=\\\"...\\\" cc=\\\"...\\\" bcc=\\\"...\\\" from=\\\"...\\\" subject=\\\"...\\\" attachments=\\\"url,url\\\">, <meeting-notes>:\\n\\n<quote color=\\\"purple_bg\\\">\\nTitle text\\n\\n- child bullet\\n\\n<callout icon=\\\"💡\\\" color=\\\"yellow_bg\\\">\\nCallout body child\\n</callout>\\n</quote>\\n\\nThe title/label is body text right after the opening tag, never an attribute. Children follow a blank line — plain Markdown, no <p> wrappers or > prefixes. Blank lines touching the opening or closing tags become stray whitespace; never pad. <p /> = empty title.\\n\\nPlain <h1>-<h4> have no children: nested blocks become siblings. For children, use <toggle heading=\\\"h1|h2|h3|h4\\\">.\\n\\nOther blocks:\\n- <todo checked=\\\"true|false\\\"> when a todo needs color; else - [ ] / - [x].\\n- <equation color=\\\"...\\\">x + y = z</equation>\\n- <table-of-contents color=\\\"...\\\" />\\n- Media (body = optional caption): ![caption](url), or <image source=\\\"...\\\" color=\\\"...\\\">caption</image> for attributes; other embeds use their type's tag: <pdf source=\\\"...\\\">caption</pdf>, likewise <file>, <audio>, <video>, <bookmark>, <embed>. Each image must be its own block: never inline it with text (paragraph, list-item, etc.) or another image, and separate consecutive images with a blank line. Use <external_object_instance integration=\\\"github|figma|google_drive\\\">Embed name</external_object_instance> to create a rich integration embed placeholder.\\n- To create an HTML block, call notion-create-attachment with the HTML content and a filename ending in .html. Insert its suggested_markdown with notion-create-pages or notion-update-page to render the attachment with <embed>.\\n- <page url=\\\"...\\\" color=\\\"...\\\">Title</page>; represents a subpage on the current page. Warning: an update_page call that leaves out this tag deletes the subpage when allow_deleting_content is true. Otherwise the update fails with an error that lists the subpages. Omit url only when creating a new subpage.\\n- <folder url=\\\"...\\\">Title</folder>; represents an existing folder. Use fetch to read its immediate children, then follow nested folder URLs to continue traversing. Preserve the tag unless intentionally moving or deleting the folder; folders cannot be created from Markdown.\\n- <database url=\\\"...\\\" data-source-url=\\\"...\\\" inline=\\\"true|false\\\" icon=\\\"emoji\\\" wiki=\\\"true|false\\\" color=\\\"...\\\">Title</database>; same url/title rules. Wiki databases set wiki=\\\"true\\\"; their pages use parent type \\\"page\\\" with the wiki page URL, not \\\"dataSource\\\".\\n- <synced-block url=\\\"...\\\">...</synced-block> is an original synced block; omit url for new. <synced-block-reference url=\\\"...\\\" notice=\\\"...\\\">...</synced-block-reference> shows an original from elsewhere. Copy its url from an existing <synced-block> or <synced-block-reference>; a page url is never valid, so a whole page cannot be synced. If no such url is available, don't add a reference (even an empty one) or a note; tell the user why in your reply. To add a reference, leave it empty. Content inside a new reference replaces the original's content everywhere it appears. Only edit the children of a reference that's already on the page, and only to change the original.\\n- <meeting-notes attendees=\\\"user://id,...\\\" view-url=\\\"...\\\" legacy=\\\"true\\\">Title<meeting-notes-section-notes>Notes</meeting-notes-section-notes><meeting-notes-section-summary>Summary</meeting-notes-section-summary></meeting-notes>; content outside <meeting-notes-section-notes> is ignored; omit view-url, legacy, and the summary section for new. legacy=\\\"true\\\" marks an older meeting notes block that isn't a page; keep it as is. An existing <meeting-notes> may also have an optional read-only <meeting-notes-section-transcript> child: a \\\"Transcript omitted\\\" body means the transcript was not loaded, so follow its instructions to load it; never edit its contents, and never add it to new meeting notes.\\n- <custom-block definition-id=\\\"UUID\\\" url=\\\"...\\\" />; places an instance of a custom block definition deployed in this workspace. Use a self-closing tag on its own line; the instance inherits the definition's bindings. Omit url for a new instance; readback adds its instance URL. Preserve that URL when editing, reordering, or moving an existing instance.\\n- Columns: <columns><column ratio=\\\"50\\\">...</column><column ratio=\\\"50\\\">...</column></columns>. ratio is an optional percentage of the column-list width.\\n\\nTables:\\n- Pipe tables (escape | in cells as \\\\|) for plain tables; <table> only for styled ones; never mix the two.\\n- <table fit-page-width=\\\"true|false\\\" header-row=\\\"true|false\\\" header-column=\\\"true|false\\\">, optional <colgroup><col width=\\\"180\\\" color=\\\"...\\\" /></colgroup>, <tr color=\\\"...\\\"> rows, <th>/<td color=\\\"...\\\"> cells.\\n- Cells are inline-only (<br /> for line breaks); copy the existing cells' formatting when adding rows (pad with blank lines if the existing cells do).\",\"url\":\"notion://docs/notion-flavored-markdown-spec\",\"metadata\":{\"type\":\"documentation\"}}"}],"structuredContent":{"id":"notion://docs/notion-flavored-markdown-spec","title":"Notion-flavored Markdown Specification","text":"# Notion-flavored Markdown\n\nCommonMark + GFM tables, task lists, strikethrough; custom emoji :smile:; inline math $...$; display math uses bare $$ lines around the equation (never same-line $$...$$ or \\[...\\]); citations [^URL] only (no footnotes). Notion XML tags below. Never write other HTML tags (e.g. <div>, <details>, <figure>, <small>, <sup>, <sub>, <mark>); they are saved as literal text.\n\nRules:\n- Escape literal tags in text as \\<tag> or &lt;tag&gt;; never inside code or mention labels, which are already literal.\n- Always fence code blocks; never indent them. One-copyable-block rule: make the opening and closing fence longer than the longest backtick run in the content. Triple-backtick content requires four-backtick outer fences; never use triple backticks both outside and inside.\n- Hard line break = trailing \\ replacing the space before it. Empty paragraph = <p />.\n- Blocks (tables, lists, headings, etc.) start on new lines after blank lines, never inline.\n\nInline tags:\n- <b>, <i>, <s>, <u> (the only underline); required when styled text has leading/trailing spaces.\n- <span color=\"...\" discussion-urls=\"url,url\">text</span>; nest to combine: <span color=\"orange\"><u>word</u></span>.\n- Use <mention url=\"...\">Label</mention> or <mention url=\"...\" /> for mentioning Notion entities user://..., HTTPS page URLs, collection://..., agent://..., group://.... Database mentions use type=\"database\" to distinguish them from page mentions. Regular links use [text](url).\n- <date start=\"YYYY-MM-DD\" end=\"YYYY-MM-DD\" start-time=\"HH:mm\" end-time=\"HH:mm\" time-zone=\"IANA_TZ\" />\n- <link-preview url=\"...\" source=\"...\" /> is a read-only marker. Preserve it when editing existing content; never add one to create a link preview.\n\nBlock tags: always use the tag form when a block needs attributes, children, or edge whitespace — <quote> not >, <li> not -. Most accept color=\"gray|brown|orange|yellow|green|blue|purple|pink|red\" (text) or _bg forms like \"blue_bg\" (background). Color a whole block or cell with its color attribute; use <span color> only for words inside text.\n\nOne container shape for <p>, <h1>-<h4>, <quote>, <toggle heading=\"h1|h2|h3|h4\" color=\"...\">, <li color=\"...\"> in <ul>/<ol type=\"1|a|i\">, <column> in <columns>, <tab icon=\"emoji or Notion Icon\"> in <tabs>, <mail to=\"...\" cc=\"...\" bcc=\"...\" from=\"...\" subject=\"...\" attachments=\"url,url\">, <meeting-notes>:\n\n<quote color=\"purple_bg\">\nTitle text\n\n- child bullet\n\n<callout icon=\"💡\" color=\"yellow_bg\">\nCallout body child\n</callout>\n</quote>\n\nThe title/label is body text right after the opening tag, never an attribute. Children follow a blank line — plain Markdown, no <p> wrappers or > prefixes. Blank lines touching the opening or closing tags become stray whitespace; never pad. <p /> = empty title.\n\nPlain <h1>-<h4> have no children: nested blocks become siblings. For children, use <toggle heading=\"h1|h2|h3|h4\">.\n\nOther blocks:\n- <todo checked=\"true|false\"> when a todo needs color; else - [ ] / - [x].\n- <equation color=\"...\">x + y = z</equation>\n- <table-of-contents color=\"...\" />\n- Media (body = optional caption): ![caption](url), or <image source=\"...\" color=\"...\">caption</image> for attributes; other embeds use their type's tag: <pdf source=\"...\">caption</pdf>, likewise <file>, <audio>, <video>, <bookmark>, <embed>. Each image must be its own block: never inline it with text (paragraph, list-item, etc.) or another image, and separate consecutive images with a blank line. Use <external_object_instance integration=\"github|figma|google_drive\">Embed name</external_object_instance> to create a rich integration embed placeholder.\n- To create an HTML block, call notion-create-attachment with the HTML content and a filename ending in .html. Insert its suggested_markdown with notion-create-pages or notion-update-page to render the attachment with <embed>.\n- <page url=\"...\" color=\"...\">Title</page>; represents a subpage on the current page. Warning: an update_page call that leaves out this tag deletes the subpage when allow_deleting_content is true. Otherwise the update fails with an error that lists the subpages. Omit url only when creating a new subpage.\n- <folder url=\"...\">Title</folder>; represents an existing folder. Use fetch to read its immediate children, then follow nested folder URLs to continue traversing. Preserve the tag unless intentionally moving or deleting the folder; folders cannot be created from Markdown.\n- <database url=\"...\" data-source-url=\"...\" inline=\"true|false\" icon=\"emoji\" wiki=\"true|false\" color=\"...\">Title</database>; same url/title rules. Wiki databases set wiki=\"true\"; their pages use parent type \"page\" with the wiki page URL, not \"dataSource\".\n- <synced-block url=\"...\">...</synced-block> is an original synced block; omit url for new. <synced-block-reference url=\"...\" notice=\"...\">...</synced-block-reference> shows an original from elsewhere. Copy its url from an existing <synced-block> or <synced-block-reference>; a page url is never valid, so a whole page cannot be synced. If no such url is available, don't add a reference (even an empty one) or a note; tell the user why in your reply. To add a reference, leave it empty. Content inside a new reference replaces the original's content everywhere it appears. Only edit the children of a reference that's already on the page, and only to change the original.\n- <meeting-notes attendees=\"user://id,...\" view-url=\"...\" legacy=\"true\">Title<meeting-notes-section-notes>Notes</meeting-notes-section-notes><meeting-notes-section-summary>Summary</meeting-notes-section-summary></meeting-notes>; content outside <meeting-notes-section-notes> is ignored; omit view-url, legacy, and the summary section for new. legacy=\"true\" marks an older meeting notes block that isn't a page; keep it as is. An existing <meeting-notes> may also have an optional read-only <meeting-notes-section-transcript> child: a \"Transcript omitted\" body means the transcript was not loaded, so follow its instructions to load it; never edit its contents, and never add it to new meeting notes.\n- <custom-block definition-id=\"UUID\" url=\"...\" />; places an instance of a custom block definition deployed in this workspace. Use a self-closing tag on its own line; the instance inherits the definition's bindings. Omit url for a new instance; readback adds its instance URL. Preserve that URL when editing, reordering, or moving an existing instance.\n- Columns: <columns><column ratio=\"50\">...</column><column ratio=\"50\">...</column></columns>. ratio is an optional percentage of the column-list width.\n\nTables:\n- Pipe tables (escape | in cells as \\|) for plain tables; <table> only for styled ones; never mix the two.\n- <table fit-page-width=\"true|false\" header-row=\"true|false\" header-column=\"true|false\">, optional <colgroup><col width=\"180\" color=\"...\" /></colgroup>, <tr color=\"...\"> rows, <th>/<td color=\"...\"> cells.\n- Cells are inline-only (<br /> for line breaks); copy the existing cells' formatting when adding rows (pad with blank lines if the existing cells do).","url":"notion://docs/notion-flavored-markdown-spec","metadata":{"type":"documentation"}},"isError":false}
+--- /dev/null
++++ b/captures/contract/tool-descriptions.json
+@@ -0,0 +1 @@
++[{"name":"mcp__codex_apps__notion_fetch","description":"Retrieves details about a Notion entity (page, database, data source, or saved database view) by URL or ID.\n\nProvide a URL or ID in `id`. Make multiple calls for multiple entities.\n\nFor pages, use path, verification, edit time, and truncation metadata to assess the source. Treat recency as context, not proof. Report material uncertainty when sources conflict.\n\nPages use Notion-flavored Markdown. For the complete specification, read the MCP resource `notion://docs/notion-flavored-markdown-spec` through your MCP client's resource-reading interface, or call the Notion \"fetch\" tool with this URI if your client does not support reading MCP resources. Do NOT pass this URI to any other URL-fetching tool.\n\nPass a `notion://docs/*` URI as `id` to read that MCP documentation resource.\n\nDatabases return data sources in `<data-source url=\"collection://...\">` tags. Fetch the collection:// URL for its schema and use it with update_data_source or query_data_sources. Multi-source databases return more than one data source.\n\nSaved views return filters, sorts, and display settings. To query their rows, use query_data_sources with `mode: \"view\"`.\n\nA null cover or icon means none; an omitted one means unavailable, not absent. Keep a page's Markdown icon attribute for edit round trips. File URLs expire; re-fetch to refresh them. Uploaded media blocks use stable `notion-file-block://` sources; keep them when editing or copying Markdown. Get download URLs with get_file_download_urls, or set `include_file_urls` to true for a `references` map. Before relying on page content, check `truncated`, `unknown_block_count`, and `unknown_block_ids` for omitted subtrees.\n\nSet `include_discussions` to true for discussion counts, markers, previews, and `discussion://` URLs that correlate with get_comments. This tool is part of plugin `Notion`.\n\nCreate docs, tasks, databases\n\nMCP server instructions: Notion holds docs, notes, wikis, and projects. Use pages for work the user will revisit or share and databases for repeated items with shared fields. Keep one-off answers in chat. When Notion fits, offer it once, say why, and let the user choose.\n\nSave pages where the user asks. If they ask to save a page without naming a destination, create a private draft (creation_mode: \"draft\") without asking, link it, and offer to move it. For edge cases, read notion://docs/when-to-create-a-notion-page-or-database.\n\nNo...\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__codex_apps__notion_fetch(args: {\n  // The ID or URL of the Notion page, database, or data source to fetch. Supports notion.so URLs, Notion Sites URLs (*.notion.site), raw UUIDs, and data source URLs (collection://...). Pass \"memory\" to fetch the connected user's About page and memory database in this workspace without creating them. Pass a notion://docs/* URI to read that documentation resource. Also accepts an explicit saved view URL (view://...) from a database response. If a database block ID returns a validation error, use the collection:// URL from that error. Example: <example>notion://docs/notion-flavored-markdown-spec</example>.\n  id: string;\n  // Whether to include discussion/comment indicators in the page output. When true, adds a <page-discussions> summary with discussion count, preview snippets, and discussion:// URLs. Use with the get_comments tool to retrieve full discussion content. Defaults to false.\n  include_discussions?: boolean;\n  // Whether to return signed download URLs for uploaded files. Defaults to false. When false, page Markdown cites uploaded files by stable notion-file-block:// references and the response has no references map; call get_file_download_urls with the references when you need those files' contents. When true, the response's references map gives the signed URL for each reference.\n  include_file_urls?: boolean;\n  // Whether to include meeting note transcripts. Defaults to false. When true, full transcripts are included; when false, a placeholder with the meeting note URL is shown instead.\n  include_transcript?: boolean;\n  // Notion setup instructions version, such as 0.0.2. Omit if unknown.\n  instructions_version?: string;\n  // For tracking only: the name of the agent skill you are following for this task, such as notion-meeting-prep. Omit if you are not following a skill.\n  skill?: string;\n  [key: string]: unknown;\n}): Promise<CallToolResult>; };\n```"},{"name":"mcp__codex_apps__notion_notion_update_page","description":"Update a Notion page's properties, content, icon, or cover. For only an icon or cover, use \"update_properties\" without \"properties\".\n\n## Core rules\n\n**IMPORTANT**: Before writing page content, read the MCP resource `notion://docs/notion-flavored-markdown-spec` through your MCP client's resource-reading interface, or call the Notion \"fetch\" tool with this URI if your client does not support reading MCP resources. Do NOT pass this URI to any other URL-fetching tool. Don't guess Markdown syntax. By default, use native Notion mentions for references you add to existing Notion pages, databases, data sources, people, and dates. Use Markdown links only for external URLs or when the user requests a plain link. For a person, use a user mention with their user URL, found with search using query_type \"user\"; do not write \"@Name\" as plain text. For a specific date or time, such as a due date or meeting time, use a date mention. The Markdown specification gives the mention syntax.\n\nBefore changing content, fetch unless already loaded. Match nearby headings, block types, nesting, lists, tables, and prose style.\n\nMake the smallest edit. Use \"update_content\" for targeted search-and-replace and \"insert_content\" only to prepend or append. Avoid \"replace_content\" when a targeted command works. Preserve unrelated wording, structure, order, and native references. Do not broadly rewrite unless asked.\n\nFor \"update_content\", use the smallest exact old_str that uniquely matches the target. Ask before removing material content the user did not identify. Don't fetch just to verify an update that completed without warnings. Fetch to resolve warnings, or when a later step needs the page's exact saved state.\n\nFor \"replace_content\", preserve child pages and databases with their exact fetched tags. If validation says child content would be deleted, show the list and ask first. Never retry with \"allow_deleting_content\": true without confirmation. Report any \"warnings\" in the result. This tool is part of plugin `Notion`.\n\nCreate docs, tasks, databases\n\nMCP server instructions: Notion holds docs, notes, wikis, and projects. Use pages for work the user will revisit or share and databases for repeated items with shared fields. Keep one-off answers in chat. When Notion fits, offer it once, say why, and let the user choose.\n\nSave pages where the user asks. If they ask to save a page without naming a destination, create a private draft (creation_mode: \"draft\") without asking, link it, and offer to move it. For edge cases, read notion://docs/when-to-create-a-notion-page-or-database.\n\nNo...\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__codex_apps__notion_notion_update_page(args: { allow_async?: boolean; allow_deleting_content?: boolean; command: \"update_properties\" | \"update_content\" | \"replace_content\" | \"insert_content\" | \"apply_template\" | \"update_verification\"; content?: string; content_updates?: Array<{ new_str: string; old_str: string; replace_all_matches?: boolean; [key: string]: unknown; }>; cover?: string; full_width?: boolean; icon?: string; instructions_version?: string; is_skill?: boolean; new_str?: string; page_id: string; position?: { type: \"start\"; [key: string]: unknown; } | { type: \"end\"; [key: string]: unknown; }; properties?: { [key: string]: string | number | Array<string | { file_upload: { id: string; [key: string]: unknown; }; type: \"file_upload\"; [key: string]: unknown; }> | null; }; skill?: string; template_id?: string; verification_expiry_days?: number; verification_status?: \"verified\" | \"unverified\"; [key: string]: unknown; }): Promise<CallToolResult>; };\n```"}]
+--- a/session_bridge.js
++++ b/session_bridge.js
+@@ -10,6 +10,7 @@
+     return value;
+   }
+   if (config.apply !== true) return await python("inspect");
++  if (config.reconcileOnly && config.cancelOnly) throw new Error("Choose reconciliation or cancellation");
+   if (/[\r\n]/.test(config.plan)) throw new Error("Invalid local plan path");
+   if (!/^[a-f0-9]{64}$/.test(config.approvedPlanSha || "") || !config.approval) throw new Error("Exact reviewed-plan authorisation is required");
+   const base = ["--approval", config.approval, "--approved-plan-sha", config.approvedPlanSha, "--apply"];
+@@ -22,7 +23,7 @@
+     if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([k,v]) => [k,scrub(v)]));
+     return value;
+   }
+-  let action = await python(config.reconcileOnly ? "session-reconcile" : "session-start", base);
++  let action = await python(config.cancelOnly ? "session-cancel" : config.reconcileOnly ? "session-reconcile" : "session-start", base);
+   const counts = {reads:0,writeAttempts:0};
+   while (action.type !== "FINISH") {
+     if (action.plan_sha256 !== config.approvedPlanSha) throw new Error("Session plan identity changed");
+@@ -36,8 +37,9 @@
+         if (!pages.has(action.payload.page_id)) throw new Error("Comment target is outside the batch");
+         result = await tools.mcp__codex_apps__notion_notion_get_comments(action.payload); counts.reads++;
+       } else if (action.type === "WRITE_PENDING") {
+-        if (config.reconcileOnly) throw new Error("Reconciliation cannot write");
++        if (config.reconcileOnly || config.cancelOnly) throw new Error("Reconciliation/cancellation cannot write");
+         const payload=action.payload;
++        if (scope.validation_policy?.name === "TARGETED_SECTION" && payload.command !== "update_content") throw new Error("Targeted contract permits update_content only");
+         if (!pages.has(payload.page_id)) throw new Error("Write target is outside the batch");
+         if (!["update_content","insert_content","update_properties"].includes(payload.command) || payload.allow_deleting_content || payload.allow_async) throw new Error("Unsafe connector command");
+         if (payload.content_updates && (payload.content_updates.length!==1 || payload.content_updates[0].replace_all_matches!==false)) throw new Error("Unsafe replacement scope");
+--- /dev/null
++++ b/targeted-contract.json
+@@ -0,0 +1,22 @@
++{
++  "body_text": "All body prose, review choices/reasons, notes, annotations, media and source remain protected with scope-bound hashes. Changed inside-target associations block an operation.",
++  "connector_command": "update_content",
++  "container_limit": "Neither fetched specification nor current tool description attests that a rendered column/toggle/table contains every server-side descendant. Such replacements require explicit complete source evidence; balanced text alone is insufficient.",
++  "documented_scope": "Tool describes targeted search-and-replace using the smallest exact unique old_str. This supplies a public narrow-edit contract, not a runtime proof of internals.",
++  "evidence": {
++    "markdown-spec.json": "13c4869d2f8ab5beb8ff80ae32017034c42987660bfde2a7041f637b76721e76",
++    "tool-descriptions.json": "ff03f0a2464b0ad134582d8a7bebb89380aa6caf78fd5193161cba9fddd8672e"
++  },
++  "leaf_boundary_basis": "Markdown specification states plain headings have no children. Only exact standalone presentation headings are certified by this adapter without subtree coverage metadata.",
++  "live_write_authorised": false,
++  "name": "TARGETED_SECTION",
++  "native_comments": {
++    "anchor_preservation_claimed": false,
++    "empty_attested": false,
++    "provenance": "Human clarification relayed by Engineering Lead for V5: native Notion comments are not required; comments/review text inside page body must stay.",
++    "requirement": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY"
++  },
++  "replace_all_matches": false,
++  "version": 1,
++  "whole_page_replace": false
++}
+--- /dev/null
++++ b/targeted_section.py
+@@ -0,0 +1,108 @@
++"""Exact-section checks. Public edit scope does not attest hidden container children."""
++import hashlib
++import json
++from pathlib import Path
++import re
++
++import rendered_layout as r
++
++NAME='TARGETED_SECTION'
++PRESENTATION_HEADINGS={'Imagens','Descrição e notas do perfil','Notas'}
++
++
++def policy():
++    root=Path(__file__).resolve().parent
++    contract=json.loads((root/'targeted-contract.json').read_text(encoding='utf-8'))
++    for name,expected in contract['evidence'].items():
++        if hashlib.sha256((root/'captures/contract'/name).read_bytes()).hexdigest()!=expected:
++            raise ValueError('Targeted connector evidence changed')
++    return {'name':NAME,'version':1,'contract_sha256':r.digest(contract),
++            'native_comments':contract['native_comments'],'body_comments_required':True,
++            'fresh_read_before_each_operation':True,'global_export_claimed':False}
++
++
++def protected_snapshot(body):
++    result=[]
++    def walk(nodes,path=()):
++        for index,node in enumerate(nodes):
++            scope=path
++            if node.kind in ('toggle','callout'):scope=path+(node.kind+':'+node.title,)
++            elif node.kind=='columns':scope=path+('columns',)
++            elif node.kind=='column':scope=path+('column:'+str(index),)
++            protect=(node.kind in ('paragraph','callout','todo','image')
++                     or node.kind=='toggle' and node.title==r.SOURCE
++                     or node.kind=='heading' and node.title not in PRESENTATION_HEADINGS)
++            if protect:result.append({'scope':list(scope),'kind':node.kind,'sha256':r.digest(node.raw)})
++            if node.kind=='table':
++                if node.rows[0][:2] not in (['Face / local','Opções propostas'],['Face / local','Opções completas e especificações']):
++                    result.append({'scope':list(scope),'kind':'body-comment-table','sha256':r.digest(node.raw)})
++                for row in node.rows[1:]:
++                    for col,value in enumerate(row[2:],2):
++                        if value.strip():result.append({'scope':list(scope)+['table-note:'+row[0]+':'+str(col)],'kind':'annotation','sha256':r.digest(value)})
++            if node.kind in r.CONTAINERS:walk(node.items,scope)
++    walk(r.parse(body));return result
++
++
++def retained(before,after):
++    remaining=iter(after)
++    return all(any(candidate==item for candidate in remaining) for item in before)
++
++
++def inspect_operation(state,payload):
++    if payload.get('command')!='update_content' or set(payload)!={'command','page_id','content_updates'}:
++        raise ValueError('Targeted policy permits only update_content')
++    edits=payload['content_updates']
++    if len(edits)!=1 or set(edits[0])!={'old_str','new_str','replace_all_matches'} or edits[0]['replace_all_matches'] is not False:
++        raise ValueError('Targeted policy requires one exact non-replace-all operation')
++    old,new=edits[0]['old_str'],edits[0]['new_str'];body=state['body']
++    if not isinstance(old,str) or not isinstance(new,str) or not old or body.count(old)!=1:
++        raise ValueError('Target text is missing or ambiguous')
++    start=body.index(old);end=start+len(old)
++    nodes=r.parse(body);targets=r.parse(old);r.parse(new)
++    matches=[n for n in nodes if n.start==start and n.raw==old.rstrip('\r\n') and end<=len(body) and not body[n.end:end].strip()]
++    if len(targets)!=1 or len(matches)!=1 or old.strip()==body.strip():
++        raise ValueError('Target must be one complete top-level section, never a nested fragment or whole page')
++    node=targets[0]
++    leaf=(node.kind=='heading' and node.title in PRESENTATION_HEADINGS and re.fullmatch(r'#{1,4} [^\n\r<>]+',node.raw) is not None)
++    complete=leaf or state['coverage']['state']=='EXPLICIT_COMPLETE_EXPORT'
++    after=body[:start]+new+body[end:]
++    before_protected=protected_snapshot(old);after_protected=protected_snapshot(new)
++    body_preserved=retained(before_protected,after_protected)
++    reasons=[]
++    if not complete:reasons.append('Affected container completeness is unproved; current connector contract does not attest omitted descendants')
++    if not body_preserved:reasons.append('Body comments/review/prose/annotations or their associations would change inside the affected section')
++    return {'eligible':not reasons,'reasons':reasons,'contract_sha256':policy()['contract_sha256'],
++            'old_section_sha256':r.digest(old),'new_section_sha256':r.digest(new),
++            'boundary':'one complete top-level supported section','completeness_basis':'documented childless presentation heading' if leaf else 'explicit complete export' if complete else 'UNPROVED',
++            'visible_prefix_sha256':r.digest(body[:start]),'visible_suffix_sha256':r.digest(body[end:]),
++            'body_protected_before':before_protected,'body_protected_after':after_protected,
++            'body_comments_preserved_with_associations':body_preserved,'global_export_claimed':False,
++            'native_comment_anchors_claimed':False}
++
++
++def saved_result(before,after,payload):
++    edit=payload['content_updates'][0];old,new=edit['old_str'],edit['new_str']
++    if before.count(old)!=1:return False
++    start=before.index(old);prefix=before[:start];suffix=before[start+len(old):]
++    # These are observed text checks. Omitted content is outside the narrow command contract.
++    return (after[:start]==prefix and after[start:start+len(new)]==new
++            and after[start+len(new):]==suffix
++            and retained(protected_snapshot(before),protected_snapshot(after)))
++
++
++def update_only(ops,body):
++    """Convert a reviewed trailing history insertion into an exact last-section update."""
++    result=[]
++    for operation in ops:
++        op=dict(operation);payload=dict(op['payload'])
++        if payload['command']=='insert_content':
++            nodes=r.parse(body)
++            if not nodes or nodes[-1].end!=len(body):raise ValueError('Append has no exact complete final-section anchor')
++            old=nodes[-1].raw;new=old+payload['content']
++            payload={'command':'update_content','page_id':payload['page_id'],'content_updates':[{'old_str':old,'new_str':new,'replace_all_matches':False}]}
++            op.update(kind='body',before_region=old,after_region=new)
++        op['payload']=payload
++        edit=payload['content_updates'][0]
++        if body.count(edit['old_str'])!=1:raise ValueError('Sequential target is not unique')
++        body=body.replace(edit['old_str'],edit['new_str'],1);result.append(op)
++    return result
+--- a/tests/test_session_bridge.cjs
++++ b/tests/test_session_bridge.cjs
+@@ -73,3 +73,18 @@
+     await run({...config,apply:true},tools);assert.equal(seen.writes,0);assert.ok(seen.events[0].error);
+   }
+ });
++test('cancellation is local and cannot dispatch a mutation',async()=>{
++  const {tools,seen}=fixture([{type:'FINISH',status:'CANCELLED'}]);
++  const result=await run({...config,apply:true,cancelOnly:true},tools);
++  assert.equal(result.status,'CANCELLED');assert.equal(seen.reads+seen.writes,0);
++  assert.ok(seen.commands.some(c=>c.includes("'session-cancel'")));
++});
++test('targeted policy refuses property and insertion commands at the bridge',async()=>{
++  scope.validation_policy={name:'TARGETED_SECTION'};
++  try{
++    for(const command of ['insert_content','update_properties']){
++      const {tools,seen}=fixture([action('WRITE_PENDING',{command,page_id:page}),{type:'FINISH',status:'UNCERTAIN'}]);
++      await run({...config,apply:true},tools);assert.equal(seen.writes,0);assert.ok(seen.events[0].error);
++    }
++  }finally{delete scope.validation_policy;}
++});
+--- /dev/null
++++ b/tests/test_targeted.py
+@@ -0,0 +1,119 @@
++import copy
++import json
++from pathlib import Path
++import sys
++import unittest
++
++ROOT=Path(__file__).resolve().parents[1]
++sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'tests'))
++import batch_plan as b
++import batch_apply as a
++import rendered_layout as r
++import targeted_section as scoped
++import test_batch as fixtures
++from test_batch import FakeConnector,drive,load,sync
++
++
++class TargetedTests(unittest.TestCase):
++    def setUp(self):
++        fixture=fixtures.BatchTests();fixture.setUp();self.addCleanup(fixture.doCleanups)
++        self.fixture=fixture;self.work=fixture.work
++        self.capture=copy.deepcopy(load('pp633.json'));self.capture['capture']['synthetic']=True
++        value=self.capture['response']['structuredContent']
++        value['text']=value['text'].replace('- [ ] Não,','- [x] Não,').replace('Regista o motivo','Motivo próprio: manter a nota do bolso. Regista o motivo')
++        value['text']=value['text'].replace('</content>','\n\nComentário do utilizador: conservar material e costuras.\n\n</content>')
++        sync(self.capture['response']);state=b.page_state(self.capture)
++        node=next(n for n in r.parse(state['body']) if n.kind=='heading' and n.title=='Imagens')
++        old=node.raw+'\n\n'
++        payload={'command':'update_content','page_id':state['page_id'],'content_updates':[{'old_str':old,'new_str':'','replace_all_matches':False}]}
++        evidence=scoped.inspect_operation(state,payload)
++        self.bundle=copy.deepcopy(fixture.bundle);self.bundle.update(version=5,validation_policy=scoped.policy())
++        page=next(p for p in self.bundle['pages'] if p['code']=='633')
++        page.update(validation_policy=scoped.policy(),status='READY',reasons=[],source_state_sha256=state['source_state_sha256'],source_body=state['body'],
++                    source_metadata=b.stable_metadata(state),desired_body=state['body'].replace(old,'',1),property_operations=[],
++                    operations=[{'id':'633-scoped-leaf','kind':'body','eligible':True,'payload':payload,'region_evidence':evidence}])
++        self.page=page;self.state=state
++        self.approval={'plan_sha256':r.digest(self.bundle),'implementation_sha256':self.bundle['implementation_sha256'],
++                       'authorisation':'OFFLINE_FAKE_CONNECTOR_TEST','review_reference':'SCOPED_FAKE_REVIEW','approved_codes':['633'],'approved_operation_ids':['633-scoped-leaf']}
++    def connector(self):
++        captures=copy.deepcopy(self.fixture.captures);captures['633']=self.capture
++        connector=FakeConnector(captures,self.fixture.schema_response);connector.comments=load('comments633.json');return connector
++    def session(self,name='one'):return a.FileSession(self.work/'scoped-runs'/name,self.bundle,self.approval,fake=True)
++    def test_missing_global_metadata_leaf_contract_and_excluded_native_comments(self):
++        self.assertEqual(self.state['coverage']['state'],'UNKNOWN')
++        self.assertTrue(self.page['operations'][0]['region_evidence']['eligible'])
++        connector=self.connector();session=self.session();result=drive(session,connector,session.start())
++        self.assertEqual(result['status'],'COMPLETE');self.assertEqual(len(connector.writes),1)
++        saved=b.page_state(a.capture_response(connector.pages[r.PAGES['633']],r.PAGES['633']))['body']
++        self.assertEqual(scoped.protected_snapshot(saved),scoped.protected_snapshot(self.state['body']))
++        self.assertIn('Motivo próprio: manter a nota do bolso',saved);self.assertIn('- [x] Não,',saved)
++        self.assertIn('Comentário do utilizador',saved);self.assertNotIn('Falta transfer 1 C 126cm',saved)
++        journal=json.loads(session.path.read_text(encoding='utf8'))
++        self.assertNotIn('FETCH_COMMENTS',[x['kind'] for x in journal['events']])
++        self.assertFalse(scoped.policy()['native_comments']['empty_attested'])
++    def test_real_batch_regions_are_assessed_individually_not_globally_attested(self):
++        page=b.prepare_page(load('pp633.json'),load('comments633.json'),self.fixture.proof,b.page_state(load('pp428.json')),b.schema_state(self.fixture.schema_response),scoped.policy())
++        self.assertEqual(page['status'],'BLOCKED')
++        self.assertTrue(any(o['eligible'] for o in page['operations']))
++        self.assertTrue(any(not o['eligible'] for o in page['operations']))
++        self.assertTrue(all(o['payload']['command']=='update_content' for o in page['operations']))
++        self.assertTrue(any('container completeness' in reason for reason in page['reasons']))
++        self.assertFalse(page['comments']['empty_attested'])
++    def test_missing_multiple_nested_unsupported_and_whole_page_targets_refused(self):
++        for old in ['missing',self.state['body'],'<toggle>unclosed','Peito']:
++            payload=copy.deepcopy(self.page['operations'][0]['payload']);payload['content_updates'][0]['old_str']=old
++            with self.subTest(old=old[:20]),self.assertRaises(ValueError):scoped.inspect_operation(self.state,payload)
++        state=copy.deepcopy(self.state);old=self.page['operations'][0]['payload']['content_updates'][0]['old_str'];state['body']+='\n\n'+old
++        with self.assertRaises(ValueError):scoped.inspect_operation(state,self.page['operations'][0]['payload'])
++    def test_explicit_truncation_and_unknown_affected_content_refused(self):
++        for field,value in [('truncated',True),('unknown_block_count',1),('unknown_block_ids',['unknown'])]:
++            capture=copy.deepcopy(self.capture);capture['response']['structuredContent'].update(truncated=False,unknown_block_count=0,unknown_block_ids=[])
++            capture['response']['structuredContent'][field]=value;sync(capture['response'])
++            with self.subTest(field=field),self.assertRaises(ValueError):b.page_state(capture)
++    def test_prewrite_changes_inside_outside_body_comment_review_source_property_abort(self):
++        for name,old,new in [('inside','## Imagens','## Imagens alteradas'),('outside','Peito','Peito alterado'),('comment','Comentário do utilizador','Comentário humano alterado'),('review','Motivo próprio','Novo motivo humano'),('source','Fonte e original do Excel','Fonte alterada'),('property','"Notas":""','"Notas":"Changed"')]:
++            connector=self.connector();session=self.session(name)
++            def edit(response):
++                text=response['structuredContent']['text'];self.assertIn(old,text);response['structuredContent']['text']=text.replace(old,new);sync(response)
++            connector.prewrite_edit=edit
++            self.assertEqual(drive(session,connector,session.start())['status'],'STALE',name);self.assertEqual(connector.writes,[])
++    def test_body_notes_and_review_inside_section_cannot_be_changed_or_only_archived(self):
++        state=copy.deepcopy(self.state);state['coverage']['state']='EXPLICIT_COMPLETE_EXPORT'
++        for node in r.parse(state['body']):
++            if node.kind=='callout':
++                new=node.raw.replace('Motivo próprio','Different reason')
++                payload={'command':'update_content','page_id':state['page_id'],'content_updates':[{'old_str':node.raw,'new_str':new,'replace_all_matches':False}]}
++                self.assertFalse(scoped.inspect_operation(state,payload)['eligible'])
++                payload['content_updates'][0]['new_str']=r.toggle('History',[node.raw])
++                self.assertFalse(scoped.inspect_operation(state,payload)['eligible'])
++    def test_postread_outside_change_stops_and_uncertain_reconciliation_never_retries(self):
++        connector=self.connector();connector.lost_at=1;session=self.session()
++        self.assertEqual(drive(session,connector,session.start())['status'],'UNCERTAIN')
++        page=connector.pages[r.PAGES['633']];page['structuredContent']['text']=page['structuredContent']['text'].replace('Comentário do utilizador','Human intervened');sync(page)
++        restarted=a.FileSession(session.root,self.bundle,self.approval,fake=True,reconcile_only=True)
++        self.assertEqual(drive(restarted,connector,restarted.event(reconcile=True))['status'],'RECONCILIATION_CONFLICT')
++        self.assertEqual(len(connector.writes),1)
++    def test_cancel_before_write_and_pending_intent_never_discards_uncertainty(self):
++        session=self.session('before');session.start();self.assertEqual(session.event(cancel=True)['status'],'CANCELLED');self.assertFalse(session.fence.exists())
++        session=self.session('pending');connector=self.connector();action=session.start()
++        while action['type']!='WRITE_PENDING':action=session.event({'nonce':action['nonce'],'result':connector.fetch(action['payload'],action['type'])})
++        self.assertEqual(session.event(cancel=True)['status'],'UNCERTAIN');self.assertTrue(session.fence.exists());self.assertEqual(connector.writes,[])
++
++    def test_postread_visible_outside_edit_is_uncertain_without_continuation(self):
++        connector=self.connector();update=connector.update
++        def mutate(payload):
++            result=update(payload);page=connector.pages[r.PAGES['633']]
++            page['structuredContent']['text']=page['structuredContent']['text'].replace('Comentário do utilizador','Human outside edit');sync(page)
++            return result
++        connector.update=mutate;session=self.session()
++        self.assertEqual(drive(session,connector,session.start())['status'],'UNCERTAIN');self.assertEqual(len(connector.writes),1)
++
++    def test_body_comment_tables_and_order_are_protected_inside_complete_section(self):
++        old=r.toggle('Notas humanas',['Primeira nota','Segunda nota','| Comentário | Decisão |\n| --- | --- |\n| Manter bolso | Não |'])
++        state=copy.deepcopy(self.state);state['body']='# Fora\n\n'+old;state['coverage']['state']='EXPLICIT_COMPLETE_EXPORT'
++        for new in [old.replace('Manter bolso','Remover bolso'),old.replace('Primeira nota\n\nSegunda nota','Segunda nota\n\nPrimeira nota')]:
++            payload={'command':'update_content','page_id':state['page_id'],'content_updates':[{'old_str':old,'new_str':new,'replace_all_matches':False}]}
++            self.assertFalse(scoped.inspect_operation(state,payload)['eligible'])
++
++
++if __name__=='__main__':unittest.main()

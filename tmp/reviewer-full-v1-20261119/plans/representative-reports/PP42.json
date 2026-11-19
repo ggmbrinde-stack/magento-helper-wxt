@@ -1,0 +1,277 @@
+{
+  "category": "GENERAL",
+  "code": "42",
+  "completion_binding": {
+    "excel_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "full_scope_sha256": "8aa2bf1320144e9132fd85e3ea67206905352a3b214de387c43f752613eda85b",
+    "implementation_sha256": "37a14565f13e4dfa5df6e8c3e4a2f7941b9ad4067c84a97726da38ff2d124cf3",
+    "index_sha256": "67eaf0e09c9f48a324f3521d81f35bf52e6a5ef6074d7c0a0185e3b858679f0c",
+    "rules_sha256": "db70aa0fb673c5217b8763b7c916d3682cb1963e047b014cbd70051da233e704",
+    "scope": "PP_FULL_CONVERSION_V1",
+    "source_state_sha256": "342c26c84a004e1984db7ae74a3a27ae9ecd28ffc8da07bafcb7257cdb62e577",
+    "template_sha256": "71b26c8bf2c2f899e88dc73b2310d7eda841cfd63299248a83fc4bbdb5e699f3"
+  },
+  "completion_status_operation": {
+    "eligible": true,
+    "id": "42-full-review-status",
+    "kind": "success_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "3dbb6705ae1f833183b801de5ded31b0",
+      "properties": {
+        "Estado": "Para revisão"
+      }
+    }
+  },
+  "desired_body": "<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />\n\nRato de computador\n\nEx: A97398\n\n<callout icon=\"📝\">\n<b>Revisão do PP 42</b>\n\n- [ ] Sim, aprovo a configuração New do PP 42.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\n1 Face\n</td>\n<td>\nTampografia 1 Cor<br />Laser Metal - Até 360 cm2\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\n1 Face\n</td>\n<td>\nTampografia 1 Cor\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n- 1 Face: opção actual ausente do Excel, preservada até revisão: Laser Metal - Até 360 cm2\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDES!C9:F14<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| C9 | 42 |\n| D9 | BRINDES Tampografia (1C-1F) |\n| E9 | LOCAL |\n| F9 | PERS. |\n| D10 | Rato de computador |\n| E10 | 1 Face |\n| F10 | Tampografia 1 Cor |\n| D11 | Ex: A97398 |\n</toggle>\n\n\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 8aa2bf1320144e9132fd85e3ea67206905352a3b214de387c43f752613eda85b\n\n<toggle>\nOrigem Excel verificada\n\nPPs BRINDES!C9:F14\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC9\n</td>\n<td>\n42\n</td>\n</tr>\n<tr>\n<td>\nD9\n</td>\n<td>\nBRINDES Tampografia (1C-1F)\n</td>\n</tr>\n<tr>\n<td>\nE9\n</td>\n<td>\nLOCAL\n</td>\n</tr>\n<tr>\n<td>\nF9\n</td>\n<td>\nPERS.\n</td>\n</tr>\n<tr>\n<td>\nD10\n</td>\n<td>\nRato de computador\n</td>\n</tr>\n<tr>\n<td>\nE10\n</td>\n<td>\n1 Face\n</td>\n</tr>\n<tr>\n<td>\nF10\n</td>\n<td>\nTampografia 1 Cor\n</td>\n</tr>\n<tr>\n<td>\nD11\n</td>\n<td>\nEx: A97398\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| 1 Face | Tampografia 1 Cor<br />Laser Metal - Até 360 cm2 |  |\n\n## Descrição e notas do perfil\n\nRato de computador\n\nEx: A97398\n\n## Imagens\n\n<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />\n</toggle>\n</toggle>",
+  "diff": "--- 42-before\n+++ 42-after\n@@ -1,14 +1,79 @@\n-## Locais e personalização\n-\n-| Face / local | Opções completas e especificações | Notas |\n-| --- | --- | --- |\n-| 1 Face | Tampografia 1 Cor<br />Laser Metal - Até 360 cm2 |  |\n-\n-## Descrição e notas do perfil\n+<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />\n \n Rato de computador\n \n Ex: A97398\n+\n+<callout icon=\"📝\">\n+<b>Revisão do PP 42</b>\n+\n+- [ ] Sim, aprovo a configuração New do PP 42.\n+- [ ] Não, são necessárias correções.\n+\n+<b>Se não, porquê?</b>\n+<p />\n+</callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+1 Face\n+</td>\n+<td>\n+Tampografia 1 Cor<br />Laser Metal - Até 360 cm2\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+1 Face\n+</td>\n+<td>\n+Tampografia 1 Cor\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+- 1 Face: opção actual ausente do Excel, preservada até revisão: Laser Metal - Até 360 cm2\n+</toggle>\n \n <toggle>\n Fonte e original do Excel\n@@ -27,6 +92,115 @@\n | D11 | Ex: A97398 |\n </toggle>\n \n+\n+\n+<toggle>\n+Histórico de apresentação\n+\n+PP_FULL_CONVERSION_V1 8aa2bf1320144e9132fd85e3ea67206905352a3b214de387c43f752613eda85b\n+\n+<toggle>\n+Origem Excel verificada\n+\n+PPs BRINDES!C9:F14\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Célula\n+</td>\n+<td>\n+Texto original\n+</td>\n+</tr>\n+<tr>\n+<td>\n+C9\n+</td>\n+<td>\n+42\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D9\n+</td>\n+<td>\n+BRINDES Tampografia (1C-1F)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E9\n+</td>\n+<td>\n+LOCAL\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F9\n+</td>\n+<td>\n+PERS.\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D10\n+</td>\n+<td>\n+Rato de computador\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E10\n+</td>\n+<td>\n+1 Face\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F10\n+</td>\n+<td>\n+Tampografia 1 Cor\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D11\n+</td>\n+<td>\n+Ex: A97398\n+</td>\n+</tr>\n+</table>\n+</toggle>\n+\n+<toggle>\n+Apresentação anterior preservada\n+\n+## Locais e personalização\n+\n+| Face / local | Opções completas e especificações | Notas |\n+| --- | --- | --- |\n+| 1 Face | Tampografia 1 Cor<br />Laser Metal - Até 360 cm2 |  |\n+\n+## Descrição e notas do perfil\n+\n+Rato de computador\n+\n+Ex: A97398\n+\n ## Imagens\n \n-<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />+<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />\n+</toggle>\n+</toggle>",
+  "excel": {
+    "area": "Brindes",
+    "article_types": [
+      "Rato de computador"
+    ],
+    "blocked": [],
+    "code": "42",
+    "comments": [],
+    "description": "Rato de computador",
+    "families": [
+      "Informática e acessórios"
+    ],
+    "groups": [
+      {
+        "locals": [
+          "1 Face"
+        ],
+        "options": [
+          {
+            "cell": "F10",
+            "name": "Tampografia — 1 cor",
+            "original": "Tampografia 1 Cor"
+          }
+        ],
+        "start_row": 10
+      }
+    ],
+    "images": [
+      "xl/media/image170.png"
+    ],
+    "notes": [
+      "Ex: A97398"
+    ],
+    "raw": [
+      {
+        "cell": "C9",
+        "value": "42"
+      },
+      {
+        "cell": "D9",
+        "value": "BRINDES Tampografia (1C-1F)"
+      },
+      {
+        "cell": "E9",
+        "value": "LOCAL"
+      },
+      {
+        "cell": "F9",
+        "value": "PERS."
+      },
+      {
+        "cell": "D10",
+        "value": "Rato de computador"
+      },
+      {
+        "cell": "E10",
+        "value": "1 Face"
+      },
+      {
+        "cell": "F10",
+        "value": "Tampografia 1 Cor"
+      },
+      {
+        "cell": "D11",
+        "value": "Ex: A97398"
+      }
+    ],
+    "review_flags": [],
+    "source": "PPs BRINDES!C9:F14",
+    "title": "BRINDES Tampografia (1C-1F)"
+  },
+  "failure_status_operation": {
+    "eligible": true,
+    "id": "42-full-error-status",
+    "kind": "error_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "3dbb6705ae1f833183b801de5ded31b0",
+      "properties": {
+        "Estado": "Erro"
+      }
+    }
+  },
+  "method_complete": false,
+  "new_groups": [
+    {
+      "locations": [
+        "1 Face"
+      ],
+      "options": [
+        "Tampografia 1 Cor",
+        "Laser Metal - Até 360 cm2"
+      ],
+      "shared_source_group": false
+    }
+  ],
+  "operations": [
+    {
+      "eligible": true,
+      "id": "42-full-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "\n\n",
+            "old_str": "\n\n## Imagens\n\n<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "3dbb6705ae1f833183b801de5ded31b0"
+      },
+      "region_evidence": {
+        "basis": "EXACT_TOP_LEVEL_SUPPORTED_LEAVES",
+        "bounded_observations": [],
+        "eligible": true,
+        "global_export_claimed": false,
+        "new_sha256": "98be486a01834c7bb83b3c7353edc3e046ca30fe710141f939aaec11f15c6407",
+        "old_sha256": "b89e20910944dc760e8cc3784eacc19d2b8b82b2cb8b4b3a4dae673759786752",
+        "prefix_sha256": "a401c9cb5f87b24db8b7915beb877a5eb001acf1ab9f574a8382b023a3618047",
+        "suffix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+      }
+    },
+    {
+      "eligible": true,
+      "id": "42-full-body-2",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />\n\nRato de computador\n\nEx: A97398\n\n<callout icon=\"📝\">\n<b>Revisão do PP 42</b>\n\n- [ ] Sim, aprovo a configuração New do PP 42.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\n1 Face\n</td>\n<td>\nTampografia 1 Cor<br />Laser Metal - Até 360 cm2\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\n1 Face\n</td>\n<td>\nTampografia 1 Cor\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n- 1 Face: opção actual ausente do Excel, preservada até revisão: Laser Metal - Até 360 cm2\n</toggle>\n\n",
+            "old_str": "## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| 1 Face | Tampografia 1 Cor<br />Laser Metal - Até 360 cm2 |  |\n\n## Descrição e notas do perfil\n\nRato de computador\n\nEx: A97398\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "3dbb6705ae1f833183b801de5ded31b0"
+      },
+      "region_evidence": {
+        "basis": "EXACT_TOP_LEVEL_SUPPORTED_LEAVES",
+        "bounded_observations": [],
+        "eligible": true,
+        "global_export_claimed": false,
+        "new_sha256": "94cd8a666b82fc3a27aa8ee331a290ec559190b4e134774cd5c5464b3c8fad00",
+        "old_sha256": "a228345864f85b40d62aca19b5a895198e1fec04afa3cd3c4892615fa238a99a",
+        "prefix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "suffix_sha256": "5e02033ac3ea4e52cbf0c5f1be45b77df836d5edf62aecfb18eb9427160900fd"
+      }
+    },
+    {
+      "eligible": true,
+      "id": "42-full-body-3",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 8aa2bf1320144e9132fd85e3ea67206905352a3b214de387c43f752613eda85b\n\n<toggle>\nOrigem Excel verificada\n\nPPs BRINDES!C9:F14\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC9\n</td>\n<td>\n42\n</td>\n</tr>\n<tr>\n<td>\nD9\n</td>\n<td>\nBRINDES Tampografia (1C-1F)\n</td>\n</tr>\n<tr>\n<td>\nE9\n</td>\n<td>\nLOCAL\n</td>\n</tr>\n<tr>\n<td>\nF9\n</td>\n<td>\nPERS.\n</td>\n</tr>\n<tr>\n<td>\nD10\n</td>\n<td>\nRato de computador\n</td>\n</tr>\n<tr>\n<td>\nE10\n</td>\n<td>\n1 Face\n</td>\n</tr>\n<tr>\n<td>\nF10\n</td>\n<td>\nTampografia 1 Cor\n</td>\n</tr>\n<tr>\n<td>\nD11\n</td>\n<td>\nEx: A97398\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| 1 Face | Tampografia 1 Cor<br />Laser Metal - Até 360 cm2 |  |\n\n## Descrição e notas do perfil\n\nRato de computador\n\nEx: A97398\n\n## Imagens\n\n<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />\n</toggle>\n</toggle>",
+        "page_id": "3dbb6705ae1f833183b801de5ded31b0",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "append_sha256": "7d388b7f11106ff72859919d5d174788e91b3aaecc5afdd534ad3bf02db4bee8",
+        "basis": "APPEND_WITHOUT_CHANGING_EXISTING_BLOCKS",
+        "body_sha256": "ed4e6b85560f0856704bb31dfc06a49010692e963aa3e9978277b3824a36650b",
+        "eligible": true,
+        "global_export_claimed": false
+      }
+    }
+  ],
+  "page_id": "3dbb6705ae1f833183b801de5ded31b0",
+  "preservation": {
+    "idempotent": false,
+    "marker": "PP_FULL_CONVERSION_V1 8aa2bf1320144e9132fd85e3ea67206905352a3b214de387c43f752613eda85b",
+    "notes": []
+  },
+  "property_operations": [],
+  "reasons": [],
+  "rule_changes": [],
+  "source_body": "## Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| 1 Face | Tampografia 1 Cor<br />Laser Metal - Até 360 cm2 |  |\n\n## Descrição e notas do perfil\n\nRato de computador\n\nEx: A97398\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDES!C9:F14<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| C9 | 42 |\n| D9 | BRINDES Tampografia (1C-1F) |\n| E9 | LOCAL |\n| F9 | PERS. |\n| D10 | Rato de computador |\n| E10 | 1 Face |\n| F10 | Tampografia 1 Cor |\n| D11 | Ex: A97398 |\n</toggle>\n\n## Imagens\n\n<image source=\"notion-file-block://512b6705-ae1f-8251-81c1-01111da5a779/a415344c-265a-45da-9947-3e27ce4a394a?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP42.png\" />",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/d5e858ea-31c8-4127-846a-efacaf2a1a4e/PP42.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "42",
+      "Estado": "A rever",
+      "Faces": [
+        "1 Face"
+      ],
+      "Família": [
+        "Informática e acessórios"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/d5e858ea-31c8-4127-846a-efacaf2a1a4e/PP42.png"
+      ],
+      "Notas": "NPP",
+      "Número de faces": 1,
+      "Número de locais possíveis": 1,
+      "Opções de personalização": [
+        "Tampografia — 1 cor",
+        "Laser Metal — até 360 cm²"
+      ],
+      "PP": "42 — BRINDES Tampografia (1C-1F)",
+      "SKU / referência do fornecedor": "Ex: A97398",
+      "Tipos de artigo compatíveis": [
+        "Rato de computador"
+      ],
+      "Técnicas": [
+        "Tampografia"
+      ],
+      "url": "https://app.notion.com/p/3dbb6705ae1f833183b801de5ded31b0",
+      "Área": "Brindes"
+    }
+  },
+  "source_state_sha256": "342c26c84a004e1984db7ae74a3a27ae9ecd28ffc8da07bafcb7257cdb62e577",
+  "status": "LAYOUT_ONLY_PENDING_BUSINESS",
+  "synthetic_capture": false,
+  "technical_unresolved": [
+    "1 Face: opção actual ausente do Excel, preservada até revisão: Laser Metal - Até 360 cm2"
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "existing_containers": "PRESERVE_OR_EXACT_REVIEWED_UI_REGION",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "leaf_contract": "MCP_MARKDOWN_INLINE_TABLE_CELLS_AND_LEAF_BLOCKS",
+    "name": "PP_FULL_CONVERSION",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  },
+  "wanted_properties": {
+    "Faces": [
+      "1 Face"
+    ],
+    "Número de locais possíveis": 1,
+    "Opções de personalização": [
+      "Tampografia — 1 cor",
+      "Laser Metal — até 360 cm²"
+    ],
+    "Técnicas": [
+      "Tampografia",
+      "Laser Metal"
+    ]
+  }
+}

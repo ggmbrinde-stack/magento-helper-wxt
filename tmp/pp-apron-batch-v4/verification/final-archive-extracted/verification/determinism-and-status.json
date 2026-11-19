@@ -1,0 +1,64 @@
+{
+  "identical_bytes_two_preparations": true,
+  "excel_verification": "Two bounded XML reads and workbook hash checks; no full archive or image extraction",
+  "canonical_plan_sha256": "cdf131d6f8aec63035fb4c9c6c17f51f74dccb543601514edd89b0c1588d13da",
+  "implementation_sha256": "f9fccf90e92bf687b2a76faad08360cabeca0afd4992ece39d23ff939a5c3ccb",
+  "actual_pages_identical_to_v3_except_version_hashes_input_provenance": true,
+  "pages": [
+    {
+      "code": "428",
+      "status": "NO_OP",
+      "body_operations": 0
+    },
+    {
+      "code": "429",
+      "status": "BLOCKED",
+      "body_operations": 4
+    },
+    {
+      "code": "430",
+      "status": "BLOCKED",
+      "body_operations": 5
+    },
+    {
+      "code": "467",
+      "status": "BLOCKED",
+      "body_operations": 5
+    },
+    {
+      "code": "558",
+      "status": "BLOCKED",
+      "body_operations": 5
+    },
+    {
+      "code": "612",
+      "status": "BLOCKED",
+      "body_operations": 5
+    },
+    {
+      "code": "633",
+      "status": "BLOCKED",
+      "body_operations": 5
+    },
+    {
+      "code": "661",
+      "status": "BLOCKED",
+      "body_operations": 4
+    },
+    {
+      "code": "662",
+      "status": "BLOCKED",
+      "body_operations": 5
+    },
+    {
+      "code": "786",
+      "status": "BLOCKED",
+      "body_operations": 5
+    },
+    {
+      "code": "840",
+      "status": "BLOCKED",
+      "body_operations": 5
+    }
+  ]
+}

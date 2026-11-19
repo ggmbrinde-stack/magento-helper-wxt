@@ -1,0 +1,8 @@
+{
+  "identical_bytes_two_preparations": true,
+  "canonical_plan_sha256": "f101a9f38974b7e9a163d810cb2a69d93aafee54fa6cb0e1148986b08d7b49d3",
+  "implementation_sha256": "24af6e68f4b1ece24f718618651d7b804e89837ffbbf73f9cb9e05b8f867cbae",
+  "inputs": "Frozen V4 captures, not fresh reads; no real coverage fields changed",
+  "body_and_business_choices_unchanged_from_v4": true,
+  "excel": "Bounded XML reads and hash verification; no full workbook extraction"
+}

@@ -1,0 +1,31 @@
+{
+  "zip_sha256": "714d04407008d5a6c4ee3dea514a80ecbc95cb5df532267fa9f1e5ac91d324a0",
+  "manifest_sha256": "4b809aebc9e14b8173443deae2466f5ecdf75b5daab023d8f715d0b968f95adf",
+  "focused_python_passed": 35,
+  "node_passed": 8,
+  "clean_archive_tests": true,
+  "hashes_unchanged": true,
+  "explicit_negative_after_first_write_regressions_passed": true,
+  "results": [
+    {
+      "check": "pocket-v3-final-archive-python",
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-I",
+        "-B",
+        "-c",
+        "import unittest,sys; suite=unittest.TestSuite([unittest.defaultTestLoader.discover('tests',pattern=p) for p in ['test_rendered.py','test_pocket.py','test_method.py']]); result=unittest.TextTestRunner(verbosity=2).run(suite); sys.exit(not result.wasSuccessful())"
+      ]
+    },
+    {
+      "check": "pocket-v3-final-archive-node",
+      "exit_code": 0,
+      "command": [
+        "node",
+        "--test",
+        "tests/test_session_bridge.cjs"
+      ]
+    }
+  ]
+}

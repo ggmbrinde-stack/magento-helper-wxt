@@ -1,0 +1,8 @@
+{
+  "script": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-pocket-batch-candidate\\review-batch-v1\\source\\batch_cli.py",
+  "plan": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-pocket-batch-run\\full.json",
+  "approval": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-pocket-batch-run\\full.approval.json",
+  "approvedPlanSha": "e627a984b2e58a5d03cd643bb16b20db10dc847f4c19764ac893aee74822a9a9",
+  "apply": true,
+  "condition": "Actual independent review required; no invented acceptance reference"
+}

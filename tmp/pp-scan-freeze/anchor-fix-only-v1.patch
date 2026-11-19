@@ -1,0 +1,64 @@
+diff --git a/src/page/features/pp-catalog/index.ts b/src/page/features/pp-catalog/index.ts
+index 86c7abc..8d1e883 100644
+--- a/src/page/features/pp-catalog/index.ts
++++ b/src/page/features/pp-catalog/index.ts
+@@ -2,7 +2,7 @@ import { button, ensureUi } from '../../../ui';
+ import { ppCatalogEntity, PpCatalogResponseSchema, type PpCatalogResponse } from '../../../shared/ppCatalog';
+ import type { FetchPpCatalogRequest } from '../../../core/messages';
+ 
+-let mounted: { panel: HTMLElement; entity: string; destroy: () => void } | undefined;
++let mounted: { panel: HTMLElement; entity: string; native: HTMLElement; destroy: () => void } | undefined;
+ 
+ export function unmountPpCatalog(): void {
+   mounted?.destroy();
+@@ -13,7 +13,7 @@ export function unmountPpCatalog(): void {
+ export function mountPpCatalog(): void {
+   const entity = ppCatalogEntity(location.href);
+   const native = document.querySelector<HTMLElement>('[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]');
+-  if (mounted && (!mounted.panel.isConnected || mounted.entity !== entity || !native || mounted.panel.nextElementSibling !== native)) unmountPpCatalog();
++  if (mounted && (!mounted.panel.isConnected || mounted.entity !== entity || mounted.native !== native || mounted.panel.nextElementSibling !== native)) unmountPpCatalog();
+   if (!entity || !native?.parentElement || mounted) return;
+   void ensureUi();
+   const panel = document.createElement('section');
+@@ -97,7 +97,7 @@ export function mountPpCatalog(): void {
+   const loadButton = button({ label: 'Load Notion reference', onClick: () => { void load(); } });
+   panel.append(heading, context, label, loadButton, output);
+   native.parentElement.insertBefore(panel, native);
+-  mounted = { panel, entity, destroy: () => {
++  mounted = { panel, entity, native, destroy: () => {
+     request++;
+     input.removeEventListener('input', onInput);
+     input.removeEventListener('keydown', onKey);
+diff --git a/tests/ppCatalogUi.test.ts b/tests/ppCatalogUi.test.ts
+index 629bd55..cdef42a 100644
+--- a/tests/ppCatalogUi.test.ts
++++ b/tests/ppCatalogUi.test.ts
+@@ -98,18 +98,25 @@ test('route replacement and explicit cleanup discard pending responses without t
+   } finally { f.close(); }
+ });
+ 
+-test('native component replacement remounts once and Enter does not submit Magento', async () => {
++test('native replacement discards old lookup and completes a fresh lookup without submitting Magento', async () => {
+   const f = fixture();
+   try {
++    const oldPanel = document.querySelector('#mhx-pp-catalog')!;
++    f.load('old-anchor');
+     f.native.replaceWith(f.native.cloneNode(true)); mountPpCatalog(); mountPpCatalog();
++    assert.equal(oldPanel.isConnected, false, 'replace the panel bound to the old native anchor');
+     assert.equal(document.querySelectorAll('#mhx-pp-catalog').length, 1);
+     f.input().value = '49';
+     const enter = new f.dom.window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+     f.input().dispatchEvent(enter);
+     assert.equal(enter.defaultPrevented, true);
+-    assert.equal(f.pending.length, 1);
++    assert.equal(f.pending.length, 2);
+     assert.equal(f.submissions(), 0);
+-    f.pending[0]!.resolve(reply('49')); await flush();
++    f.pending[0]!.resolve(reply('old-anchor')); await flush();
++    assert.doesNotMatch(document.querySelector('#mhx-pp-catalog')!.textContent!, /Exact requested code: old-anchor/);
++    f.pending[1]!.resolve(reply('49')); await flush();
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /Exact requested code: 49/);
++    assert.match(document.querySelector('#mhx-pp-catalog')!.textContent!, /A rever/);
+   } finally { f.close(); }
+ });
+ 

@@ -1,0 +1,162 @@
+{
+  "source": "Actual read-only CUA in-app browser DOM observations in this chat, 2026-11-19; no native app control or content edits",
+  "global_export_claimed": false,
+  "pages": {
+    "261": {
+      "page_id": "879b6705ae1f83d8bf1901bb02d359d5",
+      "source_edited_at": "2026-11-18T16:24:14.809Z",
+      "regions": [
+        {
+          "id": "41ab6705-ae1f-8199-99db-c6398215f6e6",
+          "kind": "callout",
+          "text": "A rever. Mapeamento por local com base nas dimensões explicitamente registadas no PP 261 e nas designações de IMP → New. Nos painéis laterais, as dimensões continuam por definir. A tabela antiga permanece integralmente visível abaixo.",
+          "children": [
+            "41ab6705-ae1f-812f-bdbc-cd55e32ab984"
+          ],
+          "child_types": [
+            "text"
+          ]
+        },
+        {
+          "id": "41ab6705-ae1f-813b-9b67-e00a8972e09e",
+          "kind": "toggle",
+          "title": "Pendências técnicas",
+          "paragraphs": [
+            "Transfer de 2 cores para 1 cor sem correspondência aprovada em IMP → New.",
+            "Painéis laterais: falta definir área de DTF e Bordado antes de selecionar opções.",
+            "Verso cima e fecho metálico: validar viabilidade técnica, posicionamento e área.",
+            "Confirmar o número de faces e as condições físicas do boné."
+          ],
+          "children": [
+            "41ab6705-ae1f-8182-8efa-e7bb9a1ec0a4",
+            "41ab6705-ae1f-8101-8024-c7a2ef408a14",
+            "41ab6705-ae1f-8122-b3e5-ea89799d1ed5",
+            "41ab6705-ae1f-813e-9933-cc8b773ad432"
+          ],
+          "child_types": [
+            "bulleted_list",
+            "bulleted_list",
+            "bulleted_list",
+            "bulleted_list"
+          ]
+        }
+      ],
+      "observation_order": "PP261 observed before PP262; exact observation time not separately recorded"
+    },
+    "262": {
+      "page_id": "3d2b6705ae1f828d964e813275d65f82",
+      "source_edited_at": "2026-11-18T16:24:16.199Z",
+      "observed_at": "2026-11-19T09:13:53.926Z",
+      "regions": [
+        {
+          "id": "41ab6705-ae1f-8125-855c-f92ed2748f5f",
+          "kind": "callout",
+          "text": "Revisão em curso — A rever. Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.",
+          "children": [
+            "41ab6705-ae1f-8152-b602-c97d2b6ec8cb"
+          ],
+          "child_types": [
+            "text"
+          ]
+        },
+        {
+          "id": "41bb6705-ae1f-8082-9a9c-f1f47f7eeb30",
+          "kind": "columns",
+          "children": [
+            "41bb6705-ae1f-80b5-88f1-c5d36488b4be",
+            "41bb6705-ae1f-80b7-97a5-f47759da1d91"
+          ],
+          "child_types": [
+            "column",
+            "column"
+          ],
+          "column_children": [
+            [
+              {
+                "id": "e01b6705-ae1f-83f3-b2d2-814e5ce85bc1",
+                "kind": "table"
+              }
+            ],
+            [
+              {
+                "id": "41ab6705-ae1f-811a-b3b4-e66d72451d34",
+                "kind": "heading",
+                "text": "Antes — tabela original integral"
+              },
+              {
+                "id": "41ab6705-ae1f-81b9-8797-d894e9918873",
+                "kind": "heading",
+                "text": "Locais e personalização"
+              },
+              {
+                "id": "41ab6705-ae1f-81a0-9cc3-fa260ba5f6ab",
+                "kind": "table"
+              }
+            ]
+          ],
+          "tables": [
+            [
+              [
+                "Face / local",
+                "Opções propostas",
+                "Revisão"
+              ],
+              [
+                "Peito Esquerdo\nPeito Direito",
+                "Estamparia - Até A7 - 1 Cor (BOLSO | MANGA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+                "Confirmar compatibilidade e área"
+              ],
+              [
+                "Frente\nCostas",
+                "Estamparia - Até A4 - 1 Cor\nDTF - Até A4 (21x29,7cm)\nBordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4",
+                "Confirmar compatibilidade e área"
+              ],
+              [
+                "Manga Esquerda\nManga Direita",
+                "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+                "Confirmar compatibilidade e área"
+              ]
+            ],
+            [
+              [
+                "Face / local",
+                "Opções completas e especificações",
+                "Notas"
+              ],
+              [
+                "Peito Esquerdo\nPeito Direito",
+                "Estamparia - Até A7 - 4 Cores (BOLSO | MANGA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)",
+                "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+              ],
+              [
+                "Frente\nCostas",
+                "Estamparia - Até A4 - 4 Cores\nEstamparia - Até A3 - 4 Cores\nDTF - Até A4 (21x29,7cm)\nDTF - Até A3 (29,7x42cm)\nBordado - Até 480 cm2 - Até 22x22cm aprox.\nBordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\nBordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3",
+                "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+              ],
+              [
+                "Manga Esquerda\nManga Direita",
+                "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nTransfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nDTF - Até A6 (10,5x14,8 cm)\nDTF - Até A5 (14,8x21,0 cm)\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA\nBordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+                "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+              ]
+            ]
+          ]
+        },
+        {
+          "id": "41ab6705-ae1f-81a4-a3c8-ebdbae02e252",
+          "kind": "toggle",
+          "title": "Pontos pendentes",
+          "paragraphs": [
+            "Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New"
+          ],
+          "children": [
+            "41ab6705-ae1f-81fe-89d8-efadb839680a"
+          ],
+          "child_types": [
+            "bulleted_list"
+          ]
+        }
+      ],
+      "all_descendant_ids_checked": "Read-only DOM check included empty nodes: columns had exactly the two columns, two tables and two headings already listed; callout one text child; pending toggle one bulleted-list child. No global coverage asserted."
+    }
+  }
+}

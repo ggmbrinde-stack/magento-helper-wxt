@@ -1,0 +1,7 @@
+{
+  "apply": true,
+  "approval": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-run\\representative.approval.json",
+  "approvedPlanSha": "0c75c99d9ac224d17fdccafc0b6809b814e648615f3d9c4cf02b5a1027d01923",
+  "plan": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-run\\representative.json",
+  "script": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\tmp\\pp-full-conversion-candidate\\review-full-v1\\source\\batch_cli.py"
+}

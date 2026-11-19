@@ -1,0 +1,485 @@
+{
+  "implementation_sha256": "24af6e68f4b1ece24f718618651d7b804e89837ffbbf73f9cb9e05b8f867cbae",
+  "pages": [
+    {
+      "code": "428",
+      "old_repaired": false,
+      "operations": 0,
+      "property_proposals": [],
+      "reasons": [],
+      "status": "NO_OP",
+      "technical_unresolved": []
+    },
+    {
+      "code": "429",
+      "old_repaired": false,
+      "operations": 4,
+      "property_proposals": [
+        {
+          "after": [
+            "Estamparia — até A4 — 1 cor",
+            "DTF — até A4",
+            "Bordado — até 240 cm²"
+          ],
+          "before": [
+            "Estamparia — até A4 — 4 cores",
+            "DTF — até A5",
+            "DTF — até A4",
+            "Bordado — até 120 cm²",
+            "Bordado — até 240 cm²",
+            "Bordado — até 360 cm²"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [],
+          "resolved": true
+        }
+      ],
+      "reasons": [
+        "429-body-3: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "429-body-3: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "429-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": []
+    },
+    {
+      "code": "430",
+      "old_repaired": true,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "before": [
+            "Estamparia",
+            "DTF",
+            "Bordado",
+            "Transfer"
+          ],
+          "candidate_known_subset": [
+            "Estamparia",
+            "DTF",
+            "Bordado"
+          ],
+          "property": "Técnicas",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        },
+        {
+          "before": [
+            "Estamparia — até A4 — 4 cores",
+            "DTF — até A5",
+            "DTF — até A4",
+            "Bordado — até 120 cm²",
+            "Bordado — até 240 cm²",
+            "Bordado — até 360 cm²",
+            "Transfer — até 126 cm² — 2 cores",
+            "DTF — até A7"
+          ],
+          "candidate_known_subset": [
+            "Estamparia — até A4 — 1 cor",
+            "DTF — até A4",
+            "Bordado — até 240 cm²",
+            "DTF — até A7"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        }
+      ],
+      "reasons": [
+        "430-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "430-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "430-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "467",
+      "old_repaired": true,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "after": [
+            "DTF"
+          ],
+          "before": [
+            "Transfer",
+            "DTF"
+          ],
+          "property": "Técnicas",
+          "reasons": [],
+          "resolved": true
+        },
+        {
+          "after": [
+            "DTF — até A5",
+            "DTF — até A7"
+          ],
+          "before": [
+            "Transfer — até 57 cm² — 1 cor",
+            "Transfer — até 126 cm² — 1 cor",
+            "DTF — até A6",
+            "DTF — até A5",
+            "DTF — até A7",
+            "Transfer — até 12 cm² — 2 cores",
+            "Transfer — até 57 cm² — 2 cores"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [],
+          "resolved": true
+        }
+      ],
+      "reasons": [
+        "467-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "467-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "467-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": []
+    },
+    {
+      "code": "558",
+      "old_repaired": true,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "before": [
+            "Transfer",
+            "DTF"
+          ],
+          "candidate_known_subset": [
+            "DTF"
+          ],
+          "property": "Técnicas",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        },
+        {
+          "before": [
+            "Transfer — até 126 cm² — 2 cores",
+            "DTF — até A7"
+          ],
+          "candidate_known_subset": [
+            "DTF — até A7"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        }
+      ],
+      "reasons": [
+        "558-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "558-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "558-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "612",
+      "old_repaired": true,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "after": [
+            "DTF"
+          ],
+          "before": [
+            "Transfer",
+            "DTF"
+          ],
+          "property": "Técnicas",
+          "reasons": [],
+          "resolved": true
+        },
+        {
+          "after": [
+            "DTF — até A5",
+            "DTF — até A7"
+          ],
+          "before": [
+            "Transfer — até 57 cm² — 2 cores",
+            "Transfer — até 126 cm² — 2 cores",
+            "DTF — até A6",
+            "DTF — até A5",
+            "DTF — até A7"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [],
+          "resolved": true
+        }
+      ],
+      "reasons": [
+        "612-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "612-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "612-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": []
+    },
+    {
+      "code": "633",
+      "old_repaired": true,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "after": [
+            "Estamparia",
+            "DTF"
+          ],
+          "before": [
+            "Estamparia",
+            "DTF",
+            "Transfer"
+          ],
+          "property": "Técnicas",
+          "reasons": [],
+          "resolved": true
+        },
+        {
+          "after": [
+            "Estamparia — até A4 — 1 cor",
+            "DTF — até A4",
+            "DTF — até A7"
+          ],
+          "before": [
+            "Estamparia — até A4 — 1 cor",
+            "DTF — até A5",
+            "DTF — até A4",
+            "Transfer — até 126 cm² — 1 cor",
+            "DTF — até A7"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [],
+          "resolved": true
+        }
+      ],
+      "reasons": [
+        "633-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "633-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "633-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": []
+    },
+    {
+      "code": "661",
+      "old_repaired": true,
+      "operations": 4,
+      "property_proposals": [
+        {
+          "before": [
+            "Transfer",
+            "DTF",
+            "Bordado"
+          ],
+          "candidate_known_subset": [
+            "DTF",
+            "Bordado"
+          ],
+          "property": "Técnicas",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        },
+        {
+          "before": [
+            "Transfer — até 280 cm² — 1 cor",
+            "Transfer — até 560 cm² — 1 cor",
+            "DTF — até A5",
+            "DTF — até A4",
+            "Bordado — até 120 cm²",
+            "Bordado — até 240 cm²",
+            "Bordado — até 360 cm²",
+            "Transfer — até 126 cm² — 1 cor",
+            "DTF — até A7"
+          ],
+          "candidate_known_subset": [
+            "DTF — até A4",
+            "Bordado — até 240 cm²",
+            "DTF — até A7"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        }
+      ],
+      "reasons": [
+        "661-body-3: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "661-body-3: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "661-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "662",
+      "old_repaired": true,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "before": [
+            "Estamparia",
+            "DTF",
+            "Bordado",
+            "Transfer",
+            "Serigrafia",
+            "UV",
+            "Laser CO2"
+          ],
+          "candidate_known_subset": [
+            "Estamparia",
+            "DTF",
+            "Bordado",
+            "UV"
+          ],
+          "property": "Técnicas",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        },
+        {
+          "before": [
+            "Estamparia — até A4 — 4 cores",
+            "DTF — até A5",
+            "DTF — até A4",
+            "Bordado — até 120 cm²",
+            "Bordado — até 240 cm²",
+            "Bordado — até 360 cm²",
+            "Transfer — até 126 cm² — 2 cores",
+            "DTF — até A7",
+            "Serigrafia — até 120 cm² — 2 cores",
+            "Serigrafia — > 120 cm² — 2 cores",
+            "UV — até 100 cm²",
+            "UV — até 200 cm²",
+            "UV — até 300 cm²",
+            "Laser CO2 (Madeira) — até 120 cm²",
+            "Laser CO2 (Madeira) — até 250 cm²",
+            "Laser CO2 (Madeira) — até 360 cm²"
+          ],
+          "candidate_known_subset": [
+            "Estamparia — até A4 — 1 cor",
+            "DTF — até A4",
+            "Bordado — até 240 cm²",
+            "DTF — até A7",
+            "UV — até 100 cm²"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [
+            "New contains unresolved choices; no partial property synchronisation"
+          ],
+          "resolved": false
+        }
+      ],
+      "reasons": [
+        "662-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "662-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "662-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": [
+        "Por confirmar — sem opção aprovada em IMP → New"
+      ]
+    },
+    {
+      "code": "786",
+      "old_repaired": false,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "after": [
+            "DTF"
+          ],
+          "before": [
+            "Transfer",
+            "DTF"
+          ],
+          "property": "Técnicas",
+          "reasons": [],
+          "resolved": true
+        },
+        {
+          "after": [
+            "DTF — até A7"
+          ],
+          "before": [
+            "Transfer — até 126 cm² — 2 cores",
+            "DTF — até A7"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [],
+          "resolved": true
+        }
+      ],
+      "reasons": [
+        "786-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "786-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "786-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": []
+    },
+    {
+      "code": "840",
+      "old_repaired": true,
+      "operations": 5,
+      "property_proposals": [
+        {
+          "after": [
+            "DTF"
+          ],
+          "before": [
+            "Transfer",
+            "DTF"
+          ],
+          "property": "Técnicas",
+          "reasons": [],
+          "resolved": true
+        },
+        {
+          "after": [
+            "DTF — até A5",
+            "DTF — até A7"
+          ],
+          "before": [
+            "Transfer — até 57 cm² — 2 cores",
+            "Transfer — até 126 cm² — 2 cores",
+            "DTF — até A6",
+            "DTF — até A5",
+            "DTF — até A7",
+            "Transfer — até 12 cm² — 2 cores"
+          ],
+          "property": "Opções de personalização",
+          "reasons": [],
+          "resolved": true
+        }
+      ],
+      "reasons": [
+        "840-body-4: Affected container completeness is unproved; current connector contract does not attest omitted descendants",
+        "840-body-4: Body comments/review/prose/annotations or their associations would change inside the affected section",
+        "840-body-5: Affected container completeness is unproved; current connector contract does not attest omitted descendants"
+      ],
+      "status": "BLOCKED",
+      "technical_unresolved": []
+    }
+  ],
+  "plan_sha256": "f101a9f38974b7e9a163d810cb2a69d93aafee54fa6cb0e1148986b08d7b49d3"
+}
