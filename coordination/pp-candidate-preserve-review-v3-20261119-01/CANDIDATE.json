@@ -1,0 +1,12 @@
+{
+  "candidate": "review-preservation-v3",
+  "base_archive_sha256": "36a9241f8e751dd9488ef9a51a762c1755916a495c9afada13b353bd9ee815cd",
+  "changed_from_frozen": [
+    "source/full_conversion.py"
+  ],
+  "added": [
+    "source/tests/test_preserve_review.py"
+  ],
+  "frozen_mismatches": [],
+  "implementation_sha256": "44ed0044f9ffd46048ee27d58e2abb26a4e9456bb5d8df547acad2666f4b5a75"
+}

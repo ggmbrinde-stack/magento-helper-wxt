@@ -1,0 +1,24 @@
+{
+  "candidate": "pp-native-read-fix-20261119-01",
+  "status": "PENDING_INDEPENDENT_REVIEW",
+  "base_candidate": "pp-candidate-native-api-v4-20261119-01",
+  "base_candidate_metadata_stale": true,
+  "base_implementation_sha256": "43d067a04ab70241b1e1d75a65e5639aed10d48727d01060157f2a84ab0e6edc",
+  "implementation_sha256": "52dc0cbecf02302adda8269ad9579d20204bac62fa217ef3c508c2d70a7ff5e6",
+  "base_commit_reported": "746159f4228f0cf24ac7e230dad99248c369459b",
+  "changed_files": [
+    "source/batch_cli.py",
+    "source/native_evidence.py",
+    "source/tests/test_native_evidence.py"
+  ],
+  "persistence_policy": "NATIVE_HOSTED_FILE_LOCATORS_SHA256_V1",
+  "evidence_representation": "CANONICAL_NOT_RAW_HTTP_NOT_IMAGE_BYTES",
+  "live_requests_performed": 0,
+  "secrets_read": false,
+  "tests": {
+    "focused_native_tests": 20,
+    "passed": true,
+    "broad_suites_rerun": false
+  },
+  "review_scope": "read-only capture correction; next authenticated target PP428 only; no plan/write approval"
+}

@@ -1,0 +1,89 @@
+{
+  "status": "VALIDATED_ELEVEN_READ_ONLY_CAPTURES",
+  "review_reference": "PP-NATIVE-CATALOGUE-20261119-READ11-GO",
+  "implementation_sha256": "18e250a02fd40c0b9945893055678c9d662790ae9c3488850b6048141020ba9f",
+  "manifest_sha256": "50702d15400a406e0048b2602799b2eb5f1c88bd0663b3c63fd6e50cdf5d7254",
+  "validated_codes": 11,
+  "failed_codes": [],
+  "native_writes": 0,
+  "conversion_approved": false,
+  "pages": [
+    {
+      "code": "428",
+      "blocks": 60,
+      "tables": 3,
+      "table_rows": 22,
+      "page_last_edited_time": "2026-11-18T16:33:00.000Z"
+    },
+    {
+      "code": "429",
+      "blocks": 42,
+      "tables": 3,
+      "table_rows": 17,
+      "page_last_edited_time": "2026-11-18T16:33:00.000Z"
+    },
+    {
+      "code": "430",
+      "blocks": 50,
+      "tables": 3,
+      "table_rows": 22,
+      "page_last_edited_time": "2026-11-18T21:31:00.000Z"
+    },
+    {
+      "code": "467",
+      "blocks": 49,
+      "tables": 3,
+      "table_rows": 22,
+      "page_last_edited_time": "2026-11-18T16:34:00.000Z"
+    },
+    {
+      "code": "558",
+      "blocks": 39,
+      "tables": 3,
+      "table_rows": 13,
+      "page_last_edited_time": "2026-11-18T21:34:00.000Z"
+    },
+    {
+      "code": "612",
+      "blocks": 46,
+      "tables": 3,
+      "table_rows": 17,
+      "page_last_edited_time": "2026-11-18T16:39:00.000Z"
+    },
+    {
+      "code": "633",
+      "blocks": 47,
+      "tables": 3,
+      "table_rows": 18,
+      "page_last_edited_time": "2026-11-18T16:40:00.000Z"
+    },
+    {
+      "code": "661",
+      "blocks": 50,
+      "tables": 3,
+      "table_rows": 23,
+      "page_last_edited_time": "2026-11-18T21:35:00.000Z"
+    },
+    {
+      "code": "662",
+      "blocks": 61,
+      "tables": 3,
+      "table_rows": 32,
+      "page_last_edited_time": "2026-11-18T21:36:00.000Z"
+    },
+    {
+      "code": "786",
+      "blocks": 39,
+      "tables": 3,
+      "table_rows": 13,
+      "page_last_edited_time": "2026-11-18T16:46:00.000Z"
+    },
+    {
+      "code": "840",
+      "blocks": 53,
+      "tables": 3,
+      "table_rows": 22,
+      "page_last_edited_time": "2026-11-18T16:49:00.000Z"
+    }
+  ]
+}

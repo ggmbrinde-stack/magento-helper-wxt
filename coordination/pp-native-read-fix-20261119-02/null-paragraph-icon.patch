@@ -1,0 +1,88 @@
+--- read-fix-01/source/native_evidence.py
++++ read-fix-02/source/native_evidence.py
+@@ -24,7 +24,7 @@
+ COMMON = {'object', 'id', 'parent', 'created_time', 'last_edited_time', 'created_by',
+           'last_edited_by', 'has_children', 'archived', 'in_trash', 'type'}
+ FIELDS = {
+-    'paragraph': {'rich_text', 'color'}, 'bulleted_list_item': {'rich_text', 'color'},
++    'paragraph': {'rich_text', 'color', 'icon'}, 'bulleted_list_item': {'rich_text', 'color'},
+     'numbered_list_item': {'rich_text', 'color'}, 'to_do': {'rich_text', 'color', 'checked'},
+     'heading_1': {'rich_text', 'color', 'is_toggleable'},
+     'heading_2': {'rich_text', 'color', 'is_toggleable'},
+@@ -203,6 +203,8 @@
+                 raise ValueError('Unsupported native block type')
+             exact_keys(block, COMMON | {kind})
+             exact_keys(block[kind], FIELDS[kind])
++            if kind == 'paragraph' and block[kind].get('icon') is not None:
++                raise ValueError('Unsupported native paragraph icon')
+             block_id = identity(block['id'])
+             parent_key = 'page_id' if parent == page else 'block_id'
+             if (block_id in seen or block_id == page or block.get('object') != 'block'
+@@ -327,6 +329,10 @@
+             raise ValueError('Toggleable heading is not supported')
+         return ['heading', int(kind[-1]), plain_rich(data['rich_text'])]
+     if kind in ('paragraph', 'bulleted_list_item'):
++        if kind == 'paragraph':
++            exact_keys(data, FIELDS[kind])
++            if data.get('icon') is not None:
++                raise ValueError('Unsupported native paragraph icon')
+         if children:
+             raise ValueError('Nested text is not supported')
+         return [kind, plain_rich(data['rich_text'])]
+--- read-fix-01/source/tests/test_native_evidence.py
++++ read-fix-02/source/tests/test_native_evidence.py
+@@ -98,6 +98,54 @@
+ 
+ 
+ class NativeTests(unittest.TestCase):
++    def test_paragraph_null_icon_survives_capture_manifest_and_semantics(self):
++        tree=fixture();tree[1]['block']['paragraph']['icon']=None
++        value=snapshot(tree);reads=iter(value['reads']+value['confirmation_reads'])
++        def get(path):
++            return value['before'] if path.startswith('pages/') else next(reads)['response']
++        with patch('urllib.request.urlopen',side_effect=AssertionError('No network in offline tests')):
++            captured=n.collect(PAGE,'a'*32,get)
++        captured['synthetic']=True
++        self.assertIsNone(n.validate(captured)[1]['block']['paragraph']['icon'])
++        self.assertEqual(n.semantic_native(n.validate(captured)[1]),n.semantic_mcp(r.parse('old')[0]))
++        with tempfile.TemporaryDirectory() as folder:
++            root=Path(folder);a.atomic(root/'snapshot.json',captured)
++            manifest={'source':n.SOURCE,'implementation_sha256':'candidate','synthetic':True,
++                      'pages':{'428':{'path':'snapshot.json','sha256':n.file_hash(root/'snapshot.json')}}}
++            a.atomic(root/'manifest.json',manifest)
++            _,pages=n.read_manifest(root/'manifest.json','candidate')
++            self.assertIn('icon',pages['428']['reads'][0]['response']['results'][1]['paragraph'])
++            self.assertIsNone(pages['428']['reads'][0]['response']['results'][1]['paragraph']['icon'])
++
++    def test_nonnull_paragraph_icons_and_unknown_attributes_still_block(self):
++        invalid=[{'icon':{'type':'emoji','emoji':'📝'}},{'icon':{'type':'unknown','value':'unmapped'}},
++                 {'icon':'unmapped'},{'icon':False},{'icon':None,'unknown':'must not disappear'}]
++        for fields in invalid:
++            with self.subTest(fields=fields):
++                tree=fixture();tree[1]['block']['paragraph'].update(fields);value=snapshot(tree)
++                with self.assertRaises(ValueError):n.validate(value)
++                with self.assertRaises(ValueError):n.semantic_native(tree[1])
++                reads=iter(value['reads']+value['confirmation_reads'])
++                def get(path):return value['before'] if path.startswith('pages/') else next(reads)['response']
++                with self.assertRaises(ValueError):n.collect(PAGE,'a'*32,get)
++                with tempfile.TemporaryDirectory() as folder:
++                    root=Path(folder);a.atomic(root/'snapshot.json',n.for_storage(value))
++                    manifest={'source':n.SOURCE,'implementation_sha256':'candidate','synthetic':True,
++                        'pages':{'428':{'path':'snapshot.json','sha256':n.file_hash(root/'snapshot.json')}}}
++                    a.atomic(root/'manifest.json',manifest)
++                    with self.assertRaises(ValueError):n.read_manifest(root/'manifest.json','candidate')
++        tree=fixture();tree[1]['block'].pop('paragraph');tree[1]['block'].update(type='bulleted_list_item',bulleted_list_item={'rich_text':rich('old'),'color':'default','icon':None})
++        with self.assertRaises(ValueError):n.validate(snapshot(tree))
++
++    def test_protected_paragraph_null_icon_is_not_erased_or_normalized(self):
++        tree=fixture();tree[1]['block']['paragraph']['icon']=None;value=snapshot(tree)
++        expected=[{'preserved':node} for node in n.validate(value)]
++        n.verify_after(value,expected,PAGE,'a'*32)
++        absent=fixture()
++        with self.assertRaisesRegex(ValueError,'protected'):n.verify_after(snapshot(absent),expected,PAGE,'a'*32)
++        tree[1]['block']['paragraph']['icon']={'type':'emoji','emoji':'📝'}
++        with self.assertRaises(ValueError):n.verify_after(snapshot(tree),expected,PAGE,'a'*32)
++
+     def test_volatile_page_and_descendant_media_metadata_are_not_edits(self):
+         value = media_snapshot(); original = copy.deepcopy(value)
+         tree = n.validate(value)

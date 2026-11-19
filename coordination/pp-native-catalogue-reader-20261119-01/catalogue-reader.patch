@@ -1,0 +1,341 @@
+--- read-fix-02/source/batch_cli.py
++++ catalogue-reader/source/batch_cli.py
+@@ -24,6 +24,14 @@
+     path=Path(path)
+     if path.stat().st_size>20_000_000:raise ValueError('Input exceeds bounded size')
+     return json.loads(path.read_text(encoding='utf-8-sig'))
++
++
++def selection(inventory,codes):
++    rows=full_excel.inventory(load(inventory))
++    if not codes or len(codes)!=len(set(codes)) or set(codes)-set(rows):raise ValueError('Selection differs from reviewed inventory')
++    return {'collection':b.COLLECTION,'working_copy':b.HOME,
++        'pages':[{'code':c,'page_id':full_conversion.page_id(rows[c]['url'])} for c in codes if c!='601'],
++        'excluded_protected_codes':[c for c in codes if c=='601']}
+ 
+ 
+ def prepare(captures,workbook,evidence,output):
+@@ -92,12 +100,12 @@
+     native_read.add_argument('--nonce', required=True)
+     native_read.add_argument('--output', type=Path, required=True)
+     native_capture = sub.add_parser('capture-native')
+-    native_ids = {'428': '074b6705ae1f8257a53701d87a64eb32', **pocket_plan.IDS}
+-    native_capture.add_argument('--codes', nargs='+', choices=list(native_ids), required=True)
++    native_capture.add_argument('--codes', nargs='+', required=True)
++    native_capture.add_argument('--inventory', type=Path, required=True)
+     native_capture.add_argument('--output', type=Path, required=True)
+     index=sub.add_parser('index-workbook');index.add_argument('--workbook',type=Path,required=True);index.add_argument('--output',type=Path,required=True)
+     coverage=sub.add_parser('inventory');coverage.add_argument('--index',type=Path,required=True);coverage.add_argument('--inventory',type=Path,required=True)
+-    selection=sub.add_parser('selection');selection.add_argument('--inventory',type=Path,required=True);selection.add_argument('--codes',nargs='+',required=True)
++    select_parser=sub.add_parser('selection');select_parser.add_argument('--inventory',type=Path,required=True);select_parser.add_argument('--codes',nargs='+',required=True)
+     for command in ('session-start','session-step','session-reconcile','session-cancel','session-continue'):
+         action=sub.add_parser(command);action.add_argument('--plan',type=Path,required=True);action.add_argument('--approval',type=Path,required=True)
+         action.add_argument('--approved-plan-sha',required=True);action.add_argument('--apply',action='store_true')
+@@ -126,27 +134,40 @@
+         result = {'path': str(args.output.resolve()), 'sha256': native_evidence.file_hash(args.output)}
+     elif args.command=='capture-native':
+         import native_evidence
+-        if len(args.codes) != len(set(args.codes)):
+-            raise ValueError('Duplicate native selection')
++        selected=selection(args.inventory,args.codes)
++        if selected['excluded_protected_codes']:raise ValueError('PP601 is excluded from native capture')
+         args.output.mkdir(parents=True, exist_ok=False)
+         manifest = {'source': native_evidence.SOURCE, 'implementation_sha256': b.implementation_sha(),
+                     'pages': {}, 'synthetic': False}
+-        for code in args.codes:
+-            snapshot = native_evidence.collect(native_ids[code], uuid.uuid4().hex)
+-            path = args.output / ('pp'+code+'.json')
+-            a.atomic(path, snapshot)
+-            manifest['pages'][code] = {'path': path.name, 'sha256': native_evidence.file_hash(path)}
++        report={'inventory_sha256':full_excel.file_sha(args.inventory),'requested':selected['pages'],'pages':{}}
++        for page in selected['pages']:
++            code,page_id=page['code'],page['page_id']
++            try:
++                nonce=uuid.uuid4().hex
++                snapshot = native_evidence.collect(page_id, nonce, expected_code=code)
++                if snapshot.get('synthetic') or snapshot.get('persistence_policy')!=native_evidence.PERSISTENCE:
++                    raise ValueError('Capture requires real canonical collector evidence')
++                native_evidence.validate(snapshot,page_id,nonce,expected_code=code)
++                path = args.output / ('pp'+code+'.json')
++                a.atomic(path, snapshot)
++                manifest['pages'][code] = {'path': path.name, 'sha256': native_evidence.file_hash(path)}
++                report['pages'][code]={'status':'VALIDATED_READ_ONLY_CAPTURE','page_id':page_id,**manifest['pages'][code]}
++            except (ValueError,KeyError,TypeError,OSError,AttributeError,IndexError) as error:
++                report['pages'][code]={'status':'FAILED','page_id':page_id,'reason_type':type(error).__name__,'reason':str(error)}
++            a.atomic(args.output/'manifest.json',manifest)
++            a.atomic(args.output/'capture-report.json',report)
+         a.atomic(args.output/'manifest.json', manifest)
+-        result = {'path': str((args.output/'manifest.json').resolve()), 'codes': args.codes,
++        failed=[code for code,entry in report['pages'].items() if entry['status']=='FAILED']
++        result = {'path': str((args.output/'manifest.json').resolve()), 'codes': list(manifest['pages']),
++                  'requested_codes':args.codes,'failed_codes':failed,'status':'COMPLETED_WITH_ERRORS' if failed else 'VALIDATED_READ_ONLY_CAPTURE',
++                  'report':str((args.output/'capture-report.json').resolve()),
+                   'sha256': native_evidence.file_hash(args.output/'manifest.json')}
+     elif args.command=='index-workbook':
+         value=full_excel.index(args.workbook);a.atomic(args.output,value)
+         result={'records':len(value['records']),'duplicates':value['duplicate_codes'],'source':value['source']}
+     elif args.command=='inventory':result=full_excel.coverage(load(args.index),load(args.inventory))
+     elif args.command=='selection':
+-        rows=full_excel.inventory(load(args.inventory))
+-        if len(args.codes)!=len(set(args.codes)) or set(args.codes)-set(rows):raise ValueError('Selection differs from reviewed inventory')
+-        result={'collection':b.COLLECTION,'working_copy':b.HOME,'pages':[{'code':c,'page_id':full_conversion.page_id(rows[c]['url'])} for c in args.codes if c!='601'],'excluded_protected_codes':[c for c in args.codes if c=='601']}
++        result=selection(args.inventory,args.codes)
+     elif args.command in ('bridge-source','prepare-bridge-source'):
+         path=Path(__file__).with_name('prepare_bridge.js' if args.command=='prepare-bridge-source' else 'session_bridge.js');result={'source':path.read_text(encoding='utf-8'),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+     else:
+--- read-fix-02/source/full_excel.py
++++ catalogue-reader/source/full_excel.py
+@@ -4,8 +4,10 @@
+ import hashlib
+ import json
+ from pathlib import Path
++from urllib.parse import urlsplit
+ 
+ import importar_pp as reader
++import rendered_layout as r
+ 
+ 
+ def file_sha(path):
+@@ -54,11 +56,16 @@
+ 
+ 
+ def inventory(value):
+-    if value.get('data_source') != 'collection://431b6705-ae1f-83db-b71c-0739778f9e1a':
++    if not isinstance(value,dict) or value.get('data_source') != 'collection://431b6705-ae1f-83db-b71c-0739778f9e1a':
+         raise ValueError('Inventário fora da Working Copy')
+     rows = value['records']
++    if not isinstance(rows,list) or any(not isinstance(x,dict) or not isinstance(x.get('code'),str) or not isinstance(x.get('url'),str) for x in rows):
++        raise ValueError('Invalid inventory records')
+     codes = [x['code'] for x in rows]
+-    urls = [x['url'].rstrip('/').split('/')[-1].replace('-', '') for x in rows]
++    urls = [r.notion_url_id(x['url']) for x in rows]
++    if '0'*32 in urls:raise ValueError('Inventory contains a null page ID')
++    if any(urlsplit(x['url']).query or urlsplit(x['url']).fragment for x in rows):
++        raise ValueError('Inventory page URLs must have no query or fragment')
+     if (len(rows) != value['verified_total'] or len(set(codes)) != value['distinct_codes']
+             or value['missing_codes'] != 0 or any(not c or not c.isdigit() for c in codes)
+             or len(set(codes)) != len(codes) or len(set(urls)) != len(urls)):
+--- read-fix-02/source/native_evidence.py
++++ catalogue-reader/source/native_evidence.py
+@@ -138,14 +138,29 @@
+         snapshot = json.loads(target.read_text(encoding='utf-8'))
+         if re.search(r'X-Amz-|[?&](?:token|signature)=', json.dumps(snapshot), re.I):
+             raise ValueError('Native manifest contains unsafe temporary URLs')
+-        validate(snapshot)
++        validate(snapshot, expected_code=code if not manifest.get('synthetic', False) else None)
+         if snapshot.get('synthetic', False) != manifest.get('synthetic', False):
+             raise ValueError('Native fixture provenance differs')
+         pages[code] = snapshot
+     return manifest, pages
+ 
+ 
+-def validate(snapshot, page_id=None, nonce=None):
++def validate_page(value, page, expected_code=None):
++    if (value.get('object') != 'page' or identity(value['id']) != page
++            or value.get('archived') or value.get('in_trash')
++            or not value.get('last_edited_time')):
++        raise ValueError('Invalid native page')
++    parent = value.get('parent', {})
++    if (parent.get('type') != 'data_source_id'
++            or identity(parent.get('data_source_id', '')) != '431b6705ae1f83dbb71c0739778f9e1a'):
++        raise ValueError('Native page is outside exact Working Copy')
++    if expected_code is not None:
++        prop = value.get('properties', {}).get('Código PP', {})
++        if prop.get('type') != 'rich_text' or ''.join(part[0] for part in plain_rich(prop['rich_text'])) != expected_code:
++            raise ValueError('Native business code differs from selected inventory code')
++
++
++def validate(snapshot, page_id=None, nonce=None, expected_code=None):
+     exact_keys(snapshot, {'source', 'api_version', 'page_id', 'nonce', 'before', 'after',
+                           'reads', 'confirmation_reads', 'synthetic', 'started_at', 'finished_at', 'persistence_policy'})
+     policy = snapshot.get('persistence_policy')
+@@ -159,14 +174,7 @@
+     if nonce is not None and snapshot.get('nonce') != nonce:
+         raise ValueError('Native read does not belong to this operation')
+     for value in (snapshot['before'], snapshot['after']):
+-        if (value.get('object') != 'page' or identity(value['id']) != page
+-                or value.get('archived') or value.get('in_trash')
+-                or not value.get('last_edited_time')):
+-            raise ValueError('Invalid native page')
+-        parent = value.get('parent', {})
+-        if (parent.get('type') != 'data_source_id'
+-                or identity(parent.get('data_source_id', '')) != '431b6705ae1f83dbb71c0739778f9e1a'):
+-            raise ValueError('Native page is outside exact Working Copy')
++        validate_page(value, page, expected_code)
+     if canonical_page(snapshot['before'], bool(policy)) != canonical_page(snapshot['after'], bool(policy)):
+         raise ValueError('Native page changed during traversal')
+     pending = list(snapshot['reads'])
+@@ -464,7 +472,7 @@
+     return tree
+ 
+ 
+-def collect(page_id, nonce, get=None):
++def collect(page_id, nonce, get=None, *, expected_code=None):
+     """GET-only traversal. No endpoint or credential comes from page content."""
+     page_id = identity(page_id)
+     if not re.fullmatch('[a-f0-9]{32}', nonce):
+@@ -486,6 +494,7 @@
+                 raise ValueError('Native GET failed; no write attempted') from None
+     started_at = datetime.now(timezone.utc).isoformat()
+     before = get('pages/' + page_id)
++    validate_page(before, page_id, expected_code)
+     reads, visited = [], set()
+     def descend(parent, depth=0):
+         if depth > 40 or parent in visited or len(visited) >= 10000:
+@@ -515,5 +524,5 @@
+                 'reads': first_reads, 'confirmation_reads': reads,
+                 'started_at': started_at, 'finished_at': datetime.now(timezone.utc).isoformat()}
+     snapshot = for_storage(snapshot)
+-    validate(snapshot, page_id, nonce)
++    validate(snapshot, page_id, nonce, expected_code)
+     return snapshot
+--- read-fix-02/source/tests/test_native_catalogue.py
++++ catalogue-reader/source/tests/test_native_catalogue.py
+@@ -0,0 +1,129 @@
++"""Offline catalogue selection/capture tests. No credential or remote calls."""
++import contextlib
++import copy
++import io
++import json
++from pathlib import Path
++import sys
++import tempfile
++import unittest
++from unittest.mock import patch
++import uuid
++
++ROOT=Path(__file__).resolve().parents[1]
++sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'tests'))
++import batch_cli as cli
++import batch_plan as b
++import native_evidence as n
++from test_native_evidence import fixture,snapshot,rich,PAGE
++
++INVENTORY=ROOT.parents[1]/'pp-execution-746159f-20261119-01/input/inventory-current.json'
++APRONS=['428','429','430','467','558','612','633','661','662','786','840']
++
++
++def native_page(page_id,code,nonce):
++    value=snapshot(fixture(),nonce)
++    value=json.loads(json.dumps(value).replace(str(uuid.UUID(PAGE)),str(uuid.UUID(page_id))).replace(PAGE,page_id))
++    value['synthetic']=False  # Simulates collector output, never real evidence outside the test directory.
++    for page in (value['before'],value['after']):page['properties']={'Código PP':{'type':'rich_text','rich_text':rich(code)}}
++    return n.for_storage(value)
++
++
++class CatalogueTests(unittest.TestCase):
++    def setUp(self):
++        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=Path(self.temp.name)
++        self.inventory=json.loads(INVENTORY.read_text(encoding='utf-8'))
++        self.path=self.root/'inventory.json';self.path.write_text(json.dumps(self.inventory),encoding='utf-8')
++        self.network=patch('urllib.request.urlopen',side_effect=AssertionError('No remote calls allowed'))
++        self.network.start();self.addCleanup(self.network.stop)
++
++    def invoke(self,codes,collector=None):
++        self.output=self.root/('capture-'+str(len(list(self.root.iterdir()))))
++        args=['batch_cli.py','capture-native','--inventory',str(self.path),'--codes',*codes,'--output',str(self.output)]
++        stdout=io.StringIO()
++        collector=collector or (lambda page_id,nonce,expected_code:native_page(page_id,expected_code,nonce))
++        with patch.object(sys,'argv',args),patch.object(n,'collect',side_effect=collector) as collect,contextlib.redirect_stdout(stdout):
++            cli.main()
++        return json.loads(stdout.getvalue()),collect
++
++    def test_code_outside_old_five_is_resolved_from_exact_inventory(self):
++        result,collect=self.invoke(['39'])
++        expected=cli.full_conversion.page_id(next(r['url'] for r in self.inventory['records'] if r['code']=='39'))
++        self.assertEqual(collect.call_args.args[0],expected);self.assertEqual(collect.call_args.kwargs['expected_code'],'39')
++        self.assertEqual(result['codes'],['39']);self.assertEqual(result['failed_codes'],[])
++        _,pages=n.read_manifest(self.output/'manifest.json',b.implementation_sha())
++        self.assertEqual(n.identity(pages['39']['before']['id']),expected)
++
++    def test_all_eleven_requested_codes_use_inventory_ids_without_other_reads(self):
++        result,collect=self.invoke(APRONS)
++        selected=cli.selection(self.path,APRONS)
++        self.assertEqual([c.args[0] for c in collect.call_args_list],[p['page_id'] for p in selected['pages']])
++        self.assertEqual([c.kwargs['expected_code'] for c in collect.call_args_list],APRONS)
++        self.assertEqual(result['codes'],APRONS);self.assertEqual(collect.call_count,11)
++
++    def test_bad_inventory_selection_and_ids_refuse_before_collection(self):
++        cases=[]
++        wrong=copy.deepcopy(self.inventory);wrong['data_source']='collection://434b6705-ae1f-8372-9d2e-070435a4f043';cases.append((wrong,['428']))
++        wrong=copy.deepcopy(self.inventory);wrong['records'][1]['code']=wrong['records'][0]['code'];cases.append((wrong,['428']))
++        wrong=copy.deepcopy(self.inventory);wrong['records'][1]['url']=wrong['records'][0]['url'];cases.append((wrong,['428']))
++        for url in ['https://app.notion.com/not-a-uuid','https://wrong.example/074b6705ae1f8257a53701d87a64eb32',
++                    'https://app.notion.com/00000000000000000000000000000000',
++                    'https://app.notion.com/074b6705ae1f8257a53701d87a64eb32?ambiguous=1']:
++            wrong=copy.deepcopy(self.inventory);wrong['records'][0]['url']=url;cases.append((wrong,['428']))
++        cases.extend([(self.inventory,['missing']),(self.inventory,['428','428']),(self.inventory,['601'])])
++        for inventory,codes in cases:
++            with self.subTest(codes=codes):
++                self.path.write_text(json.dumps(inventory),encoding='utf-8')
++                with patch.object(n,'collect') as collect,self.assertRaises(ValueError):self.invoke(codes,lambda *x,**kw:collect(*x,**kw))
++                collect.assert_not_called();self.assertFalse(self.output.exists())
++
++    def test_page_failure_does_not_publish_snapshot_or_block_next_page(self):
++        def capture(page_id,nonce,expected_code):
++            if expected_code=='429':raise ValueError('Unsupported native block type')
++            return native_page(page_id,expected_code,nonce)
++        result,collect=self.invoke(['429','39'],capture)
++        self.assertEqual(collect.call_count,2);self.assertEqual(result['status'],'COMPLETED_WITH_ERRORS')
++        self.assertEqual(result['codes'],['39']);self.assertEqual(result['failed_codes'],['429'])
++        self.assertFalse((self.output/'pp429.json').exists())
++        manifest=json.loads((self.output/'manifest.json').read_text(encoding='utf-8'));self.assertEqual(set(manifest['pages']),{'39'})
++        report=json.loads((self.output/'capture-report.json').read_text(encoding='utf-8'))
++        self.assertIn('Unsupported',report['pages']['429']['reason'])
++        n.read_manifest(self.output/'manifest.json',b.implementation_sha())
++
++    def test_invalid_synthetic_or_wrong_identity_results_never_enter_manifest(self):
++        for mode in ('error','synthetic','wrong-id','wrong-code','unknown-structure'):
++            def capture(page_id,nonce,expected_code):
++                if expected_code=='39':return native_page(page_id,expected_code,nonce)
++                value=native_page(page_id,expected_code,nonce)
++                if mode=='error':return {'isError':True}
++                if mode=='synthetic':value['synthetic']=True
++                if mode=='wrong-id':value['before']['id']=str(uuid.uuid4())
++                if mode=='wrong-code':
++                    for page in (value['before'],value['after']):page['properties']['Código PP']['rich_text']=rich('601')
++                if mode=='unknown-structure':value['reads'][0]['response']['results'][0]['type']='unsupported'
++                return value
++            with self.subTest(mode=mode):
++                result,_=self.invoke(['428','39'],capture)
++                self.assertEqual(result['codes'],['39']);self.assertEqual(result['failed_codes'],['428'])
++                self.assertFalse((self.output/'pp428.json').exists())
++
++    def test_first_api_page_must_match_id_code_and_parent_before_children(self):
++        page_id=cli.selection(self.path,['428'])['pages'][0]['page_id']
++        mutations=[lambda p:p.update(id=str(uuid.uuid4())),
++                   lambda p:p['parent'].update(data_source_id='434b6705-ae1f-8372-9d2e-070435a4f043'),
++                   lambda p:p['properties']['Código PP'].update(rich_text=rich('601'))]
++        for mutate in mutations:
++            value=native_page(page_id,'428','a'*32);page=value['before'];mutate(page);calls=[]
++            def get(path):calls.append(path);return page
++            with self.assertRaises(ValueError):n.collect(page_id,'a'*32,get,expected_code='428')
++            self.assertEqual(calls,['pages/'+page_id])
++
++    def test_manifest_code_binding_is_checked_for_real_collector_output(self):
++        self.invoke(['39'])
++        manifest=json.loads((self.output/'manifest.json').read_text(encoding='utf-8'))
++        manifest['pages']['428']=manifest['pages'].pop('39')
++        (self.output/'manifest.json').write_text(json.dumps(manifest),encoding='utf-8')
++        with self.assertRaisesRegex(ValueError,'business code'):n.read_manifest(self.output/'manifest.json',b.implementation_sha())
++
++
++if __name__=='__main__':unittest.main()
+--- read-fix-02/source/tests/test_native_evidence.py
++++ catalogue-reader/source/tests/test_native_evidence.py
+@@ -249,14 +249,10 @@
+         self.assertTrue(all(p.startswith(('pages/','blocks/')) for p in calls))
+         self.assertNotIn('secret',json.dumps(result))
+ 
+-    def test_cli_capture_428_is_read_only_and_601_remains_excluded(self):
++    def test_cli_capture_requires_inventory_before_collection(self):
+         import batch_cli
+         with tempfile.TemporaryDirectory() as folder:
+             args=['batch_cli.py','capture-native','--codes','428','--output',str(Path(folder)/'capture')]
+-            with patch.object(sys,'argv',args),patch.object(n,'collect',return_value=snapshot(fixture())) as collect,contextlib.redirect_stdout(io.StringIO()):
+-                batch_cli.main()
+-            self.assertEqual(collect.call_args.args[0],'074b6705ae1f8257a53701d87a64eb32')
+-            args[args.index('428')]='601'
+             with patch.object(sys,'argv',args),patch.object(n,'collect') as collect,contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit):
+                 batch_cli.main()
+             collect.assert_not_called()

@@ -1,0 +1,446 @@
+--- a/source/full_conversion.py
++++ b/source/full_conversion.py
+@@ -363,7 +363,7 @@
+         raise ValueError('As propriedades não correspondem ao New actualmente guardado')
+ 
+ 
+-def prepare(captures, workbook, index_path, inventory_path, codes, output, contexts=None, native_manifest=None):
++def prepare(captures, workbook, index_path, inventory_path, codes, output, contexts=None, native_manifest=None, paired_captures=None):
+     captures, output = Path(captures), Path(output)
+     index = load(index_path)
+     if excel.file_sha(workbook) != index['source']['sha256'] or index['source']['sha256'] != __import__('excel_proof').SHA:
+@@ -372,6 +372,9 @@
+     if not codes or len(codes) != len(set(codes)) or set(codes) - set(selected):
+         raise ValueError('Selecção de códigos não pertence ao inventário exacto')
+     excluded = [code for code in codes if code == '601']; codes = [code for code in codes if code != '601']
++    paired_captures = paired_captures or {}
++    if set(paired_captures) - set(codes) or paired_captures and not native_manifest:
++        raise ValueError('Paired evidence requires exact selected codes and native manifest')
+     if not codes: raise ValueError('PP601 é protegido; não há alvos mutáveis')
+     manifest = {'collection': b.COLLECTION, 'group_id': 'full-' + '-'.join(codes), 'review_scope': VERSION,
+                 'inventory_sha256': excel.file_sha(inventory_path),
+@@ -434,9 +437,17 @@
+             native_error = None
+             if native_manifest:
+                 try:
+-                    bounded = native.proof(state, native_pages[code])
++                    paired_capture = load(paired_captures[code]) if code in paired_captures else None
++                    paired_state = b.page_state(paired_capture) if paired_capture else None
++                    bounded = native.proof(state, native_pages[code], paired_state)
++                    if paired_capture:
++                        bounded['paired_mcp_input'] = {'path':str(Path(paired_captures[code]).resolve()),
++                            'sha256':native.file_hash(paired_captures[code]), 'capture':paired_capture,
++                            'original_capture_sha256':state['snapshot_sha256'],
++                            'paired_state_sha256':paired_state['source_state_sha256'],
++                            'relation':'SAME_RECEIPT_AND_CONTENT_WITH_VERIFIED_LEGACY_METADATA_SCRUB'}
+                     page['native_evidence'] = bounded
+-                except (ValueError, KeyError, TypeError) as error:
++                except (ValueError, KeyError, TypeError, OSError) as error:
+                     native_error = str(error)
+                     bounded = None
+                     page['native_binding_error'] = native_error
+--- a/source/full_regions.py
++++ b/source/full_regions.py
+@@ -37,7 +37,7 @@
+         if bounded['page_id'] != state['page_id']:
+             return None
+         tree = native.validate(bounded['snapshot'], state['page_id'])
+-        nodes = parse(state['body'])
++        nodes = native.mcp_nodes(state['body'])
+         indices = [i for i, candidate in enumerate(nodes) if candidate.raw == node.raw]
+         if len(indices) != 1 or len(tree) != len(nodes):
+             return None
+--- a/source/native_evidence.py
++++ b/source/native_evidence.py
+@@ -376,6 +376,22 @@
+     return result
+ 
+ 
++def mcp_nodes(body):
++    """Expand explicit top-level bullets without losing their source boundaries."""
++    result = []
++    for node in r.parse(body, allow_styled_notes=True):
++        if node.kind == 'paragraph' and '\n' in node.raw and node.raw.startswith('- '):
++            mcp_children([node])  # The same conservative grammar used inside containers.
++            start = node.start
++            for line in node.raw.splitlines(keepends=True):
++                raw = line.rstrip('\r\n')
++                result.append(r.Node('paragraph', raw, start, start + len(raw)))
++                start += len(line)
++        else:
++            result.append(node)
++    return result
++
++
+ def semantic_mcp(node):
+     kind = node.kind
+     if kind in ('columns', 'column'):
+@@ -421,6 +437,20 @@
+     raise ValueError('MCP replacement contains unsupported structure')
+ 
+ 
++def mcp_file_locator(url, page_id):
++    parts = urllib.parse.urlsplit(url)
++    if parts.fragment:
++        path = parts.path.split('/')[1:]
++        if (parts.hostname != 'prod-files-secure.s3.us-west-2.amazonaws.com' or len(path) != 3
++                or parts.fragment != 'notion_record=block.' + str(uuid.UUID(page_id)) + '.' + path[0]
++                or path[0] != str(uuid.UUID(path[0]))):
++            raise ValueError('Unknown MCP hosted-file record fragment')
++        # This exact observed tag binds the page and workspace; it is not an object locator.
++        parts = parts._replace(fragment='')
++    canonical = canonical_file({'type':'file','file':{'url':urllib.parse.urlunsplit(parts)}})
++    return canonical['file']['url'], parts
++
++
+ def metadata_matches(state, page):
+     def text(values):
+         parts = plain_rich(values)
+@@ -437,6 +467,7 @@
+         elif kind != 'number': raise ValueError('Unsupported native property binding')
+         wanted[name] = value
+     actual = copy.deepcopy(state['properties'])
++    file_links = []
+     if r.notion_url_id(actual.pop('url', '')) != state['page_id']:
+         raise ValueError('MCP property URL differs')
+     for name, value in actual.items():
+@@ -444,37 +475,95 @@
+         kind = page['properties'][name]['type']
+         if kind in ('title', 'rich_text'): actual[name] = re.sub(r'\\([\\_|])', r'\1', value)
+         elif kind == 'files':
+-            actual[name] = [canonical_file({'type':'file','file':{'url':url}})['file']['url'] for url in value]
++            links = [mcp_file_locator(url, state['page_id']) for url in value]
++            file_links.extend(links)
++            actual[name] = [locator for locator, _ in links]
+     for name, value in wanted.items():
+         observed = actual.get(name)
+         if name not in actual and value in (None, '', []): continue
+-        if isinstance(value, list) and isinstance(observed, list):
++        if page['properties'][name]['type'] == 'multi_select' and isinstance(observed, list):
+             if sorted(value) == sorted(observed): continue
+         if value != observed: raise ValueError('Native/MCP property differs: '+name)
+     for name in ('cover', 'icon'):
+-        if name not in state or canonical_file(state[name]) != page.get(name):
++        value = copy.deepcopy(state.get(name))
++        if value and value.get('type') == 'file':
++            link = mcp_file_locator(value['file']['url'], state['page_id'])
++            file_links.append(link)
++            value['file'] = {'url':link[0]}
++        if name not in state or value != page.get(name):
+             raise ValueError('Native/MCP '+name+' differs')
+-
+-
+-def proof(state, snapshot):
++    return file_links
++
++
++def protected_image(node, item, file_links):
++    block = item['block']
++    if (block['type'] != 'image' or item['children'] or node.attrs.keys() != {'source'}
++            or not re.fullmatch(r'<image\s+source="[^"]+"\s*/>', node.raw)
++            or block['image'].get('type') != 'file' or block['image'].get('caption') != []):
++        raise ValueError('Unsupported protected image representation or caption')
++    source = urllib.parse.urlsplit(node.attrs['source'])
++    query = urllib.parse.parse_qsl(source.query, strict_parsing=True)
++    if (source.scheme != 'notion-file-block' or source.fragment or len(query) != 2
++            or len(dict(query)) != 2 or set(dict(query)) != {'space_id','name'}
++            or source.netloc != str(uuid.UUID(block['id']))):
++        raise ValueError('Protected image block reference differs')
++    fields = dict(query)
++    for locator, parts in file_links:
++        path = parts.path.split('/')[1:]
++        if (locator == block['image']['file']['url'] and len(path) == 3
++                and parts.hostname == 'prod-files-secure.s3.us-west-2.amazonaws.com'
++                and source.path == '/' + path[1] and fields['space_id'] == path[0]
++                and fields['name'] == urllib.parse.unquote(path[2])):
++            return {'block_id':block['id'],'source':node.attrs['source'],
++                    'name':fields['name'],'caption':[], 'locator':locator,
++                    'native_block_sha256':r.digest(item),'replacement_supported':False}
++    raise ValueError('Protected image asset/name/workspace/locator differs')
++
++
++def paired_state_matches(state, paired):
++    for name in ('page_id','code','body','page_last_edited_at'):
++        if state[name] != paired[name]: raise ValueError('Paired MCP '+name+' differs')
++    if state['capture']['received_at_utc'] != paired['capture']['received_at_utc']:
++        raise ValueError('Paired MCP receipt differs')
++    def legacy(value):
++        if isinstance(value, dict): return {key:legacy(item) for key,item in value.items()}
++        if isinstance(value, list): return [legacy(item) for item in value]
++        if isinstance(value, str) and value.startswith('https://'):
++            parts = urllib.parse.urlsplit(value)
++            if parts.hostname in FILE_HOSTS:
++                mcp_file_locator(value, state['page_id'])
++                return urllib.parse.urlunsplit(parts._replace(query='',fragment=''))
++        return value
++    for name in ('properties','cover','icon'):
++        if state[name] != legacy(paired[name]):
++            raise ValueError('Paired MCP legacy capture relation differs: '+name)
++
++
++def proof(state, snapshot, paired_state=None):
+     tree = validate(snapshot, state['page_id'], expected_code=state.get('code') if not snapshot.get('synthetic') else None)
+-    nodes = r.parse(state['body'], allow_styled_notes=True)
++    nodes = mcp_nodes(state['body'])
+     if len(tree) != len(nodes):
+         raise ValueError('Native/MCP top-level coverage differs')
+     binding = 'EXACT_EDIT_TIMESTAMP'
++    images = []
+     if snapshot['after']['last_edited_time'] != state['page_last_edited_at']:
+         native_time = datetime.fromisoformat(snapshot['after']['last_edited_time'].replace('Z', '+00:00'))
+         mcp_time = datetime.fromisoformat(state['page_last_edited_at'].replace('Z', '+00:00'))
+         if (native_time.tzinfo is None or mcp_time.tzinfo is None or native_time.second or native_time.microsecond
+                 or not 0 <= (mcp_time-native_time).total_seconds() < 60):
+             raise ValueError('Native/MCP edit state differs')
+-        metadata_matches(state, canonical_page(snapshot['after'], bool(snapshot.get('persistence_policy'))))
+-        if not all(semantic_mcp(node) == semantic_native(item) for node, item in zip(nodes, tree)):
+-            raise ValueError('Native/MCP full content differs within observed edit minute')
++        if paired_state is not None: paired_state_matches(state, paired_state)
++        links = metadata_matches(paired_state or state, canonical_page(snapshot['after'], bool(snapshot.get('persistence_policy'))))
++        for node, item in zip(nodes, tree):
++            if node.kind == 'image':
++                images.append(protected_image(node, item, links))
++            elif semantic_mcp(node) != semantic_native(item):
++                raise ValueError('Native/MCP full content differs within observed edit minute')
+         binding = 'OBSERVED_MINUTE_PLUS_EXACT_CONTENT_AND_SUPPORTED_METADATA'
+     return {'source': SOURCE, 'snapshot': snapshot, 'snapshot_sha256': r.digest(snapshot),
+             'page_id': state['page_id'], 'source_state_sha256': state['source_state_sha256'],
+-            'edit_binding': binding, 'mcp_edited_at': state['page_last_edited_at']}
++            'edit_binding': binding, 'mcp_edited_at': state['page_last_edited_at'],
++            'protected_images':images}
+ 
+ 
+ def operation(before, payload, evidence):
+@@ -483,12 +572,11 @@
+         raise ValueError('Native snapshot digest mismatch')
+     tree = validate(snapshot, payload['page_id'])
+     expected_before = evidence.get('expected_before', [{'preserved': n} for n in tree])
+-    nodes = r.parse(before, allow_styled_notes=True)
++    nodes = mcp_nodes(before)
+     if len(nodes) != len(expected_before):
+         raise ValueError('Native top-level binding differs')
+     if payload['command'] == 'insert_content':
+-        expected = expected_before + [
+-            {'semantic': semantic_mcp(n)} for n in r.parse(payload['content'], allow_styled_notes=True)]
++        expected = expected_before + [{'semantic': value} for value in mcp_children(mcp_nodes(payload['content']))]
+         return {'eligible': True, 'basis': 'EXACT_REVIEWED_NATIVE_API_REGION',
+                 'native_before_sha256': r.digest(tree), 'expected_native': expected,
+                 'snapshot_sha256': r.digest(snapshot), 'page_id': payload['page_id'],
+@@ -512,7 +600,7 @@
+                            if 'preserved' in expected_before[i] else expected_before[i]['semantic'])
+         if native_semantic != semantic_mcp(nodes[i]):
+             raise ValueError('Native/MCP region differs or is lossy')
+-    replacement = [semantic_mcp(n) for n in r.parse(edit['new_str'], allow_styled_notes=True)]
++    replacement = mcp_children(mcp_nodes(edit['new_str']))
+     expected = (expected_before[:indices[0]]
+                 + [{'semantic': n} for n in replacement]
+                 + expected_before[indices[-1] + 1:])
+--- /dev/null
++++ b/source/tests/test_paired_pilot.py
+@@ -0,0 +1,184 @@
++"""New paired-file and grouped-bullet contracts only. No network or session execution."""
++import copy
++from pathlib import Path
++import sys
++import tempfile
++import unittest
++from unittest.mock import patch
++
++ROOT=Path(__file__).resolve().parents[1]
++sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'tests'))
++import batch_plan as b
++import batch_apply as a
++import full_conversion as f
++import native_evidence as n
++import rendered_layout as r
++from test_native_evidence import rich
++
++CO=ROOT.parents[1]
++CODES='428 429 430 467 558 612 633 661 662 786 840'.split()
++MCP=CO/'pp-aprons-pilot-current-20261119-01/captures'
++PAIR=CO/'pp429-paired-image-evidence-20261119-01/paired-mcp-input.json'
++NATIVE=CO/'pp-aprons-native-capture-20261119-01/manifest.json'
++INPUT=CO/'pp-execution-746159f-20261119-01/input'
++
++
++class PairedPilotTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.tmp=tempfile.TemporaryDirectory();cls.addClassCleanup(cls.tmp.cleanup)
++        old=copy.deepcopy(r.PAGES);cls.addClassCleanup(lambda:(r.PAGES.clear(),r.PAGES.update(old)))
++        network=patch('urllib.request.urlopen',side_effect=AssertionError('Network forbidden'))
++        network.start();cls.addClassCleanup(network.stop)
++        out=Path(cls.tmp.name)/'eleven.json'
++        f.prepare(MCP,INPUT/'workbook.xlsx',INPUT/'workbook-index.json',INPUT/'inventory-current.json',
++                  CODES,out,native_manifest=NATIVE,paired_captures={'429':PAIR})
++        cls.bundle=f.load(out)
++
++    def setUp(self):
++        self.state=b.page_state(f.load(MCP/'pp429.json'))
++        self.paired=b.page_state(f.load(PAIR))
++        self.native=f.load(NATIVE.parent/'pp429.json')
++
++    def prove(self): return n.proof(self.state,self.native,self.paired)
++
++    def test_661_both_bullets_are_present_and_exact_with_source_boundaries(self):
++        state=b.page_state(f.load(MCP/'pp661.json'));snap=f.load(NATIVE.parent/'pp661.json')
++        before=f.regions.parse(state['body']);nodes=n.mcp_nodes(state['body']);tree=n.validate(snap)
++        self.assertEqual((len(before),len(nodes),len(tree)),(8,9,9))
++        self.assertEqual(n.mcp_children(nodes),[n.semantic_native(item) for item in tree])
++        self.assertEqual(nodes[4].raw+'\n'+nodes[5].raw,before[4].raw)
++        for node in nodes: self.assertEqual(state['body'][node.start:node.end],node.raw)
++        evidence=n.proof(state,snap)
++        old=nodes[4].raw;new='- Nota nova simulada'
++        payload={'command':'update_content','page_id':state['page_id'],
++                 'content_updates':[{'old_str':old,'new_str':new,'replace_all_matches':False}]}
++        op=n.operation(state['body'],payload,evidence)
++        self.assertEqual(len(op['expected_native']),9)
++        self.assertEqual(op['expected_native'][5],{'preserved':tree[5]})
++        self.assertEqual(op['expected_native'][4],{'semantic':['bulleted_list_item',[['Nota nova simulada',[]]]]})
++        payload['content_updates'][0]['old_str']=old[2:]
++        with self.assertRaises(ValueError): n.operation(state['body'],payload,evidence)
++
++    def test_661_reordered_bullets_and_changed_text_are_rejected(self):
++        state=b.page_state(f.load(MCP/'pp661.json'));snap=f.load(NATIVE.parent/'pp661.json')
++        group=f.regions.parse(state['body'])[4].raw;lines=group.splitlines()
++        for changed in ('\n'.join(reversed(lines)),group.replace(lines[0],'- Conteúdo alterado')):
++            with self.subTest(changed=changed[:20]):
++                other=copy.deepcopy(state);other['body']=state['body'].replace(group,changed)
++                with self.assertRaises(ValueError): n.proof(other,snap)
++
++    def test_known_record_fragment_matches_same_canonical_native_locator(self):
++        url=self.paired['properties']['Imagem principal'][0]
++        native_url=self.native['after']['properties']['Imagem principal']['files'][0]['file']['url']
++        locator,parts=n.mcp_file_locator(url,self.state['page_id'])
++        self.assertEqual(locator,native_url)
++        self.assertEqual(parts.query,'x-amz-checksum-mode=ENABLED&x-id=GetObject')
++        self.assertEqual(parts.fragment,'')
++        with self.assertRaises(ValueError): n.canonical_file({'type':'file','file':{'url':url}})
++        proof=self.prove()
++        self.assertEqual(proof['protected_images'][0]['block_id'],'06eb6705-ae1f-838c-9f9b-81d32097401f')
++        self.assertEqual(proof['protected_images'][0]['name'],'PP429_1.png')
++        self.assertFalse(proof['protected_images'][0]['replacement_supported'])
++
++    def test_unknown_fragment_wrong_record_workspace_or_query_still_refuse(self):
++        url=self.paired['properties']['Imagem principal'][0]
++        for changed in (url+'extra',url.replace('notion_record=block.','unknown='),
++                        url.replace('137b6705-ae1f-8204-8ef1-810070095cf0','00000000-0000-4000-8000-000000000001'),
++                        url.replace('#notion_record=','&unreviewed=value#notion_record=')):
++            with self.subTest(changed=changed[-20:]):
++                with self.assertRaises(ValueError): n.mcp_file_locator(changed,self.state['page_id'])
++
++    def test_real_file_change_or_meaningful_query_change_is_rejected(self):
++        url=self.paired['properties']['Imagem principal'][0]
++        for old,new in (('85567298-9dcd-4a2b-96ae-df39d2a684f4','00000000-0000-4000-8000-000000000001'),
++                        ('ENABLED','DISABLED'),('PP429_1.png','other.png')):
++            with self.subTest(old=old):
++                self.paired['properties']['Imagem principal']=[url.replace(old,new)]
++                with self.assertRaises(ValueError): self.prove()
++        self.paired['properties']['Imagem principal']=[url]
++
++    def test_image_name_reference_or_native_caption_change_is_rejected(self):
++        raw=self.state['body']
++        for old,new in (('name=PP429_1.png','name=changed.png'),
++                        ('06eb6705-ae1f-838c-9f9b-81d32097401f','00000000-0000-4000-8000-000000000001')):
++            self.state['body']=raw.replace(old,new);self.paired['body']=self.state['body']
++            with self.assertRaises(ValueError):self.prove()
++        self.state['body']=raw;self.paired['body']=raw
++        for reads in ('reads','confirmation_reads'):
++            for read in self.native[reads]:
++                for block in read['response']['results']:
++                    if block['type']=='image':block['image']['caption']=rich('Legenda alterada')
++        with self.assertRaisesRegex(ValueError,'caption'):self.prove()
++
++    def test_content_order_receipt_and_properties_must_match_both_captures(self):
++        for key,value in (('body',self.paired['body'].replace('Ex: M21425','Ex: outro')),
++                          ('page_last_edited_at','2026-11-18T16:33:18.000Z')):
++            before=self.paired[key];self.paired[key]=value
++            with self.assertRaises(ValueError):self.prove()
++            self.paired[key]=before
++        self.paired['capture']['received_at_utc']='2026-11-19T15:15:03.423Z'
++        with self.assertRaisesRegex(ValueError,'receipt'):self.prove()
++
++    def test_image_and_property_file_order_are_preserved(self):
++        page=n.canonical_page(self.native['after'],True)
++        extra=copy.deepcopy(page['properties']['Imagem principal']['files'][0])
++        extra_url=self.paired['properties']['Imagem principal'][0].replace('85567298-9dcd-4a2b-96ae-df39d2a684f4','00000000-0000-4000-8000-000000000001')
++        extra['file']['url']=n.mcp_file_locator(extra_url,self.state['page_id'])[0]
++        page['properties']['Imagem principal']['files'].append(extra)
++        self.paired['properties']['Imagem principal'].append(extra_url)
++        n.metadata_matches(self.paired,page)
++        self.paired['properties']['Imagem principal'].reverse()
++        with self.assertRaises(ValueError):n.metadata_matches(self.paired,page)
++        self.paired=b.page_state(f.load(PAIR))
++        tree=n.validate(self.native)
++        image=n.mcp_nodes(self.state['body'])[1]
++        payload={'command':'update_content','page_id':self.state['page_id'],
++                 'content_updates':[{'old_str':image.raw,'new_str':image.raw,'replace_all_matches':False}]}
++        with self.assertRaises(ValueError):n.operation(self.state['body'],payload,self.prove())
++        expected=[{'preserved':item} for item in tree]
++        altered=copy.deepcopy(self.native)
++        for name in ('reads','confirmation_reads'):
++            blocks=altered[name][0]['response']['results']
++            blocks[0],blocks[1]=blocks[1],blocks[0]
++        n.verify_after(self.native,expected,self.state['page_id'],self.native['nonce'])
++        self.assertNotEqual(n.validate(altered),tree)
++        with self.assertRaises(ValueError):n.verify_after(altered,expected,self.state['page_id'],altered['nonce'])
++
++    def test_pilot_uses_original_capture_and_embedded_paired_proof_with_no_execution(self):
++        page=next(p for p in self.bundle['pages'] if p['code']=='429')
++        self.assertTrue(page['method_complete']);self.assertEqual(page['technical_unresolved'],[])
++        self.assertEqual((len(page['operations']),len(page['property_operations'])),(2,1))
++        self.assertEqual(page['source_state_sha256'],self.state['source_state_sha256'])
++        self.assertEqual(page['source_metadata'],b.stable_metadata(self.state))
++        pair=page['native_evidence']['paired_mcp_input']
++        self.assertEqual(pair['sha256'],'0c7223dd59ceec68967127b60b4c7329301c49f5c36511f2bad766a50528bd59')
++        self.assertEqual(n.file_hash(NATIVE.parent/'pp429.json'),'4d6b080e99c7d8862d375c58f0886764d0a7d2b5622dfc6adae264970bffeec1')
++        self.assertEqual(pair['original_capture_sha256'],self.state['snapshot_sha256'])
++        self.assertEqual(pair['capture'],f.load(PAIR));a.verify_sources({'pages':[page],**{k:v for k,v in self.bundle.items() if k!='pages'}})
++        self.assertFalse(self.bundle['apply_allowed_now'])
++
++    def test_pilot_preserves_old_values_human_callout_image_source_and_pending_business(self):
++        page=next(p for p in self.bundle['pages'] if p['code']=='429')
++        before=f.regions.parse(page['source_body']);after=f.regions.parse(page['desired_body'])
++        old_before=r.mappings(r.body_sections(before)[1])['Old']
++        old_after=r.mappings(r.body_sections(after)[1])['Old']
++        self.assertEqual(old_before,old_after)
++        review=next(node for node in before if r.review_state(node,'429') is not None)
++        prefix=before[:before.index(review)+1]
++        self.assertEqual([node.raw for node in after[:len(prefix)]],[node.raw for node in prefix])
++        source=next(node for node in before if node.title==r.SOURCE)
++        self.assertIn(source.raw,[node.raw for node in after])
++        for op in page['operations']:
++            payload=op['payload']
++            if payload['command']=='update_content':
++                old=payload['content_updates'][0]['old_str']
++                self.assertNotIn(source.raw,old)
++                for node in prefix:self.assertNotIn(node.raw,old)
++        self.assertIn('600 cm2',page['new_groups'][0]['options'][-1])
++        for code in ('467','612','633','661','662','786','840'):
++            other=next(p for p in self.bundle['pages'] if p['code']==code)
++            self.assertTrue(other['technical_unresolved']);self.assertEqual(other['operations'],[])
++
++
++if __name__=='__main__':unittest.main()
+--- a/source/tests/test_pilot_preparation.py
++++ b/source/tests/test_pilot_preparation.py
+@@ -106,12 +106,16 @@
+         self.assertFalse(self.plan['apply_allowed_now'])
+         for p in self.plan['pages']:
+             with self.subTest(code=p['code']):
+-                self.assertTrue(p['native_binding_error'])
++                if p['code'] == '661':
++                    self.assertNotIn('native_binding_error',p)
++                    self.assertTrue(p['technical_unresolved'])
++                else: self.assertTrue(p['native_binding_error'])
+                 self.assertTrue(p['diff'])
+                 self.assertFalse(p['method_complete'])
+                 self.assertEqual(p['operations'],[]); self.assertEqual(p['property_operations'],[])
+-                self.assertFalse(p['completion_status_operation']['eligible'])
+-                self.assertFalse(p['failure_status_operation']['eligible'])
++                if p['code'] != '661':
++                    self.assertFalse(p['completion_status_operation']['eligible'])
++                    self.assertFalse(p['failure_status_operation']['eligible'])
+ 
+     def test_prefix_human_callout_images_and_source_are_outside_replacements(self):
+         for p in self.plan['pages']:

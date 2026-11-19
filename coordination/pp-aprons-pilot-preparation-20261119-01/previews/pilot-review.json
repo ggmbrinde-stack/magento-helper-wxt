@@ -1,0 +1,53 @@
+{
+  "after": "eleven-reports/PP429-after.md",
+  "apply_allowed_now": false,
+  "approval": null,
+  "before": "eleven-reports/PP429-before.md",
+  "blocking_reason": "Native/MCP property differs: Imagem principal",
+  "code": "429",
+  "concrete_change": {
+    "after": "Bordado 600 cm², A4",
+    "before": "Bordado 240 cm², A6",
+    "location": "Face 1"
+  },
+  "content_diff": "--- 429-before\n+++ 429-after\n@@ -24,31 +24,85 @@\n <columns>\n <column ratio=\"50\">\n ## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Face 1\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Face 1\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Geral\n \n <callout icon=\"📝\">\n <b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n </callout>\n-\n-| Face / local | Opções propostas | Nota |\n-| --- | --- | --- |\n-| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n+</toggle>\n+\n+<toggle>\n+New: Face 1\n+\n+A4/240 cm² como referências provisórias; confirmar a área útil do avental\n+</toggle>\n+\n+<toggle>\n+New: Geral\n \n <toggle>\n Pendências técnicas\n \n - Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n </toggle>\n-</column>\n-<column ratio=\"50\">\n-## Old (original)\n-\n-### Locais e personalização\n-\n-| Face / local | Opções completas e especificações | Notas |\n-| --- | --- | --- |\n-| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n-</column>\n-</columns>\n+</toggle>\n+</toggle>\n \n <toggle>\n Fonte e original do Excel\n@@ -69,4 +123,160 @@\n | P37 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n | P38 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n | P39 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+PP_FULL_CONVERSION_V1 126e2d51c167750bee8635d7fbf4e35f6d31e9b6f70e0962b2eada46be5daead\n+\n+<toggle>\n+Origem Excel verificada\n+\n+PPs BRINDE TÊXTIL!M33:P40\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Célula\n+</td>\n+<td>\n+Texto original\n+</td>\n+</tr>\n+<tr>\n+<td>\n+M33\n+</td>\n+<td>\n+429\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N33\n+</td>\n+<td>\n+AVENTAL grande sem bolso - 1F\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N34\n+</td>\n+<td>\n+Aventais com bolso apx 100cm altura\n+</td>\n+</tr>\n+<tr>\n+<td>\n+O34\n+</td>\n+<td>\n+Face 1\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P34\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N35\n+</td>\n+<td>\n+Ex: M21425\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P35\n+</td>\n+<td>\n+DTF - Até A5 (14,8x21,0 cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P36\n+</td>\n+<td>\n+DTF - Até A4 (21x29,7cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N37\n+</td>\n+<td>\n+No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P37\n+</td>\n+<td>\n+Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P38\n+</td>\n+<td>\n+Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P39\n+</td>\n+<td>\n+Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n+</td>\n+</tr>\n+</table>\n+</toggle>\n+\n+<toggle>\n+Apresentação anterior preservada\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Seleção proposta para o avental, com base nas opções existentes em IMP → New. Confirmar área do tecido e bordado antes da aprovação. Configuração original visível abaixo.\n+</callout>\n+\n+| Face / local | Opções propostas | Nota |\n+| --- | --- | --- |\n+| Face 1 | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | A4/240 cm² como referências provisórias; confirmar a área útil do avental |\n+\n+<toggle>\n+Pendências técnicas\n+\n+- Confirmar a área útil do avental antes de aprovar Estamparia A4, DTF A4 e Bordado 240 cm².\n+</toggle>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+### Locais e personalização\n+\n+| Face / local | Opções completas e especificações | Notas |\n+| --- | --- | --- |\n+| Face 1 | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |  |\n+</column>\n+</columns>\n+</toggle>\n </toggle>",
+  "eleven_plan_sha256": "e101ffb22da0c3f834cc4d8f537b77acdf34578d5936af7f0a6abfd01a392f9a",
+  "implementation_sha256": "8f6d11c933416c7a61e4f70ae9792878ee45385867b0e9cc806e0a0a64cc66a0",
+  "operations": [],
+  "page_id": "137b6705ae1f82048ef1810070095cf0",
+  "preserved_outside_replacements": [
+    "prefixo",
+    "callout humano",
+    "imagem",
+    "fonte existente"
+  ],
+  "property_delta": {
+    "Opções de personalização": [
+      "Estamparia — até A4 — 1 cor",
+      "DTF — até A4",
+      "Bordado — até 600 cm²"
+    ]
+  },
+  "proposed_success_status": "Para revisão",
+  "selected_because": "Sem escolhas de negócio pendentes; New ainda difere da regra existente.",
+  "source_state_sha256": "33ea1115ea9b5306eb876bb98294f703f09cbf243e68194487d6139632a167f5",
+  "status": "BLOCKED_DRAFT_FOR_INDEPENDENT_REVIEW",
+  "status_write_eligible": false,
+  "technical_unresolved": [],
+  "wanted_properties": {
+    "Faces": [
+      "Face 1"
+    ],
+    "Número de locais possíveis": 1,
+    "Opções de personalização": [
+      "Estamparia — até A4 — 1 cor",
+      "DTF — até A4",
+      "Bordado — até 600 cm²"
+    ],
+    "Técnicas": [
+      "Estamparia",
+      "DTF",
+      "Bordado"
+    ]
+  }
+}

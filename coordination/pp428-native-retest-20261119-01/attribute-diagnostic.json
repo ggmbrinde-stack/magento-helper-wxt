@@ -1,0 +1,39 @@
+{
+  "page_code": "428",
+  "page_id": "074b6705ae1f8257a53701d87a64eb32",
+  "review_reference": "PP-NATIVE-READ-FIX-20261119-GET428-GO",
+  "diagnostic_only": true,
+  "guard_bypassed": false,
+  "native_writes": 0,
+  "status": "VALIDATION_BLOCKED",
+  "reason_type": "ValueError",
+  "reason": "Unknown native attributes",
+  "attribute_diagnostic": {
+    "caller": "children",
+    "value_type": "dict",
+    "unknown_keys": [
+      "icon"
+    ],
+    "allowed_keys": [
+      "color",
+      "rich_text"
+    ],
+    "block_type": "paragraph",
+    "block_id": "41bb6705-ae1f-8146-bc33-ed4d473a1eb3"
+  },
+  "single_block_attribute_shape": {
+    "http_status": 200,
+    "block_id": "41bb6705-ae1f-8146-bc33-ed4d473a1eb3",
+    "block_type": "paragraph",
+    "paragraph_fields": [
+      "color",
+      "icon",
+      "rich_text"
+    ],
+    "icon_present": true,
+    "icon_is_null": true,
+    "icon_value_type": "NoneType",
+    "icon_object_keys": [],
+    "native_writes": 0
+  }
+}

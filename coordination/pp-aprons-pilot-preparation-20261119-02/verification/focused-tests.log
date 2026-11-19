@@ -1,0 +1,15 @@
+test_661_both_bullets_are_present_and_exact_with_source_boundaries (test_paired_pilot.PairedPilotTests.test_661_both_bullets_are_present_and_exact_with_source_boundaries) ... ok
+test_661_reordered_bullets_and_changed_text_are_rejected (test_paired_pilot.PairedPilotTests.test_661_reordered_bullets_and_changed_text_are_rejected) ... ok
+test_content_order_receipt_and_properties_must_match_both_captures (test_paired_pilot.PairedPilotTests.test_content_order_receipt_and_properties_must_match_both_captures) ... ok
+test_image_and_property_file_order_are_preserved (test_paired_pilot.PairedPilotTests.test_image_and_property_file_order_are_preserved) ... ok
+test_image_name_reference_or_native_caption_change_is_rejected (test_paired_pilot.PairedPilotTests.test_image_name_reference_or_native_caption_change_is_rejected) ... ok
+test_known_record_fragment_matches_same_canonical_native_locator (test_paired_pilot.PairedPilotTests.test_known_record_fragment_matches_same_canonical_native_locator) ... ok
+test_pilot_preserves_old_values_human_callout_image_source_and_pending_business (test_paired_pilot.PairedPilotTests.test_pilot_preserves_old_values_human_callout_image_source_and_pending_business) ... ok
+test_pilot_uses_original_capture_and_embedded_paired_proof_with_no_execution (test_paired_pilot.PairedPilotTests.test_pilot_uses_original_capture_and_embedded_paired_proof_with_no_execution) ... ok
+test_real_file_change_or_meaningful_query_change_is_rejected (test_paired_pilot.PairedPilotTests.test_real_file_change_or_meaningful_query_change_is_rejected) ... ok
+test_unknown_fragment_wrong_record_workspace_or_query_still_refuse (test_paired_pilot.PairedPilotTests.test_unknown_fragment_wrong_record_workspace_or_query_still_refuse) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.374s
+
+OK

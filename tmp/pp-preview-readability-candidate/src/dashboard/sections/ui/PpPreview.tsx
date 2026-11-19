@@ -300,8 +300,12 @@ export function PpPreview() {
       }
       // The form now holds the plan order, so the panel shows it without another Magento read.
       if (kind === 'order') {
-        const placed = rows.filter(row => response.results.some(result =>
-          result.outcome === 'ordered' && result.catalogueId === row.catalogueId && result.face === row.face));
+        // One result per row, in the order the rows were sent, so a repeated technique on one face
+        // is matched to its own result. A report of another length cannot be aligned, so nothing
+        // is refreshed from it.
+        const placed = response.results.length === rows.length
+          ? rows.filter((_row, at) => response.results[at]?.outcome === 'ordered')
+          : [];
         if (placed.length) setResult(previous => {
           if (!previous?.current?.snapshot) return previous;
           return { ...previous, current: { ...previous.current, snapshot: ppApplyPlannedOrder(previous.current.snapshot, placed) } };

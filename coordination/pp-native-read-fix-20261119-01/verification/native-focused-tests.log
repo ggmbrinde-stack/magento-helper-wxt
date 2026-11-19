@@ -1,0 +1,25 @@
+test_journal_before_write_then_native_readback_then_mcp (test_native_evidence.NativeFenceTests.test_journal_before_write_then_native_readback_then_mcp) ... ok
+test_native_postwrite_mismatch_is_uncertain (test_native_evidence.NativeFenceTests.test_native_postwrite_mismatch_is_uncertain) ... ok
+test_stale_native_subtree_with_same_mcp_blocks_before_write (test_native_evidence.NativeFenceTests.test_stale_native_subtree_with_same_mcp_blocks_before_write) ... ok
+test_unreadable_native_subtree_blocks_before_write (test_native_evidence.NativeFenceTests.test_unreadable_native_subtree_blocks_before_write) ... ok
+test_canonical_storage_is_explicit_and_never_claims_raw_response_hash (test_native_evidence.NativeTests.test_canonical_storage_is_explicit_and_never_claims_raw_response_hash) ... ok
+test_changed_native_page_during_capture (test_native_evidence.NativeTests.test_changed_native_page_during_capture) ... ok
+test_cli_capture_428_is_read_only_and_601_remains_excluded (test_native_evidence.NativeTests.test_cli_capture_428_is_read_only_and_601_remains_excluded) ... ok
+test_collector_persists_only_canonical_data_and_uses_only_get_paths (test_native_evidence.NativeTests.test_collector_persists_only_canonical_data_and_uses_only_get_paths) ... ok
+test_collector_scoped_gets_complete_recursive_pages (test_native_evidence.NativeTests.test_collector_scoped_gets_complete_recursive_pages) ... ok
+test_columns_tables_cells_and_toggle_order (test_native_evidence.NativeTests.test_columns_tables_cells_and_toggle_order) ... ok
+test_duplicate_wrong_parent_unknown_and_lossy_fields (test_native_evidence.NativeTests.test_duplicate_wrong_parent_unknown_and_lossy_fields) ... ok
+test_exact_proof_preserves_five_children_and_rejects_saved_change (test_native_evidence.NativeTests.test_exact_proof_preserves_five_children_and_rejects_saved_change) ... ok
+test_full_renderer_native_path_preserves_existing_review (test_native_evidence.NativeTests.test_full_renderer_native_path_preserves_existing_review) ... ok
+test_implementation_identity_hashes_both_native_modules (test_native_evidence.NativeTests.test_implementation_identity_hashes_both_native_modules) ... ok
+test_manifest_hash_and_candidate_binding (test_native_evidence.NativeTests.test_manifest_hash_and_candidate_binding) ... ok
+test_real_descendant_image_caption_order_attributes_and_parent_still_block (test_native_evidence.NativeTests.test_real_descendant_image_caption_order_attributes_and_parent_still_block) ... ok
+test_real_page_fields_file_identity_and_property_order_still_block (test_native_evidence.NativeTests.test_real_page_fields_file_identity_and_property_order_still_block) ... ok
+test_recursive_pagination_and_incomplete_reads (test_native_evidence.NativeTests.test_recursive_pagination_and_incomplete_reads) ... ok
+test_unknown_or_semantically_different_file_locator_is_not_scrubbed_away (test_native_evidence.NativeTests.test_unknown_or_semantically_different_file_locator_is_not_scrubbed_away) ... ok
+test_volatile_page_and_descendant_media_metadata_are_not_edits (test_native_evidence.NativeTests.test_volatile_page_and_descendant_media_metadata_are_not_edits) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.399s
+
+OK

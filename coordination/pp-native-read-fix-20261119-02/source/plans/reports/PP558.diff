@@ -1,0 +1,21 @@
+--- 558-before
++++ 558-after
+@@ -32,7 +32,7 @@
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+ | Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor ainda sem opção aprovada em IMP → New |
+-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 registado no Excel; confirmar viabilidade |
++| Bolso Direito | DTF - Até A6 (10,5x14,8 cm) | DTF A7 registado no Excel; confirmar viabilidade |
+ 
+ <toggle>
+ Pendências técnicas
+@@ -48,7 +48,8 @@
+ 
+ | Face / local | Opções completas e especificações | Notas |
+ | --- | --- | --- |
+-| Bolso Esquerdo<br />Bolso Direito | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Bolso Esquerdo | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) | Nota original conjunta (Bolso Esquerdo<br />Bolso Direito): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) |  |
+ </column>
+ </columns>
+ 

@@ -1,0 +1,11 @@
+{
+  "approval_sha256": "e5a04d03843a9a71ab59ad4660503c1bee938ddff96b09df3458d15aafb4d5dd",
+  "code": "429",
+  "journal": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\coordination\\pp429-approved-pilot-run-20261119-01\\runs\\b154cae0bed5b6f2fb22a5d4d1179a93e2d3d3a9e65f8c7b64ce4651376f30ee\\journal.json",
+  "page_id": "137b6705ae1f82048ef1810070095cf0",
+  "plan_sha256": "45f367d0e5ed59bddc8c22d4d4f47ada8fd6f9e25443e06c87af97bc878120d4",
+  "reason": "Native subtree unreadable",
+  "resolution": null,
+  "review_reference": "PP-APRONS-429-20261119-REVIEW-GO",
+  "uncertain": true
+}

@@ -1,0 +1,13 @@
+--- 662-before
++++ 662-after
+@@ -34,8 +34,8 @@
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+ | Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Estamparia 1 Cor, DTF A4 e Bordado 240 cm² propostos; confirmar tecido |
+-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |
+-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 da fonte original; confirmar área útil |
++| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Apenas Transfer 2 Cores no Excel; 1 Cor sem opção equivalente em IMP → New |
++| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | DTF A7 da fonte original; confirmar área útil |
+ | Caixa | UV - Até 100 cm2 (Aprox. 10x10cm - BLOCOS PEQUENOS \| OUTROS) | Confirmar material e impressão UV; Serigrafia e Laser CO2 originais sem correspondência selecionada |
+ 
+ <toggle>

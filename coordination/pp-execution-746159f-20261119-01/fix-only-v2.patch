@@ -1,0 +1,112 @@
+--- v1/source/page_batch.py
++++ v2/source/page_batch.py
+@@ -54,12 +54,17 @@
+ 
+     def fetch(self,state,kind='FETCH_PAGE'):
+         page=state['queue'][state['page_index']]['page']
+-        if self.full and kind=='FETCH_PAGE' and not state['op_index'] and page.get('full_prepare_error'):
+-            return self.fail_page(state,'FAILED',page['full_prepare_error'])
+         prior=state.get('preexisting_quarantines',{}).get(page['code'])
+         if kind=='FETCH_PAGE' and not state['op_index'] and prior and (prior.get('uncertain') or prior.get('review_reference')==state['review_reference']):
+             state['page_reports'][page['code']]={'code':page['code'],'page_id':page['page_id'],'outcome':'UNCERTAIN' if prior.get('uncertain') else 'ERROR','reason':'Prior quarantined work cannot be replayed; reconcile and review a remainder','operation_id':None,'pending_receipts':[prior],'marker':{'outcome':'NOT_RETRIED'}}
+             return self.next_page(state)
++        if self.full and kind=='FETCH_PAGE' and not state['op_index']:
++            reason=page.get('full_prepare_error')
++            if not reason and (page.get('method_complete') is not True or page.get('technical_unresolved')):
++                reason='Full conversion has unresolved business/source choices: '+'; '.join(page.get('technical_unresolved',[]))
++            if reason:
++                state['phase']='PAGE_PREFLIGHT'
++                return self.fail_page(state,'FAILED',reason)
+         return super().fetch(state,kind)
+ 
+     def stop(self,state,status,reason):
+@@ -134,7 +139,7 @@
+             required={x['id'] for x in state['queue'][state['page_index']]['ops'] if x['kind']!='success_status'}
+             confirmed={x.get('operation') for x in state['receipts'] if x['code']==page['code'] and x['status']=='SUCCEEDED'}
+             if not required<=confirmed:raise ValueError('Success queue requires every prior saved-state receipt')
+-            if self.full and not page.get('method_complete'):
++            if self.full and (page.get('method_complete') is not True or page.get('technical_unresolved')):
+                 return self.fail_page(state,'FAILED','Full conversion has unresolved business choices: '+'; '.join(page.get('technical_unresolved',[])))
+             state['last_state_hash']=current['source_state_sha256']
+             if self.full:return self.issue(state,'FETCH_SUCCESS_RULES',{'id':b.HOME,'include_file_urls':False,'include_discussions':False})
+--- v1/source/full_conversion.py
++++ v2/source/full_conversion.py
+@@ -431,7 +431,7 @@
+             page[key] = {'id': code + '-' + suffix, 'kind': kind, 'eligible': True,
+                 'payload': {'command': 'update_properties', 'page_id': state['page_id'], 'properties': {'Estado': status}}}
+         if page.get('full_prepare_error'): page['status']='READY_FOR_ERROR_REPORT'
+-        elif not page['method_complete']: page['status']='LAYOUT_ONLY_PENDING_BUSINESS'
++        elif not page['method_complete']: page['status']='READY_FOR_ERROR_REPORT'
+         pages.append(page)
+     proof = {'workbook': str(Path(workbook).resolve()), 'workbook_sha256': index['source']['sha256'],
+              'evidence_sha256': excel.file_sha(index_path), 'records': {p['code']: p.get('excel') for p in pages}}
+--- v1/source/tests/test_full_conversion.py
++++ v2/source/tests/test_full_conversion.py
+@@ -127,14 +127,32 @@
+         self.assertTrue(any('ausente do Excel' in x for x in page['technical_unresolved']))
+         self.assertEqual(page['property_operations'], [])
+ 
+-    def test_general_2colour_pending_layout_is_not_success(self):
++    def test_pending_pp50_has_no_business_writes_then_pp39_succeeds(self):
+         page = self.page('50'); self.assertFalse(page['method_complete'])
+         self.assertTrue(page['operations']); self.assertEqual(page['property_operations'], [])
+         connector = self.connector(); session = self.session(['50', '39'])
+         result = drive(session, connector, session.start())
+-        self.assertEqual(result['pages']['50']['outcome'], 'PARTIAL')
++        self.assertEqual(result['pages']['50']['outcome'], 'ERROR')
+         self.assertEqual(result['pages']['50']['saved_estado'], 'Erro')
+         self.assertEqual(result['pages']['39']['outcome'], 'SUCCESS')
++        writes=[x for x in connector.writes if x['page_id']==r.PAGES['50']]
++        self.assertEqual(writes,[{'command':'update_properties','page_id':r.PAGES['50'],'properties':{'Estado':'Erro'}}])
++        saved=b.page_state(a.capture_response(connector.pages[r.PAGES['50']],r.PAGES['50']))
++        self.assertEqual(saved['body'],page['source_body'])
++        report=read(session.root/'pages/PP50.json')
++        self.assertIn('Tampografia 2 cores',report['reason']);self.assertEqual(report['confirmed_receipts'],[])
++        self.assertEqual(report['pending_receipts'],[])
++        # A prior quarantine wins over the early rejection, so even Erro is not replayed.
++        before=len(connector.writes)
++        again=a.FileSession(self.work/'runs/two',self.bundle,self.approval(['50']),fake=True)
++        drive(again,connector,again.start())
++        self.assertEqual(len(connector.writes),before)
++        fresh=self.connector()
++        reverse=a.FileSession(self.work/'independent/runs/one',self.bundle,self.approval(['39','50']),fake=True)
++        reversed_result=drive(reverse,fresh,reverse.start())
++        self.assertEqual(reversed_result['pages']['50']['outcome'],'ERROR')
++        self.assertEqual(reversed_result['pages']['50']['pending_receipts'],[])
++        self.assertEqual([x for x in fresh.writes if x['page_id']==r.PAGES['50']],writes)
+ 
+     def test_full_page_execution_verified_final_status_and_scope_receipt(self):
+         connector = self.connector(); session = self.session(['39'])
+@@ -150,12 +168,12 @@
+         journal = read(session.path)
+         self.assertEqual(len(journal['receipts']), len(connector.writes))
+ 
+-    def test_real_bounded_browser_regions_allow_layout_but_not_false_semantic_success(self):
++    def test_bounded_browser_evidence_does_not_override_business_block(self):
+         connector = self.connector(); session = self.session(['262', '39'])
+         result = drive(session, connector, session.start())
+-        self.assertEqual(result['pages']['262']['outcome'], 'PARTIAL')
++        self.assertEqual(result['pages']['262']['outcome'], 'ERROR')
+         self.assertEqual(result['pages']['39']['outcome'], 'SUCCESS')
+-        self.assertTrue(any(x['page_id'] == r.PAGES['262'] and x['command'] == 'update_content' for x in connector.writes))
++        self.assertFalse(any(x['page_id'] == r.PAGES['262'] and x['command'] in ('update_content','insert_content') for x in connector.writes))
+         self.assertTrue(any(x['region_evidence'].get('bounded_observations') for x in self.page('262')['operations']))
+         current = b.page_state(read(BASE / 'captures/pp262.json'))
+         node = next(n for n in regions.parse(current['body']) if n.kind == 'columns')
+--- v1/README-FULL.md
++++ v2/README-FULL.md
+@@ -1,10 +1,12 @@
+-# Conversão completa dos PPs, candidato v1
++# Conversão completa dos PPs, candidato v2
+ 
+ Este candidato é independente da correcção dos quatro bolsos. Reutiliza o leitor Excel corrigido e o executor com diário, verificação das escritas, quarentena por PP e continuação dos restantes. Não altera a extensão nem o Magento. Nesta sessão não foram feitas escritas no Notion.
+ 
+ O piloto proposto é o PP39, uma página original sem New/Old. O plano transforma a página inteira: imagens próprias, descrição própria, revisão Sim/Não e motivo, New à esquerda e Old à direita, tabelas com duas colunas e notas/fonte/histórico recolhíveis. Old vem das células verificadas do próprio código; grupos de locais partilhados continuam partilhados. O estado final só passa a `Para revisão` depois de todas as escritas e leituras de confirmação.
+ 
+-Os planos representativos incluem PP42, PP50, PP261 e PP262. As notas, decisões e imagens próprias ficam preservadas. PP42 conserva a opção Laser Metal que existe actualmente na página mas não no Excel, com a discrepância explícita. PP50 mantém a questão das duas cores. PP261/262 têm evidência real recolhida no navegador para os contentores afectados. As pendências de negócio continuam visíveis: estes planos podem completar o layout, mas não podem declarar sucesso integral nem sincronizar parcialmente as propriedades. Nesse caso, o resultado é parcial, tenta-se `Erro` com segurança e passa-se ao PP seguinte.
++Os planos representativos incluem PP42, PP50, PP261 e PP262. As pré-visualizações locais preservam as notas, decisões e imagens próprias, mas qualquer decisão de negócio/origem pendente bloqueia o PP antes de alterar conteúdo ou propriedades de negócio. PP42 tem a discrepância Laser Metal/Excel; PP50 mantém a questão das duas cores; PP261/262 mantêm as dúvidas técnicas. Regista-se um erro durável, tenta-se apenas o estado `Erro` com as guardas existentes e passa-se ao PP independente seguinte. Nem a evidência do navegador nem a existência de uma pré-visualização autorizam uma conversão parcial.
++
++A referência anterior `PP-FULL-V1-20261119-PP39-PILOT-ONLY` era limitada ao piloto v1. Não aprova esta implementação. Os planos, hashes e aprovações v2 exigem uma nova revisão independente.
+ 
+ ## Origem e cobertura
+ 

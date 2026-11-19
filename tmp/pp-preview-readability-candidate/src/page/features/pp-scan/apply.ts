@@ -106,6 +106,22 @@ export function applyPpPlanRows(plan: PpApplyPlanRow[]): Promise<PpApplyPlanRepo
     });
   const sortInput = (row: Element): HTMLInputElement | null =>
     row.querySelector<HTMLInputElement>('input[name*="[sort]"]');
+  // The next Sort number for a face, read before the row is added: a numbered face continues from
+  // its highest number, and a face that keeps blank sorts stays blank. Reading it here means the
+  // value does not depend on the row that is about to be rendered or re-rendered by Knockout.
+  const nextFaceSort = (table: HTMLTableElement, face: string): string => {
+    let highest = 0, numbered = false;
+    for (const candidate of itemRows(table)) {
+      const parent = field(candidate, 'parent');
+      if (!parent || faceKey(parent.options[parent.selectedIndex]?.text) !== face) continue;
+      const value = Number((sortInput(candidate)?.value ?? '').trim());
+      if (Number.isFinite(value) && value > 0 && value < 1e6) {
+        numbered = true;
+        if (value > highest) highest = value;
+      }
+    }
+    return numbered ? String(highest + 1) : '';
+  };
   // The saved order follows the native Sort values, and this page keeps blank values last,
   // so a number would lift the new row above every row of the face. Mirror the face instead:
   // blank stays blank, and a numbered face gets the next number. Existing rows are only read.
@@ -392,6 +408,7 @@ export function applyPpPlanRows(plan: PpApplyPlanRow[]): Promise<PpApplyPlanRepo
         if (sampleMatches > 1) { result.outcome = 'skipped'; result.reason = 'More than one Magento face uses this label. No row was added.'; continue; }
         if (sample && sampleMatches === 0) { result.outcome = 'skipped'; result.reason = 'The face is not in the native parent dropdown. No row was added.'; continue; }
         if (!add) { result.reason = 'The native Add Item button disappeared before this row.'; continue; }
+        const nextSort = nextFaceSort(table, face);
         const beforeRows = itemRows(table);
         add.click();
         let row: HTMLTableRowElement | undefined;
@@ -442,6 +459,11 @@ export function applyPpPlanRows(plan: PpApplyPlanRow[]): Promise<PpApplyPlanRepo
         const parentText = parent ? faceKey(parent.options[parent.selectedIndex]?.text) : '';
         if (parentText === face && option?.value === wanted.catalogueId) {
           const placed = await placeAfterFace(table, settled, face, wanted.catalogueId);
+          // Moving the row makes Knockout render it again from the page model, which drops a number
+          // typed before the move. The live PP 42 form saved Sort 1 on both rows that way. The next
+          // number is written again on the live row once the move has settled.
+          const currentRow = rowByNumber(table, number) ?? settled;
+          setInput(sortInput(currentRow), nextSort);
           result.outcome = 'added';
           result.reason = placed === 'model'
             ? 'Added to the form, not saved. Row order set below its face.'
@@ -491,6 +513,8 @@ export interface PpOrderDiagnostics {
 }
 export interface PpPlacementReport {
   total: number; ordered: number; modelMoved?: boolean;
+  /** Plan row indices that ended up in place, so a caller reports each row, not a count. */
+  orderedRows?: number[];
   diagnostics?: PpOrderDiagnostics; reason: string;
 }
 
@@ -600,15 +624,19 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
   // move only repeats the order the table already shows, which made an unchanged write look like
   // a successful one.
   const seeded = itemRows().map(row => ({ id: idOf(row), face: faceOf(row) }));
-  let modelIds: string[] = [];
-  const groups: [string, string[]][] = [];
-  for (const row of plan) {
+  // The records as they now sit, so the report reads the array Save posts, not the table.
+  let model: Array<{ id: string; face: string }> = [];
+  // Each face keeps its plan ids and the plan index of every id, so the report names the exact
+  // plan rows in place instead of a count the caller would have to guess from.
+  const groups: Array<{ face: string; ids: string[]; rows: number[] }> = [];
+  for (let at = 0; at < plan.length; at += 1) {
+    const row = plan[at]!;
     const face = key(row.magentoFace), id = String(row.catalogueId ?? '').trim();
     if (!face || !/^[1-9]\d{0,15}$/.test(id)) continue;
-    const group = groups.find(entry => entry[0] === face);
+    const group = groups.find(entry => entry.face === face);
     // Every plan row is kept, including a second row for the same technique on the same face.
-    if (!group) groups.push([face, [id]]);
-    else group[1].push(id);
+    if (group) { group.ids.push(id); group.rows.push(at); }
+    else groups.push({ face, ids: [id], rows: [at] });
   }
   // One lever is left: the dynamic-rows component's own record list, which is the array the page
   // posts and the same array its drag and drop rewrites. Reordering the table nodes, retyping Sort
@@ -724,7 +752,6 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
     if (!list) return 'none';
     const current = list.read();
     if (current.length !== seeded.length) return 'none';
-    modelIds = seeded.map(entry => entry.id);
     const order = seeded.map((_, at) => at);
     // 'append' moves the planned rows to the end of their face, in plan order, which is where a
     // newly added row belongs. 'plan' puts them first, so a technique Notion lists first is placed
@@ -748,7 +775,7 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
       // The planned rows still keep the plan order inside the tail they form.
       return [...unplanned, ...planFirst(planned, ids)];
     };
-    for (const [face, ids] of groups) {
+    for (const { face, ids } of groups) {
       const positions = order.map((_, at) => at).filter(at => seeded[order[at]!]?.face === face);
       if (!positions.length) continue;
       const here = positions.map(at => order[at]!);
@@ -756,13 +783,20 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
       if (arranged.length !== positions.length) continue;
       positions.forEach((at, sequence) => { order[at] = arranged[sequence]!; });
     }
+    const settle = (): void => {
+      // The face travels with its own record, so a face's rows are read from where those records
+      // now sit instead of assuming the positions still describe the face they started in.
+      model = order.map(original => ({ id: seeded[original]?.id ?? '', face: seeded[original]?.face ?? '' }));
+    };
     const next = order.map(original => current[original]);
     if (next.some(entry => entry === undefined)) return 'refused';
-    if (next.every((entry, at) => entry === current[at])) return 'in-order';
+    // An unchanged order still has to be reported: those rows are already in place, and leaving
+    // the ids empty made every one of them look unplaced to the caller.
+    if (next.every((entry, at) => entry === current[at])) { settle(); return 'in-order'; }
     // The ids are reported in the order the list now holds, so the count below reads the model
     // that is posted rather than the table, which re-renders a moment later.
     if (!list.write(next)) return 'refused';
-    modelIds = order.map(original => seeded[original]?.id ?? '');
+    settle();
     return 'moved';
   };
   const placement = modelOrder();
@@ -770,43 +804,46 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
   // When requested, assign Sort values per face according to the plan order (1, 2, 3...)
   // so the frontend customer dropdown renders in the correct order.
   if (assignSort) {
-    for (const [face, ids] of groups) {
+    for (const { face, ids } of groups) {
+      // One row per occurrence: a row leaves the pool once it has a Sort, so a technique listed
+      // twice on one face numbers its two rows instead of numbering the first row twice.
+      const pool = itemRows().filter(r => faceOf(r) === face);
+      const used = new Set<Element>();
       ids.forEach((id, index) => {
         const wantedSort = String(index + 1);
-        const match = itemRows().find(r => {
-          if (faceOf(r) !== face) return false;
-          if (idOf(r) === id) return true;
-          const nameInput = r.querySelector<HTMLInputElement>('input[name*="[name]"]');
-          return !!nameInput && nameInput.value.trim() === id;
-        });
-        if (match) {
-          const input = sortInput(match);
-          if (input) {
-            setInput(input, wantedSort);
-            try {
-              const ctx = ctxOf(input) ?? (ko ? ko.contextFor(input) : null);
-              if (ctx && ctx.$data) {
-                const d = ctx.$data as Record<string, unknown>;
-                if (typeof d.value === 'function') (d.value as (val: unknown) => void)(wantedSort);
-                if (typeof d.sort === 'function') (d.sort as (val: unknown) => void)(wantedSort);
-              }
-            } catch { /* events already dispatched */ }
+        const match = pool.find(r => !used.has(r) && (idOf(r) === id
+          || (r.querySelector<HTMLInputElement>('input[name*="[name]"]')?.value.trim() ?? '') === id));
+        if (!match) return;
+        used.add(match);
+        const input = sortInput(match);
+        if (!input) return;
+        setInput(input, wantedSort);
+        try {
+          const ctx = ctxOf(input) ?? (ko ? ko.contextFor(input) : null);
+          if (ctx && ctx.$data) {
+            const d = ctx.$data as Record<string, unknown>;
+            if (typeof d.value === 'function') (d.value as (val: unknown) => void)(wantedSort);
+            if (typeof d.sort === 'function') (d.sort as (val: unknown) => void)(wantedSort);
           }
-        }
+        } catch { /* events already dispatched */ }
       });
     }
   }
   // The plan has to be the tail of its face, in plan order, in the record list that is posted.
-  for (const [face, ids] of groups) {
-    const order = modelIds.map((id, at) => ({ id, face: seeded[at]?.face ?? '' }))
-      .filter(entry => entry.face === face).map(entry => entry.id);
+  const orderedRows: number[] = [];
+  for (const { face, ids, rows } of groups) {
+    const order = model.filter(entry => entry.face === face).map(entry => entry.id);
     if (!order.length) continue;
     // The plan has to be the head of its face in plan order, or its tail when the lane appends.
     const placed = arrangement === 'plan'
       ? order.slice(0, ids.length)
       : order.slice(Math.max(0, order.length - ids.length));
-    report.ordered += placed.filter((id, at) => id === ids[at]).length;
+    // Compared index to index, so a technique listed twice on one face credits each occurrence
+    // separately and the second copy never borrows the first one's result.
+    placed.forEach((id, at) => { if (id === ids[at]) orderedRows.push(rows[at]!); });
   }
+  report.orderedRows = orderedRows;
+  report.ordered = orderedRows.length;
   const all = itemRows();
   const list = all.length ? itemList(all[0]!, all.length) : null;
   const entries = list ? list.read() : [];
@@ -815,7 +852,7 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
   report.diagnostics = {
     build, url, tableFound: true, rowCount: all.length, waitedMs,
     listFound: !!list, listKey: list ? list.key : '', listLength: entries.length,
-    modelOrder: modelIds.length ? modelIds.slice() : [], modelMoved: report.modelMoved === true,
+    modelOrder: model.map(entry => entry.id), modelMoved: report.modelMoved === true,
     ordered: report.ordered, total: report.total,
   };
   if (report.ordered < report.total) {
@@ -823,7 +860,7 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
       ? 'The record list that Save posts was not found, so the order was not set.'
       : placement === 'refused'
         ? 'The record list refused the new order, so nothing was changed.'
-        : `${report.total - report.ordered} of ${report.total} planned row(s) are not at the end of their face in the record list.`;
+        : `${report.total - report.ordered} of ${report.total} planned row(s) are not in their plan position in the record list.`;
   }
   return report;
 }

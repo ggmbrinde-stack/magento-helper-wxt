@@ -1,0 +1,185 @@
+[
+  {
+    "code": "428",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T16:33:16.219Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:941550ded177b3af9bfa44d20b61aecab8485d08a898b661a681867579ebd4ce"
+    ],
+    "mcp_top_level_nodes": 8,
+    "native_edited_at": "2026-11-18T16:33:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:f5b89e366397ec0d890b371bbc9f4bb9df8270d10c9c223dfb1abafdce44a250"
+    ],
+    "native_top_level_nodes": 8,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "429",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T16:33:17.739Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:371e62417f32a53292fc048ad83a4238753b4f6b1606a4864c8f6f300fcad5a7"
+    ],
+    "mcp_top_level_nodes": 9,
+    "native_edited_at": "2026-11-18T16:33:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:94ad59a606ef676d8e986200e32c792f29bb2c1be6c21d577d7b02a77a5e136c"
+    ],
+    "native_top_level_nodes": 9,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "430",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T21:31:30.258Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:d5eb4e3afb515a655dd649b2a8d97ba828b6669f8dd2c098387f15b392459ff8"
+    ],
+    "mcp_top_level_nodes": 10,
+    "native_edited_at": "2026-11-18T21:31:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:6fe6ccc43b93bb80a7132890eb3bcad923c320533a0f55149a59eb13b03f437c"
+    ],
+    "native_top_level_nodes": 10,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "467",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T16:34:35.807Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:d499fcf18632daae76a0a8e820dc9ea010ca3ebb1e880d4facb6c78adc29ddab"
+    ],
+    "mcp_top_level_nodes": 9,
+    "native_edited_at": "2026-11-18T16:34:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:0dce9304d0c5af510d0568f9d51125d7d7fbaad9262ea82fea3849b5d9ccbc35"
+    ],
+    "native_top_level_nodes": 9,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "558",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T21:34:14.338Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:31a27c8701f53570660266b09efe3e04404f406c688451f70677a97f8baa067e"
+    ],
+    "mcp_top_level_nodes": 9,
+    "native_edited_at": "2026-11-18T21:34:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:c7424358b0b68f43dce64fdb690e94a239631148739ce33c7772934ee9ad979a"
+    ],
+    "native_top_level_nodes": 9,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "612",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T16:39:50.618Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:3100a8236046b821a2c9710bcc0cc7089a05856314478941df0c2a66cf735bd7"
+    ],
+    "mcp_top_level_nodes": 9,
+    "native_edited_at": "2026-11-18T16:39:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:2e60a002951ff6bf406c6e11b532468647ab42fb947ff2a71bb03369db639d89"
+    ],
+    "native_top_level_nodes": 9,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "633",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T16:40:32.962Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:fa26ad2da4246ffc24752a92c32eb1e08a493c7a8c2cb33ddbf9abc8b8dbadab"
+    ],
+    "mcp_top_level_nodes": 11,
+    "native_edited_at": "2026-11-18T16:40:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:b59b44f610b61e8a0b1ce5a6adf5d8877b9ebd0ea77f668b715dae9adb840feb"
+    ],
+    "native_top_level_nodes": 11,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "661",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": true,
+    "mcp_edited_at": "2026-11-18T21:35:10.125Z",
+    "mcp_image_locators": [],
+    "mcp_top_level_nodes": 8,
+    "native_edited_at": "2026-11-18T21:35:00.000Z",
+    "native_image_locators": [],
+    "native_top_level_nodes": 9,
+    "reason": "Native/MCP top-level coverage differs"
+  },
+  {
+    "code": "662",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T21:36:18.987Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:373fdded0813488b093d24f9ef71ec73bed39cae371dc451d420f0546cfbd54b"
+    ],
+    "mcp_top_level_nodes": 10,
+    "native_edited_at": "2026-11-18T21:36:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:6229d8c6a501a3f8b339016dcb609762cf6a6fa06401bb01ee5e1b726b05e313"
+    ],
+    "native_top_level_nodes": 10,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "786",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T16:46:53.390Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:ba4641845add9c61ff23dbf03d7818edef9cb86e3fc4536ddaa36e88d7eab757"
+    ],
+    "mcp_top_level_nodes": 9,
+    "native_edited_at": "2026-11-18T16:46:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:621f7aa88497071d2320ebd214b2971d927fbdb009f4153bdc3fab288a7e7858"
+    ],
+    "native_top_level_nodes": 9,
+    "reason": "Native/MCP property differs: Imagem principal"
+  },
+  {
+    "code": "840",
+    "eligible_operations": 0,
+    "image_bytes_compared": false,
+    "image_locators_equal": false,
+    "mcp_edited_at": "2026-11-18T16:49:03.810Z",
+    "mcp_image_locators": [
+      "notion-native-file-locator-sha256:196e5ff22c21afe7a0c0201a08f613478e5f2db69de1472912ca470500ec3f59"
+    ],
+    "mcp_top_level_nodes": 9,
+    "native_edited_at": "2026-11-18T16:49:00.000Z",
+    "native_image_locators": [
+      "notion-native-file-locator-sha256:0ae6389d131ece66a9f6b7fd669e02b6bb44fd5ad941e041a7f02e18c0c161aa"
+    ],
+    "native_top_level_nodes": 9,
+    "reason": "Native/MCP property differs: Imagem principal"
+  }
+]

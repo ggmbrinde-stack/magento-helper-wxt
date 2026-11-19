@@ -1,0 +1,6 @@
+{
+  "ReviewReference": "PP-NATIVE-CATALOGUE-20261119-READ11-GO",
+  "ImplementationSha256": "18e250a02fd40c0b9945893055678c9d662790ae9c3488850b6048141020ba9f",
+  "Scope": "GET_ONLY_ELEVEN_SPECIFIED_APRONS",
+  "NativeWrites": 0
+}

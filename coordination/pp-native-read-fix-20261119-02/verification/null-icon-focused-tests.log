@@ -1,0 +1,11 @@
+test_paragraph_null_icon_survives_capture_manifest_and_semantics (test_native_evidence.NativeTests.test_paragraph_null_icon_survives_capture_manifest_and_semantics) ... ok
+test_nonnull_paragraph_icons_and_unknown_attributes_still_block (test_native_evidence.NativeTests.test_nonnull_paragraph_icons_and_unknown_attributes_still_block) ... ok
+test_protected_paragraph_null_icon_is_not_erased_or_normalized (test_native_evidence.NativeTests.test_protected_paragraph_null_icon_is_not_erased_or_normalized) ... ok
+test_exact_proof_preserves_five_children_and_rejects_saved_change (test_native_evidence.NativeTests.test_exact_proof_preserves_five_children_and_rejects_saved_change) ... ok
+test_journal_before_write_then_native_readback_then_mcp (test_native_evidence.NativeFenceTests.test_journal_before_write_then_native_readback_then_mcp) ... ok
+test_native_postwrite_mismatch_is_uncertain (test_native_evidence.NativeFenceTests.test_native_postwrite_mismatch_is_uncertain) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.421s
+
+OK

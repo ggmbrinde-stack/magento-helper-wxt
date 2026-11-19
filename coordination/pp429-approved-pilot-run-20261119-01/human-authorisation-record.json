@@ -1,0 +1,10 @@
+{
+  "human_reply": "sim",
+  "scope": "APPLY_EXACT_REVIEWED_PP429_PLAN_AND_VERIFY_ONLY",
+  "recorded_at_utc": "2026-11-19T15:50:02.488757+00:00",
+  "implementation_sha256": "62cd6a3262e89f25c38d339c2798827445e790a5fae2d717aa0cc5bf4b85a444",
+  "plan_sha256": "45f367d0e5ed59bddc8c22d4d4f47ada8fd6f9e25443e06c87af97bc878120d4",
+  "review_reference": "PP-APRONS-429-20261119-REVIEW-GO",
+  "coordinator_thread": "01a1d6b9-82ed-7703-96b8-a4eabf543971",
+  "notion_writes_started": false
+}

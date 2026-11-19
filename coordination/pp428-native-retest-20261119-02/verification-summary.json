@@ -1,0 +1,30 @@
+{
+  "status": "VALIDATED_READ_ONLY_CAPTURE",
+  "page_code": "428",
+  "page_id": "074b6705ae1f8257a53701d87a64eb32",
+  "implementation_sha256": "9ba8b6f701b2cf588b407df20bf0cc279f084c71d7e44b6bbfbe73b7f619b40d",
+  "review_reference": "PP-NATIVE-READ-FIX-02-20261119-GET428-GO",
+  "manifest_sha256": "7808417b3db05acf8b60527ed5f87fc42664deac5d071088da3ab2dbcf91d696",
+  "snapshot_sha256": "dcbb77a8aa22219192a4d00746718e3a6a696eccdef44deb1e32fe9da10bd41d",
+  "persistence_policy": "NATIVE_HOSTED_FILE_LOCATORS_SHA256_V1",
+  "distinct_blocks": 60,
+  "block_types": {
+    "image": 1,
+    "paragraph": 8,
+    "callout": 1,
+    "to_do": 2,
+    "column_list": 1,
+    "column": 2,
+    "heading_2": 4,
+    "table": 3,
+    "table_row": 22,
+    "bulleted_list_item": 15,
+    "toggle": 1
+  },
+  "initial_child_responses": 11,
+  "confirmation_child_responses": 11,
+  "page_last_edited_time": "2026-11-18T16:33:00.000Z",
+  "native_writes": 0,
+  "conversion_plan_approved": false,
+  "raw_http_or_image_bytes_proved": false
+}

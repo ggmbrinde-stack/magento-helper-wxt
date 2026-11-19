@@ -1,0 +1,27 @@
+{
+  "page_code": "429",
+  "read_only_reconciliation": true,
+  "journal_status_unchanged": "UNCERTAIN",
+  "original_plan_sha256": "45f367d0e5ed59bddc8c22d4d4f47ada8fd6f9e25443e06c87af97bc878120d4",
+  "first_operation": "429-full-body-1",
+  "mcp_body_exactly_matches_first_operation": false,
+  "mcp_metadata_still_matches_preproperty_state": true,
+  "current_estado": "A rever",
+  "property_operations_attempted": false,
+  "remaining_body_operations_attempted": false,
+  "native_event_file": "C:\\Users\\user\\Videos\\BestOfGifts_Master\\magento-helper-wxt\\coordination\\pp429-approved-pilot-run-20261119-01\\pilot-429.json.event-ab508ac5ed4d4142b2b25f97d669e630.json",
+  "native_event_sha256": "280dc27bd97fad84528b6b16f9d89d6721d5b2784d512e44576261f0d917c910",
+  "no_replayed_writes": true,
+  "mcp_write_response": {
+    "content": [
+      {
+        "text": "{\"page_id\":\"137b6705-ae1f-8204-8ef1-810070095cf0\"}",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": null
+  },
+  "native_first_operation_readback": "BLOCKED",
+  "native_reason": "Native saved structure differs"
+}

@@ -1,0 +1,13 @@
+--- 661-before
++++ 661-after
+@@ -31,8 +31,8 @@
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+ | Peito | DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | DTF A4 e Bordado 240 cm² provisórios; Transfer 1 Cor já existe no Excel mas não em IMP → New |
+-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |
+-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7 registado na origem; confirmar técnica em cânhamo |
++| Bolso Esquerdo | Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | Transfer 1 Cor já existe no Excel, mas não consta das opções IMP → New |
++| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS)<br />Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA) | DTF A7 registado na origem; confirmar técnica em cânhamo |
+ 
+ <toggle>
+ Pendências técnicas

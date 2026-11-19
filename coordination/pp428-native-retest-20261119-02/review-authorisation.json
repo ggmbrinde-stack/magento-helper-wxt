@@ -1,0 +1,6 @@
+{
+  "ReviewReference": "PP-NATIVE-READ-FIX-02-20261119-GET428-GO",
+  "ImplementationSha256": "9ba8b6f701b2cf588b407df20bf0cc279f084c71d7e44b6bbfbe73b7f619b40d",
+  "Scope": "GET_ONLY_PP428_CANONICAL_CAPTURE",
+  "NativeWrites": 0
+}

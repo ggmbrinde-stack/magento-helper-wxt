@@ -1,0 +1,1878 @@
+--- accepted/source/batch_apply.py
++++ source/batch_apply.py
+@@ -58,6 +58,10 @@
+     for path,expected in [(proof['workbook'],proof['workbook_sha256']),(bundle['evidence_path'],proof['evidence_sha256'])]:
+         with Path(path).open('rb') as file:
+             if hashlib.file_digest(file,'sha256').hexdigest()!=expected:raise SourceGuardError('Workbook/evidence changed')
++    if bundle.get('full_scope'):
++        import full_excel
++        if full_excel.file_sha(bundle['inventory_path'])!=bundle['inventory_sha256']:
++            raise SourceGuardError('Reviewed Working Copy inventory changed')
+ 
+ 
+ def validated_payload(op,page_id,method=False,status=False):
+@@ -74,7 +78,7 @@
+             r.parse(edit['new_str'])
+     elif command=='insert_content':
+         if set(payload)!={'command','page_id','position','content'} or payload['position']!={'type':'end'} or not isinstance(payload['content'],str) or not payload['content']:raise ValueError('Only explicit reviewed append is allowed')
+-        r.parse(payload['content'])
++        if not method:r.parse(payload['content'])
+     elif command=='update_properties':
+         allowed=set(b.PROPERTIES)|({'Estado'} if status else set())
+         if set(payload)!={'command','page_id','properties'} or not payload['properties'] or set(payload['properties'])-allowed:raise ValueError('Unapproved property operation')
+@@ -113,12 +117,17 @@
+         self.bundle=bundle;self.fake=fake
+         self.isolated=bool(bundle.get('page_failure_isolation'))
+         validation=bundle.get('validation_policy')
+-        self.method=isinstance(validation,dict) and validation.get('name')==method_plan.NAME
++        self.full=isinstance(validation,dict) and validation.get('name')=='PP_FULL_CONVERSION'
++        self.method=self.full or isinstance(validation,dict) and validation.get('name')==method_plan.NAME
+         if self.method:
+             if r.digest(bundle['target_manifest'])!=bundle.get('target_manifest_sha256'):raise ValueError('Reviewed target manifest hash mismatch')
+             method_targets.configure(bundle['target_manifest'])
+         self.scoped=validation is not None
+-        if self.scoped and validation!=(method_plan.policy() if self.method else scoped.policy()):raise ValueError('Targeted policy/contract changed')
++        if self.full:
++            import full_regions
++            expected_policy=full_regions.policy()
++        else:expected_policy=method_plan.policy() if self.method else scoped.policy()
++        if self.scoped and validation!=expected_policy:raise ValueError('Targeted policy/contract changed')
+         if bundle.get('version')==5 and not self.scoped:raise ValueError('V5 requires the reviewed targeted policy')
+         if approval.get('plan_sha256')!=r.digest(bundle) or approval.get('implementation_sha256')!=bundle['implementation_sha256'] or bundle['implementation_sha256']!=b.implementation_sha():
+             raise ValueError('Plan/implementation approval hash mismatch')
+@@ -147,7 +156,7 @@
+             if any(not o.get('eligible') for o in ops):raise ValueError('Operation lacks required region/property evidence')
+             for op in ops:
+                 payload=validated_payload(op,page['page_id'],self.method,self.isolated and op['kind']=='success_status')
+-                if self.scoped and payload['command'] not in (('update_content','update_properties') if self.method else ('update_content',)):raise ValueError('Targeted contract forbids this command')
++                if self.scoped and payload['command'] not in (('update_content','update_properties','insert_content') if self.full else ('update_content','update_properties') if self.method else ('update_content',)):raise ValueError('Targeted contract forbids this command')
+             queue.append({'page':copy.deepcopy(page),'ops':ops})
+         if allowed!=expected:raise ValueError('Approval must include every selected body operation and only reviewed resolved property operations')
+         if not reconcile_only:verify_sources(bundle,fake)
+@@ -195,7 +204,7 @@
+                 if not item['ops']:
+                     state['receipts'].append({'code':page['code'],'status':'NO_OP'});return self.next_page(state)
+                 if self.scoped:
+-                    if self.method and self.bundle.get('pocket_scope'):
++                    if self.full or self.method and self.bundle.get('pocket_scope'):
+                         return self.issue(state,'FETCH_RULES',{'id':b.HOME,'include_file_urls':False,'include_discussions':False})
+                     if self.method and item['ops'][state['op_index']]['kind']=='properties':
+                         return self.issue(state,'FETCH_SCHEMA',{'id':b.COLLECTION,'include_file_urls':False})
+@@ -209,10 +218,16 @@
+                 if self.scoped:
+                     op=item['ops'][state['op_index']]
+                     if self.method and op['kind']=='properties':
+-                        if self.bundle.get('pocket_scope'):pocket_plan.validate_properties(current,op['payload'],state['current_schema'],self.bundle['pocket_scope']['locations'][page['code']])
++                        if self.full:
++                            import full_conversion
++                            full_conversion.validate_properties(current,op['payload'],state['current_schema'])
++                        elif self.bundle.get('pocket_scope'):pocket_plan.validate_properties(current,op['payload'],state['current_schema'],self.bundle['pocket_scope']['locations'][page['code']])
+                         else:method_plan.validate_properties(current,op['payload'],state['current_schema'])
+                     else:
+-                        evidence=native_rows.inspect(current,op['payload']) if self.method else scoped.inspect_operation(current,op['payload'])
++                        if self.full:
++                            import full_regions
++                            evidence=full_regions.inspect(current,op['payload'],page.get('bounded_region_evidence'))
++                        else:evidence=native_rows.inspect(current,op['payload']) if self.method else scoped.inspect_operation(current,op['payload'])
+                         if not evidence['eligible'] or evidence!=op['region_evidence']:
+                             return self.stop(state,'BLOCKED','Affected section or its reviewed evidence is not valid')
+                     state['last_before_body']=current['body']
+@@ -228,7 +243,10 @@
+                 op=item['ops'][state['op_index']]
+                 try:
+                     if self.method:
+-                        matched=(current['body']==state['last_before_body'] if op['kind']=='properties' else native_rows.saved(state['last_before_body'],current['body'],op['payload']))
++                        if self.full:
++                            import full_regions
++                            matched=current['body']==state['last_before_body'] if op['kind']=='properties' else full_regions.saved(state['last_before_body'],current['body'],op['payload'])
++                        else:matched=(current['body']==state['last_before_body'] if op['kind']=='properties' else native_rows.saved(state['last_before_body'],current['body'],op['payload']))
+                     else:matched=scoped.saved_result(state['last_before_body'],current['body'],op['payload'])
+                     matched=matched and b.stable_metadata(current)==state['expected_metadata']
+                 except ValueError:matched=False
+@@ -244,7 +262,11 @@
+             if state['op_index']==len(item['ops']):return self.next_page(state)
+             return self.fetch(state)
+         if phase=='FETCH_RULES':
+-            try:pocket_plan.verify_source(result,self.bundle['pocket_scope']['source'])
++            try:
++                if self.full:
++                    import full_conversion
++                    full_conversion.verify_rules(result,self.bundle['full_scope']['rules_sha256'])
++                else:pocket_plan.verify_source(result,self.bundle['pocket_scope']['source'])
+             except ValueError as error:return self.stop(state,'STALE',str(error))
+             if item['ops'][state['op_index']]['kind']=='properties':return self.issue(state,'FETCH_SCHEMA',{'id':b.COLLECTION,'include_file_urls':False})
+             return self.fetch(state,'FETCH_PREWRITE')
+--- accepted/source/batch_cli.py
++++ source/batch_cli.py
+@@ -15,6 +15,8 @@
+ import method_plan
+ import pocket_plan
+ import batch_prepare
++import full_conversion
++import full_excel
+ 
+ 
+ def load(path):
+@@ -73,15 +75,22 @@
+     for name in ('captures','workbook','evidence','output'):prep.add_argument('--'+name,type=Path,required=True)
+     inspect=sub.add_parser('inspect');inspect.add_argument('--plan',type=Path,required=True)
+     bridge=sub.add_parser('bridge-source')
++    prepbridge=sub.add_parser('prepare-bridge-source')
+     method=sub.add_parser('prepare-method')
+     for name in ('captures','workbook','evidence','manifest','output'):method.add_argument('--'+name,type=Path,required=True)
+     pocket=sub.add_parser('prepare-pocket');pocket.add_argument('--captures',type=Path,required=True);pocket.add_argument('--output',type=Path,required=True)
+     pocket.add_argument('--codes',nargs='+',choices=list(pocket_plan.IDS))
+     batch=sub.add_parser('prepare-batch');batch.add_argument('--captures',type=Path,required=True);batch.add_argument('--output',type=Path,required=True);batch.add_argument('--codes',nargs='+',choices=list(pocket_plan.IDS))
++    full=sub.add_parser('prepare-full')
++    for name in ('captures','workbook','index','inventory','output'):full.add_argument('--'+name,type=Path,required=True)
++    full.add_argument('--codes',nargs='+',required=True);full.add_argument('--contexts',type=Path)
++    index=sub.add_parser('index-workbook');index.add_argument('--workbook',type=Path,required=True);index.add_argument('--output',type=Path,required=True)
++    coverage=sub.add_parser('inventory');coverage.add_argument('--index',type=Path,required=True);coverage.add_argument('--inventory',type=Path,required=True)
++    selection=sub.add_parser('selection');selection.add_argument('--inventory',type=Path,required=True);selection.add_argument('--codes',nargs='+',required=True)
+     for command in ('session-start','session-step','session-reconcile','session-cancel','session-continue'):
+         action=sub.add_parser(command);action.add_argument('--plan',type=Path,required=True);action.add_argument('--approval',type=Path,required=True)
+         action.add_argument('--approved-plan-sha',required=True);action.add_argument('--apply',action='store_true')
+-        if command=='session-reconcile':action.add_argument('--code',choices=list(pocket_plan.IDS))
++        if command=='session-reconcile':action.add_argument('--code')
+         if command=='session-step':
+             event=action.add_mutually_exclusive_group(required=True)
+             event.add_argument('--event-base64');event.add_argument('--event-file',type=Path)
+@@ -90,15 +99,25 @@
+     elif args.command=='prepare-method':result=method_plan.prepare(args.captures,args.workbook,args.evidence,args.manifest,args.output)
+     elif args.command=='prepare-pocket':result=pocket_plan.prepare(args.captures,args.output,args.codes)
+     elif args.command=='prepare-batch':result=batch_prepare.prepare(args.captures,args.output,args.codes)
+-    elif args.command=='bridge-source':
+-        path=Path(__file__).with_name('session_bridge.js');result={'source':path.read_text(encoding='utf-8'),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
++    elif args.command=='prepare-full':result=full_conversion.prepare(args.captures,args.workbook,args.index,args.inventory,args.codes,args.output,args.contexts)
++    elif args.command=='index-workbook':
++        value=full_excel.index(args.workbook);a.atomic(args.output,value)
++        result={'records':len(value['records']),'duplicates':value['duplicate_codes'],'source':value['source']}
++    elif args.command=='inventory':result=full_excel.coverage(load(args.index),load(args.inventory))
++    elif args.command=='selection':
++        rows=full_excel.inventory(load(args.inventory))
++        if len(args.codes)!=len(set(args.codes)) or set(args.codes)-set(rows):raise ValueError('Selection differs from reviewed inventory')
++        result={'collection':b.COLLECTION,'working_copy':b.HOME,'pages':[{'code':c,'page_id':full_conversion.page_id(rows[c]['url'])} for c in args.codes if c!='601'],'excluded_protected_codes':[c for c in args.codes if c=='601']}
++    elif args.command in ('bridge-source','prepare-bridge-source'):
++        path=Path(__file__).with_name('prepare_bridge.js' if args.command=='prepare-bridge-source' else 'session_bridge.js');result={'source':path.read_text(encoding='utf-8'),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+     else:
+         bundle=load(args.plan)
+         if args.command=='inspect' or not args.apply:
+             result={'dry_run':True,'plan_sha256':r.digest(bundle),'implementation_sha256':bundle['implementation_sha256'],
+                     'validation_policy':bundle.get('validation_policy'),
+                     'working_copy':bundle.get('working_copy',b.HOME),
+-                    'collection':bundle['collection'],'pages':[{'code':p['code'],'page_id':p['page_id'],'status':p['status'],'reasons':p['reasons']} for p in bundle['pages']]}
++                    'collection':bundle['collection'],'pages':[{'code':p['code'],'page_id':p['page_id'],'status':p['status'],'reasons':p['reasons'],
++                        **({'method_complete':p['method_complete'],'technical_unresolved':p['technical_unresolved'],'preparation_error':p.get('full_prepare_error')} if bundle.get('full_scope') else {})} for p in bundle['pages']]}
+         else:
+             if args.approved_plan_sha!=r.digest(bundle):raise ValueError('Operator supplied a different approved plan hash')
+             approval=load(args.approval)
+--- accepted/source/batch_plan.py
++++ source/batch_plan.py
+@@ -67,7 +67,9 @@
+ 
+ def verify_home(response):
+     value=response.get('structuredContent',{})
+-    if response.get('isError') or value.get('id','').replace('-','')!=HOME or value.get('title')!='PP - Catalog v2 (Working Copy)' or COLLECTION not in value.get('text',''):
++    identity=value.get('id','')
++    identity=r.notion_url_id(identity) if identity.startswith('https://') else identity.replace('-','')
++    if response.get('isError') or identity!=HOME or value.get('title')!='PP - Catalog v2 (Working Copy)' or COLLECTION not in value.get('text',''):
+         raise ValueError('Working-copy home identity mismatch')
+ 
+ 
+@@ -302,5 +304,5 @@
+ 
+ def implementation_sha():
+     root=Path(__file__).resolve().parent
+-    names=['batch_plan.py','excel_proof.py','catalog_names.py','batch_apply.py','batch_cli.py','session_bridge.js','rendered_layout.py','format_layout.py','targeted_section.py','targeted-contract.json','native_rows.py','method_plan.py','method_targets.py','method-contract.json','pocket_plan.py','page_batch.py','batch_prepare.py']
++    names=['batch_plan.py','excel_proof.py','catalog_names.py','batch_apply.py','batch_cli.py','session_bridge.js','rendered_layout.py','format_layout.py','targeted_section.py','targeted-contract.json','native_rows.py','method_plan.py','method_targets.py','method-contract.json','pocket_plan.py','page_batch.py','batch_prepare.py','full_excel.py','full_regions.py','full_conversion.py','importar_pp.py','format_coverage.py','prepare_bridge.js']
+     return r.digest({n:hashlib.sha256((root/n).read_bytes()).hexdigest() for n in names})
+--- accepted/source/format_coverage.py
++++ source/format_coverage.py
+@@ -0,0 +1,117 @@
++"""Read-only format coverage of actual workbook cells, styles, merges and known cases."""
++import collections
++import json
++from pathlib import Path
++import re
++
++import importar_pp as reader
++import full_excel
++
++
++def inspect(workbook, index):
++    book = reader.Excel(workbook)
++    try:
++        report = {'workbook_sha256': reader.digest(workbook), 'worksheets': {}, 'cases': {}, 'blocks': [],
++                  'scope': 'Actual workbook structure and reader output; not counts as a claim of correct grouping'}
++        rich = {''.join(e.itertext()) for e in book.xml('xl/sharedStrings.xml') if e.findall('s:r', reader.NS)}
++        for name in reader.SHEETS:
++            sheet = book.sheets[name]; cells = sheet['cells']; borders = collections.Counter(); examples = {}
++            multiline = []; rich_cells = []
++            for (col, row), cell in cells.items():
++                if cell['value'] is None: continue
++                address = reader.addr(col, row)
++                if '\n' in str(cell['value']): multiline.append({'cell': address, 'raw': cell['value']})
++                if cell['value'] in rich: rich_cells.append({'cell': address, 'raw': cell['value']})
++                top = book.borders[int(book.styles[cell['style']].get('borderId', '0'))].find('s:top', reader.NS)
++                if top is not None and top.get('style'):
++                    color = top.find('s:color', reader.NS)
++                    family = 'default' if color is None else next(iter(color.attrib), 'default')
++                    borders[family] += 1
++                    examples.setdefault(family, {'cell': address, 'style': top.get('style'), 'color': dict(color.attrib) if color is not None else None})
++            records = [x for x in index['records'] if x['source'].startswith(name + '!')]
++            heights = [int(re.search(r':\D+(\d+)$', x['source'])[1]) - int(re.search(r'!\D+(\d+):', x['source'])[1]) + 1 for x in records]
++            report['worksheets'][name] = {'records': len(records), 'block_height_min': min(heights), 'block_height_max': max(heights),
++                'merges': sheet['merges'], 'top_border_kinds': dict(borders), 'border_examples': examples,
++                'multiline_cells': multiline, 'rich_text_cells': rich_cells,
++                'blank_spacing_examples': [reader.addr(c, r) for (c, r), v in cells.items() if isinstance(v['value'], str) and v['value'] and not v['value'].strip()][:12],
++                'visto_cells': [{'cell':reader.addr(c,r),'raw':v['value']} for (c,r),v in cells.items() if reader.clean(v['value']).upper().startswith('VISTO')]}
++        for record in index['records']:
++            name, span = record['source'].split('!'); sheet = book.sheets[name]
++            left, top = reader.parts(span.split(':')[0]); right, bottom = reader.parts(span.split(':')[1])
++            errors = []
++            if right-left != 3 or left not in reader.SHEETS[name][1]: errors.append('Column band is not an explicit source band')
++            code_cell = sheet['cells'].get((left, top), {})
++            if reader.clean(code_cell.get('value')) != record['code']: errors.append('Code/header binding differs')
++            options = collections.defaultdict(list)
++            for number, group in enumerate(record['groups']):
++                for option in group['options']: options[option['cell']].append(number)
++            accounted = []
++            for row in range(top, bottom+1):
++                for col in (left+2, left+3):
++                    address = reader.addr(col, row); value = sheet['cells'].get((col,row), {}).get('value')
++                    text = reader.clean(value); groups = []
++                    if not text: reason = 'BLANK'
++                    elif text.upper() in reader.HEADERS: reason = 'HEADER'
++                    elif col == left+3:
++                        groups = options.get(address, [])
++                        if len(groups) == 1: reason = 'GROUP_OPTION'
++                        elif not reader.option_tech(text): reason = 'UNKNOWN_OPTION_TEXT_REQUIRES_REVIEW'
++                        else: reason = 'OPTION_ACCOUNTING_ERROR'; errors.append(address+': option counted '+str(len(groups))+' times')
++                    else:
++                        groups = [i for i,g in enumerate(record['groups']) if text in g['locals']]
++                        if len(groups) == 1: reason = 'GROUP_LOCATION'
++                        elif len(groups)>1: reason = 'REPEATED_LOCATION_LABEL_REQUIRES_REVIEW'
++                        else: reason = 'UNACCOUNTED_LOCATION'; errors.append(address+': location missing from groups')
++                    accounted.append({'cell':address, 'classification':reason, 'groups':groups, 'raw':value})
++            merges = []
++            for merge in sheet['merges']:
++                begin,end = merge.split(':') if ':' in merge else (merge,merge)
++                x1,y1=reader.parts(begin);x2,y2=reader.parts(end)
++                if x1<=right and x2>=left and y1<=bottom and y2>=top:
++                    merges.append({'range':merge,'intersects_location_or_option':x2>=left+2})
++            report['blocks'].append({'code':record['code'],'source':record['source'],'code_cell':reader.addr(left,top),
++                'boundary':{'first_row':top,'last_row':bottom,'first_column':left,'last_column':right},
++                'relevant_cells':accounted,'notes_and_description':[{**x} for x in record['raw'] if reader.parts(x['cell'])[0]==left+1],
++                'groups':record['groups'],'merges':merges,'images':record['images'],'comments':record['comments'],
++                'reader_flags':record['review_flags'],'reader_blocked':record['blocked'],'structural_errors':errors,
++                'neighbour_columns_included':any(not left<=reader.parts(x['cell'])[0]<=right for x in record['raw']),
++                'visto_column_included':any(reader.clean(x['value']).upper().startswith('VISTO') for x in record['raw'])})
++        for code in ('33', '39', '42', '50', '261', '262', '430', '558', '661', '662', '786', '840'):
++            record = full_excel.record(index, code)
++            sheet_name, span = record['source'].split('!'); sheet = book.sheets[sheet_name]
++            left, top = reader.parts(span.split(':')[0]); right, bottom = reader.parts(span.split(':')[1])
++            merges = []
++            for merge in sheet['merges']:
++                begin, end = merge.split(':') if ':' in merge else (merge, merge)
++                x1, y1 = reader.parts(begin); x2, y2 = reader.parts(end)
++                if x1 <= right and x2 >= left and y1 <= bottom and y2 >= top: merges.append(merge)
++            scoped = []
++            for (col, row), cell in sheet['cells'].items():
++                if left <= col <= right and top <= row <= bottom and cell['value'] is not None:
++                    scoped.append({'cell': reader.addr(col, row), 'raw': cell['value'], 'style': cell['style'],
++                                   'separator': book.separator(cell, allow_automatic=bool(col == left+2 and reader.clean(cell['value'])))})
++            report['cases'][code] = {'source': record['source'], 'groups': record['groups'], 'cells': scoped,
++                                    'merges': merges, 'images': record['images'], 'excel_comments': record['comments']}
++        report['notes'] = [
++            'Shared multi-location groups remain shared; no physical per-row option allocation is inferred.',
++            'PP558 left Transfer and right DTF are separate original groups.',
++            'PP661 source image list is checked directly; absence does not create a placeholder.',
++            'Merged cells are reported and intersected with source ranges; no propagation of merged values is guessed.',
++            'Multiline cells retain raw values. A second recognised technique on a later line is refused for manual grouping review.'
++        ]
++        report['all_blocks_summary']={'blocks':len(report['blocks']),
++            'structural_errors':sum(bool(x['structural_errors']) for x in report['blocks']),
++            'cells_by_classification':dict(collections.Counter(c['classification'] for x in report['blocks'] for c in x['relevant_cells'])),
++            'orphan_blocks':index['orphans'],'unknown_option_text':index['unknown_option_text'],
++            'duplicate_occurrences':index['duplicate_codes']}
++        return report
++    finally: book.close()
++
++
++if __name__ == '__main__':
++    import argparse
++    parser = argparse.ArgumentParser(); parser.add_argument('--workbook', required=True); parser.add_argument('--index', required=True); parser.add_argument('--output', required=True)
++    args = parser.parse_args(); value = inspect(args.workbook, json.loads(Path(args.index).read_text(encoding='utf-8')))
++    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
++    Path(args.output).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
++    print(json.dumps({'worksheets': {k: {'merges': len(v['merges']), 'multiline': len(v['multiline_cells']), 'richtext': len(v['rich_text_cells']), 'borders': v['top_border_kinds']} for k,v in value['worksheets'].items()}}))
+--- accepted/source/full_conversion.py
++++ source/full_conversion.py
+@@ -0,0 +1,463 @@
++"""Full-page source-backed PP conversion plans. No network access or Notion writer."""
++import collections
++import copy
++import difflib
++import html
++import json
++from pathlib import Path
++import re
++import uuid
++
++import batch_apply as a
++import batch_plan as b
++import full_excel as excel
++import full_regions as regions
++import method_plan as rules
++import method_targets
++import page_batch
++import rendered_layout as r
++from catalog_names import option_name, option_tech
++
++VERSION = 'PP_FULL_CONVERSION_V1'
++POCKET_CODES = {'428', '430', '558', '661', '662'}
++POCKET_TRANSFER = 'Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)'
++
++
++def load(path):
++    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
++
++
++def page_id(value):
++    return r.notion_url_id(value) if value.startswith('https://') else uuid.UUID(value).hex
++
++
++def rule_source(response):
++    if response.get('isError'):
++        raise ValueError('Leitura das regras falhou')
++    value = response['structuredContent']
++    if len(response.get('content', [])) != 1 or json.loads(response['content'][0]['text']) != value:
++        raise ValueError('Representações das regras em conflito')
++    if page_id(value['id']) != b.HOME:
++        raise ValueError('Página de regras fora da Working Copy')
++    for extra in (value, value.get('metadata', {}), response.get('_meta', {})):
++        for name, expected in {'truncated': False, 'unknown_block_count': 0, 'unknown_block_ids': []}.items():
++            if name in extra and (type(extra[name]) is not type(expected) or extra[name] != expected):
++                raise ValueError('As regras têm conteúdo omitido ou truncado')
++    text = value['text']
++    tabs = {}
++    for title in ('IMP', 'Regras de Atualização'):
++        found = re.findall(r'<tab[^>]*>\s*' + re.escape(title) + r'\s+([\s\S]*?)</tab>', text)
++        if len(found) != 1:
++            raise ValueError('Separador de regras ausente ou repetido: ' + title)
++        tabs[title] = found[0]
++    return tabs
++
++
++def verify_rules(response, expected):
++    if r.digest(rule_source(response)) != expected:
++        raise a.SourceGuardError('As regras IMP/Regras mudaram desde a revisão do plano')
++
++
++def catalog(tabs):
++    matches = re.findall(r'<column[^>]*>\s*New\s+([\s\S]*?)</column>', tabs['IMP'])
++    if len(matches) != 1:
++        raise ValueError('É necessária a coluna IMP New exacta')
++    return list(dict.fromkeys(b.lines(m[2:])[0] for m in matches[0].splitlines()
++                             if m.startswith('- ') and len(b.lines(m[2:])) == 1 and option_tech(b.lines(m[2:])[0])))
++
++
++def category(record, context):
++    if context.get('category'):
++        return context['category']
++    text = rules.key(record['title'] + ' ' + record['description'])
++    if 'avental' in text:
++        return 'APRON_SET' if 'conj' in text else 'APRON'
++    if any(x in text for x in ('bone', 'panama', 'gorro', 'boina')):
++        return 'CAP'
++    if 'guarda-sol' in text or 'guarda-sois' in text:
++        return 'PARASOL'
++    if 'guarda-chuva' in text:
++        return 'UMBRELLA'
++    if 'manta' in text:
++        return 'BLANKET'
++    if 'toalha' in text:
++        if any(x in text for x in ('banho', 'praia')): return 'TOWEL_LARGE'
++        if any(x in text for x in ('pequena', 'social', 'mao', 'rosto')): return 'TOWEL_SMALL'
++    if any(x in text for x in ('bloco', 'agenda', 'caderno')):
++        return 'NOTEBOOK'
++    if 'garrafa' in text:
++        return 'BOTTLE'
++    if any(x in text for x in ('saco', 'mochila', 'bolsa', 'necessaire')):
++        if 'grande' in text: return 'BAG_LARGE'
++        if 'pequen' in text: return 'BAG_SMALL'
++        return 'BAG_UNKNOWN_SIZE'
++    if 'sublim' in text:
++        return 'SUBLIMATION'
++    if record['area'] == 'Têxtil':
++        return 'TEXTILE'
++    return 'GENERAL'
++
++
++def same_option(value, candidates):
++    # Exact business fields, not fuzzy names or page-to-page option copying.
++    try: name = option_name(value)
++    except ValueError: return []
++    return [x for x in candidates if option_name(x) == name]
++
++
++def generate(record, context, choices):
++    kind = category(record, context)
++    output, questions, changes = [], [], []
++    for group in record['groups']:
++        locations = group['locals']
++        sizes = {rules.reference(kind, loc, context) for loc in locations}
++        size = next(iter(sizes)) if len(sizes) == 1 else None
++        if kind in ('NOTEBOOK', 'SUBLIMATION') and not size:
++            explicit = re.findall(r'\bA[1-8]\b', record['title'] + ' ' + record['description'])
++            if len(set(explicit)) == 1: size = explicit[0]
++        originals = [x['original'] for x in group['options']]
++        selected, pending = [], []
++        if not originals:
++            pending.append('Área ou opções não definidas na origem Excel')
++        for original in originals:
++            tech = option_tech(original)
++            if tech == 'Transfer Digital':
++                changes.append({'locations': locations, 'before': original, 'after': None,
++                                'reason': 'Transfer Digital Têxtil retirado por decisão humana'})
++                continue
++            candidates = [x for x in choices if option_tech(x) == tech]
++            if kind == 'SUBLIMATION' and tech != 'Sublimação':
++                pending.append('Artigo de sublimação com outra técnica na origem: ' + original)
++                continue
++            if tech == 'Transfer' and record['code'] in POCKET_CODES and all('bolso' in rules.key(x) for x in locations) and '126' in original:
++                wanted = [POCKET_TRANSFER]
++            elif tech in ('DTF', 'Flex', 'Bordado', 'Estamparia', 'Sublimação') and size:
++                wanted = [x for x in candidates if re.search(r'\b' + size + r'\b', x)]
++            elif kind == 'BOTTLE' and tech in ('UV Circular', 'Laser Circular', 'Serigrafia Circular'):
++                # Compatibility is evidenced by the technique on this own source group.
++                limit = {'UV Circular': '260', 'Laser Circular': '50', 'Serigrafia Circular': '1 Cor'}[tech]
++                wanted = [x for x in candidates if re.search(r'(?<!\d)' + re.escape(limit) + r'(?!\d)', x)] if re.search(r'(?<!\d)' + re.escape(limit) + r'(?!\d)', original) else []
++            else:
++                wanted = same_option(original, candidates)
++            decision = context.get('confirmed_options', {}).get('|'.join(locations))
++            if decision:
++                if decision.get('human_confirmed') is not True or not decision.get('evidence_reference'):
++                    raise ValueError('Escolhas específicas exigem referência humana explícita')
++                allowed = set(choices) | set(context.get('confirmed_catalog_exceptions', []))
++                if not decision.get('options') or set(decision['options']) - allowed:
++                    raise ValueError('Escolha fora do catálogo e das excepções revistas')
++                selected = decision['options'][:]
++                pending = []
++                break
++            if len(wanted) == 1:
++                selected.append(wanted[0])
++                if wanted[0] != original:
++                    changes.append({'locations': locations, 'before': original, 'after': wanted[0], 'reference_size': size})
++            else:
++                selected.append(original)
++                pending.append('Sem correspondência única aprovada em IMP New: ' + original)
++            if tech == 'Tampografia' and re.search(r'\b2\s*Cor', original, re.I):
++                pending.append('Tampografia 2 cores: decisão de negócio ainda pendente')
++            if kind in ('APRON', 'APRON_SET') and any('caixa' in rules.key(x) for x in locations):
++                pending.append('Caixa: confirmar material e processo/área próprios')
++            if kind == 'BAG_UNKNOWN_SIZE':
++                pending.append('Saco/bolsa: falta confirmar se é pequeno ou grande')
++            if kind in ('NOTEBOOK', 'SUBLIMATION') and not size:
++                pending.append('Falta dimensão do artigo na origem ou no contexto revisto')
++        selected = list(dict.fromkeys(selected))
++        if not selected:
++            pending.append('Não há opções New confirmadas para este grupo')
++        output.append({'locations': locations, 'options': selected, 'shared_source_group': len(locations) > 1})
++        questions.extend(' / '.join(locations) + ': ' + q for q in pending)
++    return output, list(dict.fromkeys(questions)), changes, kind
++
++
++def table(groups):
++    rows = [['Face / local', 'Opções completas e especificações']]
++    rows += [['<br />'.join(b.inline(x) for x in g['locations']),
++              '<br />'.join(b.inline(x) for x in g['options']) or 'Por confirmar na origem'] for g in groups]
++    return r.xml_table(r.Node('table', '', rows=rows))
++
++
++def own_review(nodes, code):
++    values = [n for n in r.descend(nodes) if r.review_state(n, code) is not None]
++    if len(values) > 1: raise ValueError('Decisão Sim/Não repetida')
++    if values: return values[0].raw
++    return ('<callout icon="📝">\n<b>Revisão do PP ' + code + '</b>\n\n'
++            '- [ ] Sim, aprovo a configuração New do PP ' + code + '.\n'
++            '- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>')
++
++
++def notes(nodes):
++    result = []
++    def visit(items, side='Old', in_column=False):
++        for node in items:
++            if node.kind == 'heading':
++                title = rules.key(node.title)
++                if 'proposta' in title or title.startswith('new'): side = 'New'
++                if title.startswith(('old', 'antes')): side = 'Old'
++            if node.kind == 'table' and len(node.rows[0]) > 2 and 'local' in rules.key(node.rows[0][0]):
++                for row in node.rows[1:]:
++                    for value in row[2:]:
++                        if value.strip(): result.append({'side': side, 'location': row[0], 'text': value})
++            if node.kind in ('columns', 'column'):
++                visit(node.items, side, True)
++            elif in_column and node.kind not in ('table', 'heading', 'image'):
++                result.append({'side':side,'location':'Geral','text':node.raw})
++    visit(nodes)
++    return result
++
++
++def preserve_current_extras(state, record, new, questions):
++    nodes = regions.parse(state['body'])
++    active = [n for n in nodes if n.kind != 'toggle' or n.title not in (r.SOURCE, r.HISTORY, 'Fonte')]
++    originals = [n for n in r.descend(active) if n.kind == 'table' and len(n.rows[0]) >= 2
++                 and 'local' in rules.key(n.rows[0][0]) and 'propost' not in rules.key(n.rows[0][1])]
++    try:
++        _, sides = r.body_sections(nodes)
++        originals = [n for n in sides['Old'].items if n.kind == 'table']
++    except ValueError: pass
++    for table_node in originals:
++        for row in table_node.rows[1:]:
++            locs = {rules.key(x) for x in b.lines(row[0])}
++            groups = [g for g in new if {rules.key(x) for x in g['locations']} == locs]
++            source_groups = [g for g in record['groups'] if {rules.key(x) for x in g['locals']} == locs]
++            if len(groups) != 1 or len(source_groups) != 1:
++                continue
++            source_names = {option_name(x['original']) for x in source_groups[0]['options']}
++            for value in b.lines(row[1]):
++                if option_tech(value) and option_name(value) not in source_names:
++                    if value not in groups[0]['options']: groups[0]['options'].append(value)
++                    questions.append(' / '.join(groups[0]['locations']) + ': opção actual ausente do Excel, preservada até revisão: ' + value)
++    return list(dict.fromkeys(questions))
++
++
++def validate_layout(body, code):
++    nodes=regions.parse(body); columns,sides=r.body_sections(nodes)
++    reviews=[n for n in nodes if r.review_state(n,code) is not None]
++    technical=[n for n in nodes if n.kind=='toggle' and n.title==r.TECH]
++    sources=[n for n in nodes if n.kind=='toggle' and n.title in (r.SOURCE,'Fonte')]
++    histories=[n for n in nodes if n.kind=='toggle' and n.title==r.HISTORY]
++    if any(len(x)!=1 for x in (reviews,technical,sources,histories)):
++        raise ValueError('Layout completo exige revisão própria, notas, fonte e histórico únicos')
++    order=[nodes.index(x) for x in (reviews[0],columns,technical[0],sources[0],histories[0])]
++    if order!=sorted(order) or any(nodes.index(n)>order[0] for n in nodes if n.kind=='image'):
++        raise ValueError('Ordem do layout completo ou do hero foi alterada')
++    for column in sides.values():
++        tables=[n for n in column.items if n.kind=='table']
++        if len(tables)!=1 or any(len(row)!=2 for row in tables[0].rows):
++            raise ValueError('New/Old exigem uma tabela de duas colunas em cada lado')
++
++
++def render(state, record, new, pending, binding, bounded=None):
++    nodes = regions.parse(state['body'])
++    source = [n for n in nodes if n.kind == 'toggle' and n.title in (r.SOURCE, 'Fonte')]
++    if len(source) != 1: raise ValueError('É necessária uma fonte original inequívoca, preservada no mesmo local')
++    histories = [n for n in nodes if n.kind == 'toggle' and n.title == r.HISTORY]
++    marker = VERSION + ' ' + binding
++    if any(marker in n.raw for n in histories):
++        # A full-scope marker is necessary, but the current New/Old and layout are checked too.
++        validate_layout(state['body'],state['code'])
++        _, sides = r.body_sections(nodes)
++        if r.mappings(sides) != {'New': [regions.parse(table(new))[0].rows],
++                                 'Old': [regions.parse(table([{'locations': g['locals'], 'options': [x['original'] for x in g['options']]} for g in record['groups']]))[0].rows]}:
++            raise ValueError('PP anteriormente convertido foi modificado; requer novo plano e revisão')
++        return state['body'], [], {'idempotent': True, 'marker': marker, 'notes': notes(nodes)}
++    flat = [n for n in nodes if n is not source[0]]
++    images = [n.raw for n in r.descend(flat) if n.kind == 'image']
++    tables = [n for n in r.descend(flat) if n.kind == 'table' and 'local' in rules.key(n.rows[0][0])]
++    if not tables: raise ValueError('Página sem tabela de locais suportada')
++    own_notes = notes(flat)
++    # Own prose, including references and body comments, never comes from PP428.
++    prose = [n.raw for n in flat if n.kind == 'paragraph']
++    if not prose:
++        prose = [b.inline(record['description'])] if record['description'] else []
++    review = own_review(flat, state['code'])
++    old = [{'locations': g['locals'], 'options': [x['original'] for x in g['options']]} for g in record['groups']]
++    technical = [r.toggle(x['side'] + ': ' + x['location'], [x['text']]) for x in own_notes]
++    technical += ['- ' + b.inline(x) for x in pending]
++    # Existing body callouts/toggles remain explicitly associated, beyond their historical copy.
++    technical += [n.raw for n in flat if n.kind in ('toggle', 'callout') and n.raw != review and n.title != r.HISTORY]
++    layout = r.join([*images, *prose, review,
++        '<columns>\n<column ratio="50">\n## New (proposta)\n\n' + table(new) +
++        '\n</column>\n<column ratio="50">\n## Old (original)\n\n' + table(old) + '\n</column>\n</columns>',
++        r.toggle(r.TECH, technical, True)])
++    raw = r.xml_table(r.Node('table', '', rows=[['Célula', 'Texto original']] + [[b.inline(x['cell']), b.inline(str(x['value']))] for x in record['raw']]))
++    excel_notes = [r.toggle('Comentário Excel: '+x['cell'], [b.inline(x['text'])]) for x in record.get('comments', [])]
++    history = r.toggle(r.HISTORY, [marker, r.toggle('Origem Excel verificada', [b.inline(record['source']), raw, *excel_notes]),
++        r.toggle('Apresentação anterior preservada', [n.raw for n in flat])])
++    operations = []
++    mutable = [n for n in nodes if n is not source[0]]
++    if not mutable or not all(regions.leaf(n) or regions.verified_container(n, state, bounded) for n in mutable):
++        # We can render these pages, but must not rewrite an unverified native container.
++        desired = r.join([layout, source[0], history])
++        return desired, [], {'idempotent': False, 'marker': marker, 'notes': own_notes,
++                            'blocked_region': 'Contentor existente exige prova limitada de preservação ou edição nativa suportada'}
++    anchor = mutable[0]
++    if nodes[0] is source[0]:
++        raise ValueError('Fonte antes do conteúdo: requer uma inserção inicial revista separadamente')
++    # The durable journal contains the full before snapshot before the first leaf edit.
++    # Remove old leaves before adding their exact copies, so targets never become ambiguous.
++    groups = []
++    for node in nodes:
++        if node is source[0]:
++            groups.append([])
++        elif not groups: groups = [[node]]
++        else: groups[-1].append(node)
++    for group in reversed([g for g in groups if g]):
++        first, last = group[0], group[-1]
++        prefix = '\n\n' if state['body'][:first.start].endswith('\n\n') else ''
++        suffix = '\n\n' if state['body'][last.end:].startswith('\n\n') else ''
++        old = prefix + state['body'][first.start:last.end] + suffix
++        replacement = prefix + (layout if anchor in group else '') + suffix
++        operations.append({'kind': 'body', 'payload': {'command': 'update_content', 'page_id': state['page_id'],
++            'content_updates': [{'old_str': old, 'new_str': replacement, 'replace_all_matches': False}]}})
++    operations.append({'kind': 'append', 'payload': {'command': 'insert_content', 'page_id': state['page_id'],
++                       'position': {'type': 'end'}, 'content': '\n\n' + history}})
++    current = copy.deepcopy(state)
++    for index, op in enumerate(operations, 1):
++        op.update(id=state['code'] + '-full-body-' + str(index), eligible=True)
++        op['region_evidence'] = regions.inspect(current, op['payload'], bounded)
++        current['body'], _ = a.apply_model(current['body'], b.stable_metadata(current), op['payload'])
++    desired = current['body']
++    validate_layout(desired,state['code'])
++    return desired, operations, {'idempotent': False, 'marker': marker, 'notes': own_notes}
++
++
++def properties(state, new, schema):
++    locations = list(dict.fromkeys(x for g in new for x in g['locations']))
++    options = list(dict.fromkeys(x for g in new for x in g['options']))
++    wanted = {'Faces': locations, 'Número de locais possíveis': len(locations),
++              'Técnicas': list(dict.fromkeys(option_tech(x) for x in options)),
++              'Opções de personalização': list(dict.fromkeys(option_name(x) for x in options))}
++    if None in wanted['Técnicas']: raise ValueError('Técnica New não reconhecida')
++    payload = {'command': 'update_properties', 'page_id': state['page_id'], 'properties': wanted}
++    a.validate_properties(payload, schema)
++    delta = {k: v for k, v in wanted.items() if state['properties'].get(k) != v and
++             not (isinstance(v, list) and set(v) == set(state['properties'].get(k) or []))}
++    return wanted, delta
++
++
++def validate_properties(state, payload, schema):
++    _, sides = r.body_sections(regions.parse(state['body']))
++    tables = r.mappings(sides)['New']
++    new = [{'locations': b.lines(row[0]), 'options': b.lines(row[1])} for t in tables for row in t[1:]]
++    wanted, _ = properties(state, new, schema)
++    if any(k not in wanted or wanted[k] != v for k, v in payload['properties'].items()):
++        raise ValueError('As propriedades não correspondem ao New actualmente guardado')
++
++
++def prepare(captures, workbook, index_path, inventory_path, codes, output, contexts=None):
++    captures, output = Path(captures), Path(output)
++    index = load(index_path)
++    if excel.file_sha(workbook) != index['source']['sha256'] or index['source']['sha256'] != __import__('excel_proof').SHA:
++        raise ValueError('Excel diferente da origem autorizada')
++    inv = load(inventory_path); selected = excel.inventory(inv)
++    if not codes or len(codes) != len(set(codes)) or set(codes) - set(selected):
++        raise ValueError('Selecção de códigos não pertence ao inventário exacto')
++    excluded = [code for code in codes if code == '601']; codes = [code for code in codes if code != '601']
++    if not codes: raise ValueError('PP601 é protegido; não há alvos mutáveis')
++    manifest = {'collection': b.COLLECTION, 'group_id': 'full-' + '-'.join(codes), 'review_scope': VERSION,
++                'inventory_sha256': excel.file_sha(inventory_path),
++                'targets': {code: {'page_id': page_id(selected[code]['url']), 'mode': 'FULL_CONVERSION'} for code in codes}}
++    method_targets.configure(manifest)
++    home = load(captures / 'home.json'); tabs = rule_source(home); choices = catalog(tabs)
++    schema = b.schema_state(load(captures / 'schema.json'))
++    template = load(captures / 'pp428.json')
++    # Template defines structure only; no PP428 business value is used by render().
++    template_text = template['response']['structuredContent']['text']
++    if page_id(template['response']['structuredContent']['id']) != '074b6705ae1f8257a53701d87a64eb32' or '<column ratio="50">' not in template_text:
++        raise ValueError('Referência de layout PP428 não verificada')
++    contexts = load(contexts) if contexts else {}
++    pages = []
++    bounded_path = captures / 'browser-regions.json'
++    bounded_pages = load(bounded_path)['pages'] if bounded_path.exists() else {}
++    template_body=re.findall(r'<content>([\s\S]*?)</content>',template_text)
++    if len(template_body)!=1:raise ValueError('Corpo da referência de layout ausente ou ambíguo')
++    source_binding = {'rules_sha256': r.digest(tabs), 'excel_sha256': index['source']['sha256'],
++                      'index_sha256': excel.file_sha(index_path), 'template_sha256': r.digest(template_body[0].strip('\r\n')), 'scope': VERSION}
++    for code in codes:
++        source_error=None
++        capture={}
++        try:
++            capture = load(captures / ('pp' + code + '.json'))
++            if not isinstance(capture,dict):capture={};raise ValueError('Capture must be an object')
++            state = b.page_state(capture)
++        except (ValueError, KeyError, TypeError, OSError, AttributeError, IndexError) as error:
++            source_error='Leitura inicial do PP recusada: '+str(error)
++            props={}
++            try:props=page_batch.identity(capture['response'],{'code':code,'page_id':manifest['targets'][code]['page_id']})['properties']
++            except (ValueError,KeyError,TypeError,AttributeError,IndexError):pass
++            state={'code':code,'page_id':manifest['targets'][code]['page_id'],'body':'','properties':props,
++                   'cover':None,'icon':None,'source_state_sha256':None}
++        if state['code'] != code or state['page_id'] != manifest['targets'][code]['page_id']:
++            raise ValueError('Identidade actual diferente do manifesto revisto')
++        page = {'code': code, 'page_id': state['page_id'], 'status': 'READY_FOR_REVIEW', 'reasons': [],
++                'source_state_sha256': state['source_state_sha256'], 'source_body': state['body'],
++                'source_metadata': b.stable_metadata(state), 'validation_policy': regions.policy(),
++                'operations': [], 'property_operations': [], 'technical_unresolved': [], 'method_complete': False,
++                'synthetic_capture':bool(capture.get('capture',{}).get('synthetic'))}
++        try:
++            if source_error:raise ValueError(source_error)
++            record = excel.record(index, code)
++            new, questions, changes, kind = generate(record, contexts.get(code, {}), choices)
++            questions = preserve_current_extras(state, record, new, questions)
++            binding = r.digest({**source_binding, 'code': code, 'record': record, 'context': contexts.get(code, {})})
++            bounded = copy.deepcopy(bounded_pages.get(code))
++            if bounded:
++                if bounded['source_edited_at'] != state['page_last_edited_at'] or bounded['page_id'] != state['page_id']:
++                    raise ValueError('Observação do navegador refere-se a outro estado do PP')
++                bounded.update(source_state_sha256=state['source_state_sha256'], global_export_claimed=False)
++                page['bounded_region_evidence'] = bounded
++            desired, ops, preservation = render(state, record, new, questions, binding, bounded)
++            try:wanted, delta = properties(state, new, schema)
++            except ValueError as error:
++                wanted, delta = {}, {}
++                questions.append('Sincronização das propriedades pendente: '+str(error))
++            page.update(desired_body=desired, operations=ops, technical_unresolved=questions, rule_changes=changes,
++                        category=kind, new_groups=new, excel=record, preservation=preservation,
++                        completion_binding={'full_scope_sha256': binding, **source_binding,
++                            'source_state_sha256':state['source_state_sha256'],'implementation_sha256':b.implementation_sha()}, wanted_properties=wanted,
++                        method_complete=not questions and not preservation.get('blocked_region'))
++            if preservation.get('blocked_region'): page['full_prepare_error'] = preservation['blocked_region']
++            if not questions and not page.get('full_prepare_error') and delta:
++                page['property_operations'] = [{'id': code + '-full-properties', 'kind': 'properties', 'eligible': True,
++                    'payload': {'command': 'update_properties', 'page_id': state['page_id'], 'properties': delta}}]
++            page['diff'] = ''.join(difflib.unified_diff(state['body'].splitlines(True), desired.splitlines(True), fromfile=code + '-before', tofile=code + '-after'))
++        except (ValueError, KeyError, TypeError) as error:
++            page.update(full_prepare_error=str(error), desired_body=state['body'], diff='')
++        for key, suffix, kind, status in [('completion_status_operation', 'full-review-status', 'success_status', 'Para revisão'),
++                                           ('failure_status_operation', 'full-error-status', 'error_status', 'Erro')]:
++            page[key] = {'id': code + '-' + suffix, 'kind': kind, 'eligible': True,
++                'payload': {'command': 'update_properties', 'page_id': state['page_id'], 'properties': {'Estado': status}}}
++        if page.get('full_prepare_error'): page['status']='READY_FOR_ERROR_REPORT'
++        elif not page['method_complete']: page['status']='READY_FOR_ERROR_REPORT'
++        pages.append(page)
++    proof = {'workbook': str(Path(workbook).resolve()), 'workbook_sha256': index['source']['sha256'],
++             'evidence_sha256': excel.file_sha(index_path), 'records': {p['code']: p.get('excel') for p in pages}}
++    bundle = {'version': VERSION, 'validation_policy': regions.policy(), 'target_manifest': manifest,
++        'target_manifest_sha256': r.digest(manifest), 'working_copy': b.HOME, 'collection': b.COLLECTION,
++        'excel': proof, 'evidence_path': str(Path(index_path).resolve()),
++        'inventory_path': str(Path(inventory_path).resolve()), 'inventory_sha256': excel.file_sha(inventory_path),
++        'schema_state': schema, 'schema_state_sha256': r.digest(schema), 'full_scope': source_binding,
++        'page_failure_isolation': page_batch.POLICY, 'synthetic': any(p['synthetic_capture'] for p in pages),
++        'apply_allowed_now': False, 'excluded_protected_codes': excluded, 'pages': pages,
++        'implementation_sha256': b.implementation_sha()}
++    a.atomic(output, bundle)
++    reports = output.parent / (output.stem + '-reports'); reports.mkdir(exist_ok=True)
++    for p in pages:
++        a.atomic(reports / ('PP' + p['code'] + '.json'), p)
++        (reports / ('PP' + p['code'] + '-before.md')).write_text(p['source_body'], encoding='utf-8')
++        (reports / ('PP' + p['code'] + '-after.md')).write_text(p['desired_body'], encoding='utf-8')
++    coverage=excel.coverage(index,inv);a.atomic(reports/'notion-excel-join.json',coverage)
++    result = {'plan_sha256': r.digest(bundle), 'implementation_sha256': bundle['implementation_sha256'],
++              'coverage': {k:v for k,v in coverage.items() if k!='notion_bindings'}, 'pages': [{'code': p['code'], 'method_complete': p['method_complete'],
++                  'body_operations': len(p['operations']), 'property_operations': len(p['property_operations']),
++                  'pending': p['technical_unresolved'], 'preparation_error': p.get('full_prepare_error')} for p in pages]}
++    a.atomic(reports / 'summary.json', result)
++    approval = {'authorisation': 'EXPLICIT_HUMAN_APPROVAL', 'review_reference': '', 'plan_sha256': r.digest(bundle),
++                'implementation_sha256': bundle['implementation_sha256'], 'approved_codes': codes,
++                'approved_operation_ids': [op['id'] for p in pages for op in p['operations'] + p['property_operations'] +
++                                           [p['completion_status_operation'], p['failure_status_operation']]]}
++    a.atomic(output.with_suffix('.approval-pending.json'), approval)
++    return result
+--- accepted/source/full_excel.py
++++ source/full_excel.py
+@@ -0,0 +1,89 @@
++"""Exact-code catalogue index using the corrected, reviewed workbook reader."""
++import collections
++import copy
++import hashlib
++import json
++from pathlib import Path
++
++import importar_pp as reader
++
++
++def file_sha(path):
++    with Path(path).open('rb') as stream:
++        return hashlib.file_digest(stream, 'sha256').hexdigest()
++
++
++def index(workbook):
++    return reader.extract(workbook, '431b6705-ae1f-83db-b71c-0739778f9e1a')
++
++
++def record(index, code):
++    matches = [x for x in index['records'] if x['code'] == code]
++    if len(matches) != 1:
++        raise ValueError('Código Excel ausente ou repetido: ' + code)
++    result = copy.deepcopy(matches[0])
++    fatal = [x for x in result['blocked'] if 'Distribuição' not in x and 'Local sem opções' not in x]
++    unknown = [x for x in index['unknown_option_text'] if x['source'] == result['source']]
++    if fatal or unknown:
++        raise ValueError('Origem Excel não suportada: ' + '; '.join(fatal + [x['text'] for x in unknown]))
++    # Shared groups are source groups, never a claim about physical row allocation.
++    for group in result['groups']:
++        if not group['locals']:
++            raise ValueError('Grupo de opções sem local explícito: ' + result['source'])
++        raw = {x['cell']: x['value'] for x in result['raw']}
++        for option in group['options']:
++            value = raw.get(option['cell'])
++            if not isinstance(value, str) or reader.clean(value) != reader.clean(option['original']):
++                raise ValueError('Texto original da opção diverge da célula: ' + option['cell'])
++            if any(reader.option_tech(line.strip()) for line in value.splitlines()[1:]):
++                raise ValueError('Várias opções na mesma célula exigem associação revista: ' + result['source'] + ' ' + option['cell'])
++            option['original'] = value
++    column = reader.parts(result['source'].split('!')[1].split(':')[0])[0]
++    repeated = [name for name, count in collections.Counter(x for g in result['groups'] for x in g['locals']).items() if count > 1]
++    if repeated:
++        addresses = [x['cell'] for x in result['raw'] if reader.clean(x['value']) in repeated]
++        raise ValueError('Local repetido em grupos diferentes; confirmar antes de converter: '+result['source']+' '+','.join(addresses))
++    assigned = collections.Counter(x['cell'] for g in result['groups'] for x in g['options'])
++    for item in result['raw']:
++        col, row = reader.parts(item['cell'])
++        value = reader.clean(item['value'])
++        if col == column + 3 and value and value.upper() not in reader.HEADERS and reader.option_tech(value):
++            if assigned[item['cell']] != 1:
++                raise ValueError('Opção não contabilizada exactamente uma vez: ' + result['source'] + ' ' + item['cell'])
++    return result
++
++
++def inventory(value):
++    if value.get('data_source') != 'collection://431b6705-ae1f-83db-b71c-0739778f9e1a':
++        raise ValueError('Inventário fora da Working Copy')
++    rows = value['records']
++    codes = [x['code'] for x in rows]
++    urls = [x['url'].rstrip('/').split('/')[-1].replace('-', '') for x in rows]
++    if (len(rows) != value['verified_total'] or len(set(codes)) != value['distinct_codes']
++            or value['missing_codes'] != 0 or any(not c or not c.isdigit() for c in codes)
++            or len(set(codes)) != len(codes) or len(set(urls)) != len(urls)):
++        raise ValueError('Inventário incompleto, repetido ou em conflito')
++    return {x['code']: x for x in rows}
++
++
++def coverage(index, inv):
++    rows = inventory(inv)
++    by_code = collections.Counter(x['code'] for x in index['records'])
++    sheets = collections.Counter(x['source'].split('!')[0] for x in index['records'])
++    bindings=[]
++    for code, target in rows.items():
++        sources=[x['source'] for x in index['records'] if x['code']==code]
++        reason=None
++        try: record(index,code)
++        except ValueError as error: reason=str(error)
++        bindings.append({'code':code,'url':target['url'],'source_occurrences':sources,
++                         'source_status':'PROTECTED_NO_CHANGE' if code=='601' else 'SOURCE_ERROR' if reason else 'EXACT_CODE_SOURCE_MATCH',
++                         'reason':reason,'body_read_and_full_conversion_proved':False})
++    return {'working_copy_total': len(rows), 'excel_blocks': len(index['records']),
++            'excel_distinct_codes': len(by_code), 'worksheets': dict(sheets),
++            'duplicates': index['duplicate_codes'],
++            'notion_missing_in_excel': sorted(set(rows) - set(by_code)),
++            'excel_missing_in_notion': sorted(set(by_code) - set(rows)),
++            'protected_codes': ['601'],
++            'notion_bindings':bindings,
++            'page_conversion_not_proved_by_inventory': True}
+--- accepted/source/full_regions.py
++++ source/full_regions.py
+@@ -0,0 +1,109 @@
++"""Bounded edits of supported leaf blocks; existing containers remain untouched."""
++import re
++import uuid
++
++import rendered_layout as r
++
++NAME = 'PP_FULL_CONVERSION'
++
++
++def policy():
++    return {'name': NAME, 'version': 1, 'existing_containers': 'PRESERVE_OR_EXACT_REVIEWED_UI_REGION',
++            'leaf_contract': 'MCP_MARKDOWN_INLINE_TABLE_CELLS_AND_LEAF_BLOCKS',
++            'native_comments': 'EXCLUDED_BY_EXPLICIT_HUMAN_POLICY',
++            'body_notes_required': True, 'global_export_claimed': False,
++            'fresh_read_before_each_operation': True}
++
++
++def parse(body):
++    return r.parse(body, allow_styled_notes=True)
++
++
++def leaf(node):
++    if node.kind == 'table':
++        return all(not set(t.name for t in r.Lexer(cell).tags.values()) - r.INLINE
++                   for row in node.rows for cell in row)
++    if node.kind in ('image', 'heading'):
++        return True
++    if node.kind == 'paragraph':
++        # Indented children/list hierarchies are not certified by a flat paragraph.
++        return not re.search(r'(?m)^\s+(?:[-*+] |<|\d+\.)', node.raw)
++    return False
++
++
++def verified_container(node, state, bounded):
++    if not bounded or bounded.get('page_id') != state['page_id'] or bounded.get('global_export_claimed') is not False:
++        return None
++    matches = [x for x in bounded.get('regions', []) if x['kind'] == node.kind]
++    def clean(text):
++        return ' '.join(r.plain(text.replace('\\|', '|')).split())
++    for observed in matches:
++        if node.kind == 'callout':
++            matched = len(node.items) == 1 and node.items[0].kind=='paragraph' and clean(node.items[0].raw) == clean(observed['text'])
++        elif node.kind == 'toggle':
++            values = [clean(line[2:]) for child in node.items[1:] for line in child.raw.splitlines() if line.startswith('- ')]
++            matched = clean(node.title) == clean(observed['title']) and values == [clean(x) for x in observed['paragraphs']]
++            matched = matched and len(values) == len(observed['children']) and observed['child_types'] == ['bulleted_list'] * len(values)
++            matched = matched and all(child.kind=='paragraph' and all(not line.strip() or line.startswith('- ') for line in child.raw.splitlines()) for child in node.items[1:])
++        elif node.kind == 'columns':
++            from batch_plan import lines
++            tables = [x for x in r.descend([node]) if x.kind == 'table']
++            cells = [[[clean('\n'.join(lines(cell))) for cell in row] for row in t.rows] for t in tables]
++            expected = [[[clean(cell) for cell in row] for row in t] for t in observed['tables']]
++            matched = cells == expected and len(node.items) == len(observed['children']) == len(observed.get('column_children',[])) == 2 and all(n.kind=='column' for n in node.items)
++            for column, children in zip(node.items, observed.get('column_children', [])):
++                matched = matched and [n.kind for n in column.items] == [x['kind'] for x in children]
++                matched = matched and all(clean(n.title) == clean(x['text']) for n, x in zip(column.items, children) if n.kind == 'heading')
++        else:
++            continue
++        if matched:
++            uuid.UUID(observed['id'])
++            for identity in observed['children']: uuid.UUID(identity)
++            return {'native_region_id': observed['id'], 'observation_sha256': r.digest(observed),
++                    'source_region_sha256': r.digest(node.raw), 'source_page_state_sha256': bounded['source_state_sha256'],
++                    'global_export_claimed': False}
++    return None
++
++
++def inspect(state, payload, bounded=None):
++    body = state['body']
++    if payload.get('command') == 'insert_content':
++        if set(payload) != {'command', 'page_id', 'position', 'content'} or payload['position'] != {'type': 'end'}:
++            raise ValueError('Só é permitido acrescentar o histórico revisto no fim')
++        parse(payload['content'])
++        return {'eligible': True, 'basis': 'APPEND_WITHOUT_CHANGING_EXISTING_BLOCKS',
++                'body_sha256': r.digest(body), 'append_sha256': r.digest(payload['content']),
++                'global_export_claimed': False}
++    if set(payload) != {'command', 'page_id', 'content_updates'} or payload['command'] != 'update_content' or len(payload['content_updates']) != 1:
++        raise ValueError('É necessária uma substituição exacta de um bloco suportado')
++    edit = payload['content_updates'][0]
++    if set(edit) != {'old_str', 'new_str', 'replace_all_matches'} or edit['replace_all_matches'] is not False:
++        raise ValueError('Substituição sem âmbito exacto')
++    old, new = edit['old_str'], edit['new_str']
++    if not old or body.count(old) != 1:
++        raise ValueError('Bloco original ausente ou repetido')
++    start = body.index(old)
++    left, right = start + len(old) - len(old.lstrip('\r\n')), start + len(old.rstrip('\r\n'))
++    matches = [node for node in parse(body) if left <= node.start and node.end <= right]
++    proofs = [verified_container(n, state, bounded) if not leaf(n) else None for n in matches]
++    if (not matches or matches[0].start != left or matches[-1].end != right or
++            any(not leaf(n) and not proof for n, proof in zip(matches, proofs))):
++        raise ValueError('Contentor existente sem prova limitada de preservação; não será reescrito')
++    parse(new)
++    start = body.index(old)
++    return {'eligible': True, 'basis': 'EXACT_REVIEWED_BROWSER_REGION' if any(proofs) else 'EXACT_TOP_LEVEL_SUPPORTED_LEAVES',
++            'old_sha256': r.digest(old), 'new_sha256': r.digest(new),
++            'prefix_sha256': r.digest(body[:start]), 'suffix_sha256': r.digest(body[start + len(old):]),
++            'bounded_observations': [x for x in proofs if x], 'global_export_claimed': False}
++
++
++def saved(before, after, payload):
++    if payload['command'] == 'insert_content':
++        expected = before + payload['content']
++    else:
++        edit = payload['content_updates'][0]
++        if before.count(edit['old_str']) != 1:
++            return False
++        expected = before.replace(edit['old_str'], edit['new_str'], 1)
++    # Notion may normalise whitespace between blocks. Every block and inline byte must agree.
++    return [n.raw for n in parse(after)] == [n.raw for n in parse(expected)]
+--- accepted/source/importar_pp.py
++++ source/importar_pp.py
+@@ -182,6 +182,7 @@
+                                                "entry": image})
+             self.sheets[sheet.get("name")] = {
+                 "cells": cells, "images": images, "comments": comments,
++                "merges": [e.get("ref") for e in root.findall("s:mergeCells/s:mergeCell", NS)],
+                 "max_row": max((r for _, r in cells), default=0),
+             }
+         core = self.xml("docProps/core.xml")
+@@ -339,7 +340,14 @@
+                     if code.isdigit() or has_header:
+                         starts.append((row, code if code.isdigit() else None))
+                 for index, (start, code) in enumerate(starts):
+-                    end = starts[index + 1][0] - 1 if index + 1 < len(starts) else sheet["max_row"]
++                    if index + 1 < len(starts):
++                        end = starts[index + 1][0] - 1
++                    else:
++                        # Other column bands can extend thousands of rows below this last block.
++                        occupied = [r for (c, r), v in cells.items() if code_col <= c <= code_col + 3 and clean(v['value'])]
++                        occupied += [x['row'] for x in sheet['images'] if code_col <= x['col'] <= code_col + 3]
++                        occupied += [parts(x['cell'])[1] for x in sheet['comments'] if code_col <= parts(x['cell'])[0] <= code_col + 3]
++                        end = max([start, *occupied])
+                     source = f"{sheet_name}!{addr(code_col, start)}:{addr(code_col + 3, end)}"
+                     raw = [{"cell": addr(col, row), "value": cell["value"]}
+                            for (col, row), cell in sorted(cells.items(), key=lambda x: (x[0][1], x[0][0]))
+--- accepted/source/page_batch.py
++++ source/page_batch.py
+@@ -20,7 +20,9 @@
+     if len(parts)!=1:raise ValueError('Missing exact status identity properties')
+     props=json.loads(parts[0]);tags=re.findall(r'<page\s+url="([^"]+)"',text)
+     parents=re.findall(r'<parent-data-source\s+url="([^"]+)"',text)
+-    if (uuid.UUID(value.get('id','')).hex!=page['page_id'] or props.get('Código PP')!=page['code'] or parents!=[b.COLLECTION]
++    response_id=value.get('id','')
++    response_id=r.notion_url_id(response_id) if response_id.startswith('https://') else uuid.UUID(response_id).hex
++    if (response_id!=page['page_id'] or props.get('Código PP')!=page['code'] or parents!=[b.COLLECTION]
+         or len(tags)!=1 or r.notion_url_id(tags[0])!=page['page_id'] or r.notion_url_id(props.get('url',''))!=page['page_id']
+         or r.notion_url_id(value.get('url',''))!=page['page_id'] or not value.get('page_last_edited_at')):
+         raise ValueError('Status target is not the exact allowed active Working Copy page')
+@@ -31,9 +33,14 @@
+     def __init__(self,bundle,approval,fake=False,reconcile_only=False):
+         if bundle.get('page_failure_isolation')!=POLICY:raise ValueError('Unknown reviewed per-page batch policy')
+         import pocket_plan
+-        if any(code not in pocket_plan.IDS or value.get('page_id')!=pocket_plan.IDS[code] for code,value in bundle['target_manifest']['targets'].items()):
++        full=bundle.get('version')=='PP_FULL_CONVERSION_V1'
++        if not full and any(code not in pocket_plan.IDS or value.get('page_id')!=pocket_plan.IDS[code] for code,value in bundle['target_manifest']['targets'].items()):
+             raise ValueError('Batch target differs from the exact authorised pocket identities')
+         super().__init__(bundle,approval,fake,reconcile_only)
++        if full and (not self.full or not bundle.get('full_scope')):
++            raise ValueError('Full conversion requires its exact reviewed policy and source binding')
++        if full and ('601' in approval['approved_codes'] or bundle['target_manifest'].get('review_scope')!='PP_FULL_CONVERSION_V1'):
++            raise ValueError('Full conversion cannot mutate PP601 or accept a different scope')
+         self.initial.update(page_reports={},quarantines={})
+ 
+     def next_page(self,state):
+@@ -51,6 +58,13 @@
+         if kind=='FETCH_PAGE' and not state['op_index'] and prior and (prior.get('uncertain') or prior.get('review_reference')==state['review_reference']):
+             state['page_reports'][page['code']]={'code':page['code'],'page_id':page['page_id'],'outcome':'UNCERTAIN' if prior.get('uncertain') else 'ERROR','reason':'Prior quarantined work cannot be replayed; reconcile and review a remainder','operation_id':None,'pending_receipts':[prior],'marker':{'outcome':'NOT_RETRIED'}}
+             return self.next_page(state)
++        if self.full and kind=='FETCH_PAGE' and not state['op_index']:
++            reason=page.get('full_prepare_error')
++            if not reason and (page.get('method_complete') is not True or page.get('technical_unresolved')):
++                reason='Full conversion has unresolved business/source choices: '+'; '.join(page.get('technical_unresolved',[]))
++            if reason:
++                state['phase']='PAGE_PREFLIGHT'
++                return self.fail_page(state,'FAILED',reason)
+         return super().fetch(state,kind)
+ 
+     def stop(self,state,status,reason):
+@@ -102,12 +116,13 @@
+         a.verify_sources(self.bundle,self.fake)
+         item=state['queue'][state['page_index']];page=item['page'];op=item['ops'][state['op_index']]
+         error_phase=phase in ('FETCH_ERROR_PAGE','FETCH_ERROR_SCHEMA','FETCH_ERROR_PREWRITE','ERROR_WRITE_PENDING','VERIFY_ERROR_STATUS')
+-        success_phase=phase in ('FETCH_SUCCESS_SCHEMA','FETCH_SUCCESS_PAGE','SUCCESS_WRITE_PENDING','VERIFY_SUCCESS_STATUS') or (phase=='FETCH_PAGE' and op['kind']=='success_status')
++        success_phase=phase in ('FETCH_SUCCESS_RULES','FETCH_SUCCESS_SCHEMA','FETCH_SUCCESS_PAGE','SUCCESS_WRITE_PENDING','VERIFY_SUCCESS_STATUS') or (phase=='FETCH_PAGE' and op['kind']=='success_status')
+         if error_phase:
+             try:return self.error_step(state,event,page)
+             except (ValueError,KeyError,TypeError,AttributeError,IndexError) as error:return self.finish_error(state,'UNCERTAIN' if phase in ('ERROR_WRITE_PENDING','VERIFY_ERROR_STATUS') else 'LOCAL_ONLY',str(error))
+         if success_phase:
+             try:return self.success_step(state,event,page,op)
++            except a.SourceGuardError:raise
+             except (ValueError,KeyError,TypeError,AttributeError,IndexError) as error:return self.fail_page(state,'UNCERTAIN' if phase in ('SUCCESS_WRITE_PENDING','VERIFY_SUCCESS_STATUS') else 'FAILED',str(error))
+         try:return super().step(state,event)
+         except a.SourceGuardError:raise
+@@ -124,7 +139,14 @@
+             required={x['id'] for x in state['queue'][state['page_index']]['ops'] if x['kind']!='success_status'}
+             confirmed={x.get('operation') for x in state['receipts'] if x['code']==page['code'] and x['status']=='SUCCEEDED'}
+             if not required<=confirmed:raise ValueError('Success queue requires every prior saved-state receipt')
++            if self.full and (page.get('method_complete') is not True or page.get('technical_unresolved')):
++                return self.fail_page(state,'FAILED','Full conversion has unresolved business choices: '+'; '.join(page.get('technical_unresolved',[])))
+             state['last_state_hash']=current['source_state_sha256']
++            if self.full:return self.issue(state,'FETCH_SUCCESS_RULES',{'id':b.HOME,'include_file_urls':False,'include_discussions':False})
++            return self.issue(state,'FETCH_SUCCESS_SCHEMA',{'id':b.COLLECTION,'include_file_urls':False})
++        if phase=='FETCH_SUCCESS_RULES':
++            import full_conversion
++            full_conversion.verify_rules(result,self.bundle['full_scope']['rules_sha256'])
+             return self.issue(state,'FETCH_SUCCESS_SCHEMA',{'id':b.COLLECTION,'include_file_urls':False})
+         if phase=='FETCH_SUCCESS_SCHEMA':
+             schema=b.schema_state(result);a.validate_properties(op['payload'],schema)
+@@ -133,6 +155,8 @@
+             current=b.page_state(a.capture_response(result,page['page_id']))
+             if current['source_state_sha256']!=state['last_state_hash']:return self.fail_page(state,'STALE','Page changed immediately before success status')
+             state['last_before_body']=current['body'];state['expected_metadata']=b.stable_metadata(current);state['expected_metadata']['properties']['Estado']='Para revisão'
++            if self.full and current['properties'].get('Estado')=='Para revisão':
++                return self.fetch(state,'VERIFY_SUCCESS_STATUS')
+             return self.status_write(state,page,op,identity(result,page))
+         if phase=='SUCCESS_WRITE_PENDING':
+             if result.get('isError'):return self.fail_page(state,'UNCERTAIN','Success status write outcome unconfirmed')
+@@ -145,6 +169,7 @@
+         state['page_reports'][page['code']]={'code':page['code'],'page_id':page['page_id'],'outcome':'SUCCESS','saved_estado':'Para revisão','saved_state_sha256':current['source_state_sha256'],
+             'confirmed_receipts':[copy.deepcopy(x) for x in state['receipts'] if x['code']==page['code']],'pending_receipts':[],
+             'readback':{'estado':current['properties']['Estado'],'observed_body_sha256':r.digest(current['body']),'properties_sha256':r.digest(current['properties']),'edited_at':current['page_last_edited_at']}}
++        if self.full:state['page_reports'][page['code']]['completion_binding']=page['completion_binding']
+         return self.next_page(state)
+ 
+     def error_step(self,state,event,page):
+@@ -229,9 +254,11 @@
+                 observed=b.stable_metadata(current);wanted=copy.deepcopy(q.get('expected_metadata'))
+                 if wanted:
+                     observed['properties'].pop('Estado',None);wanted['properties'].pop('Estado',None)
+-                if op and op['kind']=='body':
++                if op and op['kind'] in ('body','append'):
+                     import native_rows
+-                    status='RECONCILED_STOPPED' if before is not None and native_rows.saved(before,body,op['payload']) and observed==wanted else 'NOT_APPLIED_CONFIRMED' if body==before and observed==wanted else 'RECONCILIATION_CONFLICT'
++                    import full_regions
++                    saved=full_regions.saved if self.full else native_rows.saved
++                    status='RECONCILED_STOPPED' if before is not None and saved(before,body,op['payload']) and observed==wanted else 'NOT_APPLIED_CONFIRMED' if body==before and observed==wanted else 'RECONCILIATION_CONFLICT'
+                 elif body==before and current['properties'].get('Estado')=='Erro' and observed==wanted:status='RECONCILED_STOPPED'
+             except (ValueError,KeyError,TypeError,AttributeError,IndexError):pass
+         if status in ('RECONCILED_STOPPED','NOT_APPLIED_CONFIRMED'):
+--- accepted/source/prepare_bridge.js
++++ source/prepare_bridge.js
+@@ -0,0 +1,39 @@
++(async function prepareReviewedFullBatch(config, tools) {
++  // Session tools supply current MCP reads; Python remains a local source/plan engine.
++  const quote = value => "'" + String(value).replace(/'/g, "''") + "'";
++  for (const value of [config.script, config.plan, config.inventory, config.index, config.workbook, config.captures]) {
++    if (typeof value !== "string" || !value || /[\r\n]/.test(value)) throw new Error("Exact local preparation paths are required");
++  }
++  if (!Array.isArray(config.codes) || !config.codes.length || config.codes.some(c => !/^\d+$/.test(c))) throw new Error("Choose exact reviewed PP codes");
++  async function python(command, args) {
++    const reply = await tools.exec_command({cmd:"python -B "+[config.script, command, ...args].map(quote).join(" "),max_output_tokens:12000});
++    if (reply.exit_code!==0 || reply.session_id) throw new Error("Local preparation refused; no writes were attempted");
++    const result=JSON.parse(reply.output.trim()); if (result.error) throw new Error(result.error); return result;
++  }
++  function scrub(value) {
++    if (typeof value==="string") return value.replace(/https?:\/\/[^\s"'<>\\]+/g,u=>/X-Amz-|[?&](?:signature|token)=/i.test(u)?u.split("?")[0].split("#")[0]:u);
++    if (Array.isArray(value)) return value.map(scrub);
++    if (value && typeof value==="object") return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,scrub(v)]));
++    return value;
++  }
++  const selected=await python("selection",["--inventory",config.inventory,"--codes",...config.codes]);
++  if (!selected.pages.length) throw new Error("PP601 is protected; there are no mutable selected pages");
++  const reads=new Map([["home.json",selected.working_copy],["schema.json",selected.collection],["pp428.json","074b6705ae1f8257a53701d87a64eb32"]]);
++  for (const page of selected.pages) reads.set("pp"+page.code+".json",page.page_id);
++  for (const [name,id] of reads) {
++    let response;
++    try { response=await tools.mcp__codex_apps__notion_fetch({id,include_file_urls:false,include_discussions:false}); }
++    catch (_) { response={isError:true,content:[],structuredContent:null}; }
++    const failed=response.isError || !response.structuredContent?.text;
++    if (failed && (name==='home.json' || name==='schema.json' || name==='pp428.json')) throw new Error("A current preparation read failed: "+name);
++    const body=response.structuredContent?.text?.match(/<content>([\s\S]*?)<\/content>/)?.[1];
++    if (body && /https?:\/\/[^\s<>]*[?&](?:X-Amz-|signature=|token=)/i.test(body)) throw new Error("Unstable signed body media");
++    const clean=scrub(response);
++    const data=name.startsWith("pp")?{capture:{tool:"mcp__codex_apps__notion_fetch",requested_id:id,received_at_utc:new Date().toISOString()},response:clean}:clean;
++    const path=config.captures.replace(/\\/g,"/")+"/"+name;
++    const saved=await tools.apply_patch("*** Begin Patch\n*** Add File: "+path+"\n+"+JSON.stringify(data)+"\n*** End Patch");
++    if (saved?.isError) throw new Error("Cannot persist the current read");
++  }
++  return await python("prepare-full",["--captures",config.captures,"--workbook",config.workbook,"--index",config.index,
++    "--inventory",config.inventory,"--codes",...config.codes,"--output",config.plan,...(config.contexts?["--contexts",config.contexts]:[])]);
++})
+--- accepted/source/rendered_layout.py
++++ source/rendered_layout.py
+@@ -154,7 +154,7 @@
+     return cells
+ 
+ 
+-def parse(source):
++def parse(source, allow_styled_notes=False):
+     if not isinstance(source, str) or len(source) > 2_000_000:
+         raise Refused('Unsupported Markdown size/type')
+     lex = Lexer(source)
+@@ -215,7 +215,7 @@
+                         node.col_attrs.extend(t.attrs for t in cols)
+                     if node.col_attrs and len(node.col_attrs) != len(node.rows[0]):
+                         raise Refused('Conflicting XML column/row widths')
+-                    if len(node.rows[0]) == 3 and (any(node.row_attrs) or any(any(a for a in row) for row in node.cell_attrs) or any(set(a) - {'width'} for a in node.col_attrs)):
++                    if not allow_styled_notes and len(node.rows[0]) == 3 and (any(node.row_attrs) or any(any(a for a in row) for row in node.cell_attrs) or any(set(a) - {'width'} for a in node.col_attrs)):
+                         raise Refused('Styled third-column notes need an explicit supported style-preservation rule')
+                 elif tag.name == 'image':
+                     if not tag.attrs.get('source'):
+@@ -508,7 +508,9 @@
+     requested = provenance.get('requested_id', '')
+     requested_id = notion_url_id(requested) if requested.startswith('https://') else uuid.UUID(requested).hex
+     page_tags = re.findall(r'<page\s+url="([^"]+)"[^>]*>', text_value)
+-    if (uuid.UUID(value.get('id', '')).hex != PAGES[code] or len(page_tags) != 1
++    response_id = value.get('id', '')
++    response_id = notion_url_id(response_id) if response_id.startswith('https://') else uuid.UUID(response_id).hex
++    if (response_id != PAGES[code] or len(page_tags) != 1
+             or notion_url_id(page_tags[0]) != PAGES[code] or notion_url_id(value.get('url', '')) != PAGES[code]
+             or notion_url_id(props.get('url', '')) != PAGES[code] or requested_id != PAGES[code]):
+         raise Refused('Conflicting actual PP code/page/request identities')
+--- accepted/source/session_bridge.js
++++ source/session_bridge.js
+@@ -30,8 +30,8 @@
+     let event = {nonce:action.nonce};
+     try {
+       let result;
+-      if (["FETCH_PAGE","FETCH_PREWRITE","VERIFY_PAGE","RECONCILE_PAGE","FETCH_SCHEMA","FETCH_RULES","FETCH_SUCCESS_SCHEMA","FETCH_SUCCESS_PAGE","VERIFY_SUCCESS_STATUS","FETCH_ERROR_PAGE","FETCH_ERROR_SCHEMA","FETCH_ERROR_PREWRITE","VERIFY_ERROR_STATUS","RECONCILE_QUARANTINE"].includes(action.type)) {
+-        if (action.type.includes("SCHEMA") ? action.payload.id !== scope.collection : action.type === "FETCH_RULES" ? action.payload.id !== scope.working_copy : !pages.has(action.payload.id)) throw new Error("Read target is outside the exact batch");
++      if (["FETCH_PAGE","FETCH_PREWRITE","VERIFY_PAGE","RECONCILE_PAGE","FETCH_SCHEMA","FETCH_RULES","FETCH_SUCCESS_RULES","FETCH_SUCCESS_SCHEMA","FETCH_SUCCESS_PAGE","VERIFY_SUCCESS_STATUS","FETCH_ERROR_PAGE","FETCH_ERROR_SCHEMA","FETCH_ERROR_PREWRITE","VERIFY_ERROR_STATUS","RECONCILE_QUARANTINE"].includes(action.type)) {
++        if (action.type.includes("SCHEMA") ? action.payload.id !== scope.collection : action.type.includes("RULES") ? action.payload.id !== scope.working_copy : !pages.has(action.payload.id)) throw new Error("Read target is outside the exact batch");
+         result = await tools.mcp__codex_apps__notion_fetch(action.payload); counts.reads++;
+       } else if (action.type === "FETCH_COMMENTS") {
+         if (!pages.has(action.payload.page_id)) throw new Error("Comment target is outside the batch");
+--- accepted/source/tests/test_full_conversion.py
++++ source/tests/test_full_conversion.py
+@@ -0,0 +1,338 @@
++import copy
++import json
++from pathlib import Path
++import re
++import shutil
++import sys
++import tempfile
++import unittest
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / 'tests'))
++import batch_apply as a
++import batch_plan as b
++import full_conversion as f
++import full_excel
++import full_regions as regions
++import method_targets
++import rendered_layout as r
++from test_batch import drive, sync
++from test_pocket import Connector
++
++BASE = ROOT.parent
++DEFAULT = dict(r.PAGES)
++
++
++def read(path): return json.loads(Path(path).read_text(encoding='utf-8'))
++
++
++class FullTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.tmp = tempfile.TemporaryDirectory()
++        cls.addClassCleanup(cls.tmp.cleanup)
++        cls.out = Path(cls.tmp.name) / 'representative.json'
++        index = BASE / 'input/workbook-index.json'
++        inventory = BASE / 'input/inventory-current.json'
++        book = read(index)['source']['path']
++        packaged = BASE / 'input/workbook.xlsx'
++        if packaged.exists(): book = packaged
++        f.prepare(BASE / 'captures', book, index, inventory, ['39', '42', '50', '261', '262'], cls.out)
++        cls.master = read(cls.out)
++        r.PAGES.clear(); r.PAGES.update(DEFAULT)
++
++    def setUp(self):
++        self.tmp = tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup)
++        self.work = Path(self.tmp.name)
++        self.bundle = copy.deepcopy(self.master)
++        self.bundle.update(synthetic=True, implementation_sha256=b.implementation_sha())
++        method_targets.configure(self.bundle['target_manifest'])
++        self.addCleanup(self.restore)
++
++    def restore(self): r.PAGES.clear(); r.PAGES.update(DEFAULT)
++
++    def page(self, code): return next(p for p in self.bundle['pages'] if p['code'] == code)
++
++    def approval(self, codes):
++        return {'plan_sha256': r.digest(self.bundle), 'implementation_sha256': b.implementation_sha(),
++                'authorisation': 'OFFLINE_FAKE_CONNECTOR_TEST', 'review_reference': 'OFFLINE_FULL_TEST_ONLY',
++                'approved_codes': codes, 'approved_operation_ids': [op['id'] for p in self.bundle['pages'] if p['code'] in codes
++                    for op in p['operations'] + p['property_operations'] + [p['completion_status_operation'], p['failure_status_operation']]]}
++
++    def session(self, codes): return a.FileSession(self.work / 'runs/one', self.bundle, self.approval(codes), fake=True)
++
++    def connector(self):
++        result = Connector({c: read(BASE / ('captures/pp' + c + '.json')) for c in r.PAGES}, read(BASE / 'captures/schema.json'))
++        result.home = read(BASE / 'captures/home.json')
++        return result
++
++    def test_real_all_sheet_inventory_and_duplicate_missing_codes(self):
++        index = read(BASE / 'input/workbook-index.json')
++        inventory = read(BASE / 'input/inventory-current.json')
++        coverage = full_excel.coverage(index, inventory)
++        self.assertEqual(coverage['working_copy_total'], 814)
++        self.assertEqual(set(coverage['worksheets']), set(__import__('importar_pp').SHEETS))
++        self.assertEqual(len(coverage['duplicates']), 7)
++        for code in ['184', '492', '967']:
++            with self.assertRaises(ValueError): full_excel.record(index, code)
++        with self.assertRaisesRegex(ValueError, 'E168,E170'): full_excel.record(index, '787')
++        self.assertEqual(len(coverage['notion_bindings']), 814)
++
++    def test_multiline_original_is_retained_and_two_techniques_in_one_cell_refused(self):
++        index=read(BASE/'input/workbook-index.json');record=next(x for x in index['records'] if x['code']=='42')
++        cell=next(x for x in record['raw'] if x['cell']=='F10')
++        cell['value']='Tampografia 1 Cor\n (nota própria)'
++        record['groups'][0]['options'][0]['original']='Tampografia 1 Cor (nota própria)'
++        self.assertIn('\n', full_excel.record(index,'42')['groups'][0]['options'][0]['original'])
++        cell['value']='Tampografia 1 Cor\nDTF - Até A7';record['groups'][0]['options'][0]['original']='Tampografia 1 Cor DTF - Até A7'
++        with self.assertRaisesRegex(ValueError,'F10'):full_excel.record(index,'42')
++
++    def test_full_property_sync_is_verified_against_saved_new(self):
++        connector=self.connector();response=connector.pages[r.PAGES['39']]
++        old=b.page_state(a.capture_response(response,r.PAGES['39']))
++        properties=copy.deepcopy(old['properties']);properties['Número de locais possíveis']=99
++        original=re.search(r'<properties>\s*([\s\S]*?)\s*</properties>',response['structuredContent']['text'])[1]
++        response['structuredContent']['text']=response['structuredContent']['text'].replace(original,json.dumps(properties,ensure_ascii=False),1);sync(response)
++        changed=b.page_state(a.capture_response(response,r.PAGES['39']));page=self.page('39')
++        page['source_state_sha256']=changed['source_state_sha256'];page['source_metadata']=b.stable_metadata(changed)
++        page['property_operations']=[{'id':'39-full-properties','kind':'properties','eligible':True,
++             'payload':{'command':'update_properties','page_id':r.PAGES['39'],'properties':{'Número de locais possíveis':2}}}]
++        session=self.session(['39']);result=drive(session,connector,session.start())
++        self.assertEqual(result['status'],'COMPLETE')
++        self.assertEqual(connector.writes[-2]['properties'],{'Número de locais possíveis':2})
++
++    def test_cancel_stops_without_next_content_or_error_status(self):
++        connector=self.connector();session=self.session(['39','50']);action=session.start()
++        while action['type']!='WRITE_PENDING':action=session.event({'nonce':action['nonce'],'result':connector.fetch(action['payload'],action['type'])})
++        result=session.event(cancel=True)
++        self.assertEqual(result['status'],'UNCERTAIN');self.assertEqual(connector.writes,[])
++
++    def test_original_only_full_layout_and_exact_excel_shared_groups(self):
++        page = self.page('39')
++        self.assertTrue(page['method_complete'])
++        nodes = regions.parse(page['desired_body']); _, sides = r.body_sections(nodes)
++        self.assertEqual(len([n for n in nodes if n.kind == 'columns']), 1)
++        self.assertTrue(all(len(row) == 2 for t in r.mappings(sides)['New'] + r.mappings(sides)['Old'] for row in t))
++        self.assertEqual(page['new_groups'][0]['locations'], ['Face 1', 'Face 2'])
++        self.assertTrue(page['new_groups'][0]['shared_source_group'])
++        self.assertEqual(r.mappings(sides)['Old'][0][1][1], 'Tampografia 1 Cor')
++        self.assertLess(next(i for i, n in enumerate(nodes) if n.kind == 'image'), next(i for i,n in enumerate(nodes) if n.kind == 'columns'))
++        self.assertIn('Óculos', page['desired_body'])
++        self.assertNotIn('PP428.png', page['desired_body'])
++
++    def test_current_extra_is_preserved_and_not_falsely_complete(self):
++        page = self.page('42')
++        self.assertFalse(page['method_complete'])
++        self.assertIn('Laser Metal - Até 360 cm2', page['new_groups'][0]['options'])
++        self.assertTrue(any('ausente do Excel' in x for x in page['technical_unresolved']))
++        self.assertEqual(page['property_operations'], [])
++
++    def test_pending_pp50_has_no_business_writes_then_pp39_succeeds(self):
++        page = self.page('50'); self.assertFalse(page['method_complete'])
++        self.assertTrue(page['operations']); self.assertEqual(page['property_operations'], [])
++        connector = self.connector(); session = self.session(['50', '39'])
++        result = drive(session, connector, session.start())
++        self.assertEqual(result['pages']['50']['outcome'], 'ERROR')
++        self.assertEqual(result['pages']['50']['saved_estado'], 'Erro')
++        self.assertEqual(result['pages']['39']['outcome'], 'SUCCESS')
++        writes=[x for x in connector.writes if x['page_id']==r.PAGES['50']]
++        self.assertEqual(writes,[{'command':'update_properties','page_id':r.PAGES['50'],'properties':{'Estado':'Erro'}}])
++        saved=b.page_state(a.capture_response(connector.pages[r.PAGES['50']],r.PAGES['50']))
++        self.assertEqual(saved['body'],page['source_body'])
++        report=read(session.root/'pages/PP50.json')
++        self.assertIn('Tampografia 2 cores',report['reason']);self.assertEqual(report['confirmed_receipts'],[])
++        self.assertEqual(report['pending_receipts'],[])
++        # A prior quarantine wins over the early rejection, so even Erro is not replayed.
++        before=len(connector.writes)
++        again=a.FileSession(self.work/'runs/two',self.bundle,self.approval(['50']),fake=True)
++        drive(again,connector,again.start())
++        self.assertEqual(len(connector.writes),before)
++        fresh=self.connector()
++        reverse=a.FileSession(self.work/'independent/runs/one',self.bundle,self.approval(['39','50']),fake=True)
++        reversed_result=drive(reverse,fresh,reverse.start())
++        self.assertEqual(reversed_result['pages']['50']['outcome'],'ERROR')
++        self.assertEqual(reversed_result['pages']['50']['pending_receipts'],[])
++        self.assertEqual([x for x in fresh.writes if x['page_id']==r.PAGES['50']],writes)
++
++    def test_full_page_execution_verified_final_status_and_scope_receipt(self):
++        connector = self.connector(); session = self.session(['39'])
++        result = drive(session, connector, session.start())
++        self.assertEqual(result['status'], 'COMPLETE')
++        self.assertEqual(result['pages']['39']['outcome'], 'SUCCESS')
++        report = result['pages']['39']
++        self.assertEqual(report['completion_binding']['scope'], f.VERSION)
++        self.assertTrue(report['completion_binding']['excel_sha256'])
++        self.assertEqual(connector.writes[-1]['properties'], {'Estado': 'Para revisão'})
++        saved = b.page_state(a.capture_response(connector.pages[r.PAGES['39']], r.PAGES['39']))
++        self.assertEqual([n.raw for n in regions.parse(saved['body'])], [n.raw for n in regions.parse(self.page('39')['desired_body'])])
++        journal = read(session.path)
++        self.assertEqual(len(journal['receipts']), len(connector.writes))
++
++    def test_bounded_browser_evidence_does_not_override_business_block(self):
++        connector = self.connector(); session = self.session(['262', '39'])
++        result = drive(session, connector, session.start())
++        self.assertEqual(result['pages']['262']['outcome'], 'ERROR')
++        self.assertEqual(result['pages']['39']['outcome'], 'SUCCESS')
++        self.assertFalse(any(x['page_id'] == r.PAGES['262'] and x['command'] in ('update_content','insert_content') for x in connector.writes))
++        self.assertTrue(any(x['region_evidence'].get('bounded_observations') for x in self.page('262')['operations']))
++        current = b.page_state(read(BASE / 'captures/pp262.json'))
++        node = next(n for n in regions.parse(current['body']) if n.kind == 'columns')
++        payload = {'command': 'update_content', 'page_id': current['page_id'], 'content_updates': [{'old_str': node.raw, 'new_str': '', 'replace_all_matches': False}]}
++        current['coverage'] = {'state': 'EXPLICIT_COMPLETE_EXPORT'}
++        with self.assertRaises(ValueError): regions.inspect(current, payload)
++
++    def test_removed_or_mismatched_browser_observation_does_not_unlock_containers(self):
++        page = self.page('262'); state = b.page_state(read(BASE / 'captures/pp262.json'))
++        bounded = copy.deepcopy(page['bounded_region_evidence'])
++        bounded['regions'][1]['tables'][0][1][2] = 'different body note'
++        desired, operations, proof = f.render(state, page['excel'], page['new_groups'], page['technical_unresolved'], 'mismatch', bounded)
++        self.assertEqual(operations, []); self.assertIn('blocked_region', proof)
++
++    def test_complete_format_report_accounts_for_all_source_blocks(self):
++        report = read(BASE / 'verification/excel-format-coverage.json')
++        self.assertEqual(len(report['blocks']), 823)
++        self.assertEqual(report['all_blocks_summary']['structural_errors'], 0)
++        self.assertEqual(len({x['source'] for x in report['blocks']}), 823)
++        for code, expected in [('42','F10'),('39','F16'),('33','F23'),('50','F29')]:
++            case = report['cases'][code]
++            self.assertEqual([o['cell'] for g in case['groups'] for o in g['options']], [expected])
++        self.assertEqual(report['cases']['661']['images'], [])
++        groups = report['cases']['558']['groups']
++        self.assertEqual([g['locals'] for g in groups], [['Bolso Esquerdo'], ['Bolso Direito']])
++        self.assertTrue(report['cases']['262']['merges'])
++        self.assertFalse(any(x['neighbour_columns_included'] or x['visto_column_included'] for x in report['blocks']))
++
++    def test_styled_xml_and_note_scopes_preserved_in_preview(self):
++        page = self.page('262')
++        self.assertIn('<columns>', page['desired_body'])
++        self.assertIn('Locais apresentados no mesmo grupo do Excel.', page['desired_body'])
++        self.assertIn('430.00001525878906', page['desired_body'])
++        self.assertTrue(any(n['side'] == 'New' for n in page['preservation']['notes']))
++        self.assertTrue(any(n['side'] == 'Old' for n in page['preservation']['notes']))
++        for group in page['new_groups']:
++            if any('Manga' in x for x in group['locations']):
++                self.assertTrue(any('DTF - Até A7' in x for x in group['options']))
++
++    def test_prior_pocket_estado_does_not_skip_full_content(self):
++        connector = self.connector(); page = connector.pages[r.PAGES['39']]
++        page['structuredContent']['text'] = page['structuredContent']['text'].replace('"Estado":"A rever"', '"Estado":"Para revisão"')
++        sync(page)
++        current = b.page_state(a.capture_response(page, r.PAGES['39']))
++        planned = self.page('39'); planned['source_state_sha256'] = current['source_state_sha256']; planned['source_metadata'] = b.stable_metadata(current)
++        session = self.session(['39']); result = drive(session, connector, session.start())
++        self.assertEqual(result['pages']['39']['outcome'], 'SUCCESS')
++        self.assertTrue(any(x['command'] == 'update_content' for x in connector.writes))
++        self.assertFalse(any(x.get('properties') == {'Estado': 'Para revisão'} for x in connector.writes))
++
++    def test_idempotent_layout_preserves_own_yes_no_and_reason(self):
++        page = self.page('39'); state = b.page_state(read(BASE / 'captures/pp39.json'))
++        state['body'] = page['desired_body'].replace('- [ ] Não,', '- [x] Não,').replace('<b>Se não, porquê?</b>\n<p />', '<b>Se não, porquê?</b>\nMotivo humano próprio')
++        desired, ops, proof = f.render(state, page['excel'], page['new_groups'], [], page['completion_binding']['full_scope_sha256'])
++        self.assertEqual(desired, state['body']); self.assertEqual(ops, []); self.assertTrue(proof['idempotent'])
++        self.assertIn('Motivo humano próprio', desired)
++        broken=state['body'].replace('<column ratio="50">','<column ratio="40">',1)
++        with self.assertRaises(ValueError):f.validate_layout(broken,'39')
++
++    def test_prepare_again_with_new_capture_time_does_not_repeat_conversion(self):
++        captures=self.work/'captures';shutil.copytree(BASE/'captures',captures)
++        response=read(captures/'pp39.json');before=b.page_state(response);page=self.page('39')
++        response['response']['structuredContent']['text']=response['response']['structuredContent']['text'].replace(before['body'],page['desired_body'],1).replace('"Estado":"A rever"','"Estado":"Para revisão"')
++        response['response']['structuredContent']['page_last_edited_at']='2026-11-19T10:00:00Z'
++        response['capture']['received_at_utc']='2026-11-19T10:01:00Z';sync(response['response']);a.atomic(captures/'pp39.json',response)
++        template=read(captures/'pp428.json');template['capture']['received_at_utc']='2026-11-19T10:01:00Z';a.atomic(captures/'pp428.json',template)
++        output=self.work/'rerun.json'
++        f.prepare(captures,self.bundle['excel']['workbook'],BASE/'input/workbook-index.json',BASE/'input/inventory-current.json',['39'],output)
++        planned=read(output)['pages'][0]
++        self.assertEqual(planned['operations'],[]);self.assertTrue(planned['method_complete']);self.assertEqual(planned['property_operations'],[])
++
++    def test_failed_initial_capture_is_local_error_and_does_not_block_other_page_plan(self):
++        captures=self.work/'captures';shutil.copytree(BASE/'captures',captures)
++        failed=read(captures/'pp42.json');failed['response']={'isError':True,'content':[],'structuredContent':None};a.atomic(captures/'pp42.json',failed)
++        output=self.work/'partial-input.json'
++        f.prepare(captures,self.bundle['excel']['workbook'],BASE/'input/workbook-index.json',BASE/'input/inventory-current.json',['42','39'],output)
++        pages=read(output)['pages'];self.assertTrue(pages[0]['full_prepare_error']);self.assertEqual(pages[0]['operations'],[])
++        self.assertTrue(pages[1]['method_complete']);self.assertTrue(pages[1]['operations'])
++
++    def test_lost_write_never_replayed_and_next_independent_pp_runs(self):
++        connector = self.connector(); connector.lost_at = 1
++        session = self.session(['39', '50']); result = drive(session, connector, session.start())
++        self.assertEqual(result['pages']['39']['outcome'], 'UNCERTAIN')
++        self.assertIn('50', result['pages'])
++        self.assertEqual(sum(x['page_id'] == r.PAGES['39'] and x['command'] == 'update_content' for x in connector.writes), 1)
++        self.assertFalse(session.fence.exists())
++
++    def test_crash_continue_does_not_replay_pending_leaf(self):
++        connector = self.connector(); session = self.session(['39', '50']); action = session.start()
++        while action['type'] != 'WRITE_PENDING': action = session.event({'nonce': action['nonce'], 'result': connector.fetch(action['payload'], action['type'])})
++        connector.update(action['payload'])
++        resumed = a.FileSession(session.root, self.bundle, self.approval(['39', '50']), fake=True)
++        result = drive(resumed, connector, resumed.event(continue_batch=True))
++        self.assertEqual(result['pages']['39']['outcome'], 'UNCERTAIN')
++        self.assertIn('50', result['pages'])
++        self.assertEqual(sum(x['page_id'] == r.PAGES['39'] and x['command'] == 'update_content' for x in connector.writes), 1)
++
++    def test_rules_change_is_global_refusal_before_content(self):
++        connector = self.connector(); connector.home['structuredContent']['text'] = connector.home['structuredContent']['text'].replace('Tampografia 1 Cor', 'Tampografia nova', 1); sync(connector.home)
++        session = self.session(['39'])
++        with self.assertRaises(a.SourceGuardError): drive(session, connector, session.start())
++        self.assertEqual(connector.writes, [])
++
++    def test_negative_saved_coverage_quarantines_without_success(self):
++        connector = self.connector(); fetch = connector.fetch
++        def truncated(request, phase):
++            result = fetch(request, phase)
++            if phase == 'VERIFY_PAGE': result['structuredContent']['metadata']['unknown_block_ids'] = ['actual-unknown']; sync(result)
++            return result
++        connector.fetch = truncated
++        session = self.session(['39']); result = drive(session, connector, session.start())
++        self.assertEqual(result['pages']['39']['outcome'], 'UNCERTAIN')
++        self.assertFalse(any(x.get('properties') == {'Estado': 'Para revisão'} for x in connector.writes))
++
++    def test_readonly_reconciliation_full_leaf_never_writes(self):
++        connector = self.connector(); connector.lost_at = 1; session = self.session(['39'])
++        drive(session, connector, session.start()); count = len(connector.writes)
++        result = drive(session, connector, session.event(reconcile=True, reconcile_code='39'))
++        self.assertEqual(result['status'], 'RECONCILED_STOPPED'); self.assertEqual(len(connector.writes), count)
++
++    def test_pp601_and_protected_collection_refused(self):
++        self.bundle['target_manifest']['collection'] = 'collection://166b6705-ae1f-83da-be92-87f8d804a1a5'
++        self.bundle['target_manifest_sha256'] = r.digest(self.bundle['target_manifest'])
++        with self.assertRaises(ValueError): self.session(['39'])
++        protected = f.page_id(full_excel.inventory(read(BASE / 'input/inventory-current.json'))['601']['url'])
++        with self.assertRaises(ValueError): a.validated_payload({'payload': {'command': 'update_properties', 'page_id': protected, 'properties': {'Estado': 'Erro'}}}, protected, True, True)
++
++    def test_noimage_and_multiple_images_use_own_media_only(self):
++        state = b.page_state(read(BASE / 'captures/pp39.json')); p = self.page('39')
++        image = next(n for n in regions.parse(state['body']) if n.kind == 'image')
++        state['body'] = state['body'].replace(image.raw, '')
++        desired, _, _ = f.render(state, p['excel'], p['new_groups'], [], 'noimage')
++        self.assertFalse(any(n.kind == 'image' for n in regions.parse(desired)))
++        state['body'] += '\n\n' + image.raw + '\n\n' + image.raw.replace('PP39_1.png', 'PP39_2.png')
++        desired, _, _ = f.render(state, p['excel'], p['new_groups'], [], 'twoimages')
++        self.assertEqual(len([n for n in regions.parse(desired) if n.kind == 'image']), 2)
++
++    def test_bottle_and_notebook_rules_are_own_source_supported(self):
++        choices = f.catalog(f.rule_source(read(BASE / 'captures/home.json')))
++        record = {'code': '900', 'title': 'GARRAFA metal', 'description': '', 'area': 'Brindes',
++                  'groups': [{'locals': ['Corpo'], 'options': [{'original': 'Laser Circular - Até 50 cm2'}]}]}
++        generated, pending, _, _ = f.generate(record, {}, choices)
++        self.assertEqual(generated[0]['options'], ['Laser Circular - Até 50 cm2'])
++        self.assertFalse(pending)
++        self.assertFalse(any('UV' in x for x in generated[0]['options']))
++        record['groups'][0]['options'][0]['original'] = 'Laser Circular - Até 25 cm2'
++        generated, pending, _, _ = f.generate(record, {}, choices)
++        self.assertTrue(pending); self.assertEqual(generated[0]['options'], ['Laser Circular - Até 25 cm2'])
++        record.update(title='Bloco A6', groups=[{'locals': ['Capa'], 'options': [{'original': 'Sublimação - Até A4 (21x29,7cm - TAPETE RATO)'}]}])
++        generated, _, _, _ = f.generate(record, {}, choices)
++        self.assertTrue(any('Até A6' in x for x in generated[0]['options']))
++
++    def test_escaped_pipe_cells_and_opaque_content(self):
++        page = self.page('39'); state = b.page_state(read(BASE / 'captures/pp39.json'))
++        source_table = next(n for n in regions.parse(state['body']) if n.kind == 'table')
++        raw = source_table.raw.replace('Tampografia 1 Cor', 'Tampografia 1 Cor \\| referência')
++        self.assertEqual(len(regions.parse(raw)[0].rows[1]), 3)
++        state['body'] += '\n\n<custom-block definition-id="unknown" />'
++        with self.assertRaises(ValueError): f.render(state, page['excel'], page['new_groups'], [], 'opaque')
++
++
++if __name__ == '__main__': unittest.main()
+--- accepted/source/tests/test_importar_pp.py
++++ source/tests/test_importar_pp.py
+@@ -0,0 +1,295 @@
++import copy
++import importlib.util
++import io
++import json
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++import urllib.error
++import xml.etree.ElementTree as ET
++import zipfile
++
++ROOT = Path(__file__).resolve().parents[1]
++spec = importlib.util.spec_from_file_location('importar_pp', ROOT / 'importar_pp.py')
++pp = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(pp)
++EVIDENCE = json.loads((ROOT / 'focused-source-evidence.json').read_text(encoding='utf-8'))
++SID = '00000000-0000-0000-0000-000000000001'
++PAGE = '00000000-0000-0000-0000-000000000002'
++S = pp.NS['s']
++R = pp.NS['r']
++
++
++def workbook(path, evidence=None, cells=None):
++    evidence = evidence or EVIDENCE[0]
++    data = copy.deepcopy(cells if cells is not None else evidence['cells'])
++    borders = ['<border xmlns="' + S + '"><top/></border>']
++    for c in data:
++        border = c.get('border', borders[0])
++        if border not in borders:
++            borders.append(border)
++        c['fixture_style'] = borders.index(border)
++    styles = ET.Element('styleSheet', xmlns=S)
++    bs = ET.SubElement(styles, 'borders')
++    for b in borders:
++        bs.append(ET.fromstring(b))
++    xfs = ET.SubElement(styles, 'cellXfs')
++    for i in range(len(borders)):
++        ET.SubElement(xfs, 'xf', borderId=str(i))
++    names = list(pp.SHEETS) + ['Notas PP']
++    wb = ET.Element('workbook', xmlns=S)
++    sheets = ET.SubElement(wb, 'sheets')
++    rels = ET.Element('Relationships')
++    with zipfile.ZipFile(path, 'w') as z:
++        z.writestr('xl/styles.xml', ET.tostring(styles))
++        z.writestr('xl/sharedStrings.xml', '<sst xmlns="' + S + '"/>')
++        z.writestr('docProps/core.xml', '<core><modified>fixture</modified></core>')
++        for i, name in enumerate(names, 1):
++            ET.SubElement(sheets, 'sheet', name=name, attrib={'{' + R + '}id': 'r' + str(i)})
++            ET.SubElement(rels, 'Relationship', Id='r' + str(i), Target='worksheets/sheet' + str(i) + '.xml')
++            sheet = ET.Element('worksheet', xmlns=S)
++            rows = ET.SubElement(sheet, 'sheetData')
++            if name == evidence['sheet']:
++                byrow = {}
++                for item in data:
++                    col, row = pp.parts(item['cell'])
++                    node = byrow.setdefault(row, ET.SubElement(rows, 'row', r=str(row)))
++                    c = ET.SubElement(node, 'c', r=item['cell'], s=str(item['fixture_style']), t='inlineStr')
++                    ET.SubElement(ET.SubElement(c, 'is'), 't').text = item['value']
++                    if item.get('formula'):
++                        ET.SubElement(c, 'f').text = '1+1'
++                merges = ET.SubElement(sheet, 'mergeCells')
++                for ref in evidence['merges']:
++                    ET.SubElement(merges, 'mergeCell', ref=ref)
++                z.writestr('xl/worksheets/_rels/sheet' + str(i) + '.xml.rels', '<Relationships><Relationship Id="comment" Target="../comments1.xml"/><Relationship Id="drawing" Target="../drawings/drawing1.xml"/></Relationships>')
++                z.writestr('xl/comments1.xml', '<comments xmlns="' + S + '"><commentList><comment ref="N13"><text><t>Original human note: No, retain reason</t></text></comment></commentList></comments>')
++                z.writestr('xl/drawings/drawing1.xml', '<wsDr xmlns="' + pp.NS['d'] + '" xmlns:a="' + pp.NS['a'] + '" xmlns:r="' + R + '"><oneCellAnchor><from><col>13</col><row>10</row></from><pic><a:blip r:embed="image"/></pic></oneCellAnchor></wsDr>')
++                z.writestr('xl/drawings/_rels/drawing1.xml.rels', '<Relationships><Relationship Id="image" Target="../media/image.png"/></Relationships>')
++                z.writestr('xl/media/image.png', b'synthetic fixture image bytes; not a real source image')
++            z.writestr('xl/worksheets/sheet' + str(i) + '.xml', ET.tostring(sheet))
++        z.writestr('xl/workbook.xml', ET.tostring(wb))
++        z.writestr('xl/_rels/workbook.xml.rels', ET.tostring(rels))
++    return path
++
++
++class FakeApi:
++    def __init__(self, pages=()):
++        self.existing = list(pages)
++        self.calls = []
++        self.fail_create = False
++    def pages(self, source):
++        self.calls.append(('QUERY', source))
++        return self.existing
++    def request(self, method, path, data=None, **kwargs):
++        self.calls.append((method, path))
++        if method == 'POST' and path == 'pages':
++            if self.fail_create:
++                raise TimeoutError('uncertain create')
++            return {'id': PAGE, 'url': 'fixture-page'}
++        if method == 'GET' and path.startswith('pages/'):
++            return {'properties': {'Código PP': {'rich_text': [{'plain_text': '428'}]}}}
++        raise AssertionError('Unexpected operation: ' + repr((method, path)))
++    def upload(self, *args):
++        raise AssertionError('No upload expected')
++
++
++class Tests(unittest.TestCase):
++    def setUp(self):
++        self.temp = tempfile.TemporaryDirectory(dir=ROOT)
++        self.addCleanup(self.temp.cleanup)
++        self.directory = Path(self.temp.name)
++        self.path = workbook(self.directory / 'fixture.xlsx')
++    def plan(self):
++        return pp.extract(self.path, SID)
++    def import_plan(self):
++        plan = self.plan()
++        record = next(r for r in plan['records'] if r['code'] == '428')
++        record['images'] = []
++        record['blocked'] = []
++        plan['records'] = [record]
++        return plan
++    def test_real_pp428_six_plus_two_and_neighbour(self):
++        for evidence in EVIDENCE:
++            with self.subTest(workbook=evidence['workbook']):
++                plan = pp.extract(workbook(self.path, evidence), SID)
++                for code, counts in [('428', [6, 2]), ('633', [3, 2])]:
++                    record = next(r for r in plan['records'] if r['code'] == code)
++                    self.assertEqual([g['locals'] for g in record['groups']], [['Peito'], ['Bolso']])
++                    self.assertEqual([len(g['options']) for g in record['groups']], counts)
++                    self.assertFalse(record['blocked'])
++                first = next(r for r in plan['records'] if r['code'] == '428')
++                self.assertEqual([[o['cell'] for o in g['options']] for g in first['groups']], [['P' + str(n) for n in range(10, 16)], ['P16', 'P17']])
++    def test_exact_raw_notes_comments_images_remain_recoverable(self):
++        record = next(r for r in self.plan()['records'] if r['code'] == '428')
++        expected = [{'cell': c['cell'], 'value': c['value']} for c in EVIDENCE[0]['cells'] if 9 <= pp.parts(c['cell'])[1] <= 20 and pp.clean(c['value'])]
++        self.assertEqual(record['raw'], expected)
++        self.assertTrue(any('Repetição' in n for n in record['notes']))
++        self.assertEqual(record['images'], ['xl/media/image.png'])
++        self.assertEqual(record['comments'][0]['text'], 'Original human note: No, retain reason')
++        blocks = json.dumps(pp.children(record, self.plan()['source'], []), ensure_ascii=False)
++        self.assertIn('Original human note: No, retain reason', blocks)
++        self.assertIn('Bordado - Até 360 cm2', blocks)
++    def test_shared_or_ambiguous_labels_are_not_blindly_split_and_are_blocked(self):
++        cells = [c for c in EVIDENCE[0]['cells'] if pp.parts(c['cell'])[1] <= 20]
++        cells = copy.deepcopy(cells)
++        cells.append({**next(c for c in cells if c['cell'] == 'O10'), 'cell': 'O11', 'value': 'Manga'})
++        for cell in cells:
++            if cell['cell'] == 'O11':
++                cell['value'] = 'Manga'
++            if cell['cell'] in ('O16', 'P16'):
++                cell['border'] = next(c['border'] for c in cells if c['cell'] == 'O10')
++        plan = pp.extract(workbook(self.path, cells=cells), SID)
++        record = next(r for r in plan['records'] if r['code'] == '428')
++        self.assertEqual(len(record['groups']), 1)
++        self.assertEqual(record['groups'][0]['locals'], ['Peito', 'Manga', 'Bolso'])
++        self.assertEqual(len(record['groups'][0]['options']), 8)
++        self.assertTrue(record['blocked'])
++    def test_duplicate_and_missing_source_codes_are_held(self):
++        cells = copy.deepcopy(EVIDENCE[0]['cells'])
++        for cell in cells:
++            if cell['cell'] == 'M21': cell['value'] = '428'
++        plan = pp.extract(workbook(self.path, cells=cells), SID)
++        self.assertEqual(len(plan['duplicate_codes']['428']), 2)
++        self.assertTrue(all(r['blocked'] for r in plan['records']))
++        for cell in cells:
++            if cell['cell'] == 'M9': cell['value'] = None
++            if cell['cell'] == 'O9': cell['value'] = 'LOCAL'
++        cells.append({**next(c for c in cells if c['cell'] == 'O10'), 'cell': 'O9', 'value': 'LOCAL'})
++        plan = pp.extract(workbook(self.path, cells=cells), SID)
++        self.assertTrue(plan['orphans'])
++        self.assertTrue(all(r['code'] for r in plan['records']))
++    def test_import_rejects_duplicate_or_missing_codes_before_network(self):
++        for mode in ['duplicate', 'missing']:
++            plan = self.import_plan()
++            if mode == 'duplicate': plan['records'].append(copy.deepcopy(plan['records'][0]))
++            else: plan['records'][0]['code'] = ''
++            api = FakeApi()
++            with patch.object(pp, 'prepare_options'), self.assertRaises(ValueError):
++                pp.import_records(api, plan, set(), self.directory / 'journal.json')
++            self.assertEqual(api.calls, [])
++    def test_changed_source_blocks_import_and_schema_prep_before_network(self):
++        plan = self.import_plan()
++        self.path.write_bytes(b'changed')
++        for command in ['import', 'options']:
++            api = FakeApi()
++            with self.assertRaises(ValueError):
++                if command == 'import': pp.import_records(api, plan, set(), self.directory / 'journal.json')
++                else: pp.prepare_options(api, plan)
++            self.assertEqual(api.calls, [])
++    def test_existing_code_is_preserved_without_schema_or_page_mutations(self):
++        api = FakeApi([{'id': PAGE, 'properties': {'Código PP': {'rich_text': [{'plain_text': '428'}]}}}])
++        with patch.object(pp, 'prepare_options') as prepare:
++            pp.import_records(api, self.import_plan(), set(), self.directory / 'journal.json')
++        prepare.assert_not_called()
++        self.assertEqual(api.calls, [('QUERY', SID)])
++        self.assertFalse((self.directory / 'journal.json').exists())
++    def test_uncertain_page_create_cannot_be_repeated_when_not_visible(self):
++        plan = self.import_plan(); api = FakeApi(); api.fail_create = True
++        journal = self.directory / 'journal.json'
++        with patch.object(pp, 'prepare_options'):
++            with self.assertRaises(TimeoutError): pp.import_records(api, plan, set(), journal)
++            self.assertEqual(json.loads(journal.read_text(encoding='utf-8'))['428']['status'], 'a_criar')
++            with self.assertRaises((ValueError, RuntimeError)): pp.import_records(api, plan, set(), journal)
++        self.assertEqual(api.calls.count(('POST', 'pages')), 1)
++    def test_confirmed_journal_page_absent_from_query_is_also_held(self):
++        plan = self.import_plan(); journal = self.directory / 'journal.json'
++        pp.write_json(journal, {'428': {'status': 'criado', 'page_id': PAGE}})
++        api = FakeApi()
++        with patch.object(pp, 'prepare_options') as prepare, self.assertRaises((ValueError, RuntimeError)):
++            pp.import_records(api, plan, set(), journal)
++        prepare.assert_not_called()
++        self.assertNotIn(('POST', 'pages'), api.calls)
++    def test_dry_run_never_constructs_api_or_mutates_files(self):
++        plan = self.import_plan(); path = self.directory / 'plan.json'; pp.write_json(path, plan)
++        before = {p.name: p.read_bytes() for p in self.directory.iterdir()}
++        for command in ['importar', 'opcoes']:
++            with patch.object(pp.sys, 'argv', ['importar_pp.py', command, '--plano', str(path)]), patch.object(pp, 'Notion', side_effect=AssertionError('No API')), patch.object(pp.urllib.request, 'urlopen', side_effect=AssertionError('No network')), patch('sys.stdout', io.StringIO()):
++                pp.main()
++        self.assertEqual(before, {p.name: p.read_bytes() for p in self.directory.iterdir()})
++    def test_write_timeout_and_5xx_are_not_retried(self):
++        for error in [TimeoutError('ambiguous'), urllib.error.HTTPError('https://invalid', 503, 'failed', {}, io.BytesIO(b'fixture'))]:
++            api = pp.Notion.__new__(pp.Notion); api.headers = {}
++            with patch.object(pp.urllib.request, 'urlopen', side_effect=error) as request, patch.object(pp.time, 'sleep') as sleep, self.assertRaises((RuntimeError, TimeoutError)):
++                api.request('POST', 'pages', {})
++            self.assertEqual(request.call_count, 1); sleep.assert_not_called()
++    def test_image_rejections_happen_before_any_api_request(self):
++        api = pp.Notion.__new__(pp.Notion); api.headers = {}
++        with patch.object(api, 'request', side_effect=AssertionError('No API')):
++            with self.assertRaises(ValueError): api.upload('image.bmp', b'bytes')
++            with self.assertRaises(ValueError): api.upload('image.png', b'x' * (20 * 1024 * 1024 + 1))
++
++
++    def options_api(self, plan, *, fail_create=False, fail_cleanup=False):
++        wanted = pp.schema_options(plan)
++        class OptionsApi:
++            def __init__(self):
++                self.calls = []
++                self.schema = {"properties": {name: {"type": "multi_select", "multi_select": {"options": []}} for name in wanted}}
++                self.schema["properties"]["Opções de personalização"]["multi_select"]["options"] = [{"id": str(i), "name": "Existing " + str(i), "color": "blue"} for i in range(100)]
++            def request(self, method, path, data=None):
++                self.calls.append((method, path, copy.deepcopy(data)))
++                if method == 'GET': return copy.deepcopy(self.schema)
++                if method == 'POST':
++                    if fail_create: raise TimeoutError('Uncertain helper create')
++                    return {'id': PAGE}
++                if data.get('in_trash'):
++                    if fail_cleanup: raise TimeoutError('Uncertain helper cleanup')
++                    return {}
++                for name, prop in data.get('properties', {}).items():
++                    old = self.schema['properties'][name]['multi_select']['options']
++                    if path.startswith('data_sources/'):
++                        self.schema['properties'][name]['multi_select']['options'] = prop['multi_select']['options']
++                    else:
++                        have = {o['name'] for o in old}
++                        old.extend({**o, 'id': 'fixture-new', 'color': 'default'} for o in prop['multi_select'] if o['name'] not in have)
++                return {}
++        return OptionsApi()
++    def test_helper_uncertain_create_or_cleanup_blocks_next_schema_attempt(self):
++        for create in [True, False]:
++            with self.subTest(create=create):
++                plan = self.import_plan(); api = self.options_api(plan, fail_create=create, fail_cleanup=not create)
++                journal = self.directory / ('helper-' + str(create) + '.json')
++                with self.assertRaises(TimeoutError): pp.prepare_options(api, plan, journal)
++                state = json.loads(journal.read_text(encoding='utf-8'))
++                self.assertEqual(state['status'], 'a_criar' if create else 'criado')
++                calls = len(api.calls)
++                with self.assertRaises(ValueError): pp.prepare_options(api, plan, journal)
++                self.assertEqual(len(api.calls), calls)
++                self.assertEqual(sum(m == 'POST' for m, _, _ in api.calls), 1)
++    def test_schema_helper_success_preserves_existing_options_and_records_cleanup(self):
++        plan = self.import_plan(); api = self.options_api(plan); journal = self.directory / 'helper.json'
++        pp.prepare_options(api, plan, journal)
++        self.assertEqual(json.loads(journal.read_text(encoding='utf-8'))['status'], 'concluido')
++        options = api.schema['properties']['Opções de personalização']['multi_select']['options']
++        self.assertEqual(options[:100], [{'id': str(i), 'name': 'Existing ' + str(i), 'color': 'blue'} for i in range(100)])
++        self.assertFalse(pp.option_patch(api.schema, pp.schema_options(plan)))
++        self.assertTrue(any(data == {'in_trash': True} for _, _, data in api.calls))
++    def test_legacy_ambiguous_plan_cannot_bypass_assignment_hold(self):
++        plan = self.import_plan(); plan['records'][0]['groups'][0]['locals'].append('Shared')
++        api = FakeApi()
++        with self.assertRaises(ValueError): pp.import_records(api, plan, {'428'}, self.directory / 'journal.json')
++        self.assertEqual(api.calls, [])
++    def test_existing_page_reconciles_pending_journal_without_changing_manual_content(self):
++        plan = self.import_plan(); journal = self.directory / 'journal.json'
++        state = {'428': {'status': 'a_criar', 'source_sha256': plan['source']['sha256']}}
++        pp.write_json(journal, state)
++        existing = {'id': PAGE, 'properties': {'Código PP': {'rich_text': [{'plain_text': '428'}]}, 'Human': {'text': 'No, original reason'}}}
++        api = FakeApi([existing])
++        with patch.object(pp, 'prepare_options') as prepare:
++            pp.import_records(api, plan, set(), journal)
++        prepare.assert_not_called(); self.assertEqual(api.calls, [('QUERY', SID)])
++        self.assertEqual(api.existing, [existing]); self.assertEqual(json.loads(journal.read_text(encoding='utf-8')), state)
++
++    def test_cli_prepare_is_local_and_keeps_correct_group_assignments(self):
++        output = self.directory / 'preview'
++        with patch.object(pp.sys, 'argv', ['importar_pp.py', 'preparar', '--excel', str(self.path), '--fonte-dados', SID, '--pasta', str(output)]), patch.object(pp, 'Notion', side_effect=AssertionError('No API')), patch.object(pp.urllib.request, 'urlopen', side_effect=AssertionError('No network')), patch('sys.stdout', io.StringIO()):
++            pp.main()
++        plan = json.loads((output / 'plano_importacao.json').read_text(encoding='utf-8'))
++        record = next(r for r in plan['records'] if r['code'] == '428')
++        self.assertEqual([len(g['options']) for g in record['groups']], [6, 2])
++        self.assertEqual({p.name for p in output.iterdir()}, {'plano_importacao.json', 'resumo.json', 'opcoes_notion.json', 'revisao.csv'})
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- accepted/source/tests/test_prepare_bridge.cjs
++++ source/tests/test_prepare_bridge.cjs
+@@ -0,0 +1,42 @@
++const test=require('node:test');
++const assert=require('node:assert/strict');
++const fs=require('node:fs');
++const path=require('node:path');
++const vm=require('node:vm');
++const prepare=vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../prepare_bridge.js'),'utf8'));
++const config={script:'C:/candidate/batch_cli.py',plan:'C:/run/full.json',captures:'C:/run/captures',index:'C:/run/index.json',inventory:'C:/run/inventory.json',workbook:'C:/run/book.xlsx',codes:['39']};
++function harness() {
++  const reads=[], patches=[], commands=[];
++  const tools={
++    exec_command:async x=>{commands.push(x.cmd);return {exit_code:0,output:JSON.stringify(x.cmd.includes("'selection'")?{collection:'collection://working',working_copy:'home',pages:[{code:'39',page_id:'page39'}]}:{plan_sha256:'review-hash',pages:[{code:'39',method_complete:true}]})};},
++    mcp__codex_apps__notion_fetch:async x=>{reads.push(x.id);const value={id:x.id,text:'<properties>{"file":"https://files.example/image.png?X-Amz-Signature=private-token"}</properties><content>Own content</content>'};return {content:[{type:'text',text:JSON.stringify(value)}],structuredContent:value,isError:false};},
++    apply_patch:async x=>{patches.push(x);return {};},
++    mcp__codex_apps__notion_notion_update_page:async()=>{throw Error('Preparation cannot write Notion');}
++  };
++  return {tools,reads,patches,commands};
++}
++test('full preparation reads exact selected pages, schema, rules and layout only; scrubs credentials',async()=>{
++  const h=harness(),result=await prepare(config,h.tools);
++  assert.equal(result.plan_sha256,'review-hash');
++  assert.deepEqual(h.reads,['home','collection://working','074b6705ae1f8257a53701d87a64eb32','page39']);
++  assert.equal(h.patches.length,4);
++  assert.ok(h.patches.every(x=>!x.includes('private-token')));
++  assert.ok(h.commands[1].includes("'prepare-full'"));
++});
++test('PP601-only selection is refused before connector reads',async()=>{
++  const h=harness();h.tools.exec_command=async()=>({exit_code:0,output:JSON.stringify({pages:[]})});
++  await assert.rejects(()=>prepare({...config,codes:['601']},h.tools),/protected/);
++  assert.equal(h.reads.length,0);
++});
++test('failed actual fetch stops preparation and never applies a page',async()=>{
++  const h=harness();h.tools.mcp__codex_apps__notion_fetch=async()=>({isError:true});
++  await assert.rejects(()=>prepare(config,h.tools),/read failed/);
++  assert.equal(h.patches.length,0);
++});
++test('failed selected-page read is persisted as a per-page error while source reads remain global',async()=>{
++  const h=harness(),fetch=h.tools.mcp__codex_apps__notion_fetch;
++  h.tools.mcp__codex_apps__notion_fetch=async x=>x.id==='page39'?{isError:true,content:[],structuredContent:null}:fetch(x);
++  const result=await prepare(config,h.tools);
++  assert.equal(result.plan_sha256,'review-hash');assert.equal(h.patches.length,4);
++  assert.ok(h.patches[3].includes('"isError":true'));
++});

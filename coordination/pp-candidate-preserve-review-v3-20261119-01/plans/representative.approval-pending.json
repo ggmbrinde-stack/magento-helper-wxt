@@ -1,0 +1,37 @@
+{
+  "approved_codes": [
+    "39",
+    "42",
+    "50",
+    "261",
+    "262"
+  ],
+  "approved_operation_ids": [
+    "39-full-body-1",
+    "39-full-body-2",
+    "39-full-review-status",
+    "39-full-error-status",
+    "42-full-body-1",
+    "42-full-body-2",
+    "42-full-body-3",
+    "42-full-review-status",
+    "42-full-error-status",
+    "50-full-body-1",
+    "50-full-body-2",
+    "50-full-review-status",
+    "50-full-error-status",
+    "261-full-body-1",
+    "261-full-body-2",
+    "261-full-body-3",
+    "261-full-review-status",
+    "261-full-error-status",
+    "262-full-body-1",
+    "262-full-body-2",
+    "262-full-review-status",
+    "262-full-error-status"
+  ],
+  "authorisation": "EXPLICIT_HUMAN_APPROVAL",
+  "implementation_sha256": "dafc80c641d650fb9311a66cd6c3298c229e2775f8bb8d2e43acc42b1178a676",
+  "plan_sha256": "5af25462abc9e16a37dc502d2085826a28bbb5a2a2f39e4a068495eb9f66667c",
+  "review_reference": ""
+}

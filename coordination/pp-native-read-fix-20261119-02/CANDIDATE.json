@@ -1,0 +1,21 @@
+{
+  "candidate": "pp-native-read-fix-20261119-02",
+  "status": "PENDING_INDEPENDENT_REVIEW",
+  "base_candidate": "pp-native-read-fix-20261119-01",
+  "base_implementation_sha256": "52dc0cbecf02302adda8269ad9579d20204bac62fa217ef3c508c2d70a7ff5e6",
+  "implementation_sha256": "9ba8b6f701b2cf588b407df20bf0cc279f084c71d7e44b6bbfbe73b7f619b40d",
+  "changed_files": [
+    "source/native_evidence.py",
+    "source/tests/test_native_evidence.py"
+  ],
+  "base_commit_reported": "746159f4228f0cf24ac7e230dad99248c369459b",
+  "prior_GO_does_not_approve_this_hash": "PP-NATIVE-READ-FIX-20261119-GET428-GO",
+  "scope": "paragraph.icon:null only; next authenticated test GET428 only after review; no conversion/write approval",
+  "tests": {
+    "focused": 6,
+    "passed": true,
+    "broad_suites_rerun": false
+  },
+  "live_requests": 0,
+  "secrets_read": false
+}

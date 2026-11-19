@@ -1,0 +1,389 @@
+--- a/source/full_conversion.py
++++ b/source/full_conversion.py
+@@ -294,7 +294,7 @@
+     raw = r.xml_table(r.Node('table', '', rows=[['Célula', 'Texto original']] + [[b.inline(x['cell']), b.inline(str(x['value']))] for x in record['raw']]))
+     excel_notes = [r.toggle('Comentário Excel: '+x['cell'], [b.inline(x['text'])]) for x in record.get('comments', [])]
+     history = r.toggle(r.HISTORY, [marker, r.toggle('Origem Excel verificada', [b.inline(record['source']), raw, *excel_notes]),
+-        r.toggle('Apresentação anterior preservada', [n.raw for n in flat])])
++        r.toggle('Apresentação anterior preservada', [n.raw for n in flat if n not in preserved])])
+     operations = []
+     mutable = [n for n in nodes if n is not source[0] and n not in preserved]
+     if not mutable or not all(regions.leaf(n) or regions.verified_container(n, state, bounded) for n in mutable):
+@@ -392,11 +392,13 @@
+     native_binding = None
+     if native_manifest:
+         import native_evidence as native
+-        manifest, native_pages = native.read_manifest(native_manifest, b.implementation_sha())
++        captured_manifest, native_pages = native.read_manifest(native_manifest, b.implementation_sha())
+         if set(native_pages) != set(codes) or bounded_pages:
+             raise ValueError('Native evidence requires exact selected pages and no ambiguous browser evidence')
+         native_binding = {'path': str(Path(native_manifest).resolve()),
+-                          'sha256': native.file_hash(native_manifest)}
++                          'sha256': native.file_hash(native_manifest),
++                          'producer_implementation_sha256': captured_manifest['implementation_sha256'],
++                          'consumer_implementation_sha256': b.implementation_sha()}
+     template_body=re.findall(r'<content>([\s\S]*?)</content>',template_text)
+     if len(template_body)!=1:raise ValueError('Corpo da referência de layout ausente ou ambíguo')
+     source_binding = {'rules_sha256': r.digest(tabs), 'excel_sha256': index['source']['sha256'],
+@@ -429,16 +431,28 @@
+             questions = preserve_current_extras(state, record, new, questions)
+             binding = r.digest({**source_binding, 'code': code, 'record': record, 'context': contexts.get(code, {})})
+             bounded = copy.deepcopy(bounded_pages.get(code))
++            native_error = None
+             if native_manifest:
+-                bounded = native.proof(state, native_pages[code])
+-                page['native_evidence'] = bounded
+-                page['synthetic_capture'] |= bool(manifest.get('synthetic'))
++                try:
++                    bounded = native.proof(state, native_pages[code])
++                    page['native_evidence'] = bounded
++                except (ValueError, KeyError, TypeError) as error:
++                    native_error = str(error)
++                    bounded = None
++                    page['native_binding_error'] = native_error
++                page['synthetic_capture'] |= bool(captured_manifest.get('synthetic'))
+             if bounded:
+                 if not native_manifest and (bounded['source_edited_at'] != state['page_last_edited_at'] or bounded['page_id'] != state['page_id']):
+                     raise ValueError('Observação do navegador refere-se a outro estado do PP')
+                 bounded.update(source_state_sha256=state['source_state_sha256'], global_export_claimed=False)
+                 page['bounded_region_evidence'] = bounded
+             desired, ops, preservation = render(state, record, new, questions, binding, bounded)
++            if native_error:
++                ops = []
++                preservation['blocked_region'] = native_error
++            if questions:
++                # Keep the proposal inspectable; unresolved business choices have no executable edits.
++                ops = []
+             try:wanted, delta = properties(state, new, schema)
+             except ValueError as error:
+                 wanted, delta = {}, {}
+@@ -457,7 +471,7 @@
+             page.update(full_prepare_error=str(error), desired_body=state['body'], diff='')
+         for key, suffix, kind, status in [('completion_status_operation', 'full-review-status', 'success_status', 'Para revisão'),
+                                            ('failure_status_operation', 'full-error-status', 'error_status', 'Erro')]:
+-            page[key] = {'id': code + '-' + suffix, 'kind': kind, 'eligible': True,
++            page[key] = {'id': code + '-' + suffix, 'kind': kind, 'eligible': not bool(page.get('native_binding_error')),
+                 'payload': {'command': 'update_properties', 'page_id': state['page_id'], 'properties': {'Estado': status}}}
+         if page.get('full_prepare_error'): page['status']='READY_FOR_ERROR_REPORT'
+         elif not page['method_complete']: page['status']='READY_FOR_ERROR_REPORT'
+--- a/source/native_evidence.py
++++ b/source/native_evidence.py
+@@ -15,6 +15,8 @@
+ import rendered_layout as r
+ 
+ SOURCE = 'NOTION_NATIVE_API_V1'
++REVIEWED_PRODUCER = '18e250a02fd40c0b9945893055678c9d662790ae9c3488850b6048141020ba9f'
++REVIEWED_MANIFEST = '50702d15400a406e0048b2602799b2eb5f1c88bd0663b3c63fd6e50cdf5d7254'
+ API_VERSION = '2025-09-03'
+ PERSISTENCE = 'NATIVE_HOSTED_FILE_LOCATORS_SHA256_V1'
+ FILE_LOCATOR = 'notion-native-file-locator-sha256:'
+@@ -127,7 +129,11 @@
+     path = Path(path).resolve()
+     manifest = json.loads(path.read_text(encoding='utf-8'))
+     exact_keys(manifest, {'source', 'implementation_sha256', 'pages', 'synthetic'})
+-    if manifest.get('source') != SOURCE or manifest.get('implementation_sha256') != implementation:
++    import batch_plan
++    inherited = (manifest.get('implementation_sha256') == REVIEWED_PRODUCER
++                 and file_hash(path) == REVIEWED_MANIFEST and manifest.get('synthetic') is False
++                 and implementation == batch_plan.implementation_sha())
++    if manifest.get('source') != SOURCE or (manifest.get('implementation_sha256') != implementation and not inherited):
+         raise ValueError('Native manifest provenance/implementation mismatch')
+     pages = {}
+     for code, entry in manifest['pages'].items():
+@@ -267,7 +273,7 @@
+ 
+ 
+ def plain_mcp(text):
+-    text = text.replace('\\|', '|')
++    text = re.sub(r'\\([\\_|])', r'\1', text)
+     if re.search(r'\*\*|__|\[.*\]\(|\x60', text):
+         raise ValueError('Styled MCP text requires a reviewed round-trip mapping')
+     names = {'b': 'bold', 'i': 'italic', 'u': 'underline', 's': 'strikethrough', 'code': 'code'}
+@@ -357,13 +363,26 @@
+     raise ValueError('Native replacement contains unsupported structure')
+ 
+ 
++def mcp_children(nodes):
++    result = []
++    for node in nodes:
++        if node.kind == 'paragraph' and '\n' in node.raw and node.raw.startswith('- '):
++            lines = node.raw.splitlines()
++            if node.attrs or any(not line.startswith('- ') or not line[2:] for line in lines):
++                raise ValueError('Ambiguous grouped MCP bullets')
++            result.extend(['bulleted_list_item', plain_mcp(line[2:])] for line in lines)
++        else:
++            result.append(semantic_mcp(node))
++    return result
++
++
+ def semantic_mcp(node):
+     kind = node.kind
+     if kind in ('columns', 'column'):
+         allowed = {'ratio'} if kind == 'column' else set()
+         if set(node.attrs) - allowed or node.attrs.get('ratio', '50') != '50':
+             raise ValueError('Unsupported MCP columns')
+-        return [kind, [semantic_mcp(c) for c in node.items]]
++        return [kind, mcp_children(node.items)]
+     if kind == 'table':
+         if (set(node.attrs) - {'fit-page-width', 'header-row', 'header-column'}
+                 or node.attrs.get('header-row', 'true') != 'true'
+@@ -395,21 +414,67 @@
+         if heading not in (None, 'h1', 'h2', 'h3'):
+             raise ValueError('Unsupported toggle heading')
+         return ['toggle', int(heading[-1]) if heading else None, plain_mcp(node.items[0].raw),
+-                [semantic_mcp(c) for c in node.items[1:]]]
++                mcp_children(node.items[1:])]
+     if kind == 'callout' and set(node.attrs) <= {'icon'} and node.items:
+         return ['callout', node.attrs.get('icon'), plain_mcp(node.items[0].raw),
+-                [semantic_mcp(c) for c in node.items[1:]]]
++                mcp_children(node.items[1:])]
+     raise ValueError('MCP replacement contains unsupported structure')
+ 
+ 
++def metadata_matches(state, page):
++    def text(values):
++        parts = plain_rich(values)
++        if any(flags for _, flags in parts):
++            raise ValueError('Styled native property cannot be bound to MCP')
++        return ''.join(value for value, _ in parts)
++    wanted = {}
++    for name, prop in page['properties'].items():
++        kind = prop['type']; value = prop[kind]
++        if kind in ('title', 'rich_text'): value = text(value)
++        elif kind == 'multi_select': value = [item['name'] for item in value]
++        elif kind == 'select': value = value['name'] if value else None
++        elif kind == 'files': value = [item[item['type']]['url'] for item in value]
++        elif kind != 'number': raise ValueError('Unsupported native property binding')
++        wanted[name] = value
++    actual = copy.deepcopy(state['properties'])
++    if r.notion_url_id(actual.pop('url', '')) != state['page_id']:
++        raise ValueError('MCP property URL differs')
++    for name, value in actual.items():
++        if name not in wanted: raise ValueError('Unknown MCP property binding')
++        kind = page['properties'][name]['type']
++        if kind in ('title', 'rich_text'): actual[name] = re.sub(r'\\([\\_|])', r'\1', value)
++        elif kind == 'files':
++            actual[name] = [canonical_file({'type':'file','file':{'url':url}})['file']['url'] for url in value]
++    for name, value in wanted.items():
++        observed = actual.get(name)
++        if name not in actual and value in (None, '', []): continue
++        if isinstance(value, list) and isinstance(observed, list):
++            if sorted(value) == sorted(observed): continue
++        if value != observed: raise ValueError('Native/MCP property differs: '+name)
++    for name in ('cover', 'icon'):
++        if name not in state or canonical_file(state[name]) != page.get(name):
++            raise ValueError('Native/MCP '+name+' differs')
++
++
+ def proof(state, snapshot):
+-    tree = validate(snapshot, state['page_id'])
++    tree = validate(snapshot, state['page_id'], expected_code=state.get('code') if not snapshot.get('synthetic') else None)
++    nodes = r.parse(state['body'], allow_styled_notes=True)
++    if len(tree) != len(nodes):
++        raise ValueError('Native/MCP top-level coverage differs')
++    binding = 'EXACT_EDIT_TIMESTAMP'
+     if snapshot['after']['last_edited_time'] != state['page_last_edited_at']:
+-        raise ValueError('Native/MCP edit state differs')
+-    if len(tree) != len(r.parse(state['body'], allow_styled_notes=True)):
+-        raise ValueError('Native/MCP top-level coverage differs')
++        native_time = datetime.fromisoformat(snapshot['after']['last_edited_time'].replace('Z', '+00:00'))
++        mcp_time = datetime.fromisoformat(state['page_last_edited_at'].replace('Z', '+00:00'))
++        if (native_time.tzinfo is None or mcp_time.tzinfo is None or native_time.second or native_time.microsecond
++                or not 0 <= (mcp_time-native_time).total_seconds() < 60):
++            raise ValueError('Native/MCP edit state differs')
++        metadata_matches(state, canonical_page(snapshot['after'], bool(snapshot.get('persistence_policy'))))
++        if not all(semantic_mcp(node) == semantic_native(item) for node, item in zip(nodes, tree)):
++            raise ValueError('Native/MCP full content differs within observed edit minute')
++        binding = 'OBSERVED_MINUTE_PLUS_EXACT_CONTENT_AND_SUPPORTED_METADATA'
+     return {'source': SOURCE, 'snapshot': snapshot, 'snapshot_sha256': r.digest(snapshot),
+-            'page_id': state['page_id'], 'source_state_sha256': state['source_state_sha256']}
++            'page_id': state['page_id'], 'source_state_sha256': state['source_state_sha256'],
++            'edit_binding': binding, 'mcp_edited_at': state['page_last_edited_at']}
+ 
+ 
+ def operation(before, payload, evidence):
+--- a/source/native_session.py
++++ b/source/native_session.py
+@@ -77,8 +77,8 @@
+             if phase == 'NATIVE_PREWRITE':
+                 if tree != native.validate(prior, gate['page_id']):
+                     raise ValueError('Native descendants changed despite MCP representation')
+-                if snapshot['before']['last_edited_time'] != prior['after']['last_edited_time']:
+-                    raise ValueError('Native page edit state changed')
++                if native.canonical_page(snapshot['before'], bool(snapshot.get('persistence_policy'))) != native.canonical_page(prior['after'], bool(prior.get('persistence_policy'))):
++                    raise ValueError('Native page edit state or metadata changed')
+                 payload = gate['write_action']['payload']
+                 before = state.get('last_before_body', page['source_body'])
+                 evidence = native.proof({'page_id': page['page_id'], 'body': before,
+--- a/source/prepare_bridge.js
++++ b/source/prepare_bridge.js
+@@ -1,7 +1,7 @@
+ (async function prepareReviewedFullBatch(config, tools) {
+   // Session tools supply current MCP reads; Python remains a local source/plan engine.
+   const quote = value => "'" + String(value).replace(/'/g, "''") + "'";
+-  for (const value of [config.script, config.plan, config.inventory, config.index, config.workbook, config.captures]) {
++  for (const value of [config.script, config.plan, config.inventory, config.index, config.workbook, config.captures, ...(config.nativeManifest?[config.nativeManifest]:[])]) {
+     if (typeof value !== "string" || !value || /[\r\n]/.test(value)) throw new Error("Exact local preparation paths are required");
+   }
+   if (!Array.isArray(config.codes) || !config.codes.length || config.codes.some(c => !/^\d+$/.test(c))) throw new Error("Choose exact reviewed PP codes");
+@@ -35,5 +35,6 @@
+     if (saved?.isError) throw new Error("Cannot persist the current read");
+   }
+   return await python("prepare-full",["--captures",config.captures,"--workbook",config.workbook,"--index",config.index,
+-    "--inventory",config.inventory,"--codes",...config.codes,"--output",config.plan,...(config.contexts?["--contexts",config.contexts]:[])]);
++    "--inventory",config.inventory,"--codes",...config.codes,"--output",config.plan,...(config.contexts?["--contexts",config.contexts]:[]),
++    ...(config.nativeManifest?["--native-manifest",config.nativeManifest]:[])]);
+ })
+--- /dev/null
++++ b/source/tests/test_pilot_preparation.py
+@@ -0,0 +1,150 @@
++"""Focused local contract checks. Real captures are read offline; no connector is called."""
++import copy
++import json
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++from unittest.mock import patch
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT/'tests'))
++import batch_plan as b
++import full_conversion as f
++import native_evidence as n
++import rendered_layout as r
++from native_session import NativeSession
++from test_native_evidence import fixture, snapshot, rich, BODY, PAGE, TIME, FakeEngine
++
++CO = ROOT.parents[1]
++CODES = '428 429 430 467 558 612 633 661 662 786 840'.split()
++CAPTURES = CO/'pp-aprons-pilot-current-20261119-01/captures'
++MANIFEST = CO/'pp-aprons-native-capture-20261119-01/manifest.json'
++INPUT = CO/'pp-execution-746159f-20261119-01/input'
++
++
++class BindingTests(unittest.TestCase):
++    def setUp(self):
++        self.value = snapshot(fixture())
++        for page in (self.value['before'], self.value['after']):
++            page.update(cover=None, icon=None, properties={'Código PP': {'type':'rich_text','rich_text':rich('428')}})
++        self.state = {'page_id':PAGE,'code':'428','body':BODY,'source_state_sha256':'state',
++                      'page_last_edited_at':'2026-11-19T12:00:16.219Z',
++                      'properties':{'Código PP':'428','url':'https://app.notion.com/p/'+PAGE},
++                      'cover':None,'icon':None}
++
++    def test_precision_difference_requires_exact_supported_content_metadata(self):
++        proof = n.proof(self.state, self.value)
++        self.assertEqual(proof['edit_binding'], 'OBSERVED_MINUTE_PLUS_EXACT_CONTENT_AND_SUPPORTED_METADATA')
++        self.assertEqual(proof['mcp_edited_at'], self.state['page_last_edited_at'])
++        self.assertEqual(self.value['after']['last_edited_time'], TIME)
++
++    def test_actual_same_minute_content_change_is_rejected(self):
++        self.state['body'] = BODY.replace('old','human edit')
++        with self.assertRaisesRegex(ValueError,'content differs'): n.proof(self.state,self.value)
++
++    def test_metadata_and_other_minute_changes_are_rejected(self):
++        self.state['properties']['Código PP'] = '429'
++        with self.assertRaisesRegex(ValueError,'property differs'): n.proof(self.state,self.value)
++        self.state['properties']['Código PP'] = '428'
++        self.state['page_last_edited_at'] = '2026-11-19T12:01:16.219Z'
++        with self.assertRaisesRegex(ValueError,'edit state differs'): n.proof(self.state,self.value)
++
++    def test_prewrite_rejects_same_minute_native_metadata_edit(self):
++        engine = FakeEngine(); engine.page['native_evidence']['snapshot'] = self.value
++        gate = NativeSession(engine); state = copy.deepcopy(gate.initial)
++        action = gate.begin(state)
++        changed = copy.deepcopy(self.value); changed['nonce'] = action['nonce']
++        for page in (changed['before'],changed['after']): page['properties']['Código PP']['rich_text'] = rich('429')
++        with patch('batch_apply.verify_sources'):
++            result = gate.step(state, {'nonce':action['nonce'],'result':changed})
++        self.assertEqual(result['status'], 'BLOCKED')
++        self.assertIn('metadata changed',result['reason'])
++
++    def test_mcp_bullets_are_explicit_and_ordered(self):
++        nodes = r.parse('<toggle>Title\n\n- A\n- B</toggle>')
++        self.assertEqual(n.semantic_mcp(nodes[0])[-1], [
++            ['bulleted_list_item',[['A',[]]]], ['bulleted_list_item',[['B',[]]]]])
++        with self.assertRaises(ValueError):
++            n.semantic_mcp(r.parse('<toggle>Title\n\n- A\n  - B</toggle>')[0])
++        self.assertEqual(n.plain_mcp(r'AI\_READ c\\ bolso'), [['AI_READ c\\ bolso',[]]])
++
++    def test_no_image_replacement_mapping_is_added(self):
++        with self.assertRaises(ValueError): n.semantic_mcp(r.parse('<image source="notion-file-block://opaque" />')[0])
++
++
++class RealPreparationTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.tmp = tempfile.TemporaryDirectory(); cls.addClassCleanup(cls.tmp.cleanup)
++        cls.output = Path(cls.tmp.name)/'eleven.json'
++        cls.original_hash = n.file_hash(MANIFEST)
++        old_targets = copy.deepcopy(r.PAGES)
++        cls.addClassCleanup(lambda: (r.PAGES.clear(),r.PAGES.update(old_targets)))
++        with patch('urllib.request.urlopen',side_effect=AssertionError('Remote request forbidden')):
++            cls.summary = f.prepare(CAPTURES,INPUT/'workbook.xlsx',INPUT/'workbook-index.json',
++                                    INPUT/'inventory-current.json',CODES,cls.output,native_manifest=MANIFEST)
++        cls.plan = f.load(cls.output)
++
++    def test_pinned_producer_links_consumer_without_mutating_evidence(self):
++        self.assertEqual(self.original_hash, n.REVIEWED_MANIFEST)
++        self.assertEqual(n.file_hash(MANIFEST), self.original_hash)
++        binding = self.plan['native_manifest']
++        self.assertEqual(binding['producer_implementation_sha256'],n.REVIEWED_PRODUCER)
++        self.assertEqual(binding['consumer_implementation_sha256'], b.implementation_sha())
++        self.assertEqual(list(self.plan['target_manifest']['targets']),CODES)
++        with patch('urllib.request.urlopen',side_effect=AssertionError('Remote request forbidden')):
++            n.read_manifest(MANIFEST,b.implementation_sha())
++        changed = f.load(MANIFEST); changed['implementation_sha256'] = 'unreviewed'
++        path = Path(self.tmp.name)/'tampered-manifest.json'; path.write_text(json.dumps(changed),encoding='utf-8')
++        with self.assertRaisesRegex(ValueError,'provenance'): n.read_manifest(path,b.implementation_sha())
++        with self.assertRaisesRegex(ValueError,'provenance'): n.read_manifest(MANIFEST,'unreviewed-consumer')
++
++    def test_all_eleven_have_honest_previews_and_no_eligible_edits(self):
++        self.assertEqual([p['code'] for p in self.plan['pages']],CODES)
++        self.assertFalse(self.plan['apply_allowed_now'])
++        for p in self.plan['pages']:
++            with self.subTest(code=p['code']):
++                self.assertTrue(p['native_binding_error'])
++                self.assertTrue(p['diff'])
++                self.assertFalse(p['method_complete'])
++                self.assertEqual(p['operations'],[]); self.assertEqual(p['property_operations'],[])
++                self.assertFalse(p['completion_status_operation']['eligible'])
++                self.assertFalse(p['failure_status_operation']['eligible'])
++
++    def test_prefix_human_callout_images_and_source_are_outside_replacements(self):
++        for p in self.plan['pages']:
++            before,after = f.regions.parse(p['source_body']),f.regions.parse(p['desired_body'])
++            review = next(node for node in before if r.review_state(node,p['code']) is not None)
++            prefix = before[:before.index(review)+1]
++            self.assertEqual([node.raw for node in after[:len(prefix)]],[node.raw for node in prefix])
++            source = next(node for node in before if node.kind=='toggle' and node.title in (r.SOURCE,'Fonte'))
++            self.assertEqual([node.raw for node in after if node.kind=='toggle' and node.title==source.title],[source.raw])
++            self.assertEqual([node.raw for node in r.descend(after) if node.kind=='image'],
++                             [node.raw for node in r.descend(before) if node.kind=='image'])
++
++    def test_business_pending_stays_pending_and_pockets_are_not_reapplied(self):
++        pages = {p['code']:p for p in self.plan['pages']}
++        for c in ('467','612','633','661','662','786','840'): self.assertTrue(pages[c]['technical_unresolved'])
++        for c in ('428','429','430','558'): self.assertEqual(pages[c]['technical_unresolved'],[])
++        self.assertEqual(pages['786']['new_groups'][0]['locations'],['Bolso Peito','Bolso Esquerdo','Bolso Direito'])
++        for c in ('430','558','661','662'): self.assertEqual(pages[c]['operations'],[])
++
++
++class BridgeTests(unittest.TestCase):
++    def test_native_manifest_is_forwarded_with_no_live_tools(self):
++        script = r'''
++const fs=require('fs'),vm=require('vm');
++const bridge=vm.runInNewContext(fs.readFileSync(process.argv[1],'utf8'));
++const commands=[];
++const tools={exec_command:async ({cmd})=>{commands.push(cmd);return {exit_code:0,output:JSON.stringify(commands.length===1?{pages:[{code:'429',page_id:'id'}],working_copy:'home',collection:'collection'}:{ok:true})}},mcp__codex_apps__notion_fetch:async()=>({structuredContent:{text:'mock'}}),apply_patch:async()=>({})};
++(async()=>{await bridge({script:'cli',plan:'plan',inventory:'inv',index:'idx',workbook:'book',captures:'captures',codes:['429'],nativeManifest:'exact manifest.json'},tools);
++if(!commands[1].includes("'--native-manifest' 'exact manifest.json'"))throw Error('Manifest not passed');process.stdout.write('mock bridge passed');})().catch(e=>{process.stderr.write(String(e));process.exitCode=1});
++'''
++        result = subprocess.run(['node','-e',script,str(ROOT/'prepare_bridge.js')],capture_output=True,text=True)
++        self.assertEqual(result.returncode,0,result.stderr)
++        self.assertEqual(result.stdout,'mock bridge passed')
++
++
++if __name__ == '__main__': unittest.main()

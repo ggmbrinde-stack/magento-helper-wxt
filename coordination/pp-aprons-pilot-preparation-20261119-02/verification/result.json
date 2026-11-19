@@ -1,0 +1,166 @@
+{
+  "consumer_sha256": "62cd6a3262e89f25c38d339c2798827445e790a5fae2d717aa0cc5bf4b85a444",
+  "human_approval": null,
+  "image_bytes_claimed": false,
+  "independent_review": "PENDING",
+  "native_manifest_sha256": "50702d15400a406e0048b2602799b2eb5f1c88bd0663b3c63fd6e50cdf5d7254",
+  "native_producer_sha256": "18e250a02fd40c0b9945893055678c9d662790ae9c3488850b6048141020ba9f",
+  "original_mcp_state_sha256": "33ea1115ea9b5306eb876bb98294f703f09cbf243e68194487d6139632a167f5",
+  "pages": [
+    {
+      "body_operations": 0,
+      "code": "428",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": []
+    },
+    {
+      "body_operations": 2,
+      "code": "429",
+      "method_complete": true,
+      "native_binding_present": true,
+      "preparation_error": null,
+      "property_operations": 1,
+      "technical_unresolved": []
+    },
+    {
+      "body_operations": 0,
+      "code": "430",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": []
+    },
+    {
+      "body_operations": 0,
+      "code": "467",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      ]
+    },
+    {
+      "body_operations": 0,
+      "code": "558",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": []
+    },
+    {
+      "body_operations": 0,
+      "code": "612",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      ]
+    },
+    {
+      "body_operations": 0,
+      "code": "633",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": [
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+      ]
+    },
+    {
+      "body_operations": 0,
+      "code": "661",
+      "method_complete": false,
+      "native_binding_present": true,
+      "preparation_error": null,
+      "property_operations": 0,
+      "technical_unresolved": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)"
+      ]
+    },
+    {
+      "body_operations": 0,
+      "code": "662",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": [
+        "Caixa: Sem correspondência única aprovada em IMP New: Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores",
+        "Caixa: Caixa: confirmar material e processo/área próprios",
+        "Caixa: Sem correspondência única aprovada em IMP New: Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores",
+        "Caixa: Sem correspondência única aprovada em IMP New: Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)",
+        "Caixa: Sem correspondência única aprovada em IMP New: Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)",
+        "Caixa: Sem correspondência única aprovada em IMP New: Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)"
+      ]
+    },
+    {
+      "body_operations": 0,
+      "code": "786",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": [
+        "Bolso Peito / Bolso Esquerdo / Bolso Direito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+      ]
+    },
+    {
+      "body_operations": 0,
+      "code": "840",
+      "method_complete": false,
+      "native_binding_present": false,
+      "preparation_error": "Native/MCP property differs: Imagem principal",
+      "property_operations": 0,
+      "technical_unresolved": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      ]
+    }
+  ],
+  "paired_input_sha256": "0c7223dd59ceec68967127b60b4c7329301c49f5c36511f2bad766a50528bd59",
+  "paired_mcp_state_sha256": "53ae7e6f0d7d89371872f93229973ba2943ae592746f0a68df15182cc4b3c96f",
+  "pilot_approval_operation_ids": [
+    "429-full-body-1",
+    "429-full-body-2",
+    "429-full-properties",
+    "429-full-review-status",
+    "429-full-error-status"
+  ],
+  "pilot_code": "429",
+  "pilot_plan_sha256": "45f367d0e5ed59bddc8c22d4d4f47ada8fd6f9e25443e06c87af97bc878120d4",
+  "protected_images": [
+    {
+      "block_id": "06eb6705-ae1f-838c-9f9b-81d32097401f",
+      "caption": [],
+      "locator": "notion-native-file-locator-sha256:94ad59a606ef676d8e986200e32c792f29bb2c1be6c21d577d7b02a77a5e136c",
+      "name": "PP429_1.png",
+      "native_block_sha256": "17d28112ce4b11f6d17f28ce3acb387b6198a04fe35491decfb3b945d74e1724",
+      "replacement_supported": false,
+      "source": "notion-file-block://06eb6705-ae1f-838c-9f9b-81d32097401f/85567298-9dcd-4a2b-96ae-df39d2a684f4?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP429_1.png"
+    }
+  ],
+  "raw_http_claimed": false,
+  "remote_requests": 0,
+  "session_start": false,
+  "writes": 0
+}

@@ -1,0 +1,4817 @@
+{
+  "after": {
+    "archived": false,
+    "cover": {
+      "file": {
+        "url": "notion-native-file-locator-sha256:621f7aa88497071d2320ebd214b2971d927fbdb009f4153bdc3fab288a7e7858"
+      },
+      "type": "file"
+    },
+    "created_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "created_time": "2026-11-13T16:47:00.000Z",
+    "icon": null,
+    "id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "last_edited_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "last_edited_time": "2026-11-18T16:46:00.000Z",
+    "object": "page",
+    "parent": {
+      "data_source_id": "431b6705-ae1f-83db-b71c-0739778f9e1a",
+      "database_id": "417b6705-ae1f-81ba-bdfd-c46a86fe4b54",
+      "type": "data_source_id"
+    },
+    "properties": {
+      "Código PP": {
+        "id": "cOia",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "786",
+            "text": {
+              "content": "786",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Estado": {
+        "id": "DU%40%60",
+        "select": {
+          "color": "yellow",
+          "id": "e15302cf-2bfe-4702-b88f-452abe5ae286",
+          "name": "A rever"
+        },
+        "type": "select"
+      },
+      "Faces": {
+        "id": "%7DPTG",
+        "multi_select": [
+          {
+            "color": "pink",
+            "id": "};U\\",
+            "name": "Bolso Peito"
+          },
+          {
+            "color": "default",
+            "id": "f96505df-bf31-4b4f-8e14-b3b308451fd2",
+            "name": "Bolso Esquerdo"
+          },
+          {
+            "color": "default",
+            "id": "b0a8f53d-ed56-4e3c-8359-e062c0ed6ad1",
+            "name": "Bolso Direito"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Família": {
+        "id": "_qoC",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "384118db-decb-4b5c-aef3-43203c7cd804",
+            "name": "Aventais"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Imagem principal": {
+        "files": [
+          {
+            "file": {
+              "url": "notion-native-file-locator-sha256:621f7aa88497071d2320ebd214b2971d927fbdb009f4153bdc3fab288a7e7858"
+            },
+            "name": "PP786",
+            "type": "file"
+          }
+        ],
+        "id": "s%5BKK",
+        "type": "files"
+      },
+      "Notas": {
+        "id": "WPaU",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "NPP",
+            "text": {
+              "content": "NPP",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Número de faces": {
+        "id": "xb%3F%7D",
+        "number": null,
+        "type": "number"
+      },
+      "Número de locais possíveis": {
+        "id": "d%3Bwl",
+        "number": 3,
+        "type": "number"
+      },
+      "Opções de personalização": {
+        "id": "FLkJ",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "5ecfbd21-7227-4d3e-8340-d75484103520",
+            "name": "Transfer — até 126 cm² — 2 cores"
+          },
+          {
+            "color": "purple",
+            "id": "cd15ceee-0a85-4870-b32b-62075d517914",
+            "name": "DTF — até A7"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "PP": {
+        "id": "title",
+        "title": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "786 — AVENTAL 3 bolsos - 3F",
+            "text": {
+              "content": "786 — AVENTAL 3 bolsos - 3F",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "title"
+      },
+      "SKU / referência do fornecedor": {
+        "id": "%3Evtd",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "Ex: M22096",
+            "text": {
+              "content": "Ex: M22096",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Sub-subcategoria": {
+        "id": "yc%7BR",
+        "multi_select": [],
+        "type": "multi_select"
+      },
+      "Tipos de artigo compatíveis": {
+        "id": "Vka%7B",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "d98ea9e8-6887-48f8-a4de-306312a0027d",
+            "name": "Avental"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Técnicas": {
+        "id": "%5DHF%5C",
+        "multi_select": [
+          {
+            "color": "orange",
+            "id": "555ff7c9-e49f-41cb-b2a0-4e6919a3c5ad",
+            "name": "Transfer"
+          },
+          {
+            "color": "purple",
+            "id": "997dae9e-29e4-4472-90ff-ea7f6c5c3cb3",
+            "name": "DTF"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Área": {
+        "id": "_Iij",
+        "select": {
+          "color": "blue",
+          "id": "3d711289-16a3-420b-9a5a-507cbd184691",
+          "name": "Brinde têxtil"
+        },
+        "type": "select"
+      }
+    },
+    "public_url": null,
+    "url": "https://app.notion.com/p/786-AVENTAL-3-bolsos-3F-d00b6705ae1f835cb7440191c545e56b"
+  },
+  "api_version": "2025-09-03",
+  "before": {
+    "archived": false,
+    "cover": {
+      "file": {
+        "url": "notion-native-file-locator-sha256:621f7aa88497071d2320ebd214b2971d927fbdb009f4153bdc3fab288a7e7858"
+      },
+      "type": "file"
+    },
+    "created_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "created_time": "2026-11-13T16:47:00.000Z",
+    "icon": null,
+    "id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "last_edited_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "last_edited_time": "2026-11-18T16:46:00.000Z",
+    "object": "page",
+    "parent": {
+      "data_source_id": "431b6705-ae1f-83db-b71c-0739778f9e1a",
+      "database_id": "417b6705-ae1f-81ba-bdfd-c46a86fe4b54",
+      "type": "data_source_id"
+    },
+    "properties": {
+      "Código PP": {
+        "id": "cOia",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "786",
+            "text": {
+              "content": "786",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Estado": {
+        "id": "DU%40%60",
+        "select": {
+          "color": "yellow",
+          "id": "e15302cf-2bfe-4702-b88f-452abe5ae286",
+          "name": "A rever"
+        },
+        "type": "select"
+      },
+      "Faces": {
+        "id": "%7DPTG",
+        "multi_select": [
+          {
+            "color": "pink",
+            "id": "};U\\",
+            "name": "Bolso Peito"
+          },
+          {
+            "color": "default",
+            "id": "f96505df-bf31-4b4f-8e14-b3b308451fd2",
+            "name": "Bolso Esquerdo"
+          },
+          {
+            "color": "default",
+            "id": "b0a8f53d-ed56-4e3c-8359-e062c0ed6ad1",
+            "name": "Bolso Direito"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Família": {
+        "id": "_qoC",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "384118db-decb-4b5c-aef3-43203c7cd804",
+            "name": "Aventais"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Imagem principal": {
+        "files": [
+          {
+            "file": {
+              "url": "notion-native-file-locator-sha256:621f7aa88497071d2320ebd214b2971d927fbdb009f4153bdc3fab288a7e7858"
+            },
+            "name": "PP786",
+            "type": "file"
+          }
+        ],
+        "id": "s%5BKK",
+        "type": "files"
+      },
+      "Notas": {
+        "id": "WPaU",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "NPP",
+            "text": {
+              "content": "NPP",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Número de faces": {
+        "id": "xb%3F%7D",
+        "number": null,
+        "type": "number"
+      },
+      "Número de locais possíveis": {
+        "id": "d%3Bwl",
+        "number": 3,
+        "type": "number"
+      },
+      "Opções de personalização": {
+        "id": "FLkJ",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "5ecfbd21-7227-4d3e-8340-d75484103520",
+            "name": "Transfer — até 126 cm² — 2 cores"
+          },
+          {
+            "color": "purple",
+            "id": "cd15ceee-0a85-4870-b32b-62075d517914",
+            "name": "DTF — até A7"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "PP": {
+        "id": "title",
+        "title": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "786 — AVENTAL 3 bolsos - 3F",
+            "text": {
+              "content": "786 — AVENTAL 3 bolsos - 3F",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "title"
+      },
+      "SKU / referência do fornecedor": {
+        "id": "%3Evtd",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "Ex: M22096",
+            "text": {
+              "content": "Ex: M22096",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Sub-subcategoria": {
+        "id": "yc%7BR",
+        "multi_select": [],
+        "type": "multi_select"
+      },
+      "Tipos de artigo compatíveis": {
+        "id": "Vka%7B",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "d98ea9e8-6887-48f8-a4de-306312a0027d",
+            "name": "Avental"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Técnicas": {
+        "id": "%5DHF%5C",
+        "multi_select": [
+          {
+            "color": "orange",
+            "id": "555ff7c9-e49f-41cb-b2a0-4e6919a3c5ad",
+            "name": "Transfer"
+          },
+          {
+            "color": "purple",
+            "id": "997dae9e-29e4-4472-90ff-ea7f6c5c3cb3",
+            "name": "DTF"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Área": {
+        "id": "_Iij",
+        "select": {
+          "color": "blue",
+          "id": "3d711289-16a3-420b-9a5a-507cbd184691",
+          "name": "Brinde têxtil"
+        },
+        "type": "select"
+      }
+    },
+    "public_url": null,
+    "url": "https://app.notion.com/p/786-AVENTAL-3-bolsos-3F-d00b6705ae1f835cb7440191c545e56b"
+  },
+  "confirmation_reads": [
+    {
+      "parent_id": "d00b6705ae1f835cb7440191c545e56b",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "0fa79e0e-8e24-4d89-aa25-184138a5eee0",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Imagens",
+                  "text": {
+                    "content": "Imagens",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "837b6705-ae1f-83f0-a38f-01c3727d1d8a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "ed0b6705-ae1f-8314-8e79-8187485fdec9",
+            "image": {
+              "caption": [],
+              "file": {
+                "url": "notion-native-file-locator-sha256:621f7aa88497071d2320ebd214b2971d927fbdb009f4153bdc3fab288a7e7858"
+              },
+              "type": "file"
+            },
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "image"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Descrição e notas do perfil",
+                  "text": {
+                    "content": "Descrição e notas do perfil",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "886b6705-ae1f-8306-ad86-010c72dc9a7f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "2dbb6705-ae1f-8308-a28c-81d55c590d0c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Ex: M22096",
+                  "text": {
+                    "content": "Ex: M22096",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Notas",
+                  "text": {
+                    "content": "Notas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "9e6b6705-ae1f-8338-a3d7-8165d193e797",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                  "text": {
+                    "content": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "d93b6705-ae1f-8204-b9b8-01f62c02bf12",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Revisão do PP 786",
+                  "text": {
+                    "content": "Revisão do PP 786",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "column_list": {},
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-81f1-8479-ed17fd450d37",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "column_list"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "2aab6705-ae1f-837f-bc58-01591acc0648",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Fonte e original do Excel",
+                  "text": {
+                    "content": "Fonte e original do Excel",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f81aab59ce47e86db744c",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "de8dbe25-087b-4b99-9f5d-4416a56f3964",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8194-8388-efc6e70055d1",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                  "text": {
+                    "content": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever",
+                  "text": {
+                    "content": "A rever",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " até à decisão.",
+                  "text": {
+                    "content": " até à decisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-811f-9afb-d845646d1c12",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Sim, aprovo a configuração New do PP 786.",
+                  "text": {
+                    "content": "Sim, aprovo a configuração New do PP 786.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8145-9267-d66fcd922b2d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Não, são necessárias correções.",
+                  "text": {
+                    "content": "Não, são necessárias correções.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-817c-977a-e77287fc3c44",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Se não, porquê?",
+                  "text": {
+                    "content": "Se não, porquê?",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                  "text": {
+                    "content": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f81f18479ed17fd450d37",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "2f0cdc7f-d9e2-4209-bc79-3b722b9b6dd0",
+        "results": [
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81f1-8479-ed17fd450d37",
+              "type": "block_id"
+            },
+            "type": "column"
+          },
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81f1-8479-ed17fd450d37",
+              "type": "block_id"
+            },
+            "type": "column"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8142aa3bc5894ca270e5",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "e62018f2-4df7-422e-9801-93511316718a",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "New (proposta)",
+                  "text": {
+                    "content": "New (proposta)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-818d-b6b3-cbae24a1ef61",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever.",
+                  "text": {
+                    "content": "A rever.",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.",
+                  "text": {
+                    "content": " Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81df-8a97-d87bc634fc9d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-813c-8f9f-ec5fff2db768",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-810c-b38c-e1e52ebfb284",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Pendências técnicas",
+                  "text": {
+                    "content": "Pendências técnicas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f813c8f9fec5fff2db768",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "95377738-a054-48ea-8a79-a8be210f0320",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8110-a523-cb1e454c7614",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813c-8f9f-ec5fff2db768",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções propostas",
+                    "text": {
+                      "content": "Opções propostas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Nota",
+                    "text": {
+                      "content": "Nota",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81e2-aeee-ca996e4388cc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813c-8f9f-ec5fff2db768",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                    "text": {
+                      "content": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso",
+                    "text": {
+                      "content": "Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f810cb38ce1e52ebfb284",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "97cce550-200d-4d53-8c93-aebb1774098a",
+        "results": [
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New",
+                  "text": {
+                    "content": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-818d-9ed5-fca967be077f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810c-b38c-e1e52ebfb284",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso",
+                  "text": {
+                    "content": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-817a-9d61-eb0c41ef88fb",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810c-b38c-e1e52ebfb284",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8121954be9698096b18d",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "ee7684d5-a626-4e30-b269-af0c87c161ee",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Old (original)",
+                  "text": {
+                    "content": "Old (original)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-81e5-90e3-ea1c50fd3ce6",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_3": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Locais e personalização",
+                  "text": {
+                    "content": "Locais e personalização",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-816e-96cc-c8a28ff26fab",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+              "type": "block_id"
+            },
+            "type": "heading_3"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-812c-896a-ed4d27511f8e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f812c896aed4d27511f8e",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "d64573ef-2dff-498d-88a7-53eaf926c2cc",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8165-8ff4-fb4273ba12af",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-812c-896a-ed4d27511f8e",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções completas e especificações",
+                    "text": {
+                      "content": "Opções completas e especificações",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Notas",
+                    "text": {
+                      "content": "Notas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-815b-bc62-e9b9691471b8",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-812c-896a-ed4d27511f8e",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                    "text": {
+                      "content": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                    "text": {
+                      "content": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "2aab6705ae1f837fbc5801591acc0648",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "4fb81343-0968-4911-a18f-59cf01c13ae2",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "f2eb6705-ae1f-820e-8b85-81530b42721a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                  "text": {
+                    "content": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "2aab6705-ae1f-837f-bc58-01591acc0648",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "2aab6705-ae1f-837f-bc58-01591acc0648",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 2
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "183b6705ae1f82d1af2081122fb9b917",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "e4bd0aba-762d-4400-b119-8a8b4be5d4b4",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c3bb6705-ae1f-8229-91ff-010a7e52937b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Célula",
+                    "text": {
+                      "content": "Célula",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Texto original",
+                    "text": {
+                      "content": "Texto original",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "d6ab6705-ae1f-8236-9aec-01c026717603",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "M52",
+                    "text": {
+                      "content": "M52",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "786",
+                    "text": {
+                      "content": "786",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "e43b6705-ae1f-8315-af94-811f6340ef8f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N52",
+                    "text": {
+                      "content": "N52",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "AVENTAL 3 bolsos - 3F",
+                    "text": {
+                      "content": "AVENTAL 3 bolsos - 3F",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "070b6705-ae1f-83d8-a161-8195ff914d81",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O53",
+                    "text": {
+                      "content": "O53",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Peito",
+                    "text": {
+                      "content": "Bolso Peito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "542b6705-ae1f-83f3-868c-813a0af34430",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P53",
+                    "text": {
+                      "content": "P53",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                    "text": {
+                      "content": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "233b6705-ae1f-82ae-b26a-811c3241fe50",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N54",
+                    "text": {
+                      "content": "N54",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Ex: M22096 ",
+                    "text": {
+                      "content": "Ex: M22096 ",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "d89b6705-ae1f-825a-8d05-0158c7e8aab8",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O54",
+                    "text": {
+                      "content": "O54",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Esquerdo",
+                    "text": {
+                      "content": "Bolso Esquerdo",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "af5b6705-ae1f-8265-949b-816bdd4e078e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P54",
+                    "text": {
+                      "content": "P54",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c32b6705-ae1f-8353-a899-01478cb2b887",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O55",
+                    "text": {
+                      "content": "O55",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Direito",
+                    "text": {
+                      "content": "Bolso Direito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    }
+  ],
+  "finished_at": "2026-11-19T15:14:48.057957+00:00",
+  "nonce": "c3e9b3dffdc341aaa050137f3cf610d2",
+  "page_id": "d00b6705ae1f835cb7440191c545e56b",
+  "persistence_policy": "NATIVE_HOSTED_FILE_LOCATORS_SHA256_V1",
+  "reads": [
+    {
+      "parent_id": "d00b6705ae1f835cb7440191c545e56b",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "4de0e874-0212-46c0-8fcd-369df1f2459a",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Imagens",
+                  "text": {
+                    "content": "Imagens",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "837b6705-ae1f-83f0-a38f-01c3727d1d8a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "ed0b6705-ae1f-8314-8e79-8187485fdec9",
+            "image": {
+              "caption": [],
+              "file": {
+                "url": "notion-native-file-locator-sha256:621f7aa88497071d2320ebd214b2971d927fbdb009f4153bdc3fab288a7e7858"
+              },
+              "type": "file"
+            },
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "image"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Descrição e notas do perfil",
+                  "text": {
+                    "content": "Descrição e notas do perfil",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "886b6705-ae1f-8306-ad86-010c72dc9a7f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "2dbb6705-ae1f-8308-a28c-81d55c590d0c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Ex: M22096",
+                  "text": {
+                    "content": "Ex: M22096",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Notas",
+                  "text": {
+                    "content": "Notas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "9e6b6705-ae1f-8338-a3d7-8165d193e797",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                  "text": {
+                    "content": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "d93b6705-ae1f-8204-b9b8-01f62c02bf12",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Revisão do PP 786",
+                  "text": {
+                    "content": "Revisão do PP 786",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "column_list": {},
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-81f1-8479-ed17fd450d37",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "type": "column_list"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "2aab6705-ae1f-837f-bc58-01591acc0648",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "d00b6705-ae1f-835c-b744-0191c545e56b",
+              "type": "page_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Fonte e original do Excel",
+                  "text": {
+                    "content": "Fonte e original do Excel",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f81aab59ce47e86db744c",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "c8602add-99b3-4da2-b686-4ffede0686f8",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8194-8388-efc6e70055d1",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                  "text": {
+                    "content": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever",
+                  "text": {
+                    "content": "A rever",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " até à decisão.",
+                  "text": {
+                    "content": " até à decisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-811f-9afb-d845646d1c12",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Sim, aprovo a configuração New do PP 786.",
+                  "text": {
+                    "content": "Sim, aprovo a configuração New do PP 786.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8145-9267-d66fcd922b2d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Não, são necessárias correções.",
+                  "text": {
+                    "content": "Não, são necessárias correções.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-817c-977a-e77287fc3c44",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Se não, porquê?",
+                  "text": {
+                    "content": "Se não, porquê?",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                  "text": {
+                    "content": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-81aa-b59c-e47e86db744c",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f81f18479ed17fd450d37",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "961b4e0f-f640-4959-956b-f65b199b31d8",
+        "results": [
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81f1-8479-ed17fd450d37",
+              "type": "block_id"
+            },
+            "type": "column"
+          },
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81f1-8479-ed17fd450d37",
+              "type": "block_id"
+            },
+            "type": "column"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8142aa3bc5894ca270e5",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "a833913b-6928-486f-9a0a-aa4cc4c3735b",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "New (proposta)",
+                  "text": {
+                    "content": "New (proposta)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-818d-b6b3-cbae24a1ef61",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever.",
+                  "text": {
+                    "content": "A rever.",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.",
+                  "text": {
+                    "content": " Seleção proposta a partir da fonte original e de IMP → New. Confirmar áreas e compatibilidades por componente; tabela antiga integralmente visível abaixo.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81df-8a97-d87bc634fc9d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-813c-8f9f-ec5fff2db768",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-810c-b38c-e1e52ebfb284",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8142-aa3b-c5894ca270e5",
+              "type": "block_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Pendências técnicas",
+                  "text": {
+                    "content": "Pendências técnicas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f813c8f9fec5fff2db768",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "03f7dd52-951f-4bfb-8f5e-2c942500cffa",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8110-a523-cb1e454c7614",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813c-8f9f-ec5fff2db768",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções propostas",
+                    "text": {
+                      "content": "Opções propostas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Nota",
+                    "text": {
+                      "content": "Nota",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81e2-aeee-ca996e4388cc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813c-8f9f-ec5fff2db768",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                    "text": {
+                      "content": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso",
+                    "text": {
+                      "content": "Transfer de 2 cores para 1 cor: opção ausente de IMP → New; Confirmar área útil do bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f810cb38ce1e52ebfb284",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "7c20588b-3b6b-4e18-a5e1-cdf0835a6ef2",
+        "results": [
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New",
+                  "text": {
+                    "content": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Transfer de 2 cores para 1 cor: opção ausente de IMP → New",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-818d-9ed5-fca967be077f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810c-b38c-e1e52ebfb284",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso",
+                  "text": {
+                    "content": "Bolso Peito / Bolso Esquerdo / Bolso Direito: Confirmar área útil do bolso",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-817a-9d61-eb0c41ef88fb",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810c-b38c-e1e52ebfb284",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8121954be9698096b18d",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "e65a91ec-2d75-48b4-9b55-19b6e60cdbf6",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Old (original)",
+                  "text": {
+                    "content": "Old (original)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-81e5-90e3-ea1c50fd3ce6",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_3": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Locais e personalização",
+                  "text": {
+                    "content": "Locais e personalização",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-816e-96cc-c8a28ff26fab",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+              "type": "block_id"
+            },
+            "type": "heading_3"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-812c-896a-ed4d27511f8e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8121-954b-e9698096b18d",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f812c896aed4d27511f8e",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "b4245e2b-bc4b-4609-bd8a-42c0c1feb1c7",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8165-8ff4-fb4273ba12af",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-812c-896a-ed4d27511f8e",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções completas e especificações",
+                    "text": {
+                      "content": "Opções completas e especificações",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Notas",
+                    "text": {
+                      "content": "Notas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-815b-bc62-e9b9691471b8",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-812c-896a-ed4d27511f8e",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                    "text": {
+                      "content": "Bolso Peito\nBolso Esquerdo\nBolso Direito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                    "text": {
+                      "content": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "2aab6705ae1f837fbc5801591acc0648",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "3b462063-acd0-4f7d-9ba2-a1f06bff4e2e",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "f2eb6705-ae1f-820e-8b85-81530b42721a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                  "text": {
+                    "content": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M52:P62\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "2aab6705-ae1f-837f-bc58-01591acc0648",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "2aab6705-ae1f-837f-bc58-01591acc0648",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 2
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "183b6705ae1f82d1af2081122fb9b917",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "7647e44e-dc35-4b09-bd56-862eb628377c",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c3bb6705-ae1f-8229-91ff-010a7e52937b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Célula",
+                    "text": {
+                      "content": "Célula",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Texto original",
+                    "text": {
+                      "content": "Texto original",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "d6ab6705-ae1f-8236-9aec-01c026717603",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "M52",
+                    "text": {
+                      "content": "M52",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "786",
+                    "text": {
+                      "content": "786",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "e43b6705-ae1f-8315-af94-811f6340ef8f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N52",
+                    "text": {
+                      "content": "N52",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "AVENTAL 3 bolsos - 3F",
+                    "text": {
+                      "content": "AVENTAL 3 bolsos - 3F",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "070b6705-ae1f-83d8-a161-8195ff914d81",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O53",
+                    "text": {
+                      "content": "O53",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Peito",
+                    "text": {
+                      "content": "Bolso Peito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "542b6705-ae1f-83f3-868c-813a0af34430",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P53",
+                    "text": {
+                      "content": "P53",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                    "text": {
+                      "content": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "233b6705-ae1f-82ae-b26a-811c3241fe50",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N54",
+                    "text": {
+                      "content": "N54",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Ex: M22096 ",
+                    "text": {
+                      "content": "Ex: M22096 ",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "d89b6705-ae1f-825a-8d05-0158c7e8aab8",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O54",
+                    "text": {
+                      "content": "O54",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Esquerdo",
+                    "text": {
+                      "content": "Bolso Esquerdo",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "af5b6705-ae1f-8265-949b-816bdd4e078e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P54",
+                    "text": {
+                      "content": "P54",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c32b6705-ae1f-8353-a899-01478cb2b887",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "183b6705-ae1f-82d1-af20-81122fb9b917",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O55",
+                    "text": {
+                      "content": "O55",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso Direito",
+                    "text": {
+                      "content": "Bolso Direito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    }
+  ],
+  "source": "NOTION_NATIVE_API_V1",
+  "started_at": "2026-11-19T15:14:39.580381+00:00"
+}

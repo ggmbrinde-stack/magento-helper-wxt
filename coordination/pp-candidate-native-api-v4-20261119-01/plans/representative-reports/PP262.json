@@ -1,0 +1,796 @@
+{
+  "bounded_region_evidence": {
+    "all_descendant_ids_checked": "Read-only DOM check included empty nodes: columns had exactly the two columns, two tables and two headings already listed; callout one text child; pending toggle one bulleted-list child. No global coverage asserted.",
+    "global_export_claimed": false,
+    "observed_at": "2026-11-19T09:13:53.926Z",
+    "page_id": "3d2b6705ae1f828d964e813275d65f82",
+    "regions": [
+      {
+        "child_types": [
+          "text"
+        ],
+        "children": [
+          "41ab6705-ae1f-8152-b602-c97d2b6ec8cb"
+        ],
+        "id": "41ab6705-ae1f-8125-855c-f92ed2748f5f",
+        "kind": "callout",
+        "text": "Revisão em curso — A rever. Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente."
+      },
+      {
+        "child_types": [
+          "column",
+          "column"
+        ],
+        "children": [
+          "41bb6705-ae1f-80b5-88f1-c5d36488b4be",
+          "41bb6705-ae1f-80b7-97a5-f47759da1d91"
+        ],
+        "column_children": [
+          [
+            {
+              "id": "e01b6705-ae1f-83f3-b2d2-814e5ce85bc1",
+              "kind": "table"
+            }
+          ],
+          [
+            {
+              "id": "41ab6705-ae1f-811a-b3b4-e66d72451d34",
+              "kind": "heading",
+              "text": "Antes — tabela original integral"
+            },
+            {
+              "id": "41ab6705-ae1f-81b9-8797-d894e9918873",
+              "kind": "heading",
+              "text": "Locais e personalização"
+            },
+            {
+              "id": "41ab6705-ae1f-81a0-9cc3-fa260ba5f6ab",
+              "kind": "table"
+            }
+          ]
+        ],
+        "id": "41bb6705-ae1f-8082-9a9c-f1f47f7eeb30",
+        "kind": "columns",
+        "tables": [
+          [
+            [
+              "Face / local",
+              "Opções propostas",
+              "Revisão"
+            ],
+            [
+              "Peito Esquerdo\nPeito Direito",
+              "Estamparia - Até A7 - 1 Cor (BOLSO | MANGA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+              "Confirmar compatibilidade e área"
+            ],
+            [
+              "Frente\nCostas",
+              "Estamparia - Até A4 - 1 Cor\nDTF - Até A4 (21x29,7cm)\nBordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4",
+              "Confirmar compatibilidade e área"
+            ],
+            [
+              "Manga Esquerda\nManga Direita",
+              "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7\nTransfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+              "Confirmar compatibilidade e área"
+            ]
+          ],
+          [
+            [
+              "Face / local",
+              "Opções completas e especificações",
+              "Notas"
+            ],
+            [
+              "Peito Esquerdo\nPeito Direito",
+              "Estamparia - Até A7 - 4 Cores (BOLSO | MANGA)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)",
+              "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+            ],
+            [
+              "Frente\nCostas",
+              "Estamparia - Até A4 - 4 Cores\nEstamparia - Até A3 - 4 Cores\nDTF - Até A4 (21x29,7cm)\nDTF - Até A3 (29,7x42cm)\nBordado - Até 480 cm2 - Até 22x22cm aprox.\nBordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\nBordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3",
+              "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+            ],
+            [
+              "Manga Esquerda\nManga Direita",
+              "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nTransfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)\nDTF - Até A6 (10,5x14,8 cm)\nDTF - Até A5 (14,8x21,0 cm)\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA\nBordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+              "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+            ]
+          ]
+        ]
+      },
+      {
+        "child_types": [
+          "bulleted_list"
+        ],
+        "children": [
+          "41ab6705-ae1f-81fe-89d8-efadb839680a"
+        ],
+        "id": "41ab6705-ae1f-81a4-a3c8-ebdbae02e252",
+        "kind": "toggle",
+        "paragraphs": [
+          "Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New"
+        ],
+        "title": "Pontos pendentes"
+      }
+    ],
+    "source_edited_at": "2026-11-18T16:24:16.199Z",
+    "source_state_sha256": "ebc10ddc25c12afc7ea6fafb387b1ef64faf354a8bc4cfecb103c941bb134e89"
+  },
+  "category": "TEXTILE",
+  "code": "262",
+  "completion_binding": {
+    "excel_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "full_scope_sha256": "b9b265e5fddf7f7d5ba92de9fd7d142d7806379969c58fb1a75e469ce8c16935",
+    "implementation_sha256": "dafc80c641d650fb9311a66cd6c3298c229e2775f8bb8d2e43acc42b1178a676",
+    "index_sha256": "67eaf0e09c9f48a324f3521d81f35bf52e6a5ef6074d7c0a0185e3b858679f0c",
+    "rules_sha256": "db70aa0fb673c5217b8763b7c916d3682cb1963e047b014cbd70051da233e704",
+    "scope": "PP_FULL_CONVERSION_V1",
+    "source_state_sha256": "ebc10ddc25c12afc7ea6fafb387b1ef64faf354a8bc4cfecb103c941bb134e89",
+    "template_sha256": "71b26c8bf2c2f899e88dc73b2310d7eda841cfd63299248a83fc4bbdb5e699f3"
+  },
+  "completion_status_operation": {
+    "eligible": true,
+    "id": "262-full-review-status",
+    "kind": "success_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "3d2b6705ae1f828d964e813275d65f82",
+      "properties": {
+        "Estado": "Para revisão"
+      }
+    }
+  },
+  "desired_body": "<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n\nSweats + T-shirts Manga Comprida Adulto\n\nS/Bolso\n\nS/Capuz\n\nAlgodão / Poliester (artigo de cor)\n\nEx: CH12298\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 262</b>\n\n- [ ] Sim, aprovo a configuração New do PP 262.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito Esquerdo<br />Peito Direito\n\nConfirmar compatibilidade e área\n</toggle>\n\n<toggle>\nNew: Frente<br />Costas\n\nConfirmar compatibilidade e área\n</toggle>\n\n<toggle>\nNew: Manga Esquerda<br />Manga Direita\n\nConfirmar compatibilidade e área\n</toggle>\n\n<toggle>\nOld: Peito Esquerdo<br />Peito Direito\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n<toggle>\nOld: Frente<br />Costas\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n<toggle>\nOld: Manga Esquerda<br />Manga Direita\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n\n- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n\n- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\n\n<callout icon=\"📝\">\n<b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n</callout>\n\n<toggle>\nPontos pendentes\n\n- Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n</toggle>\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs TÊXTIL!C373:F392<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| C373 | 262 |\n| D373 | TÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso |\n| D374 | Sweats + T-shirts Manga Comprida Adulto |\n| E374 | Peito Esquerdo |\n| F374 | Estamparia - Até A7 - 4 Cores (BOLSO \\| MANGA) |\n| D375 | S/Bolso |\n| E375 | Peito Direito |\n| F375 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| D376 | S/Capuz |\n| F376 | Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA) |\n| D377 | Algodão / Poliester  (artigo de cor) |\n| E377 | Frente |\n| F377 | Estamparia - Até A4 - 4 Cores |\n| D378 | Ex:  CH12298 |\n| E378 | Costas |\n| F378 | Estamparia - Até A3 - 4 Cores |\n| F379 | DTF - Até A4 (21x29,7cm) |\n| F380 | DTF - Até A3 (29,7x42cm) |\n| F381 | Bordado - Até 480 cm2 - Até 22x22cm aprox. |\n| D382 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| F382 | Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4 |\n| F383 | Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3 |\n| E384 | Manga Esquerda |\n| F384 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| E385 | Manga Direita |\n| F385 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| F386 | Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm) |\n| F387 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| F388 | DTF - Até A6 (10,5x14,8 cm) |\n| F389 | DTF - Até A5 (14,8x21,0 cm) |\n| F390 | Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA |\n| F391 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 b9b265e5fddf7f7d5ba92de9fd7d142d7806379969c58fb1a75e469ce8c16935\n\n<toggle>\nOrigem Excel verificada\n\nPPs TÊXTIL!C373:F392\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC373\n</td>\n<td>\n262\n</td>\n</tr>\n<tr>\n<td>\nD373\n</td>\n<td>\nTÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso\n</td>\n</tr>\n<tr>\n<td>\nD374\n</td>\n<td>\nSweats + T-shirts Manga Comprida Adulto\n</td>\n</tr>\n<tr>\n<td>\nE374\n</td>\n<td>\nPeito Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nF374\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD375\n</td>\n<td>\nS/Bolso\n</td>\n</tr>\n<tr>\n<td>\nE375\n</td>\n<td>\nPeito Direito\n</td>\n</tr>\n<tr>\n<td>\nF375\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nD376\n</td>\n<td>\nS/Capuz\n</td>\n</tr>\n<tr>\n<td>\nF376\n</td>\n<td>\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD377\n</td>\n<td>\nAlgodão / Poliester  (artigo de cor)\n</td>\n</tr>\n<tr>\n<td>\nE377\n</td>\n<td>\nFrente\n</td>\n</tr>\n<tr>\n<td>\nF377\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores\n</td>\n</tr>\n<tr>\n<td>\nD378\n</td>\n<td>\nEx:  CH12298\n</td>\n</tr>\n<tr>\n<td>\nE378\n</td>\n<td>\nCostas\n</td>\n</tr>\n<tr>\n<td>\nF378\n</td>\n<td>\nEstamparia - Até A3 - 4 Cores\n</td>\n</tr>\n<tr>\n<td>\nF379\n</td>\n<td>\nDTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nF380\n</td>\n<td>\nDTF - Até A3 (29,7x42cm)\n</td>\n</tr>\n<tr>\n<td>\nF381\n</td>\n<td>\nBordado - Até 480 cm2 - Até 22x22cm aprox.\n</td>\n</tr>\n<tr>\n<td>\nD382\n</td>\n<td>\nNo caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n</td>\n</tr>\n<tr>\n<td>\nF382\n</td>\n<td>\nBordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n</tr>\n<tr>\n<td>\nF383\n</td>\n<td>\nBordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n</tr>\n<tr>\n<td>\nE384\n</td>\n<td>\nManga Esquerda\n</td>\n</tr>\n<tr>\n<td>\nF384\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n</tr>\n<tr>\n<td>\nE385\n</td>\n<td>\nManga Direita\n</td>\n</tr>\n<tr>\n<td>\nF385\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nF386\n</td>\n<td>\nTransfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\n</td>\n</tr>\n<tr>\n<td>\nF387\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nF388\n</td>\n<td>\nDTF - Até A6 (10,5x14,8 cm)\n</td>\n</tr>\n<tr>\n<td>\nF389\n</td>\n<td>\nDTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nF390\n</td>\n<td>\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n</td>\n</tr>\n<tr>\n<td>\nF391\n</td>\n<td>\nBordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"410.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n<td>\nRevisão\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"430.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle>\nPontos pendentes\n\n- Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n</toggle>\n\n## Imagens\n\n<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nSweats + T-shirts Manga Comprida Adulto\n\nS/Bolso\n\nS/Capuz\n\nAlgodão / Poliester (artigo de cor)\n\nEx: CH12298\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n</toggle>\n</toggle>",
+  "diff": "--- 262-before\n+++ 262-after\n@@ -1,149 +1,171 @@\n-## Locais e personalização — nova configuração (proposta)\n+<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n+\n+Sweats + T-shirts Manga Comprida Adulto\n+\n+S/Bolso\n+\n+S/Capuz\n+\n+Algodão / Poliester (artigo de cor)\n+\n+Ex: CH12298\n+\n+No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n+\n+- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n+\n+<callout icon=\"📝\">\n+<b>Revisão do PP 262</b>\n+\n+- [ ] Sim, aprovo a configuração New do PP 262.\n+- [ ] Não, são necessárias correções.\n+\n+<b>Se não, porquê?</b>\n+<p />\n+</callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito Esquerdo<br />Peito Direito\n+</td>\n+<td>\n+Estamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Frente<br />Costas\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Manga Esquerda<br />Manga Direita\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito Esquerdo<br />Peito Direito\n+</td>\n+<td>\n+Estamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Frente<br />Costas\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Manga Esquerda<br />Manga Direita\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Peito Esquerdo<br />Peito Direito\n+\n+Confirmar compatibilidade e área\n+</toggle>\n+\n+<toggle>\n+New: Frente<br />Costas\n+\n+Confirmar compatibilidade e área\n+</toggle>\n+\n+<toggle>\n+New: Manga Esquerda<br />Manga Direita\n+\n+Confirmar compatibilidade e área\n+</toggle>\n+\n+<toggle>\n+Old: Peito Esquerdo<br />Peito Direito\n+\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</toggle>\n+\n+<toggle>\n+Old: Frente<br />Costas\n+\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</toggle>\n+\n+<toggle>\n+Old: Manga Esquerda<br />Manga Direita\n+\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</toggle>\n+\n+- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n+\n+- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n+\n+- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\n \n <callout icon=\"📝\">\n <b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n </callout>\n \n-<columns>\n-<column ratio=\"50\">\n-<table header-row=\"true\">\n-<colgroup>\n-<col />\n-<col width=\"410.00001525878906\" />\n-<col />\n-</colgroup>\n-<tr>\n-<td>\n-Face / local\n-</td>\n-<td>\n-Opções propostas\n-</td>\n-<td>\n-Revisão\n-</td>\n-</tr>\n-<tr>\n-<td>\n-Peito Esquerdo<br />Peito Direito\n-</td>\n-<td>\n-Estamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n-</td>\n-<td>\n-Confirmar compatibilidade e área\n-</td>\n-</tr>\n-<tr>\n-<td>\n-Frente<br />Costas\n-</td>\n-<td>\n-Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n-</td>\n-<td>\n-Confirmar compatibilidade e área\n-</td>\n-</tr>\n-<tr>\n-<td>\n-Manga Esquerda<br />Manga Direita\n-</td>\n-<td>\n-DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)\n-</td>\n-<td>\n-Confirmar compatibilidade e área\n-</td>\n-</tr>\n-</table>\n-</column>\n-<column ratio=\"50\">\n-## Antes — tabela original integral\n-\n-### Locais e personalização\n-\n-<table header-row=\"true\">\n-<colgroup>\n-<col />\n-<col width=\"430.00001525878906\" />\n-<col />\n-</colgroup>\n-<tr>\n-<td>\n-Face / local\n-</td>\n-<td>\n-Opções completas e especificações\n-</td>\n-<td>\n-Notas\n-</td>\n-</tr>\n-<tr>\n-<td>\n-Peito Esquerdo<br />Peito Direito\n-</td>\n-<td>\n-Estamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n-</td>\n-<td>\n-Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n-</td>\n-</tr>\n-<tr>\n-<td>\n-Frente<br />Costas\n-</td>\n-<td>\n-Estamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n-</td>\n-<td>\n-Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n-</td>\n-</tr>\n-<tr>\n-<td>\n-Manga Esquerda<br />Manga Direita\n-</td>\n-<td>\n-Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n-</td>\n-<td>\n-Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n-</td>\n-</tr>\n-</table>\n-</column>\n-</columns>\n-\n <toggle>\n Pontos pendentes\n \n - Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n </toggle>\n-\n-## Imagens\n-\n-<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n-\n-## Descrição e notas do perfil\n-\n-Sweats + T-shirts Manga Comprida Adulto\n-\n-S/Bolso\n-\n-S/Capuz\n-\n-Algodão / Poliester (artigo de cor)\n-\n-Ex: CH12298\n-\n-No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n-\n-## Notas\n-\n-- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n+</toggle>\n \n <toggle>\n Fonte e original do Excel\n@@ -184,4 +206,438 @@\n | F389 | DTF - Até A5 (14,8x21,0 cm) |\n | F390 | Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA |\n | F391 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+PP_FULL_CONVERSION_V1 b9b265e5fddf7f7d5ba92de9fd7d142d7806379969c58fb1a75e469ce8c16935\n+\n+<toggle>\n+Origem Excel verificada\n+\n+PPs TÊXTIL!C373:F392\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Célula\n+</td>\n+<td>\n+Texto original\n+</td>\n+</tr>\n+<tr>\n+<td>\n+C373\n+</td>\n+<td>\n+262\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D373\n+</td>\n+<td>\n+TÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D374\n+</td>\n+<td>\n+Sweats + T-shirts Manga Comprida Adulto\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E374\n+</td>\n+<td>\n+Peito Esquerdo\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F374\n+</td>\n+<td>\n+Estamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D375\n+</td>\n+<td>\n+S/Bolso\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E375\n+</td>\n+<td>\n+Peito Direito\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F375\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D376\n+</td>\n+<td>\n+S/Capuz\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F376\n+</td>\n+<td>\n+Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D377\n+</td>\n+<td>\n+Algodão / Poliester  (artigo de cor)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E377\n+</td>\n+<td>\n+Frente\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F377\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D378\n+</td>\n+<td>\n+Ex:  CH12298\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E378\n+</td>\n+<td>\n+Costas\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F378\n+</td>\n+<td>\n+Estamparia - Até A3 - 4 Cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F379\n+</td>\n+<td>\n+DTF - Até A4 (21x29,7cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F380\n+</td>\n+<td>\n+DTF - Até A3 (29,7x42cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F381\n+</td>\n+<td>\n+Bordado - Até 480 cm2 - Até 22x22cm aprox.\n+</td>\n+</tr>\n+<tr>\n+<td>\n+D382\n+</td>\n+<td>\n+No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F382\n+</td>\n+<td>\n+Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F383\n+</td>\n+<td>\n+Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E384\n+</td>\n+<td>\n+Manga Esquerda\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F384\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+E385\n+</td>\n+<td>\n+Manga Direita\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F385\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F386\n+</td>\n+<td>\n+Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F387\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F388\n+</td>\n+<td>\n+DTF - Até A6 (10,5x14,8 cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F389\n+</td>\n+<td>\n+DTF - Até A5 (14,8x21,0 cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F390\n+</td>\n+<td>\n+Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n+</td>\n+</tr>\n+<tr>\n+<td>\n+F391\n+</td>\n+<td>\n+Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n+</td>\n+</tr>\n+</table>\n+</toggle>\n+\n+<toggle>\n+Apresentação anterior preservada\n+\n+## Locais e personalização — nova configuração (proposta)\n+\n+<callout icon=\"📝\">\n+<b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n+</callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+<table header-row=\"true\">\n+<colgroup>\n+<col />\n+<col width=\"410.00001525878906\" />\n+<col />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções propostas\n+</td>\n+<td>\n+Revisão\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito Esquerdo<br />Peito Direito\n+</td>\n+<td>\n+Estamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n+</td>\n+<td>\n+Confirmar compatibilidade e área\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Frente<br />Costas\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n+</td>\n+<td>\n+Confirmar compatibilidade e área\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Manga Esquerda<br />Manga Direita\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)\n+</td>\n+<td>\n+Confirmar compatibilidade e área\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Antes — tabela original integral\n+\n+### Locais e personalização\n+\n+<table header-row=\"true\">\n+<colgroup>\n+<col />\n+<col width=\"430.00001525878906\" />\n+<col />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+<td>\n+Notas\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito Esquerdo<br />Peito Direito\n+</td>\n+<td>\n+Estamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n+</td>\n+<td>\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Frente<br />Costas\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n+</td>\n+<td>\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Manga Esquerda<br />Manga Direita\n+</td>\n+<td>\n+Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n+</td>\n+<td>\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle>\n+Pontos pendentes\n+\n+- Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n+</toggle>\n+\n+## Imagens\n+\n+<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n+\n+## Descrição e notas do perfil\n+\n+Sweats + T-shirts Manga Comprida Adulto\n+\n+S/Bolso\n+\n+S/Capuz\n+\n+Algodão / Poliester (artigo de cor)\n+\n+Ex: CH12298\n+\n+No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n+\n+## Notas\n+\n+- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n+</toggle>\n </toggle>",
+  "excel": {
+    "area": "Têxtil",
+    "article_types": [
+      "T-shirt",
+      "Sweat"
+    ],
+    "blocked": [
+      "Distribuição das opções por local por confirmar"
+    ],
+    "code": "262",
+    "comments": [],
+    "description": "Sweats + T-shirts Manga Comprida Adulto",
+    "families": [
+      "T-shirts e polos"
+    ],
+    "groups": [
+      {
+        "locals": [
+          "Peito Esquerdo",
+          "Peito Direito"
+        ],
+        "options": [
+          {
+            "cell": "F374",
+            "name": "Estamparia — até A7 — 4 cores",
+            "original": "Estamparia - Até A7 - 4 Cores (BOLSO | MANGA)"
+          },
+          {
+            "cell": "F375",
+            "name": "DTF — até A7",
+            "original": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          },
+          {
+            "cell": "F376",
+            "name": "Bordado — até 60 cm²",
+            "original": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)"
+          }
+        ],
+        "start_row": 374
+      },
+      {
+        "locals": [
+          "Frente",
+          "Costas"
+        ],
+        "options": [
+          {
+            "cell": "F377",
+            "name": "Estamparia — até A4 — 4 cores",
+            "original": "Estamparia - Até A4 - 4 Cores"
+          },
+          {
+            "cell": "F378",
+            "name": "Estamparia — até A3 — 4 cores",
+            "original": "Estamparia - Até A3 - 4 Cores"
+          },
+          {
+            "cell": "F379",
+            "name": "DTF — até A4",
+            "original": "DTF - Até A4 (21x29,7cm)"
+          },
+          {
+            "cell": "F380",
+            "name": "DTF — até A3",
+            "original": "DTF - Até A3 (29,7x42cm)"
+          },
+          {
+            "cell": "F381",
+            "name": "Bordado — até 480 cm²",
+            "original": "Bordado - Até 480 cm2 - Até 22x22cm aprox."
+          },
+          {
+            "cell": "F382",
+            "name": "Bordado — até 600 cm²",
+            "original": "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4"
+          },
+          {
+            "cell": "F383",
+            "name": "Bordado — até 1.200 cm²",
+            "original": "Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3"
+          }
+        ],
+        "start_row": 377
+      },
+      {
+        "locals": [
+          "Manga Esquerda",
+          "Manga Direita"
+        ],
+        "options": [
+          {
+            "cell": "F384",
+            "name": "Transfer — até 57 cm² — 2 cores",
+            "original": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+          },
+          {
+            "cell": "F385",
+            "name": "Transfer — até 126 cm² — 2 cores",
+            "original": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+          },
+          {
+            "cell": "F386",
+            "name": "Transfer — até 280 cm² — 2 cores",
+            "original": "Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)"
+          },
+          {
+            "cell": "F387",
+            "name": "DTF — até A7",
+            "original": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          },
+          {
+            "cell": "F388",
+            "name": "DTF — até A6",
+            "original": "DTF - Até A6 (10,5x14,8 cm)"
+          },
+          {
+            "cell": "F389",
+            "name": "DTF — até A5",
+            "original": "DTF - Até A5 (14,8x21,0 cm)"
+          },
+          {
+            "cell": "F390",
+            "name": "Bordado — até 60 cm²",
+            "original": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA"
+          },
+          {
+            "cell": "F391",
+            "name": "Bordado — até 120 cm²",
+            "original": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+          }
+        ],
+        "start_row": 384
+      }
+    ],
+    "images": [
+      "xl/media/image5.jpeg"
+    ],
+    "notes": [
+      "S/Bolso",
+      "S/Capuz",
+      "Algodão / Poliester (artigo de cor)",
+      "Ex: CH12298",
+      "No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+    ],
+    "raw": [
+      {
+        "cell": "C373",
+        "value": "262"
+      },
+      {
+        "cell": "D373",
+        "value": "TÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso"
+      },
+      {
+        "cell": "D374",
+        "value": "Sweats + T-shirts Manga Comprida Adulto"
+      },
+      {
+        "cell": "E374",
+        "value": "Peito Esquerdo"
+      },
+      {
+        "cell": "F374",
+        "value": "Estamparia - Até A7 - 4 Cores (BOLSO | MANGA)"
+      },
+      {
+        "cell": "D375",
+        "value": "S/Bolso"
+      },
+      {
+        "cell": "E375",
+        "value": "Peito Direito"
+      },
+      {
+        "cell": "F375",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      },
+      {
+        "cell": "D376",
+        "value": "S/Capuz"
+      },
+      {
+        "cell": "F376",
+        "value": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)"
+      },
+      {
+        "cell": "D377",
+        "value": "Algodão / Poliester  (artigo de cor)"
+      },
+      {
+        "cell": "E377",
+        "value": "Frente"
+      },
+      {
+        "cell": "F377",
+        "value": "Estamparia - Até A4 - 4 Cores"
+      },
+      {
+        "cell": "D378",
+        "value": "Ex:  CH12298"
+      },
+      {
+        "cell": "E378",
+        "value": "Costas"
+      },
+      {
+        "cell": "F378",
+        "value": "Estamparia - Até A3 - 4 Cores"
+      },
+      {
+        "cell": "F379",
+        "value": "DTF - Até A4 (21x29,7cm)"
+      },
+      {
+        "cell": "F380",
+        "value": "DTF - Até A3 (29,7x42cm)"
+      },
+      {
+        "cell": "F381",
+        "value": "Bordado - Até 480 cm2 - Até 22x22cm aprox."
+      },
+      {
+        "cell": "D382",
+        "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+      },
+      {
+        "cell": "F382",
+        "value": "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4"
+      },
+      {
+        "cell": "F383",
+        "value": "Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3"
+      },
+      {
+        "cell": "E384",
+        "value": "Manga Esquerda"
+      },
+      {
+        "cell": "F384",
+        "value": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      },
+      {
+        "cell": "E385",
+        "value": "Manga Direita"
+      },
+      {
+        "cell": "F385",
+        "value": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+      },
+      {
+        "cell": "F386",
+        "value": "Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)"
+      },
+      {
+        "cell": "F387",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      },
+      {
+        "cell": "F388",
+        "value": "DTF - Até A6 (10,5x14,8 cm)"
+      },
+      {
+        "cell": "F389",
+        "value": "DTF - Até A5 (14,8x21,0 cm)"
+      },
+      {
+        "cell": "F390",
+        "value": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA"
+      },
+      {
+        "cell": "F391",
+        "value": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+      }
+    ],
+    "review_flags": [
+      "Grupo com vários locais ou sem local: confirmar a distribuição das opções"
+    ],
+    "source": "PPs TÊXTIL!C373:F392",
+    "title": "TÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso"
+  },
+  "failure_status_operation": {
+    "eligible": true,
+    "id": "262-full-error-status",
+    "kind": "error_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "3d2b6705ae1f828d964e813275d65f82",
+      "properties": {
+        "Estado": "Erro"
+      }
+    }
+  },
+  "method_complete": false,
+  "new_groups": [
+    {
+      "locations": [
+        "Peito Esquerdo",
+        "Peito Direito"
+      ],
+      "options": [
+        "Estamparia - Até A7 - 1 Cor (BOLSO | MANGA)",
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7"
+      ],
+      "shared_source_group": true
+    },
+    {
+      "locations": [
+        "Frente",
+        "Costas"
+      ],
+      "options": [
+        "Estamparia - Até A4 - 1 Cor",
+        "DTF - Até A4 (21x29,7cm)",
+        "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4"
+      ],
+      "shared_source_group": true
+    },
+    {
+      "locations": [
+        "Manga Esquerda",
+        "Manga Direita"
+      ],
+      "options": [
+        "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+        "Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)",
+        "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7"
+      ],
+      "shared_source_group": true
+    }
+  ],
+  "operations": [
+    {
+      "eligible": true,
+      "id": "262-full-body-1",
+      "kind": "body",
+      "payload": {
+        "command": "update_content",
+        "content_updates": [
+          {
+            "new_str": "<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n\nSweats + T-shirts Manga Comprida Adulto\n\nS/Bolso\n\nS/Capuz\n\nAlgodão / Poliester (artigo de cor)\n\nEx: CH12298\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 262</b>\n\n- [ ] Sim, aprovo a configuração New do PP 262.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b>\n<p />\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Peito Esquerdo<br />Peito Direito\n\nConfirmar compatibilidade e área\n</toggle>\n\n<toggle>\nNew: Frente<br />Costas\n\nConfirmar compatibilidade e área\n</toggle>\n\n<toggle>\nNew: Manga Esquerda<br />Manga Direita\n\nConfirmar compatibilidade e área\n</toggle>\n\n<toggle>\nOld: Peito Esquerdo<br />Peito Direito\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n<toggle>\nOld: Frente<br />Costas\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n<toggle>\nOld: Manga Esquerda<br />Manga Direita\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n\n- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n\n- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n\n- Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\n\n<callout icon=\"📝\">\n<b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n</callout>\n\n<toggle>\nPontos pendentes\n\n- Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n</toggle>\n</toggle>\n\n",
+            "old_str": "## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"410.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n<td>\nRevisão\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"430.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle>\nPontos pendentes\n\n- Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n</toggle>\n\n## Imagens\n\n<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nSweats + T-shirts Manga Comprida Adulto\n\nS/Bolso\n\nS/Capuz\n\nAlgodão / Poliester (artigo de cor)\n\nEx: CH12298\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n",
+            "replace_all_matches": false
+          }
+        ],
+        "page_id": "3d2b6705ae1f828d964e813275d65f82"
+      },
+      "region_evidence": {
+        "basis": "EXACT_REVIEWED_BROWSER_REGION",
+        "bounded_observations": [
+          {
+            "global_export_claimed": false,
+            "native_region_id": "41ab6705-ae1f-8125-855c-f92ed2748f5f",
+            "observation_sha256": "eac7f9b76396e66ed9ed9928a7a093f8a01b7040a5f2903e9c5dd3c1e675006f",
+            "source_page_state_sha256": "ebc10ddc25c12afc7ea6fafb387b1ef64faf354a8bc4cfecb103c941bb134e89",
+            "source_region_sha256": "332b5a92c16233a92853fc3347433211c739c4a12d313139b5939a0fc7d6af80"
+          },
+          {
+            "global_export_claimed": false,
+            "native_region_id": "41bb6705-ae1f-8082-9a9c-f1f47f7eeb30",
+            "observation_sha256": "d1b3f305ff3cbc9e16749f8342a0268a30a18f54dcd727ddc915d3ec7a5b5640",
+            "source_page_state_sha256": "ebc10ddc25c12afc7ea6fafb387b1ef64faf354a8bc4cfecb103c941bb134e89",
+            "source_region_sha256": "8f3f7f32c96481bb5c8515bada7490ce990a2737674429842d1b0a8d750ee090"
+          },
+          {
+            "global_export_claimed": false,
+            "native_region_id": "41ab6705-ae1f-81a4-a3c8-ebdbae02e252",
+            "observation_sha256": "cdef79313e3567be3e99a931ec16af543715dce41a1c4ed47ed425bb8141cc82",
+            "source_page_state_sha256": "ebc10ddc25c12afc7ea6fafb387b1ef64faf354a8bc4cfecb103c941bb134e89",
+            "source_region_sha256": "ad8b91b5b476ac9355d3ba374901db5b1d86ebda6884a3d63354a3a9f415f658"
+          }
+        ],
+        "eligible": true,
+        "global_export_claimed": false,
+        "new_sha256": "ceab82d94fc1955f82a0c1f608f48e33f7ccbc1ab1bce24e659953e1627a03bb",
+        "old_sha256": "e0005d0e5b4f1b649c801d7245db2e00e39107c77e75d96cf3cbc92c28318ffc",
+        "prefix_sha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "suffix_sha256": "5095aee6b87293ea6d96f4be54dd9c30dd7e9b3b5dfd1574c8212a27c3c42f70"
+      }
+    },
+    {
+      "eligible": true,
+      "id": "262-full-body-2",
+      "kind": "append",
+      "payload": {
+        "command": "insert_content",
+        "content": "\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 b9b265e5fddf7f7d5ba92de9fd7d142d7806379969c58fb1a75e469ce8c16935\n\n<toggle>\nOrigem Excel verificada\n\nPPs TÊXTIL!C373:F392\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nC373\n</td>\n<td>\n262\n</td>\n</tr>\n<tr>\n<td>\nD373\n</td>\n<td>\nTÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso\n</td>\n</tr>\n<tr>\n<td>\nD374\n</td>\n<td>\nSweats + T-shirts Manga Comprida Adulto\n</td>\n</tr>\n<tr>\n<td>\nE374\n</td>\n<td>\nPeito Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nF374\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD375\n</td>\n<td>\nS/Bolso\n</td>\n</tr>\n<tr>\n<td>\nE375\n</td>\n<td>\nPeito Direito\n</td>\n</tr>\n<tr>\n<td>\nF375\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nD376\n</td>\n<td>\nS/Capuz\n</td>\n</tr>\n<tr>\n<td>\nF376\n</td>\n<td>\nBordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n</tr>\n<tr>\n<td>\nD377\n</td>\n<td>\nAlgodão / Poliester  (artigo de cor)\n</td>\n</tr>\n<tr>\n<td>\nE377\n</td>\n<td>\nFrente\n</td>\n</tr>\n<tr>\n<td>\nF377\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores\n</td>\n</tr>\n<tr>\n<td>\nD378\n</td>\n<td>\nEx:  CH12298\n</td>\n</tr>\n<tr>\n<td>\nE378\n</td>\n<td>\nCostas\n</td>\n</tr>\n<tr>\n<td>\nF378\n</td>\n<td>\nEstamparia - Até A3 - 4 Cores\n</td>\n</tr>\n<tr>\n<td>\nF379\n</td>\n<td>\nDTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nF380\n</td>\n<td>\nDTF - Até A3 (29,7x42cm)\n</td>\n</tr>\n<tr>\n<td>\nF381\n</td>\n<td>\nBordado - Até 480 cm2 - Até 22x22cm aprox.\n</td>\n</tr>\n<tr>\n<td>\nD382\n</td>\n<td>\nNo caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n</td>\n</tr>\n<tr>\n<td>\nF382\n</td>\n<td>\nBordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n</tr>\n<tr>\n<td>\nF383\n</td>\n<td>\nBordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n</tr>\n<tr>\n<td>\nE384\n</td>\n<td>\nManga Esquerda\n</td>\n</tr>\n<tr>\n<td>\nF384\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n</tr>\n<tr>\n<td>\nE385\n</td>\n<td>\nManga Direita\n</td>\n</tr>\n<tr>\n<td>\nF385\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nF386\n</td>\n<td>\nTransfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)\n</td>\n</tr>\n<tr>\n<td>\nF387\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n<tr>\n<td>\nF388\n</td>\n<td>\nDTF - Até A6 (10,5x14,8 cm)\n</td>\n</tr>\n<tr>\n<td>\nF389\n</td>\n<td>\nDTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nF390\n</td>\n<td>\nBordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA\n</td>\n</tr>\n<tr>\n<td>\nF391\n</td>\n<td>\nBordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"410.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n<td>\nRevisão\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"430.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle>\nPontos pendentes\n\n- Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n</toggle>\n\n## Imagens\n\n<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nSweats + T-shirts Manga Comprida Adulto\n\nS/Bolso\n\nS/Capuz\n\nAlgodão / Poliester (artigo de cor)\n\nEx: CH12298\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n</toggle>\n</toggle>",
+        "page_id": "3d2b6705ae1f828d964e813275d65f82",
+        "position": {
+          "type": "end"
+        }
+      },
+      "region_evidence": {
+        "append_sha256": "8babaada8708ecf5b1ef57135d1373360cfa50b17e3b64ba2ace5e9ccb07a440",
+        "basis": "APPEND_WITHOUT_CHANGING_EXISTING_BLOCKS",
+        "body_sha256": "bd9aff8c5dd54ded7c7bdd15a5e6e363c767e99a8de09f531967d94c7f906a26",
+        "eligible": true,
+        "global_export_claimed": false
+      }
+    }
+  ],
+  "page_id": "3d2b6705ae1f828d964e813275d65f82",
+  "preservation": {
+    "idempotent": false,
+    "marker": "PP_FULL_CONVERSION_V1 b9b265e5fddf7f7d5ba92de9fd7d142d7806379969c58fb1a75e469ce8c16935",
+    "notes": [
+      {
+        "location": "Peito Esquerdo<br />Peito Direito",
+        "side": "New",
+        "text": "Confirmar compatibilidade e área"
+      },
+      {
+        "location": "Frente<br />Costas",
+        "side": "New",
+        "text": "Confirmar compatibilidade e área"
+      },
+      {
+        "location": "Manga Esquerda<br />Manga Direita",
+        "side": "New",
+        "text": "Confirmar compatibilidade e área"
+      },
+      {
+        "location": "Peito Esquerdo<br />Peito Direito",
+        "side": "Old",
+        "text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+      },
+      {
+        "location": "Frente<br />Costas",
+        "side": "Old",
+        "text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+      },
+      {
+        "location": "Manga Esquerda<br />Manga Direita",
+        "side": "Old",
+        "text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+      }
+    ]
+  },
+  "property_operations": [],
+  "reasons": [],
+  "rule_changes": [
+    {
+      "after": "Estamparia - Até A7 - 1 Cor (BOLSO | MANGA)",
+      "before": "Estamparia - Até A7 - 4 Cores (BOLSO | MANGA)",
+      "locations": [
+        "Peito Esquerdo",
+        "Peito Direito"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+      "before": "Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA)",
+      "locations": [
+        "Peito Esquerdo",
+        "Peito Direito"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "Estamparia - Até A4 - 1 Cor",
+      "before": "Estamparia - Até A4 - 4 Cores",
+      "locations": [
+        "Frente",
+        "Costas"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "Estamparia - Até A4 - 1 Cor",
+      "before": "Estamparia - Até A3 - 4 Cores",
+      "locations": [
+        "Frente",
+        "Costas"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "DTF - Até A4 (21x29,7cm)",
+      "before": "DTF - Até A3 (29,7x42cm)",
+      "locations": [
+        "Frente",
+        "Costas"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4",
+      "before": "Bordado - Até 480 cm2 - Até 22x22cm aprox.",
+      "locations": [
+        "Frente",
+        "Costas"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4",
+      "before": "Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3",
+      "locations": [
+        "Frente",
+        "Costas"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+      "before": "DTF - Até A6 (10,5x14,8 cm)",
+      "locations": [
+        "Manga Esquerda",
+        "Manga Direita"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+      "before": "DTF - Até A5 (14,8x21,0 cm)",
+      "locations": [
+        "Manga Esquerda",
+        "Manga Direita"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+      "before": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA",
+      "locations": [
+        "Manga Esquerda",
+        "Manga Direita"
+      ],
+      "reference_size": "A7"
+    },
+    {
+      "after": "Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO | BONE | MANGA - A7",
+      "before": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+      "locations": [
+        "Manga Esquerda",
+        "Manga Direita"
+      ],
+      "reference_size": "A7"
+    }
+  ],
+  "source_body": "## Locais e personalização — nova configuração (proposta)\n\n<callout icon=\"📝\">\n<b>Revisão em curso — A rever.</b> Configuração proposta com base nos locais existentes e nas referências IMP. As opções ainda não aprovadas ficam identificadas; confirmar materiais e áreas antes de validar. A tabela original foi preservada integralmente.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"410.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções propostas\n</td>\n<td>\nRevisão\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 1 Cor (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA - A7<br />Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO \\| BONE)\n</td>\n<td>\nConfirmar compatibilidade e área\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Antes — tabela original integral\n\n### Locais e personalização\n\n<table header-row=\"true\">\n<colgroup>\n<col />\n<col width=\"430.00001525878906\" />\n<col />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n<td>\nNotas\n</td>\n</tr>\n<tr>\n<td>\nPeito Esquerdo<br />Peito Direito\n</td>\n<td>\nEstamparia - Até A7 - 4 Cores (BOLSO \\| MANGA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA)\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nFrente<br />Costas\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />Estamparia - Até A3 - 4 Cores<br />DTF - Até A4 (21x29,7cm)<br />DTF - Até A3 (29,7x42cm)<br />Bordado - Até 480 cm2 - Até 22x22cm aprox.<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4<br />Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n<tr>\n<td>\nManga Esquerda<br />Manga Direita\n</td>\n<td>\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n<td>\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle>\nPontos pendentes\n\n- Transfer 1 Cor existe em IMP Old, mas falta na lista IMP New\n</toggle>\n\n## Imagens\n\n<image source=\"notion-file-block://8a1b6705-ae1f-822e-a0b9-8186a3b38cd6/efc18804-727f-48c1-b906-a1cf1a0839ef?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP262_1.jpeg\" />\n\n## Descrição e notas do perfil\n\nSweats + T-shirts Manga Comprida Adulto\n\nS/Bolso\n\nS/Capuz\n\nAlgodão / Poliester (artigo de cor)\n\nEx: CH12298\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs TÊXTIL!C373:F392<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| C373 | 262 |\n| D373 | TÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso |\n| D374 | Sweats + T-shirts Manga Comprida Adulto |\n| E374 | Peito Esquerdo |\n| F374 | Estamparia - Até A7 - 4 Cores (BOLSO \\| MANGA) |\n| D375 | S/Bolso |\n| E375 | Peito Direito |\n| F375 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| D376 | S/Capuz |\n| F376 | Bordado - Até 60 cm2 (Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA) |\n| D377 | Algodão / Poliester  (artigo de cor) |\n| E377 | Frente |\n| F377 | Estamparia - Até A4 - 4 Cores |\n| D378 | Ex:  CH12298 |\n| E378 | Costas |\n| F378 | Estamparia - Até A3 - 4 Cores |\n| F379 | DTF - Até A4 (21x29,7cm) |\n| F380 | DTF - Até A3 (29,7x42cm) |\n| F381 | Bordado - Até 480 cm2 - Até 22x22cm aprox. |\n| D382 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| F382 | Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4 |\n| F383 | Bordado - Até 1.200 cm2 - Até 34,6x34,6cm aprox. - A3 |\n| E384 | Manga Esquerda |\n| F384 | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \\| BONE) |\n| E385 | Manga Direita |\n| F385 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| F386 | Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm) |\n| F387 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n| F388 | DTF - Até A6 (10,5x14,8 cm) |\n| F389 | DTF - Até A5 (14,8x21,0 cm) |\n| F390 | Bordado - Até 60 cm2 - Até 7,7x7,7 aprox. - BOLSO \\| BONE \\| MANGA |\n| F391 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n</toggle>",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/efc18804-727f-48c1-b906-a1cf1a0839ef/PP262_1.jpeg"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "262",
+      "Estado": "A rever",
+      "Faces": [
+        "Peito Esquerdo",
+        "Peito Direito",
+        "Frente",
+        "Costas",
+        "Manga Esquerda",
+        "Manga Direita"
+      ],
+      "Família": [
+        "T-shirts e polos"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/efc18804-727f-48c1-b906-a1cf1a0839ef/PP262_1.jpeg"
+      ],
+      "Notas": "NPP",
+      "Número de locais possíveis": 6,
+      "Opções de personalização": [
+        "Estamparia — até A7 — 4 cores",
+        "DTF — até A7",
+        "Bordado — até 60 cm²",
+        "Estamparia — até A4 — 4 cores",
+        "Estamparia — até A3 — 4 cores",
+        "DTF — até A4",
+        "DTF — até A3",
+        "Bordado — até 480 cm²",
+        "Bordado — até 600 cm²",
+        "Bordado — até 1.200 cm²",
+        "Transfer — até 57 cm² — 2 cores",
+        "Transfer — até 126 cm² — 2 cores",
+        "Transfer — até 280 cm² — 2 cores",
+        "DTF — até A6",
+        "DTF — até A5",
+        "Bordado — até 120 cm²"
+      ],
+      "PP": "262 — TÊXTIL ADULTO Manga Comprida - T-shirts/Sweats S/Capuz, S/Bolso",
+      "SKU / referência do fornecedor": "Ex: CH12298",
+      "Tipos de artigo compatíveis": [
+        "T-shirt",
+        "Sweat"
+      ],
+      "Técnicas": [
+        "Estamparia",
+        "DTF",
+        "Bordado",
+        "Transfer"
+      ],
+      "url": "https://app.notion.com/p/3d2b6705ae1f828d964e813275d65f82",
+      "Área": "Têxtil"
+    }
+  },
+  "source_state_sha256": "ebc10ddc25c12afc7ea6fafb387b1ef64faf354a8bc4cfecb103c941bb134e89",
+  "status": "READY_FOR_ERROR_REPORT",
+  "synthetic_capture": false,
+  "technical_unresolved": [
+    "Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+    "Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+    "Manga Esquerda / Manga Direita: Sem correspondência única aprovada em IMP New: Transfer - Até 280 cm2 - 2 Cores (aprox. 16,6x16,6cm)"
+  ],
+  "validation_policy": {
+    "body_notes_required": true,
+    "existing_containers": "PRESERVE_OR_EXACT_REVIEWED_UI_REGION",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "leaf_contract": "MCP_MARKDOWN_INLINE_TABLE_CELLS_AND_LEAF_BLOCKS",
+    "name": "PP_FULL_CONVERSION",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  },
+  "wanted_properties": {
+    "Faces": [
+      "Peito Esquerdo",
+      "Peito Direito",
+      "Frente",
+      "Costas",
+      "Manga Esquerda",
+      "Manga Direita"
+    ],
+    "Número de locais possíveis": 6,
+    "Opções de personalização": [
+      "Estamparia — até A7 — 1 cor",
+      "DTF — até A7",
+      "Bordado — até 60 cm²",
+      "Estamparia — até A4 — 1 cor",
+      "DTF — até A4",
+      "Bordado — até 600 cm²",
+      "Transfer — até 57 cm² — 2 cores",
+      "Transfer — até 126 cm² — 2 cores",
+      "Transfer — até 280 cm² — 2 cores"
+    ],
+    "Técnicas": [
+      "Estamparia",
+      "DTF",
+      "Bordado",
+      "Transfer"
+    ]
+  }
+}

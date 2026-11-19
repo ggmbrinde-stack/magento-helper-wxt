@@ -670,18 +670,18 @@ async function runApply(job: ReadJob): Promise<ApplyPpPlanResponse> {
     // other lanes return before it is validated and summarised.
     if (mode === 'order') {
       const placement = (report && typeof report === 'object' ? report : null) as Partial<PpPlacementReport> | null;
-      const total = typeof placement?.total === 'number' ? placement.total : 0;
-      const placed = Math.max(0, Math.min(typeof placement?.ordered === 'number' ? placement.ordered : 0, total));
       const why = typeof placement?.reason === 'string' && placement.reason
         ? placement.reason : 'The rows are at their face in the plan order.';
-
+      // The lane names the plan rows it placed, so each row is reported on its own index. A report
+      // without that list marks nothing placed, which is safer than crediting rows that did not move.
+      const movedRows = new Set(Array.isArray(placement?.orderedRows) ? placement.orderedRows : []);
       report = {
         reason: why,
         diagnostics: placement?.diagnostics,
         results: (job.plan ?? []).map((row, at) => ({
           face: row.face, technique: row.technique, catalogueId: row.catalogueId,
-          outcome: at < placed ? 'ordered' : 'failed',
-          reason: at < placed ? 'Moved to its plan position in the record list, unsaved.' : why,
+          outcome: movedRows.has(at) ? 'ordered' : 'failed',
+          reason: movedRows.has(at) ? 'Moved to its plan position in the record list, unsaved.' : why,
         })),
       };
     }

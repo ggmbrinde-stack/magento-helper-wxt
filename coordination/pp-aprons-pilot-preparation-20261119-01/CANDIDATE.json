@@ -1,0 +1,38 @@
+{
+  "approval": null,
+  "base_candidate": "pp-native-catalogue-reader-20261119-01",
+  "base_commit": "746159f4228f0cf24ac7e230dad99248c369459b",
+  "broader_tests_rerun": false,
+  "candidate": "pp-aprons-pilot-preparation-20261119-01",
+  "changed_files": [
+    "source/full_conversion.py",
+    "source/native_evidence.py",
+    "source/native_session.py",
+    "source/prepare_bridge.js",
+    "source/tests/test_pilot_preparation.py"
+  ],
+  "credentials_read": false,
+  "eleven_plan_sha256": "e101ffb22da0c3f834cc4d8f537b77acdf34578d5936af7f0a6abfd01a392f9a",
+  "eligible_live_pilot": null,
+  "eligible_operations": 0,
+  "focused_tests": {
+    "log": "verification/focused-tests.log",
+    "passed": 34,
+    "run": 34
+  },
+  "implementation_sha256": "8f6d11c933416c7a61e4f70ae9792878ee45385867b0e9cc806e0a0a64cc66a0",
+  "native_manifest_sha256": "50702d15400a406e0048b2602799b2eb5f1c88bd0663b3c63fd6e50cdf5d7254",
+  "notion_writes": 0,
+  "preferred_business_draft": "429",
+  "previews": 11,
+  "producer_implementation_sha256": "18e250a02fd40c0b9945893055678c9d662790ae9c3488850b6048141020ba9f",
+  "remaining_blockers": [
+    "Native/MCP image locators differ; equivalence not demonstrated",
+    "PP661 native top-level count 9 vs MCP 8",
+    "Independent review and exact pilot approval remain pending"
+  ],
+  "remote_requests": 0,
+  "session_start_or_apply": false,
+  "status": "PENDING_INDEPENDENT_REVIEW_BLOCKED_REAL_PILOT",
+  "workbook_reindexed": false
+}

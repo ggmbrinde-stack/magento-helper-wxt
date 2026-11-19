@@ -1,0 +1,16 @@
+{
+  "broad_suites_rerun": false,
+  "focused_python_tests": 6,
+  "log": "focused-v2-python.log",
+  "passed": true,
+  "prior_review_does_not_approve_v2": true,
+  "prior_review_reference": "PP-FULL-V1-20261119-PP39-PILOT-ONLY",
+  "scope": [
+    "PP50 pending before any business write, both batch orders",
+    "PP39 success",
+    "PP262 bounded evidence cannot override pending business",
+    "uncertain writes not retried",
+    "crash continuation",
+    "cancellation"
+  ]
+}

@@ -1,0 +1,1592 @@
+[
+  {
+    "workbook": "AI_READ_Perfis de Personalização - Cópia.xlsx",
+    "sha256": "36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+    "sheet": "PPs BRINDE TÊXTIL",
+    "cells": [
+      {
+        "cell": "M7",
+        "value": "AVENTAIS",
+        "style": 12,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "N7",
+        "value": null,
+        "style": 12,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O7",
+        "value": null,
+        "style": 12,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P7",
+        "value": null,
+        "style": 12,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M8",
+        "value": null,
+        "style": 2,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N8",
+        "value": null,
+        "style": 2,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O8",
+        "value": null,
+        "style": 3,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P8",
+        "value": null,
+        "style": 4,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M9",
+        "value": "428",
+        "style": 13,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "n"
+      },
+      {
+        "cell": "N9",
+        "value": "AVENTAL grande com bolso - 2F",
+        "style": 25,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O9",
+        "value": null,
+        "style": 25,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P9",
+        "value": null,
+        "style": 25,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N10",
+        "value": "Aventais com bolso apx 100cm altura",
+        "style": 316,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O10",
+        "value": "Peito",
+        "style": 162,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P10",
+        "value": "Estamparia - Até A4 - 4 Cores",
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M11",
+        "value": null,
+        "style": 115,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N11",
+        "value": "Ex: M3897",
+        "style": 432,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P11",
+        "value": "DTF - Até A5 (14,8x21,0 cm)",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M12",
+        "value": null,
+        "style": 40,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N12",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O12",
+        "value": null,
+        "style": 126,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P12",
+        "value": "DTF - Até A4 (21x29,7cm)",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M13",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N13",
+        "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores",
+        "style": 187,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O13",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P13",
+        "value": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M14",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N14",
+        "value": null,
+        "style": 187,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O14",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P14",
+        "value": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M15",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N15",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O15",
+        "value": null,
+        "style": 262,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P15",
+        "value": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+        "style": 118,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M16",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N16",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O16",
+        "value": "Bolso",
+        "style": 332,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\" /><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P16",
+        "value": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+        "style": 125,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\" /><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M17",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N17",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O17",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P17",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M18",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N18",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O18",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P18",
+        "value": null,
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M19",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N19",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O19",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P19",
+        "value": null,
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M20",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N20",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O20",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P20",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M21",
+        "value": "633",
+        "style": 13,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "n"
+      },
+      {
+        "cell": "N21",
+        "value": "AVENTAL Non-woven grande com bolso - 2F",
+        "style": 25,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O21",
+        "value": null,
+        "style": 25,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P21",
+        "value": null,
+        "style": 25,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N22",
+        "value": "Aventais com bolso apx 100cm altura",
+        "style": 316,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O22",
+        "value": "Peito",
+        "style": 162,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P22",
+        "value": "Estamparia - Até A4 - 1 Cor",
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M23",
+        "value": null,
+        "style": 115,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N23",
+        "value": "Ex: M3897",
+        "style": 432,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P23",
+        "value": "DTF - Até A5 (14,8x21,0 cm)",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M24",
+        "value": null,
+        "style": 40,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N24",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O24",
+        "value": null,
+        "style": 126,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P24",
+        "value": "DTF - Até A4 (21x29,7cm)",
+        "style": 118,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M25",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N25",
+        "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores",
+        "style": 187,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O25",
+        "value": "Bolso",
+        "style": 332,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\" /><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P25",
+        "value": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+        "style": 125,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\" /><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M26",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N26",
+        "value": null,
+        "style": 187,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O26",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P26",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M27",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N27",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O27",
+        "value": null,
+        "style": 262,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P27",
+        "value": null,
+        "style": 118,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M28",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N28",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M29",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N29",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M30",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N30",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O30",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P30",
+        "value": null,
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M31",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N31",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O31",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P31",
+        "value": null,
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M32",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N32",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O32",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P32",
+        "value": null,
+        "style": 30,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" diagonalUp=\"false\" diagonalDown=\"false\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      }
+    ],
+    "merges": [
+      "M7:P7",
+      "N13:N14",
+      "N25:N26"
+    ],
+    "images": [
+      {
+        "row": 10,
+        "col": 13,
+        "entry": "xl/media/image798.png",
+        "uncompressed_bytes": 65360
+      },
+      {
+        "row": 22,
+        "col": 13,
+        "entry": "xl/media/image806.png",
+        "uncompressed_bytes": 104562
+      }
+    ],
+    "comments": []
+  },
+  {
+    "workbook": "CLEAN__Perfis de Personalização.xlsx",
+    "sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "sheet": "PPs BRINDE TÊXTIL",
+    "cells": [
+      {
+        "cell": "M7",
+        "value": "AVENTAIS",
+        "style": 11,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "N7",
+        "value": null,
+        "style": 11,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O7",
+        "value": null,
+        "style": 11,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P7",
+        "value": null,
+        "style": 11,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"medium\"><ns0:color theme=\"1\" /></ns0:left><ns0:right /><ns0:top style=\"medium\"><ns0:color theme=\"1\" /></ns0:top><ns0:bottom style=\"medium\"><ns0:color theme=\"1\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M8",
+        "value": null,
+        "style": 1,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N8",
+        "value": null,
+        "style": 1,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O8",
+        "value": null,
+        "style": 2,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P8",
+        "value": null,
+        "style": 3,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M9",
+        "value": "428",
+        "style": 12,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N9",
+        "value": "AVENTAL grande com bolso - 2F",
+        "style": 24,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O9",
+        "value": null,
+        "style": 24,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P9",
+        "value": null,
+        "style": 24,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N10",
+        "value": "Aventais com bolso apx 100cm altura",
+        "style": 314,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O10",
+        "value": "Peito",
+        "style": 159,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P10",
+        "value": "Estamparia - Até A4 - 4 Cores",
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M11",
+        "value": null,
+        "style": 113,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N11",
+        "value": "Ex: M3897",
+        "style": 432,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P11",
+        "value": "DTF - Até A5 (14,8x21,0 cm)",
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M12",
+        "value": null,
+        "style": 39,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N12",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O12",
+        "value": null,
+        "style": 124,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P12",
+        "value": "DTF - Até A4 (21x29,7cm)",
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M13",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N13",
+        "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores",
+        "style": 184,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O13",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P13",
+        "value": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M14",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N14",
+        "value": null,
+        "style": 184,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O14",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P14",
+        "value": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M15",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N15",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O15",
+        "value": null,
+        "style": 260,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P15",
+        "value": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M16",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N16",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O16",
+        "value": "Bolso",
+        "style": 330,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color indexed=\"64\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P16",
+        "value": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+        "style": 123,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color indexed=\"64\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M17",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N17",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O17",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P17",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M18",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N18",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O18",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P18",
+        "value": null,
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M19",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N19",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O19",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P19",
+        "value": null,
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M20",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N20",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O20",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P20",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M21",
+        "value": "633",
+        "style": 12,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N21",
+        "value": "AVENTAL Non-woven grande com bolso - 2F",
+        "style": 24,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O21",
+        "value": null,
+        "style": 24,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P21",
+        "value": null,
+        "style": 24,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left /><ns0:right /><ns0:top /><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N22",
+        "value": "Aventais com bolso apx 100cm altura",
+        "style": 314,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O22",
+        "value": "Peito",
+        "style": 159,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P22",
+        "value": "Estamparia - Até A4 - 1 Cor",
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M23",
+        "value": null,
+        "style": 113,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N23",
+        "value": "Ex: M3897",
+        "style": 432,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P23",
+        "value": "DTF - Até A5 (14,8x21,0 cm)",
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M24",
+        "value": null,
+        "style": 39,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N24",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O24",
+        "value": null,
+        "style": 124,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P24",
+        "value": "DTF - Até A4 (21x29,7cm)",
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M25",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N25",
+        "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores",
+        "style": 184,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "O25",
+        "value": "Bolso",
+        "style": 330,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color indexed=\"64\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "P25",
+        "value": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+        "style": 123,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color indexed=\"64\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M26",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N26",
+        "value": null,
+        "style": 184,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O26",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P26",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": "s"
+      },
+      {
+        "cell": "M27",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N27",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O27",
+        "value": null,
+        "style": 260,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P27",
+        "value": null,
+        "style": 116,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom /><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M28",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N28",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M29",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N29",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M30",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N30",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O30",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P30",
+        "value": null,
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M31",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N31",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O31",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P31",
+        "value": null,
+        "style": 114,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right /><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "M32",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "N32",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "O32",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      },
+      {
+        "cell": "P32",
+        "value": null,
+        "style": 29,
+        "border": "<ns0:border xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><ns0:left style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:left><ns0:right style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:right><ns0:top style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:top><ns0:bottom style=\"thin\"><ns0:color theme=\"0\" tint=\"-0.05\" /></ns0:bottom><ns0:diagonal /></ns0:border>",
+        "formula": false,
+        "type": null
+      }
+    ],
+    "merges": [
+      "M7:P7",
+      "N13:N14",
+      "N25:N26"
+    ],
+    "images": [
+      {
+        "row": 10,
+        "col": 13,
+        "entry": "xl/media/image800.png",
+        "uncompressed_bytes": 65360
+      },
+      {
+        "row": 22,
+        "col": 13,
+        "entry": "xl/media/image808.png",
+        "uncompressed_bytes": 104562
+      }
+    ],
+    "comments": []
+  }
+]

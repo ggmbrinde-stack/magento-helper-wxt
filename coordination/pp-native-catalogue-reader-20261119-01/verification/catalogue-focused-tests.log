@@ -1,0 +1,12 @@
+test_all_eleven_requested_codes_use_inventory_ids_without_other_reads (test_native_catalogue.CatalogueTests.test_all_eleven_requested_codes_use_inventory_ids_without_other_reads) ... ok
+test_bad_inventory_selection_and_ids_refuse_before_collection (test_native_catalogue.CatalogueTests.test_bad_inventory_selection_and_ids_refuse_before_collection) ... ok
+test_code_outside_old_five_is_resolved_from_exact_inventory (test_native_catalogue.CatalogueTests.test_code_outside_old_five_is_resolved_from_exact_inventory) ... ok
+test_first_api_page_must_match_id_code_and_parent_before_children (test_native_catalogue.CatalogueTests.test_first_api_page_must_match_id_code_and_parent_before_children) ... ok
+test_invalid_synthetic_or_wrong_identity_results_never_enter_manifest (test_native_catalogue.CatalogueTests.test_invalid_synthetic_or_wrong_identity_results_never_enter_manifest) ... ok
+test_manifest_code_binding_is_checked_for_real_collector_output (test_native_catalogue.CatalogueTests.test_manifest_code_binding_is_checked_for_real_collector_output) ... ok
+test_page_failure_does_not_publish_snapshot_or_block_next_page (test_native_catalogue.CatalogueTests.test_page_failure_does_not_publish_snapshot_or_block_next_page) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.923s
+
+OK

@@ -232,6 +232,133 @@ test('a face that keeps blank sorts does not get a number', async () => {
   }, false, '');
 });
 
+test('a re-render during the move does not drop the Sort number of the added row', async () => {
+  await withPage(async dom => {
+    const records = new Map<any, any>();
+    const list: any[] = [];
+    const view: any = {};
+    view.elems = (next?: unknown[]) => {
+      if (Array.isArray(next)) {
+        list.splice(0, list.length, ...next);
+        // Magento renders the row again from the record list here, dropping the value typed before
+        // the move. The existing row is numbered 3, so the added row has to end up as 4 anyway.
+        const added = (Array.from(dom.window.document.querySelectorAll('#body tr')) as any[])
+          .find((node: any) => node.querySelector('select[name*="[sub_options_items][1][name_option]"]'));
+        const input = added?.querySelector('input[name*="[sort]"]') as HTMLInputElement | null;
+        if (input) input.value = '1';
+        return list;
+      }
+      return list;
+    };
+    const recordFor = (node: any) => {
+      let record = records.get(node);
+      if (!record) { record = { node }; records.set(node, record); list.push(record); }
+      return record;
+    };
+    const ko = { dataFor: recordFor, contextFor: () => ({ $data: view, $parent: null }) };
+    const previousWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
+    Object.defineProperty(globalThis, 'window', { value: { ko }, configurable: true });
+    try {
+      const report = await applyPpPlanRows(plan('11'));
+      assert.equal(report.results[0]!.outcome, 'added', report.results[0]!.reason);
+      const rows = Array.from(dom.window.document.querySelectorAll('#body tr')) as any[];
+      assert.equal(rows[0]!.querySelector('input[name*="[sort]"]').value, '3', 'the existing row keeps its own sort');
+      assert.equal(rows[1]!.querySelector('input[name*="[sort]"]').value, '4', 'the added row is numbered again after the re-render');
+    } finally {
+      if (previousWindow) Object.defineProperty(globalThis, 'window', previousWindow);
+      else Reflect.deleteProperty(globalThis, 'window');
+    }
+  });
+});
+
+test('the order report names the plan rows that are in place, not a count', async () => {
+  await withPage(async dom => {
+    const records = new Map<any, any>();
+    const list: any[] = [];
+    const view: any = {};
+    view.elems = (next?: unknown[]) => {
+      if (Array.isArray(next)) { list.splice(0, list.length, ...next); return list; }
+      return list;
+    };
+    const recordFor = (node: any) => {
+      let record = records.get(node);
+      if (!record) { record = { node }; records.set(node, record); list.push(record); }
+      return record;
+    };
+    // The page already holds a record list for the row that is on the form.
+    recordFor(dom.window.document.querySelector('#body tr'));
+    const ko = { dataFor: recordFor, contextFor: () => ({ $data: view, $parent: null }) };
+    const previousWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
+    Object.defineProperty(globalThis, 'window', { value: { ko }, configurable: true });
+    try {
+      const report = await placePpItemRows([
+        { face: '1 Face', magentoFace: 'Face 1', technique: 'Tampografia 1 Cor', catalogueId: '1' },
+        { face: 'Face 9', magentoFace: 'Face 9', technique: 'Bordado', catalogueId: '99' },
+      ], false, null, 'plan');
+      assert.equal(report.total, 2);
+      assert.equal(report.ordered, 1, 'only the row whose face is on the form counts as placed: ' + JSON.stringify(report));
+      assert.deepEqual(report.orderedRows, [0], 'the placed row is named by its plan index');
+    } finally {
+      if (previousWindow) Object.defineProperty(globalThis, 'window', previousWindow);
+      else Reflect.deleteProperty(globalThis, 'window');
+    }
+  });
+});
+
+test('a repeated technique credits only the copy that is in place', async () => {
+  await withPage(async dom => {
+    const select = dom.window.document.querySelector('select[name*="[name_option]"]') as any;
+    const option = dom.window.document.createElement('option');
+    option.value = '19'; option.text = 'Laser CO2 250';
+    select.appendChild(option); select.value = '19';
+    const records = new Map<any, any>();
+    const list: any[] = [];
+    const view: any = {};
+    view.elems = (next?: unknown[]) => {
+      if (Array.isArray(next)) { list.splice(0, list.length, ...next); return list; }
+      return list;
+    };
+    const recordFor = (node: any) => {
+      let record = records.get(node);
+      if (!record) { record = { node }; records.set(node, record); list.push(record); }
+      return record;
+    };
+    recordFor(dom.window.document.querySelector('#body tr'));
+    const ko = { dataFor: recordFor, contextFor: () => ({ $data: view, $parent: null }) };
+    const previousWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
+    Object.defineProperty(globalThis, 'window', { value: { ko }, configurable: true });
+    try {
+      const report = await placePpItemRows([
+        { face: '1 Face', magentoFace: 'Face 1', technique: 'Laser CO2 250', catalogueId: '19' },
+        { face: '1 Face', magentoFace: 'Face 1', technique: 'Laser CO2 250', catalogueId: '19' },
+      ], false, null, 'plan');
+      assert.equal(report.total, 2);
+      assert.equal(report.ordered, 1, 'one stored copy satisfies one occurrence');
+      assert.deepEqual(report.orderedRows, [0], 'the second copy has no row of its own and is not credited');
+    } finally {
+      if (previousWindow) Object.defineProperty(globalThis, 'window', previousWindow);
+      else Reflect.deleteProperty(globalThis, 'window');
+    }
+  });
+});
+
+test('a repeated technique on one face gets its own Sort value', async () => {
+  await withPage(async dom => {
+    const document = dom.window.document;
+    // Magento's own Add Item gives the page a second row with the same technique on the same face.
+    (document.querySelector('#add') as any).click();
+    (document.querySelector('select[name*="[sub_options_items][1][name_option]"]') as any).value = '1';
+    const report = await placePpItemRows([
+      { face: '1 Face', magentoFace: 'Face 1', technique: 'Tampografia 1 Cor', catalogueId: '1' },
+      { face: '1 Face', magentoFace: 'Face 1', technique: 'Tampografia 1 Cor', catalogueId: '1' },
+    ], true, null, 'plan');
+    assert.equal(report.total, 2);
+    const sorts = Array.from(document.querySelectorAll('input[name*="[sort]"]'))
+      .map((input: any) => input.value);
+    assert.deepEqual(sorts, ['1', '2'], 'each copy is numbered, not the first copy twice');
+  });
+});
+
 // The module names its record list itself, so the list is found by shape, not by one name.
 for (const key of ['elems', 'items', 'lineItems']) {
   test(`the saved order follows the loaded record list (${key})`, async () => {

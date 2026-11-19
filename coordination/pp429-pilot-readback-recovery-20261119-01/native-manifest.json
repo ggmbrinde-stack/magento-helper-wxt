@@ -1,0 +1,11 @@
+{
+  "implementation_sha256": "62cd6a3262e89f25c38d339c2798827445e790a5fae2d717aa0cc5bf4b85a444",
+  "pages": {
+    "429": {
+      "path": "native-429.json",
+      "sha256": "15ea51fa6929d49eaa0a48ba4c3095d4b88cb5dd72b5fd5d34800fb4d7cc8dc8"
+    }
+  },
+  "source": "NOTION_NATIVE_API_V1",
+  "synthetic": false
+}

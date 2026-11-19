@@ -1,0 +1,24 @@
+{
+  "page_code": "429",
+  "page_id": "137b6705ae1f82048ef1810070095cf0",
+  "new_remote_reads": 0,
+  "native_writes": 0,
+  "paired_mcp_file_sha256": "0c7223dd59ceec68967127b60b4c7329301c49f5c36511f2bad766a50528bd59",
+  "native_snapshot_sha256": "4d6b080e99c7d8862d375c58f0886764d0a7d2b5622dfc6adae264970bffeec1",
+  "source": "ORIGINAL_MCP_RESPONSE_REUSED_WITH_AUTH_ONLY_QUERY_REMOVAL",
+  "raw_http_claimed": false,
+  "image_bytes_claimed": false,
+  "metadata_binding": "BLOCKED",
+  "reason": "Hosted-file identity unavailable: unrecognised locator; region remains blocked",
+  "failed_locator_shapes": [
+    {
+      "persisted": false,
+      "scheme": "https",
+      "host": "prod-files-secure.s3.us-west-2.amazonaws.com",
+      "has_port": false,
+      "has_fragment": true,
+      "has_userinfo": false,
+      "is_canonical_locator": false
+    }
+  ]
+}

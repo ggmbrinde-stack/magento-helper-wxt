@@ -1,0 +1,11 @@
+test_pending_pp50_has_no_business_writes_then_pp39_succeeds (test_full_conversion.FullTests.test_pending_pp50_has_no_business_writes_then_pp39_succeeds) ... ok
+test_full_page_execution_verified_final_status_and_scope_receipt (test_full_conversion.FullTests.test_full_page_execution_verified_final_status_and_scope_receipt) ... ok
+test_bounded_browser_evidence_does_not_override_business_block (test_full_conversion.FullTests.test_bounded_browser_evidence_does_not_override_business_block) ... ok
+test_lost_write_never_replayed_and_next_independent_pp_runs (test_full_conversion.FullTests.test_lost_write_never_replayed_and_next_independent_pp_runs) ... ok
+test_crash_continue_does_not_replay_pending_leaf (test_full_conversion.FullTests.test_crash_continue_does_not_replay_pending_leaf) ... ok
+test_cancel_stops_without_next_content_or_error_status (test_full_conversion.FullTests.test_cancel_stops_without_next_content_or_error_status) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 21.743s
+
+OK

@@ -1,0 +1,7 @@
+[
+  {
+    "path": "node[7][1][0][1].length",
+    "expected": 2,
+    "actual": 3
+  }
+]

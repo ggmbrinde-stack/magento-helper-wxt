@@ -1,0 +1,5651 @@
+{
+  "after": {
+    "archived": false,
+    "cover": {
+      "file": {
+        "url": "notion-native-file-locator-sha256:2e60a002951ff6bf406c6e11b532468647ab42fb947ff2a71bb03369db639d89"
+      },
+      "type": "file"
+    },
+    "created_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "created_time": "2026-11-13T16:47:00.000Z",
+    "icon": null,
+    "id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "last_edited_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "last_edited_time": "2026-11-18T16:39:00.000Z",
+    "object": "page",
+    "parent": {
+      "data_source_id": "431b6705-ae1f-83db-b71c-0739778f9e1a",
+      "database_id": "417b6705-ae1f-81ba-bdfd-c46a86fe4b54",
+      "type": "data_source_id"
+    },
+    "properties": {
+      "Código PP": {
+        "id": "cOia",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "612",
+            "text": {
+              "content": "612",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Estado": {
+        "id": "DU%40%60",
+        "select": {
+          "color": "yellow",
+          "id": "e15302cf-2bfe-4702-b88f-452abe5ae286",
+          "name": "A rever"
+        },
+        "type": "select"
+      },
+      "Faces": {
+        "id": "%7DPTG",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "4e675011-0d03-4cc3-8bb5-996243b6d7d6",
+            "name": "Peito"
+          },
+          {
+            "color": "default",
+            "id": "14ce627c-a2ed-4d56-a4ee-968a57104040",
+            "name": "Bolso"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Família": {
+        "id": "_qoC",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "384118db-decb-4b5c-aef3-43203c7cd804",
+            "name": "Aventais"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Imagem principal": {
+        "files": [
+          {
+            "file": {
+              "url": "notion-native-file-locator-sha256:2e60a002951ff6bf406c6e11b532468647ab42fb947ff2a71bb03369db639d89"
+            },
+            "name": "PP612",
+            "type": "file"
+          }
+        ],
+        "id": "s%5BKK",
+        "type": "files"
+      },
+      "Notas": {
+        "id": "WPaU",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "NPP",
+            "text": {
+              "content": "NPP",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Número de faces": {
+        "id": "xb%3F%7D",
+        "number": null,
+        "type": "number"
+      },
+      "Número de locais possíveis": {
+        "id": "d%3Bwl",
+        "number": 2,
+        "type": "number"
+      },
+      "Opções de personalização": {
+        "id": "FLkJ",
+        "multi_select": [
+          {
+            "color": "orange",
+            "id": "55cc18da-9af9-4c64-b7d7-0e3032681bca",
+            "name": "Transfer — até 57 cm² — 2 cores"
+          },
+          {
+            "color": "default",
+            "id": "5ecfbd21-7227-4d3e-8340-d75484103520",
+            "name": "Transfer — até 126 cm² — 2 cores"
+          },
+          {
+            "color": "default",
+            "id": "8313460a-c52c-4032-ba48-ba9a4ea68917",
+            "name": "DTF — até A6"
+          },
+          {
+            "color": "default",
+            "id": "2509ab6f-e1a0-4579-a32d-db9986326544",
+            "name": "DTF — até A5"
+          },
+          {
+            "color": "purple",
+            "id": "cd15ceee-0a85-4870-b32b-62075d517914",
+            "name": "DTF — até A7"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "PP": {
+        "id": "title",
+        "title": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "612 — AVENTAL Criança c\\ bolso",
+            "text": {
+              "content": "612 — AVENTAL Criança c\\ bolso",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "title"
+      },
+      "SKU / referência do fornecedor": {
+        "id": "%3Evtd",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "Ex: A99826",
+            "text": {
+              "content": "Ex: A99826",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Sub-subcategoria": {
+        "id": "yc%7BR",
+        "multi_select": [],
+        "type": "multi_select"
+      },
+      "Tipos de artigo compatíveis": {
+        "id": "Vka%7B",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "d98ea9e8-6887-48f8-a4de-306312a0027d",
+            "name": "Avental"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Técnicas": {
+        "id": "%5DHF%5C",
+        "multi_select": [
+          {
+            "color": "orange",
+            "id": "555ff7c9-e49f-41cb-b2a0-4e6919a3c5ad",
+            "name": "Transfer"
+          },
+          {
+            "color": "purple",
+            "id": "997dae9e-29e4-4472-90ff-ea7f6c5c3cb3",
+            "name": "DTF"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Área": {
+        "id": "_Iij",
+        "select": {
+          "color": "blue",
+          "id": "3d711289-16a3-420b-9a5a-507cbd184691",
+          "name": "Brinde têxtil"
+        },
+        "type": "select"
+      }
+    },
+    "public_url": null,
+    "url": "https://app.notion.com/p/612-AVENTAL-Crian-a-c-bolso-e48b6705ae1f83ddafb501a2ea781406"
+  },
+  "api_version": "2025-09-03",
+  "before": {
+    "archived": false,
+    "cover": {
+      "file": {
+        "url": "notion-native-file-locator-sha256:2e60a002951ff6bf406c6e11b532468647ab42fb947ff2a71bb03369db639d89"
+      },
+      "type": "file"
+    },
+    "created_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "created_time": "2026-11-13T16:47:00.000Z",
+    "icon": null,
+    "id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+    "in_trash": false,
+    "is_archived": false,
+    "is_locked": false,
+    "last_edited_by": {
+      "id": "3d5d872b-594c-819a-a527-000283af7124",
+      "object": "user"
+    },
+    "last_edited_time": "2026-11-18T16:39:00.000Z",
+    "object": "page",
+    "parent": {
+      "data_source_id": "431b6705-ae1f-83db-b71c-0739778f9e1a",
+      "database_id": "417b6705-ae1f-81ba-bdfd-c46a86fe4b54",
+      "type": "data_source_id"
+    },
+    "properties": {
+      "Código PP": {
+        "id": "cOia",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "612",
+            "text": {
+              "content": "612",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Estado": {
+        "id": "DU%40%60",
+        "select": {
+          "color": "yellow",
+          "id": "e15302cf-2bfe-4702-b88f-452abe5ae286",
+          "name": "A rever"
+        },
+        "type": "select"
+      },
+      "Faces": {
+        "id": "%7DPTG",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "4e675011-0d03-4cc3-8bb5-996243b6d7d6",
+            "name": "Peito"
+          },
+          {
+            "color": "default",
+            "id": "14ce627c-a2ed-4d56-a4ee-968a57104040",
+            "name": "Bolso"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Família": {
+        "id": "_qoC",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "384118db-decb-4b5c-aef3-43203c7cd804",
+            "name": "Aventais"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Imagem principal": {
+        "files": [
+          {
+            "file": {
+              "url": "notion-native-file-locator-sha256:2e60a002951ff6bf406c6e11b532468647ab42fb947ff2a71bb03369db639d89"
+            },
+            "name": "PP612",
+            "type": "file"
+          }
+        ],
+        "id": "s%5BKK",
+        "type": "files"
+      },
+      "Notas": {
+        "id": "WPaU",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "NPP",
+            "text": {
+              "content": "NPP",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Número de faces": {
+        "id": "xb%3F%7D",
+        "number": null,
+        "type": "number"
+      },
+      "Número de locais possíveis": {
+        "id": "d%3Bwl",
+        "number": 2,
+        "type": "number"
+      },
+      "Opções de personalização": {
+        "id": "FLkJ",
+        "multi_select": [
+          {
+            "color": "orange",
+            "id": "55cc18da-9af9-4c64-b7d7-0e3032681bca",
+            "name": "Transfer — até 57 cm² — 2 cores"
+          },
+          {
+            "color": "default",
+            "id": "5ecfbd21-7227-4d3e-8340-d75484103520",
+            "name": "Transfer — até 126 cm² — 2 cores"
+          },
+          {
+            "color": "default",
+            "id": "8313460a-c52c-4032-ba48-ba9a4ea68917",
+            "name": "DTF — até A6"
+          },
+          {
+            "color": "default",
+            "id": "2509ab6f-e1a0-4579-a32d-db9986326544",
+            "name": "DTF — até A5"
+          },
+          {
+            "color": "purple",
+            "id": "cd15ceee-0a85-4870-b32b-62075d517914",
+            "name": "DTF — até A7"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "PP": {
+        "id": "title",
+        "title": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "612 — AVENTAL Criança c\\ bolso",
+            "text": {
+              "content": "612 — AVENTAL Criança c\\ bolso",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "title"
+      },
+      "SKU / referência do fornecedor": {
+        "id": "%3Evtd",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false
+            },
+            "href": null,
+            "plain_text": "Ex: A99826",
+            "text": {
+              "content": "Ex: A99826",
+              "link": null
+            },
+            "type": "text"
+          }
+        ],
+        "type": "rich_text"
+      },
+      "Sub-subcategoria": {
+        "id": "yc%7BR",
+        "multi_select": [],
+        "type": "multi_select"
+      },
+      "Tipos de artigo compatíveis": {
+        "id": "Vka%7B",
+        "multi_select": [
+          {
+            "color": "default",
+            "id": "d98ea9e8-6887-48f8-a4de-306312a0027d",
+            "name": "Avental"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Técnicas": {
+        "id": "%5DHF%5C",
+        "multi_select": [
+          {
+            "color": "orange",
+            "id": "555ff7c9-e49f-41cb-b2a0-4e6919a3c5ad",
+            "name": "Transfer"
+          },
+          {
+            "color": "purple",
+            "id": "997dae9e-29e4-4472-90ff-ea7f6c5c3cb3",
+            "name": "DTF"
+          }
+        ],
+        "type": "multi_select"
+      },
+      "Área": {
+        "id": "_Iij",
+        "select": {
+          "color": "blue",
+          "id": "3d711289-16a3-420b-9a5a-507cbd184691",
+          "name": "Brinde têxtil"
+        },
+        "type": "select"
+      }
+    },
+    "public_url": null,
+    "url": "https://app.notion.com/p/612-AVENTAL-Crian-a-c-bolso-e48b6705ae1f83ddafb501a2ea781406"
+  },
+  "confirmation_reads": [
+    {
+      "parent_id": "e48b6705ae1f83ddafb501a2ea781406",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "214e38dc-de9a-42d6-a4dc-059b67f8478a",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Imagens",
+                  "text": {
+                    "content": "Imagens",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "c70b6705-ae1f-83cc-a7dd-816ce5c55633",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c6bb6705-ae1f-8340-a445-010b33084d7a",
+            "image": {
+              "caption": [],
+              "file": {
+                "url": "notion-native-file-locator-sha256:2e60a002951ff6bf406c6e11b532468647ab42fb947ff2a71bb03369db639d89"
+              },
+              "type": "file"
+            },
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "image"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Descrição e notas do perfil",
+                  "text": {
+                    "content": "Descrição e notas do perfil",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "562b6705-ae1f-8258-b2d4-811bc35103ed",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "99db6705-ae1f-8227-89f8-015ae5d050d2",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Ex: A99826",
+                  "text": {
+                    "content": "Ex: A99826",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Notas",
+                  "text": {
+                    "content": "Notas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "4f4b6705-ae1f-8340-8534-812f60fc4e8e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                  "text": {
+                    "content": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "4ecb6705-ae1f-83dd-bf50-816718ab58dc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Revisão do PP 612",
+                  "text": {
+                    "content": "Revisão do PP 612",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "column_list": {},
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8160-950d-e32f9f1de0c9",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "column_list"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "071b6705-ae1f-8271-b932-81eb011ffd6f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Fonte e original do Excel",
+                  "text": {
+                    "content": "Fonte e original do Excel",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f810e8a32dcd0205b0a2e",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "a5365495-be8e-4054-9858-01ce6c13363e",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81be-a60b-dda2faf7b5a9",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                  "text": {
+                    "content": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever",
+                  "text": {
+                    "content": "A rever",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " até à decisão.",
+                  "text": {
+                    "content": " até à decisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8189-ae81-f617c3dd3a48",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Sim, aprovo a configuração New do PP 612.",
+                  "text": {
+                    "content": "Sim, aprovo a configuração New do PP 612.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-813a-95e2-da1313c2f51b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Não, são necessárias correções.",
+                  "text": {
+                    "content": "Não, são necessárias correções.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8155-8468-d8080e90203f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Se não, porquê?",
+                  "text": {
+                    "content": "Se não, porquê?",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                  "text": {
+                    "content": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8160950de32f9f1de0c9",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "6604ce8e-3628-4748-8315-68cf50b97f17",
+        "results": [
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8160-950d-e32f9f1de0c9",
+              "type": "block_id"
+            },
+            "type": "column"
+          },
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8160-950d-e32f9f1de0c9",
+              "type": "block_id"
+            },
+            "type": "column"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f815d81f8f9a2137c947f",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "55cf862c-723f-42ab-8fe4-4b526a3f7d78",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "New (proposta)",
+                  "text": {
+                    "content": "New (proposta)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-8125-b089-c3436915aa7b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever.",
+                  "text": {
+                    "content": "A rever.",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Proposta por face baseada no IMP → New e no histórico. Confirmar material, técnicas e áreas antes da aprovação. Configuração original visível abaixo.",
+                  "text": {
+                    "content": " Proposta por face baseada no IMP → New e no histórico. Confirmar material, técnicas e áreas antes da aprovação. Configuração original visível abaixo.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81a8-93b7-d391123cd0e7",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Pendências técnicas",
+                  "text": {
+                    "content": "Pendências técnicas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f816ea251d724a7c9b2bc",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "3a1734e3-ac18-4358-b913-2c700fe82ed7",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8117-8b46-fd5058edf6f3",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções propostas",
+                    "text": {
+                      "content": "Opções propostas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Nota",
+                    "text": {
+                      "content": "Nota",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81ae-91e5-cff9f1b7123e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Peito",
+                    "text": {
+                      "content": "Peito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A5 (14,8x21,0 cm)",
+                    "text": {
+                      "content": "DTF - Até A5 (14,8x21,0 cm)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF A5: confirmar área de referência",
+                    "text": {
+                      "content": "DTF A5: confirmar área de referência",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8153-be87-dcac0fe9c07a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso",
+                    "text": {
+                      "content": "Bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso",
+                    "text": {
+                      "content": "DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f813e94c1e57cf1d1a1d1",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "8a18cb48-c3ef-4543-92d1-c57ae21f7bb5",
+        "results": [
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Grupo original com locais diferentes: distribuição da proposta por confirmar",
+                  "text": {
+                    "content": "Grupo original com locais diferentes: distribuição da proposta por confirmar",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-813e-aa5d-f499779ad35a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Peito: DTF A5: confirmar área de referência",
+                  "text": {
+                    "content": "Peito: DTF A5: confirmar área de referência",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-812e-ad12-cbfc7df915f7",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso: DTF A7: confirmar área de referência",
+                  "text": {
+                    "content": "Bolso: DTF A7: confirmar área de referência",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-813a-bda6-ff8b1c8b2858",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso: Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New",
+                  "text": {
+                    "content": "Bolso: Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81a5-a28f-c843ec1945e0",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso: Confirmar área útil do bolso",
+                  "text": {
+                    "content": "Bolso: Confirmar área útil do bolso",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8156-b894-caa01186239a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8151927df6f64fd6af53",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "79979a58-292d-4f8d-b2c6-a05eedfddc2f",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Old (original)",
+                  "text": {
+                    "content": "Old (original)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-815b-8c4f-ea8be3d7c823",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_3": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Locais e personalização",
+                  "text": {
+                    "content": "Locais e personalização",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-81c9-b23b-eef039fc4eb3",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+              "type": "block_id"
+            },
+            "type": "heading_3"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-81a4-9868-f21523cd6b84",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f81a49868f21523cd6b84",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "34446c1e-ef7f-47ba-91cb-26886cb02695",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81fa-a7a5-c8f99acc027c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81a4-9868-f21523cd6b84",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções completas e especificações",
+                    "text": {
+                      "content": "Opções completas e especificações",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Notas",
+                    "text": {
+                      "content": "Notas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81bc-a991-eb9199ad163d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81a4-9868-f21523cd6b84",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Peito\nBolso",
+                    "text": {
+                      "content": "Peito\nBolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A6 (10,5x14,8 cm)\nDTF - Até A5 (14,8x21,0 cm)\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A6 (10,5x14,8 cm)\nDTF - Até A5 (14,8x21,0 cm)\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                    "text": {
+                      "content": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "071b6705ae1f8271b93281eb011ffd6f",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "0808464c-0929-478d-8946-2470b0ae5fda",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "5c3b6705-ae1f-8327-bf2f-811ac42ae72e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M117:P125\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                  "text": {
+                    "content": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M117:P125\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "071b6705-ae1f-8271-b932-81eb011ffd6f",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "071b6705-ae1f-8271-b932-81eb011ffd6f",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 2
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "4dbb6705ae1f82868f268116d83b87dd",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "d30e659b-d391-4269-869a-6c7b11db727f",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "8f6b6705-ae1f-8366-b38a-81a28fe06c74",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Célula",
+                    "text": {
+                      "content": "Célula",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Texto original",
+                    "text": {
+                      "content": "Texto original",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "99fb6705-ae1f-82ba-a0b7-8113bddf346b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "M117",
+                    "text": {
+                      "content": "M117",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "612",
+                    "text": {
+                      "content": "612",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "a0bb6705-ae1f-824b-bb10-01bea8f58cb6",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N117",
+                    "text": {
+                      "content": "N117",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "AVENTAL Criança c\\ bolso",
+                    "text": {
+                      "content": "AVENTAL Criança c\\ bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "089b6705-ae1f-83f7-8882-8151a351cc0f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N118",
+                    "text": {
+                      "content": "N118",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Ex: A99826",
+                    "text": {
+                      "content": "Ex: A99826",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "75fb6705-ae1f-82d5-8ea4-0120decc0efc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O118",
+                    "text": {
+                      "content": "O118",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Peito",
+                    "text": {
+                      "content": "Peito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c61b6705-ae1f-8359-950a-81f20d58195c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P118",
+                    "text": {
+                      "content": "P118",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                    "text": {
+                      "content": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "8c5b6705-ae1f-82f8-8a5b-81b7cf25037e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P119",
+                    "text": {
+                      "content": "P119",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                    "text": {
+                      "content": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "616b6705-ae1f-8290-a60a-010478b5913b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P120",
+                    "text": {
+                      "content": "P120",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A6 (10,5x14,8 cm)",
+                    "text": {
+                      "content": "DTF - Até A6 (10,5x14,8 cm)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "313b6705-ae1f-838c-9e59-812ec5b26f76",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P121",
+                    "text": {
+                      "content": "P121",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A5 (14,8x21,0 cm)",
+                    "text": {
+                      "content": "DTF - Até A5 (14,8x21,0 cm)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "e7cb6705-ae1f-8302-bfab-01663e33fd21",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O122",
+                    "text": {
+                      "content": "O122",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso",
+                    "text": {
+                      "content": "Bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "6feb6705-ae1f-8250-9971-81716ec52996",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P122",
+                    "text": {
+                      "content": "P122",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                    "text": {
+                      "content": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "993b6705-ae1f-82a3-8ac8-01953912ffcc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P123",
+                    "text": {
+                      "content": "P123",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    }
+  ],
+  "finished_at": "2026-11-19T15:14:15.144372+00:00",
+  "nonce": "3fab837028964e7e974f306c2b10400d",
+  "page_id": "e48b6705ae1f83ddafb501a2ea781406",
+  "persistence_policy": "NATIVE_HOSTED_FILE_LOCATORS_SHA256_V1",
+  "reads": [
+    {
+      "parent_id": "e48b6705ae1f83ddafb501a2ea781406",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "15ecc852-e079-4568-95f5-d5f9faf14441",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Imagens",
+                  "text": {
+                    "content": "Imagens",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "c70b6705-ae1f-83cc-a7dd-816ce5c55633",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c6bb6705-ae1f-8340-a445-010b33084d7a",
+            "image": {
+              "caption": [],
+              "file": {
+                "url": "notion-native-file-locator-sha256:2e60a002951ff6bf406c6e11b532468647ab42fb947ff2a71bb03369db639d89"
+              },
+              "type": "file"
+            },
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "image"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Descrição e notas do perfil",
+                  "text": {
+                    "content": "Descrição e notas do perfil",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "562b6705-ae1f-8258-b2d4-811bc35103ed",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "99db6705-ae1f-8227-89f8-015ae5d050d2",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Ex: A99826",
+                  "text": {
+                    "content": "Ex: A99826",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Notas",
+                  "text": {
+                    "content": "Notas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "4f4b6705-ae1f-8340-8534-812f60fc4e8e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                  "text": {
+                    "content": "Grupo com vários locais ou sem local: confirmar a distribuição das opções",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "4ecb6705-ae1f-83dd-bf50-816718ab58dc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Revisão do PP 612",
+                  "text": {
+                    "content": "Revisão do PP 612",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "column_list": {},
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8160-950d-e32f9f1de0c9",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "type": "column_list"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "071b6705-ae1f-8271-b932-81eb011ffd6f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "page_id": "e48b6705-ae1f-83dd-afb5-01a2ea781406",
+              "type": "page_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Fonte e original do Excel",
+                  "text": {
+                    "content": "Fonte e original do Excel",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f810e8a32dcd0205b0a2e",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "b2afb8cc-1449-4224-a931-d9170a91a230",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81be-a60b-dda2faf7b5a9",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                  "text": {
+                    "content": "Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se ",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever",
+                  "text": {
+                    "content": "A rever",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " até à decisão.",
+                  "text": {
+                    "content": " até à decisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8189-ae81-f617c3dd3a48",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Sim, aprovo a configuração New do PP 612.",
+                  "text": {
+                    "content": "Sim, aprovo a configuração New do PP 612.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-813a-95e2-da1313c2f51b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "to_do": {
+              "checked": false,
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Não, são necessárias correções.",
+                  "text": {
+                    "content": "Não, são necessárias correções.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "to_do"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8155-8468-d8080e90203f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Se não, porquê?",
+                  "text": {
+                    "content": "Se não, porquê?",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                  "text": {
+                    "content": " Regista o motivo e as alterações necessárias para manter o contexto da revisão.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "41bb6705-ae1f-810e-8a32-dcd0205b0a2e",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8160950de32f9f1de0c9",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "4770db8a-fb1b-4407-a5ec-65f63ec56c19",
+        "results": [
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8160-950d-e32f9f1de0c9",
+              "type": "block_id"
+            },
+            "type": "column"
+          },
+          {
+            "archived": false,
+            "column": {
+              "width_ratio": 0.5
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8160-950d-e32f9f1de0c9",
+              "type": "block_id"
+            },
+            "type": "column"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f815d81f8f9a2137c947f",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "a6cf0cef-979e-4a55-b4aa-1648bcb67cd9",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "New (proposta)",
+                  "text": {
+                    "content": "New (proposta)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-8125-b089-c3436915aa7b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "callout": {
+              "color": "default",
+              "icon": {
+                "emoji": "📝",
+                "type": "emoji"
+              },
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": true,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "A rever.",
+                  "text": {
+                    "content": "A rever.",
+                    "link": null
+                  },
+                  "type": "text"
+                },
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": " Proposta por face baseada no IMP → New e no histórico. Confirmar material, técnicas e áreas antes da aprovação. Configuração original visível abaixo.",
+                  "text": {
+                    "content": " Proposta por face baseada no IMP → New e no histórico. Confirmar material, técnicas e áreas antes da aprovação. Configuração original visível abaixo.",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81a8-93b7-d391123cd0e7",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "type": "callout"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-815d-81f8-f9a2137c947f",
+              "type": "block_id"
+            },
+            "toggle": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Pendências técnicas",
+                  "text": {
+                    "content": "Pendências técnicas",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "type": "toggle"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f816ea251d724a7c9b2bc",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "e93c0d7a-e12a-4af6-9e21-ad769eaff25b",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8117-8b46-fd5058edf6f3",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções propostas",
+                    "text": {
+                      "content": "Opções propostas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Nota",
+                    "text": {
+                      "content": "Nota",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81ae-91e5-cff9f1b7123e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Peito",
+                    "text": {
+                      "content": "Peito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A5 (14,8x21,0 cm)",
+                    "text": {
+                      "content": "DTF - Até A5 (14,8x21,0 cm)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF A5: confirmar área de referência",
+                    "text": {
+                      "content": "DTF A5: confirmar área de referência",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8153-be87-dcac0fe9c07a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-816e-a251-d724a7c9b2bc",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso",
+                    "text": {
+                      "content": "Bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso",
+                    "text": {
+                      "content": "DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f813e94c1e57cf1d1a1d1",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "9c00be48-dbc7-40c9-9fc2-883470764b8a",
+        "results": [
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Grupo original com locais diferentes: distribuição da proposta por confirmar",
+                  "text": {
+                    "content": "Grupo original com locais diferentes: distribuição da proposta por confirmar",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-813e-aa5d-f499779ad35a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Peito: DTF A5: confirmar área de referência",
+                  "text": {
+                    "content": "Peito: DTF A5: confirmar área de referência",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-812e-ad12-cbfc7df915f7",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso: DTF A7: confirmar área de referência",
+                  "text": {
+                    "content": "Bolso: DTF A7: confirmar área de referência",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-813a-bda6-ff8b1c8b2858",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso: Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New",
+                  "text": {
+                    "content": "Bolso: Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81a5-a28f-c843ec1945e0",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          },
+          {
+            "archived": false,
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Bolso: Confirmar área útil do bolso",
+                  "text": {
+                    "content": "Bolso: Confirmar área útil do bolso",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-8156-b894-caa01186239a",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-813e-94c1-e57cf1d1a1d1",
+              "type": "block_id"
+            },
+            "type": "bulleted_list_item"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f8151927df6f64fd6af53",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "9503010a-0f6a-4ad4-a932-fd1b5651ad98",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_2": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Old (original)",
+                  "text": {
+                    "content": "Old (original)",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-815b-8c4f-ea8be3d7c823",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+              "type": "block_id"
+            },
+            "type": "heading_2"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "heading_3": {
+              "color": "default",
+              "is_toggleable": false,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "Locais e personalização",
+                  "text": {
+                    "content": "Locais e personalização",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "id": "41bb6705-ae1f-81c9-b23b-eef039fc4eb3",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+              "type": "block_id"
+            },
+            "type": "heading_3"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": true,
+            "id": "41bb6705-ae1f-81a4-9868-f21523cd6b84",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-8151-927d-f6f64fd6af53",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 3
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "41bb6705ae1f81a49868f21523cd6b84",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "ee5a65db-4e79-42a2-ac85-21f15097906c",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81fa-a7a5-c8f99acc027c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81a4-9868-f21523cd6b84",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Face / local",
+                    "text": {
+                      "content": "Face / local",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Opções completas e especificações",
+                    "text": {
+                      "content": "Opções completas e especificações",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Notas",
+                    "text": {
+                      "content": "Notas",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-17T13:50:00.000Z",
+            "has_children": false,
+            "id": "41bb6705-ae1f-81bc-a991-eb9199ad163d",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-17T13:50:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "41bb6705-ae1f-81a4-9868-f21523cd6b84",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Peito\nBolso",
+                    "text": {
+                      "content": "Peito\nBolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A6 (10,5x14,8 cm)\nDTF - Até A5 (14,8x21,0 cm)\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\nDTF - Até A6 (10,5x14,8 cm)\nDTF - Até A5 (14,8x21,0 cm)\nTransfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)\nDTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                    "text": {
+                      "content": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "071b6705ae1f8271b93281eb011ffd6f",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "78ef037c-b2b7-46cb-b48d-ce31a39d26f0",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "5c3b6705-ae1f-8327-bf2f-811ac42ae72e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "paragraph": {
+              "color": "default",
+              "icon": null,
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false
+                  },
+                  "href": null,
+                  "plain_text": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M117:P125\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                  "text": {
+                    "content": "AI_READ_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M117:P125\nModificação interna: 2026-10-26T11:47:15Z; revisão 19.\nSHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566",
+                    "link": null
+                  },
+                  "type": "text"
+                }
+              ]
+            },
+            "parent": {
+              "block_id": "071b6705-ae1f-8271-b932-81eb011ffd6f",
+              "type": "block_id"
+            },
+            "type": "paragraph"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": true,
+            "id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "071b6705-ae1f-8271-b932-81eb011ffd6f",
+              "type": "block_id"
+            },
+            "table": {
+              "has_column_header": true,
+              "has_row_header": false,
+              "table_width": 2
+            },
+            "type": "table"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    },
+    {
+      "parent_id": "4dbb6705ae1f82868f268116d83b87dd",
+      "response": {
+        "block": {},
+        "has_more": false,
+        "next_cursor": null,
+        "object": "list",
+        "request_id": "dbca3392-4191-4409-bac2-0e068d0e566c",
+        "results": [
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "8f6b6705-ae1f-8366-b38a-81a28fe06c74",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Célula",
+                    "text": {
+                      "content": "Célula",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Texto original",
+                    "text": {
+                      "content": "Texto original",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "99fb6705-ae1f-82ba-a0b7-8113bddf346b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "M117",
+                    "text": {
+                      "content": "M117",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "612",
+                    "text": {
+                      "content": "612",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "a0bb6705-ae1f-824b-bb10-01bea8f58cb6",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N117",
+                    "text": {
+                      "content": "N117",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "AVENTAL Criança c\\ bolso",
+                    "text": {
+                      "content": "AVENTAL Criança c\\ bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "089b6705-ae1f-83f7-8882-8151a351cc0f",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "N118",
+                    "text": {
+                      "content": "N118",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Ex: A99826",
+                    "text": {
+                      "content": "Ex: A99826",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "75fb6705-ae1f-82d5-8ea4-0120decc0efc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O118",
+                    "text": {
+                      "content": "O118",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Peito",
+                    "text": {
+                      "content": "Peito",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "c61b6705-ae1f-8359-950a-81f20d58195c",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P118",
+                    "text": {
+                      "content": "P118",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                    "text": {
+                      "content": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "8c5b6705-ae1f-82f8-8a5b-81b7cf25037e",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P119",
+                    "text": {
+                      "content": "P119",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                    "text": {
+                      "content": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "616b6705-ae1f-8290-a60a-010478b5913b",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P120",
+                    "text": {
+                      "content": "P120",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A6 (10,5x14,8 cm)",
+                    "text": {
+                      "content": "DTF - Até A6 (10,5x14,8 cm)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "313b6705-ae1f-838c-9e59-812ec5b26f76",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P121",
+                    "text": {
+                      "content": "P121",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A5 (14,8x21,0 cm)",
+                    "text": {
+                      "content": "DTF - Até A5 (14,8x21,0 cm)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "e7cb6705-ae1f-8302-bfab-01663e33fd21",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "O122",
+                    "text": {
+                      "content": "O122",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Bolso",
+                    "text": {
+                      "content": "Bolso",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "6feb6705-ae1f-8250-9971-81716ec52996",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P122",
+                    "text": {
+                      "content": "P122",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                    "text": {
+                      "content": "Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          },
+          {
+            "archived": false,
+            "created_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "created_time": "2026-11-13T16:47:00.000Z",
+            "has_children": false,
+            "id": "993b6705-ae1f-82a3-8ac8-01953912ffcc",
+            "in_trash": false,
+            "last_edited_by": {
+              "id": "3d5d872b-594c-819a-a527-000283af7124",
+              "object": "user"
+            },
+            "last_edited_time": "2026-11-13T16:47:00.000Z",
+            "object": "block",
+            "parent": {
+              "block_id": "4dbb6705-ae1f-8286-8f26-8116d83b87dd",
+              "type": "block_id"
+            },
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "P123",
+                    "text": {
+                      "content": "P123",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ],
+                [
+                  {
+                    "annotations": {
+                      "bold": false,
+                      "code": false,
+                      "color": "default",
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false
+                    },
+                    "href": null,
+                    "plain_text": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                    "text": {
+                      "content": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+                      "link": null
+                    },
+                    "type": "text"
+                  }
+                ]
+              ]
+            },
+            "type": "table_row"
+          }
+        ],
+        "type": "block"
+      },
+      "start_cursor": null
+    }
+  ],
+  "source": "NOTION_NATIVE_API_V1",
+  "started_at": "2026-11-19T15:14:06.092155+00:00"
+}

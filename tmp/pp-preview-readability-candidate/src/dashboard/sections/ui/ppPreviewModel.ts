@@ -320,6 +320,40 @@ const ppFaceKey = (value: string): string => {
   return tokens.join(' ');
 };
 
+const ppFaceWords = (value: string): string[] => ppFaceKey(value).split(' ').filter(Boolean);
+const ppIsNumber = (token: string): boolean => /^\d+$/.test(token);
+/** The words in the order written, numbers removed: "Face 1" and "1 Face" share this key. */
+const ppFaceWordsKey = (value: string): string => ppFaceWords(value).filter(token => !ppIsNumber(token)).join(' ');
+/** Labels that differ only by where their numbers sit. */
+const ppFaceGroupKey = (value: string): string => {
+  const words = ppFaceWords(value);
+  return words.slice().sort().join(' ') + '|' + words.filter(token => !ppIsNumber(token)).join(' ');
+};
+/**
+ * Magento stores "Face 1" while a Notion table may write "1 Face". Word order is still checked
+ * first, because "Face 1 Artigo" and "Artigo Face 1" can be different faces. The second chance
+ * accepts only the same words with a number moved, and only when the label is unique among the
+ * Notion locations and exactly one Magento face qualifies, so a real difference or a collision
+ * stays unresolved instead of being guessed.
+ */
+const ppMatchFace = (faces: PpFaceRow[], label: string, uniqueLabel: boolean): PpFaceRow | undefined => {
+  const ordered = ppFaceKey(label);
+  const exact = faces.find(candidate => !!candidate.name && ppFaceKey(candidate.name) === ordered);
+  if (exact) return exact;
+  if (!uniqueLabel) return undefined;
+  const words = ppFaceWords(label);
+  const numberless = ppFaceWordsKey(label);
+  // Without a number there is nothing to move, so the word order decides and no fallback runs.
+  if (!numberless || numberless === words.join(' ')) return undefined;
+  const candidates = faces.filter(candidate => {
+    if (!candidate.name) return false;
+    const other = ppFaceWords(candidate.name);
+    if (other.length !== words.length || other.slice().sort().join(' ') !== words.slice().sort().join(' ')) return false;
+    return ppFaceWordsKey(candidate.name) === numberless;
+  });
+  return candidates.length === 1 ? candidates[0] : undefined;
+};
+
 export type PpPlanAction = 'add' | 'present' | 'review';
 
 export interface PpPlanRow {
@@ -341,6 +375,13 @@ export function ppUpdatePlan(desired: PpCatalogResponse, current: ScanPpDraftRes
   if (!locations.length) return null;
   const faces = ppFaceRows(current);
   const options = ppOptionRows(current);
+  // The fallback face match is only allowed when the Notion wording is unique, so two labels
+  // can never claim the same Magento face.
+  const labelGroups = new Map<string, number>();
+  for (const location of locations) {
+    const group = ppFaceGroupKey(location.face);
+    labelGroups.set(group, (labelGroups.get(group) ?? 0) + 1);
+  }
   const rows: PpPlanRow[] = [];
   // A face can hold the same technique more than once, and so can the Notion list, so every
   // planned occurrence is matched to its own row on the face. One stored copy satisfies one
@@ -356,7 +397,8 @@ export function ppUpdatePlan(desired: PpCatalogResponse, current: ScanPpDraftRes
   };
   for (const location of locations) {
     // A location with no usable Magento name cannot be written safely, so it stays for review.
-    const face = faces.find(candidate => !!candidate.name && ppFaceKey(candidate.name) === ppFaceKey(location.face));
+    const face = ppMatchFace(faces, location.face,
+      (labelGroups.get(ppFaceGroupKey(location.face)) ?? 0) === 1);
     const magentoFace = face ? (face.name || '(blank)') : '(not found)';
     const onFace = face ? options.filter(option => option.face === face.name) : [];
     for (const technique of location.options) {

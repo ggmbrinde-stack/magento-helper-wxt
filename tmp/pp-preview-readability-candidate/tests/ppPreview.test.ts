@@ -275,6 +275,52 @@ test('read-only update plan pairs Notion locations with Magento faces and catalo
   assert.equal(ppUpdatePlan(desired(), current), null);
 });
 
+test('a Notion face label with the number first still matches the Magento face', () => {
+  const notion = desired();
+  notion.definition = { ...notion.definition!, body: [
+    'Face / local | Opções completas e especificações | Notas',
+    '1 Face | Tampografia 1 Cor | ',
+    '1 Face | Laser Metal - Até 360 cm2 | ',
+  ] };
+  const current = {
+    status: 'ok',
+    general: { option_title: 'PP 42', sort_order: '', price: 0 },
+    providerAttributeSetId: '37', generalAttributeSetId: ['37'], warnings: [],
+    locations: { state: 'available', truncated: false, identifierGaps: 0, skippedPositions: [],
+      rows: [{ position: 0, values: { key_id: 'key_pjupep' }, translations: { name: { parsed: 'Face 1' } } }] },
+    items: { state: 'available', truncated: false, identifierGaps: 0, skippedPositions: [],
+      rows: [{ position: 0, values: { record_id: 0, parent: 'key_pjupep', name_option: '1', name: '1', sort: '1', store_view: '1' }, translations: {} }] },
+    catalogue: [{ id: '1', label: 'Tampografia 1 Cor' }, { id: '11', label: 'Laser Metal - Até 360 cm2' }],
+  } as unknown as ScanPpDraftResponse;
+  const plan = ppUpdatePlan(notion, current)!;
+  assert.deepEqual(plan.rows.map(row => row.magentoFace), ['Face 1', 'Face 1']);
+  assert.deepEqual(plan.rows.map(row => row.action), ['present', 'add']);
+  assert.equal(plan.review, 0);
+  // With the face resolved the order check has something to compare, which is what shows the tools.
+  assert.equal(ppOrderCheck(plan.rows, current).faces.length, 1);
+});
+
+test('only a moved number is a face match; a word permutation stays unresolved', () => {
+  const notion = desired();
+  notion.definition = { ...notion.definition!, body: [
+    'Face / local | Opções completas e especificações | Notas',
+    'Artigo de Escrita Face 1 | Laser 250 | ',
+  ] };
+  const current = {
+    status: 'ok',
+    general: { option_title: '', sort_order: '', price: 0 },
+    providerAttributeSetId: '1', generalAttributeSetId: ['1'], warnings: [],
+    locations: { state: 'available', truncated: false, identifierGaps: 0, skippedPositions: [],
+      rows: [{ position: 0, values: { key_id: 'key_pjupep' }, translations: { name: { parsed: 'Face 1 Artigo de Escrita' } } }] },
+    items: { state: 'available', truncated: false, identifierGaps: 0, skippedPositions: [], rows: [] },
+    catalogue: [{ id: '19', label: 'Laser 250' }],
+  } as unknown as ScanPpDraftResponse;
+  const plan = ppUpdatePlan(notion, current)!;
+  assert.equal(plan.rows[0]!.magentoFace, '(not found)');
+  assert.equal(plan.rows[0]!.action, 'review');
+  assert.match(plan.rows[0]!.note, /face not found in Magento/);
+});
+
 test('a filled Notes column is not read as a technique', () => {
   const definition = { ...desired().definition!, body: [
     'Face / local | Opções completas e especificações | Notas',
