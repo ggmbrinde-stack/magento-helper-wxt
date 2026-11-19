@@ -431,6 +431,15 @@ body {
   font-size: 13px;
 }
 
+/*
+ * A narrow card squeezes every column to min-content, which turns a long reason
+ * cell into a 600px-tall ribbon. Keep a readable width and let the existing
+ * `.db-table-wrap` scroll instead.
+ */
+.db-table--reconcile {
+  min-width: 720px;
+}
+
 .db-table-wrap {
   overflow-x: auto;
 }
@@ -536,6 +545,31 @@ body {
 
 .db-warn {
   color: var(--mhx-bad);
+}
+
+/*
+ * A card is a grid item inside `.db-stack`, where the default `min-width: auto`
+ * lets a wide table push the whole page sideways instead of scrolling inside
+ * `.db-table-wrap`. Let the card shrink.
+ */
+.db-stack > .db-card {
+  min-width: 0;
+}
+
+/*
+ * A scope warning that sits beside a destructive action gets a block of its
+ * own, so it does not read as one more red sentence and does not rely on
+ * colour alone.
+ */
+.db-guard {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--mhx-bad-border);
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--mhx-bad-bg);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .db-bad {

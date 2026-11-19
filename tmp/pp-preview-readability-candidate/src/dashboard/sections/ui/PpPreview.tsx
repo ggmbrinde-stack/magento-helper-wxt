@@ -6,6 +6,8 @@ import { isPpDraftScanResponse } from '../../../entrypoints/background/ppPreview
 import type { PpOrderDiagnostics } from '../../../page/features/pp-scan/apply';
 import { attributeSetConsistency, catalogProblems, loadPpIndex, ppApplyPlannedOrder, ppCell, ppDropRemovedRows, ppExtraCopies, ppFaceRows, ppMergeReadBack, ppLanguage, ppNotionLists, ppOptionRows, ppOrderCheck, ppPartialMatches, ppPreviewRows, ppSearchMode, ppSearchRows, PP_SEARCH_CAP, ppRemovedVerification, ppReviewLabel, ppSaveRows, ppSavedVerification, ppSnapshotSummary, ppUpdatePlan, PP_STORE_LANGUAGES, type PpIndexLoad } from './ppPreviewModel';
 import { PpBatchWork, type PpBatchResult, type PpBatchStatus } from './PpBatchWork';
+import { PpReconcile } from './PpReconcile';
+import { ppPlanFaces } from './ppReconcileModel';
 
 const show = (value: unknown): string => value === undefined || value === null ? 'Unknown / not supplied' : JSON.stringify(value, null, 2);
 const time = (value: string | number | undefined | null): string => value == null ? 'Unknown' : new Date(value).toLocaleString();
@@ -450,6 +452,7 @@ export function PpPreview() {
         setBatchResults(previous => ({ ...previous, [row.pageId!]: { status: 'skipped',
           note: 'Skipped by the operator.', at: Date.now() } }));
       }} /> : <>
+    <PpReconcile rows={index.rows} coverage={index.coverage} checked={checked} />
     <section class="db-card">
       <h2><span class="db-step">1</span>Choose a Notion PP</h2>
       <p class="db-note">Load the Notion V2 catalogue, then tick one record. Preview one PP at a time. No Magento data is changed.</p>
@@ -475,7 +478,7 @@ export function PpPreview() {
           }}>
             <td><input type="checkbox" aria-label={'Select PP ' + (row.code ?? 'missing code')} disabled={!!problems[position]} checked={selected} onChange={event => setRow(row, event.currentTarget.checked)} /></td>
             <td class="db-mono">{row.code === null ? 'Unknown' : row.code}</td><td>{row.name ?? 'Unknown'}</td>
-            <td>{row.reviewStatus ?? 'Unknown'}</td><td>{problems[position] ?? (index.coverage === 'complete' ? 'Unique exact code in loaded catalogue' : 'Uniqueness not established until coverage completes; detail lookup rechecks it')}</td>
+            <td>{row.reviewStatus ?? 'Unknown'}</td><td>{problems[position] ?? (index.coverage === 'complete' ? 'Unique exact code in the loaded Notion catalogue' : 'Uniqueness not established until coverage completes; detail lookup rechecks it')}</td>
           </tr>;
         })}
       </tbody></table></div>
@@ -494,10 +497,11 @@ export function PpPreview() {
         <em>Enter the actual record ID separately. It is not the business code or Attribute Set ID. The selected source must match that exact entity and configured allowed HTTPS admin base. Do not paste a URL or session key.</em></label>
       <div class="db-actions">
         <button type="button" class="db-btn" disabled={busy || checking || !/^[1-9]\d{0,15}$/.test(entityId)} onClick={() => void checkConnection()}>{checking ? 'Checking connection…' : 'Check Magento connection'}</button>
-        <span class={'db-pill db-pill--' + connectionTone}>{checking ? 'Checking' : connection ? 'Connection ' + connection.status : 'Not checked'}</span>
+        <span class={'db-pill db-pill--' + connectionTone}>{checking ? 'Checking' : connection ? 'Magento address ' + connection.status : 'Not checked'}</span>
       </div>
       {/* A status pill alone leaves the operator guessing why preview stays blocked. */}
-      {connection && connection.status !== 'ready' ? <p class="db-note" role="alert">{connection.reason}</p> : null}
+      {connection && connection.status !== 'ready' ? <p class="db-note" role="alert">{connection.reason}</p>
+        : connection?.status === 'ready' ? <p class="db-note">A ready address proves the tab and the entity ID only. It is not a business-code match; that verdict lives in Reconcile sources.</p> : null}
       {connection ? <>
         <label class="db-field"><span>Detected source tab</span><select value={selection?.tabId ?? ''} disabled={busy || checking} onChange={event => {
           generation.current++; setResult(null); setPaired(false); stopPreview();
@@ -532,7 +536,7 @@ export function PpPreview() {
         {summary && summary.warnings ? <span class="db-pill db-pill--warn">{summary.warnings === 1 ? '1 warning' : summary.warnings + ' warnings'}</span> : null}
       </div>
     </section> : null}
-    {plan ? <section class="db-card"><div class="db-card-head"><h2>Planned changes <span class="db-badge">Add-only</span></h2>
+    {plan ? <section class="db-card"><div class="db-card-head"><h2>Planned changes <span class="db-badge">Existing record only</span></h2>
       <button type="button" class="db-btn" disabled={!!previewBlocked || busy}
         title={previewBlocked || 'Read the Notion reference and the Magento form again for this pairing'}
         onClick={() => void read()}>Refresh</button>
@@ -542,7 +546,7 @@ export function PpPreview() {
         <span class="db-pill">{plan.present} already present</span>
         <span class={'db-pill' + (plan.review ? ' db-pill--warn' : '')}>{plan.review} need review</span>
       </div>
-      <p class="db-note">The plan only proposes additions; a technique missing from Notion never removes a Magento row. Filling the form does not save it.</p>
+      <p class="db-note">This candidate adds, reorders or removes rows on one existing Magento record. It never duplicates. The requested duplicate-and-reduce workflow stays blocked; see Reconcile sources.</p>
       {order && order.faces.length ? <div class="db-order">
         <div class="db-pills">
           <span class={'db-pill' + (order.ordered ? ' db-pill--ok' : ' db-pill--bad')}>{order.ordered ? 'Form order follows the Notion list' : order.outOfPlace.length + ' row(s) not in Notion order'}</span>
@@ -562,9 +566,12 @@ export function PpPreview() {
           {face.outOfPlace.length ? ' Out of order: ' + face.outOfPlace.join(', ') + '.' : ''}
         </p>)}
       </div> : null}
-      <div class="db-table-wrap"><table class="db-table"><thead><tr><th scope="col">Face (Notion)</th><th scope="col">Magento face</th><th scope="col">Technique (Notion)</th><th scope="col">Catalogue id</th><th scope="col">Action</th><th scope="col">Note</th></tr></thead><tbody>
-        {plan.rows.map((row, index) => <tr key={row.face + index}><td>{row.face}</td><td>{row.magentoFace}</td><td>{row.technique}</td><td>{row.catalogueId || '(none)'}</td><td>{row.action === 'add' ? <span class="db-pill db-pill--ok">Add</span> : row.action === 'present' ? <span class="db-pill">Already present</span> : <span class="db-pill db-pill--warn">Review</span>}</td><td>{row.note || '(none)'}</td></tr>)}
-      </tbody></table></div>
+      {ppPlanFaces(plan.rows).map(group => <details class="db-disclosure" key={group.face}>
+        <summary>{group.face || '(no face)'} · {group.add} to add · {group.present} already present{group.review ? ' · ' + group.review + ' review' : ''}</summary>
+        <div class="db-table-wrap"><table class="db-table"><thead><tr><th scope="col">Face (Notion)</th><th scope="col">Technique (Notion)</th><th scope="col">Catalogue id</th><th scope="col">Action</th><th scope="col">Note</th></tr></thead><tbody>
+          {group.rows.map((row, index) => <tr key={row.face + index}><td>{row.face}</td><td>{row.technique}</td><td>{row.catalogueId || '(none)'}</td><td>{row.action === 'add' ? <span class="db-pill db-pill--ok">Add</span> : row.action === 'present' ? <span class="db-pill">Already present</span> : <span class="db-pill db-pill--warn">Review</span>}</td><td>{row.note || '(none)'}</td></tr>)}
+        </tbody></table></div>
+      </details>)}
       {plan.unlistedItems ? <p class="db-note">{plan.unlistedItems} existing Magento item row(s) are not in this plan and would stay untouched.</p> : null}
       {options.length ? <div class="db-remove">
         <h3>Remove existing rows <span class="db-badge">Manual</span></h3>
@@ -628,6 +635,7 @@ export function PpPreview() {
         {/* The save section stands on its own, so dismissing the report never hides it. */}
         {applied ? <div class="db-save">
           <h3>Save in Magento</h3>
+          <p class="db-warn db-guard" role="alert"><strong>Not the duplicate workflow.</strong> This Save writes the changes to the original Magento PP {entityId}. It does not create a copy, and the original is not preserved. The duplicate-and-reduce workflow stays blocked in Reconcile sources; nothing on this page can run it.</p>
           {saveState.phase === 'idle' ? <>
             <p class="db-note">The rows are in helper tab {applied.tabId}, still unsaved. Saving brings that tab to the front, presses Magento's own Save, reads the record again to check them, then hands this dashboard back. Notion is untouched.</p>
             <div class="db-actions"><button type="button" class="db-btn db-btn--primary" disabled={!plan || !applied ||
@@ -635,7 +643,7 @@ export function PpPreview() {
               onClick={() => setSaveState({ phase: 'confirming' })}>Save PP {entityId} in Magento</button></div>
           </> : null}
           {saveState.phase === 'confirming' ? <div>
-            <p><strong>Press Magento's Save for PP {entityId}?</strong> The record will be written to Magento, then read again to check these rows.</p>
+            <p><strong>Press Magento's Save for PP {entityId}?</strong> This writes the original record, not a duplicate. It will be read again to check these rows.</p>
             <ul class="db-pp-list">{appliedRows.map((row, index) =>
               <li key={row.face + index}>{applyState.response?.mode === 'order' ? 'Order: ' : ''}{row.magentoFace} · {row.technique} · catalogue id {row.catalogueId}</li>)}</ul>
             {removed.length ? <ul class="db-pp-list">{removed.map((row, index) =>
