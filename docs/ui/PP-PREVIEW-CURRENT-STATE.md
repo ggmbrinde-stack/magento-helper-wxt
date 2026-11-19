@@ -4,8 +4,8 @@
 **Branch:** `experimental/drime-integration` (NOT `codex/release-baseline`)
 **Working tree:** `tmp/pp-preview-readability-candidate` (candidate tree; `src/` at repo root is untouched baseline)
 **Build id / version:** pp-order-4 · v0.2.1
-**Staged build:** staged 2026-11-19 10:25 (its backup is `tmp/experimental-before-pp-remove-tab-20261119-102521-618`). It predates the eight review fixes and `ppSaveRows`, which are in the candidate only. The candidate has not been restaged since.
-**Commit status:** Nothing committed yet. All changes below are uncommitted.
+**Staged build:** `b6e568acc8035de045ee3ae57b309bf3e034ca9fada2981ca10ceca77c519daa`, staged 2026-11-19 12:11 (its backup is `tmp/experimental-before-pp-remove-tab-20261119-121120-161`). It carries the review fixes, the placement fix, the search cap, the claimed-copy fix and the batched Order lane diagnostics.
+**Commit status:** Backed up on `experimental/drime-integration` on 2026-11-19. Not built from the committed copy, not run live, and not merged to `main`.
 
 ---
 
@@ -328,7 +328,7 @@ npm run test:features                                         # feature catalog 
 npm run build                                                 # full build
 ```
 
-Stage from repo root (only if operator asks): `node tmp/stage-experimental-pp-session.cjs`
+Stage from repo root (only if operator asks): `node tmp/stage-experimental-pp-session.cjs`. It copies `.output/chrome-mv3` and does not build it, so run `npm run build` in the candidate first; staging without a build ships the previous code.
 
 ---
 
@@ -372,8 +372,21 @@ record or pick a different face's list. The visible check after the move still l
 last row of the face, so a duplicate that already sits last could still make an unplaced row look
 placed; that weakness predates this change and was not touched.
 
+The 12:08 live run on PP 963 still reported the screen-only move (`Row shown below its face, but its
+list was not found`), so the model list is still not being found on that page. The batched fill used to
+drop the placement diagnostics; it now keeps the last batch's, so the Order lane panel names the list
+counts on the next run.
+
 Test: `a saved-order list defined on the component prototype is still found`. The batch timing is not
 measured, so the 90 second wall is not proven gone.
+
+### Claimed copies 2026-11-19
+
+A technique Notion lists twice arrives as one present row and one add row, and the page only receives
+the add rows. The lane counted the stored copy as satisfying the add and skipped it, which is why
+Caixa 19 was reported `skipped` while the plan still asked for it. Each add row now carries `claimed`,
+the number of present rows for the same face and id, and the lane subtracts those copies before it
+decides. Test: `a present row claims the stored copy, so the planned second copy is still added`.
 
 ### Search 2026-11-19
 

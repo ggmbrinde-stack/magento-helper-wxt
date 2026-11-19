@@ -1,0 +1,115 @@
+// Paste into the DevTools console on the attribute-set custom-options edit page.
+// This probe targets the repeating editor found by probe 1:
+//   fieldset.admin__fieldset[data-bind*="foreach"]
+(function () {
+  'use strict';
+
+  const forEachFieldsets = [...document.querySelectorAll('fieldset.admin__fieldset')].filter((fs) => {
+    const bind = fs.getAttribute ? fs.getAttribute('data-bind') : '';
+    return bind && bind.indexOf('foreach') !== -1;
+  });
+
+  console.group('[mhx opt row probe] repeating foreach fieldsets');
+  console.log('matching forEach fieldsets:', forEachFieldsets.length);
+
+  if (forEachFieldsets.length === 0) {
+    console.log('none found; listing all fieldset.admin__fieldset instead');
+    const fallback = [...document.querySelectorAll('fieldset.admin__fieldset')];
+    console.log('fieldset.admin__fieldset count:', fallback.length);
+  }
+
+  const target = forEachFieldsets[0] || null;
+  if (!target) {
+    console.groupEnd();
+    return;
+  }
+
+  console.log('target tag:', target.tagName.toLowerCase());
+  console.log('target id:', target.id || '—');
+  console.log('target classes:', (target.className && typeof target.className === 'string' ? target.className : '').split(/\s+/).filter(Boolean).slice(0, 12).join(' '));
+  console.log('target data-bind:', target.getAttribute('data-bind') || '—');
+  console.log('target children count:', target.children.length);
+
+  const itemElems = [];
+  for (const child of target.children) {
+    if (!child || !document.body.contains(child)) continue;
+    itemElems.push(child);
+  }
+
+  console.log('item elems collected:', itemElems.length);
+  if (itemElems.length === 0) {
+    console.groupEnd();
+    return;
+  }
+
+  const rows = itemElems.slice(0, 12).map((node, idx) => {
+    const bind = node.getAttribute ? node.getAttribute('data-bind') : '';
+    const classes = (node.className && typeof node.className === 'string' ? node.className : '')
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 10)
+      .join(' ');
+
+    const inputs = [...node.querySelectorAll('input, select, textarea')].slice(0, 8);
+    const fieldSummary = inputs.map((el) => {
+      const name = el.getAttribute ? (el.getAttribute('name') || '') : '';
+      const type = el.getAttribute ? (el.getAttribute('type') || el.tagName.toLowerCase()) : el.tagName.toLowerCase();
+      const id = el.id || '';
+      const label = el.getAttribute ? (el.getAttribute('aria-label') || '') : '';
+      const value = el.value !== undefined ? el.value : '';
+      return { tag: el.tagName.toLowerCase(), type, name, id, label, value };
+    });
+
+    const textNodes = [];
+    const walk = (n) => {
+      if (n.nodeType === Node.TEXT_NODE) {
+        const t = n.textContent.trim();
+        if (t) textNodes.push(t);
+      } else if (n.nodeType === Node.ELEMENT_NODE) {
+        for (const c of n.children) walk(c);
+      }
+    };
+    walk(node);
+    const visibleText = textNodes.slice(0, 6).join(' | ');
+
+    return {
+      index: idx,
+      tag: node.tagName.toLowerCase(),
+      id: node.id || '—',
+      classes: classes || '—',
+      dataBind: bind || '',
+      children: String(node.children.length),
+      inputCount: String(inputs.length),
+      fields: fieldSummary.slice(0, 6),
+      text: visibleText.slice(0, 200),
+    };
+  });
+
+  console.table(
+    rows.map((r) => ({
+      index: String(r.index),
+      tag: r.tag,
+      id: r.id,
+      classes: r.classes,
+      dataBind: r.dataBind,
+      children: r.children,
+      inputCount: r.inputCount,
+      text: r.text,
+    })),
+  );
+
+  console.groupCollapsed('[mhx opt row probe] field detail for first item elem');
+  if (rows[0] && rows[0].fields) {
+    console.table(rows[0].fields.map((f) => ({
+      tag: f.tag,
+      type: f.type,
+      name: f.name || '—',
+      id: f.id,
+      label: f.label || '—',
+      value: f.value || '',
+    })));
+  }
+  console.groupEnd();
+
+  console.groupEnd();
+})();
