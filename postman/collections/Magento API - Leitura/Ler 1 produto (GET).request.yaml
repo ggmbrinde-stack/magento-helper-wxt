@@ -1,0 +1,32 @@
+$kind: http-request
+name: 'Ler 1 produto (GET)'
+method: GET
+order: 3000
+url: 'https://bestofgifts.pt/rest/V1/products?searchCriteria[pageSize]=1&searchCriteria[currentPage]=1'
+headers:
+  - key: Accept
+    value: application/json
+queryParams:
+  - key: 'searchCriteria[pageSize]'
+    value: '1'
+  - key: 'searchCriteria[currentPage]'
+    value: '1'
+auth:
+  type: oauth1
+  credentials:
+    - key: consumerKey
+      value: '{{vault:magento-consumer-key}}'
+    - key: consumerSecret
+      value: '{{vault:magento-consumer-secret}}'
+    - key: token
+      value: '{{vault:magento-access-token}}'
+    - key: tokenSecret
+      value: '{{vault:magento-token-secret}}'
+    - key: signatureMethod
+      value: HMAC-SHA256
+    - key: version
+      value: '1.0'
+    - key: addParamsToHeader
+      value: 'true'
+settings:
+  followRedirects: false

@@ -14,6 +14,8 @@ never has to read a UI doc to find out what it may touch.
 ## Index
 
 **ui/**
+- [PP-CUSTOM-OPTIONS-PAGE-REFERENCE.md](ui/PP-CUSTOM-OPTIONS-PAGE-REFERENCE.md) - observed PP page identity, fields, parent bindings, native save flow and integration limits.
+- [PP-PREVIEW-PROGRESS-2026-11-18.md](ui/PP-PREVIEW-PROGRESS-2026-11-18.md) - PP Preview state: read, add, remove, order and save lanes, the page's dynamic-rows record list, the stored-order investigation and its open experiment, fixes, speed work, open risks and how to resume.
 - [UI-TOOLKIT.md](ui/UI-TOOLKIT.md) — the token contract, delivery and primitives. Read before styling anything.
 - [UI-MIGRATION-REMAINING.md](ui/UI-MIGRATION-REMAINING.md) — what is still on the old styling.
 

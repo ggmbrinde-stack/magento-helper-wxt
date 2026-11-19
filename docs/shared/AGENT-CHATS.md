@@ -41,3 +41,10 @@ This is a point-in-time snapshot, not live status or a task lock. The four-pilla
 | `docs_notion` | Four-pillar map and setup complete |
 
 RTK 1.1.0 was repaired locally with the Scoop manifest and cached package; hashes matched and the shim was restored. Explicit commands and direct hook check passed. Automatic dispatch in this running Codex session remains unverified; do not claim token savings.
+
+## External AI execution chat
+
+- Chat: BOG Helper · External AI Runner.
+- ID: `01a1ca1d-5de2-7e82-b33f-46d95a837947`; host: `local`.
+- Current requested settings: gpt-6-luna / low; explicitly applied after the user requested a lighter runner model.
+- Purpose: execute bounded OpenCode/free-provider tasks assigned by the user or coordinator; the coordinator retains planning and acceptance. No recursive agent delegation or automatic cross-chat replies. Explicitly verify free routing; no paid fallback. Product writers require isolated worktrees and independent review. Creation and a pending smoke test do not prove coding capability or cost savings.

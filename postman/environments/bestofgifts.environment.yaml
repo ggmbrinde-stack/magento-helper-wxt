@@ -1,0 +1,15 @@
+name: bestofgifts.pt
+values:
+  - key: base_url
+    value: 'https://bestofgifts.pt/rest/V1'
+  - key: magento-consumer-key
+    value: ''
+  - key: |
+      magento-consumer-secret
+    value: ''
+  - key: |
+      magento-access-token
+    value: ''
+  - key: |
+      magento-token-secret
+    value: ''

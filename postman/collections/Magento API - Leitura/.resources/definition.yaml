@@ -1,0 +1,4 @@
+$kind: collection
+name: 'Magento API - Leitura'
+description: |-
+  Pedido de leitura preparado para bestofgifts.pt. No Postman Desktop, adicionar ao Vault local quatro segredos: magento-consumer-key, magento-consumer-secret, magento-access-token e magento-token-secret. Não substituir as referências por credenciais guardadas na coleção. Este pedido lê um produto; não verifica os endpoints personalizados de Attribute Set. Um HTTP 200, por si só, não comprova autenticação se o catálogo aceitar leitura pública.

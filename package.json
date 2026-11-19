@@ -33,7 +33,8 @@
     "test:notion-retry": "npx esbuild scripts/__tests__/notionRetry.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outfile=.output/notion-retry-test.mjs --log-level=warning && node --test .output/notion-retry-test.mjs",
     "test:enable-freshness": "npx esbuild scripts/__tests__/enableFlowFreshness.test.ts --bundle --platform=node --format=esm --jsx-factory=h --jsx-fragment=Fragment --loader:.json=json --external:node:test --external:jsdom --outfile=.output/enable-flow-freshness-test.mjs --log-level=warning && node --test .output/enable-flow-freshness-test.mjs",
     "test:features": "npx esbuild src/shared/__tests__/features.test.ts --bundle --platform=node --format=esm --external:node:test --external:jsdom --outfile=.output/features-test.mjs --log-level=warning && node --test .output/features-test.mjs",
-    "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs"
+    "test:attribute-set": "npx esbuild src/audit/__tests__/attributeSet.test.ts --bundle --platform=node --format=esm --loader:.json=json --external:node:test --external:jsdom --outfile=.output/attribute-set-test.mjs --log-level=warning && node --test .output/attribute-set-test.mjs",
+    "drime:test": "node scripts/test-drime.mjs"
   },
   "dependencies": {
     "preact": "^10.29.8",
