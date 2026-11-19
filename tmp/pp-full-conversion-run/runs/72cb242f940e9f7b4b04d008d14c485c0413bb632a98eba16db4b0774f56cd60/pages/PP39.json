@@ -1,0 +1,8 @@
+{
+  "code": "39",
+  "confirmed_receipts": [],
+  "outcome": "CANCELLED",
+  "page_id": "77db6705ae1f8244915581b42a5596c8",
+  "pending_receipts": [],
+  "reason": "User cancelled before next mutation"
+}

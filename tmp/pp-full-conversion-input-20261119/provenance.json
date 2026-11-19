@@ -1,0 +1,38 @@
+{
+  "recorded_at_utc": "2026-11-19 08:57:47 UTC",
+  "data_source": "collection://431b6705-ae1f-83db-b71c-0739778f9e1a",
+  "inventory_count_query_result": {
+    "results": [
+      {
+        "total": 814,
+        "distinct_codes": 814,
+        "missing_codes": 0
+      }
+    ],
+    "has_more": false,
+    "data_source_ids": [
+      "431b6705-ae1f-83db-b71c-0739778f9e1a"
+    ]
+  },
+  "inventory_retrieval_method": "One count query plus one JSON aggregate SQL row containing every ordered PP identity; not the first truncated 100-row query",
+  "coverage": {
+    "inventory_records": 814,
+    "distinct_codes": 814,
+    "missing_codes": 0,
+    "inventory_complete": true,
+    "page_body_samples": [
+      "42",
+      "50",
+      "261",
+      "262",
+      "428"
+    ],
+    "page_body_format": "Actual Notion rendered Markdown captures; no complete native tree attestation",
+    "native_container_ids_or_ui_attestation_available": false
+  },
+  "latest_rules_home_last_edited_at": "2026-11-18T19:20:18.654Z",
+  "protected_original": "collection://434b6705-ae1f-8372-9d2e-070435a4f043",
+  "protected_backup": "collection://166b6705-ae1f-83da-be92-87f8d804a1a5",
+  "known_no_change_exception": "601",
+  "known_prior_job_scope": "430/558/661/662 Para revisão = verified pocket correction only, not full conversion"
+}

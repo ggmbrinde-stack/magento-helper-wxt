@@ -1,0 +1,13 @@
+{
+  "recorded_at_utc": "2026-11-19 08:57:47 UTC",
+  "files": {
+    "current-rules.json": "7ae547562d95ccc454a58b00772c475b40a9c70f3c90f2e1883a8f38e4b7cd5a",
+    "inventory.json": "189bdac7d3b92631d6854688b79dce148192264305d6329beebaac0301b9b1dd",
+    "provenance.json": "40aed1c9f8dab68b43822e66f3de1086a96b680963dd966de9578c3563c80490",
+    "README.md": "18f18c518926f4793d6c8ac03234ea17d9cf864ad38d1777b08786893b50a3f3",
+    "schema.json": "dcba1d7770412d21fbfa7fcc46b9370e7d8b1ebdc40480859c9bfa17b565d413",
+    "source-cases.json": "cdb512a209bc26eef94e6faa076c4fcaff05b40da0d7862abece4c265694693b",
+    "template428.json": "d7347791fc73ed3b11799e2e7eb1ad111f0cac94e9274cc9001727a4b22320d8"
+  },
+  "note": "Dates of page edits are in captures; inventory all814, bodies only the documented samples; read-only evidence, not complete native body export."
+}

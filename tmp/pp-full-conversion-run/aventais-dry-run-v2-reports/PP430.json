@@ -1,0 +1,400 @@
+{
+  "category": "APRON",
+  "code": "430",
+  "completion_binding": {
+    "excel_sha256": "c2a99e711658a63a09d83156a8c6c7a3b512bf8c59b8c0b9688c017ee6ab4348",
+    "full_scope_sha256": "9574935242a3f19bbe4929e37eaf0a621e5761770e92cbe2d8c1c18f6a7ad278",
+    "implementation_sha256": "dafc80c641d650fb9311a66cd6c3298c229e2775f8bb8d2e43acc42b1178a676",
+    "index_sha256": "67eaf0e09c9f48a324f3521d81f35bf52e6a5ef6074d7c0a0185e3b858679f0c",
+    "rules_sha256": "f1a649b0060b7a8b3f6b4f1843368737b993241aa6bc69657adf3a86c89dae67",
+    "scope": "PP_FULL_CONVERSION_V1",
+    "source_state_sha256": "c80b2a42fad64f65ce481d14c950de1128a99dfc9786f3396dd3ab778af3a451",
+    "template_sha256": "71b26c8bf2c2f899e88dc73b2310d7eda841cfd63299248a83fc4bbdb5e699f3"
+  },
+  "completion_status_operation": {
+    "eligible": true,
+    "id": "430-full-review-status",
+    "kind": "success_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+      "properties": {
+        "Estado": "Para revisão"
+      }
+    }
+  },
+  "desired_body": "<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n\nEx: M6295\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 430</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 430.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)\n</td>\n</tr>\n</table>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nFace / local\n</td>\n<td>\nOpções completas e especificações\n</td>\n</tr>\n<tr>\n<td>\nPeito\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n<tr>\n<td>\nBolso Esquerdo<br />Bolso Direito\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</column>\n</columns>\n\n<toggle heading=\"h2\">\nPontos técnicos a confirmar\n\n<toggle>\nNew: Geral\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n</toggle>\n\n<toggle>\nNew: Peito\n\nConfirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n</toggle>\n\n<toggle>\nNew: Bolso Esquerdo\n\nApenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n</toggle>\n\n<toggle>\nNew: Bolso Direito\n\nDTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n\n<toggle>\nNew: Geral\n\n<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n</toggle>\n\n<toggle>\nOld: Peito<br />Bolso Esquerdo<br />Bolso Direito\n\nLocais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n</toggle>\n</toggle>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M41:P51<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M41 | 430 |\n| N41 | AVENTAL grande vários bolsos - 3F |\n| O42 | Peito |\n| P42 | Estamparia - Até A4 - 4 Cores |\n| N43 | Ex: M6295 |\n| P43 | DTF - Até A5 (14,8x21,0 cm) |\n| P44 | DTF - Até A4 (21x29,7cm) |\n| N45 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P45 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P46 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P47 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O48 | Bolso Esquerdo |\n| P48 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O49 | Bolso Direito |\n| P49 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>\n\n<toggle>\nHistórico de apresentação\n\nPP_FULL_CONVERSION_V1 9574935242a3f19bbe4929e37eaf0a621e5761770e92cbe2d8c1c18f6a7ad278\n\n<toggle>\nOrigem Excel verificada\n\nPPs BRINDE TÊXTIL!M41:P51\n\n<table fit-page-width=\"true\" header-row=\"true\">\n<colgroup>\n<col width=\"80\" />\n<col width=\"350\" />\n</colgroup>\n<tr>\n<td>\nCélula\n</td>\n<td>\nTexto original\n</td>\n</tr>\n<tr>\n<td>\nM41\n</td>\n<td>\n430\n</td>\n</tr>\n<tr>\n<td>\nN41\n</td>\n<td>\nAVENTAL grande vários bolsos - 3F\n</td>\n</tr>\n<tr>\n<td>\nO42\n</td>\n<td>\nPeito\n</td>\n</tr>\n<tr>\n<td>\nP42\n</td>\n<td>\nEstamparia - Até A4 - 4 Cores\n</td>\n</tr>\n<tr>\n<td>\nN43\n</td>\n<td>\nEx: M6295\n</td>\n</tr>\n<tr>\n<td>\nP43\n</td>\n<td>\nDTF - Até A5 (14,8x21,0 cm)\n</td>\n</tr>\n<tr>\n<td>\nP44\n</td>\n<td>\nDTF - Até A4 (21x29,7cm)\n</td>\n</tr>\n<tr>\n<td>\nN45\n</td>\n<td>\nNo caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n</td>\n</tr>\n<tr>\n<td>\nP45\n</td>\n<td>\nBordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n</td>\n</tr>\n<tr>\n<td>\nP46\n</td>\n<td>\nBordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n</td>\n</tr>\n<tr>\n<td>\nP47\n</td>\n<td>\nBordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n</td>\n</tr>\n<tr>\n<td>\nO48\n</td>\n<td>\nBolso Esquerdo\n</td>\n</tr>\n<tr>\n<td>\nP48\n</td>\n<td>\nTransfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n</td>\n</tr>\n<tr>\n<td>\nO49\n</td>\n<td>\nBolso Direito\n</td>\n</tr>\n<tr>\n<td>\nP49\n</td>\n<td>\nDTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n</td>\n</tr>\n</table>\n</toggle>\n\n<toggle>\nApresentação anterior preservada\n\n## Imagens\n\n<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M6295\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 430</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 430.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n\n<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n</toggle>\n</toggle>",
+  "diff": "--- 430-before\n+++ 430-after\n@@ -1,14 +1,8 @@\n-## Imagens\n-\n <image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n \n-## Descrição e notas do perfil\n-\n Ex: M6295\n \n No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n-\n-## Notas\n \n - Grupo com vários locais ou sem local: confirmar a distribuição das opções\n \n@@ -27,15 +21,104 @@\n <column ratio=\"50\">\n ## New (proposta)\n \n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso Esquerdo<br />Bolso Direito\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)\n+</td>\n+</tr>\n+</table>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Face / local\n+</td>\n+<td>\n+Opções completas e especificações\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Peito\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n+</td>\n+</tr>\n+<tr>\n+<td>\n+Bolso Esquerdo<br />Bolso Direito\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n+</column>\n+</columns>\n+\n+<toggle heading=\"h2\">\n+Pontos técnicos a confirmar\n+\n+<toggle>\n+New: Geral\n+\n <callout icon=\"📝\">\n <b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n </callout>\n-\n-| Face / local | Opções propostas | Nota |\n-| --- | --- | --- |\n-| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n-| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n-| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n+</toggle>\n+\n+<toggle>\n+New: Peito\n+\n+Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n+</toggle>\n+\n+<toggle>\n+New: Bolso Esquerdo\n+\n+Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n+</toggle>\n+\n+<toggle>\n+New: Bolso Direito\n+\n+DTF A7 da fonte original; confirmar dimensão útil\n+</toggle>\n+\n+<toggle>\n+New: Geral\n \n <toggle>\n Pendências técnicas\n@@ -44,17 +127,14 @@\n - Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n - Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n </toggle>\n-</column>\n-<column ratio=\"50\">\n-## Old (original)\n-\n-### Locais e personalização\n-\n-| Face / local | Opções completas e especificações | Notas |\n-| --- | --- | --- |\n-| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n-</column>\n-</columns>\n+</toggle>\n+\n+<toggle>\n+Old: Peito<br />Bolso Esquerdo<br />Bolso Direito\n+\n+Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar.\n+</toggle>\n+</toggle>\n \n <toggle>\n Fonte e original do Excel\n@@ -78,4 +158,213 @@\n | P48 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n | O49 | Bolso Direito |\n | P49 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n+</toggle>\n+\n+<toggle>\n+Histórico de apresentação\n+\n+PP_FULL_CONVERSION_V1 9574935242a3f19bbe4929e37eaf0a621e5761770e92cbe2d8c1c18f6a7ad278\n+\n+<toggle>\n+Origem Excel verificada\n+\n+PPs BRINDE TÊXTIL!M41:P51\n+\n+<table fit-page-width=\"true\" header-row=\"true\">\n+<colgroup>\n+<col width=\"80\" />\n+<col width=\"350\" />\n+</colgroup>\n+<tr>\n+<td>\n+Célula\n+</td>\n+<td>\n+Texto original\n+</td>\n+</tr>\n+<tr>\n+<td>\n+M41\n+</td>\n+<td>\n+430\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N41\n+</td>\n+<td>\n+AVENTAL grande vários bolsos - 3F\n+</td>\n+</tr>\n+<tr>\n+<td>\n+O42\n+</td>\n+<td>\n+Peito\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P42\n+</td>\n+<td>\n+Estamparia - Até A4 - 4 Cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N43\n+</td>\n+<td>\n+Ex: M6295\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P43\n+</td>\n+<td>\n+DTF - Até A5 (14,8x21,0 cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P44\n+</td>\n+<td>\n+DTF - Até A4 (21x29,7cm)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+N45\n+</td>\n+<td>\n+No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P45\n+</td>\n+<td>\n+Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P46\n+</td>\n+<td>\n+Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P47\n+</td>\n+<td>\n+Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5\n+</td>\n+</tr>\n+<tr>\n+<td>\n+O48\n+</td>\n+<td>\n+Bolso Esquerdo\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P48\n+</td>\n+<td>\n+Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)\n+</td>\n+</tr>\n+<tr>\n+<td>\n+O49\n+</td>\n+<td>\n+Bolso Direito\n+</td>\n+</tr>\n+<tr>\n+<td>\n+P49\n+</td>\n+<td>\n+DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS)\n+</td>\n+</tr>\n+</table>\n+</toggle>\n+\n+<toggle>\n+Apresentação anterior preservada\n+\n+## Imagens\n+\n+<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n+\n+## Descrição e notas do perfil\n+\n+Ex: M6295\n+\n+No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n+\n+## Notas\n+\n+- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n+\n+<callout icon=\"📝\">\n+<b>Revisão do PP 430</b>\n+\n+Compara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n+\n+- [ ] Sim, aprovo a configuração New do PP 430.\n+- [ ] Não, são necessárias correções.\n+\n+<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n+</callout>\n+\n+<columns>\n+<column ratio=\"50\">\n+## New (proposta)\n+\n+<callout icon=\"📝\">\n+<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n+</callout>\n+\n+| Face / local | Opções propostas | Nota |\n+| --- | --- | --- |\n+| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n+| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n+| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n+\n+<toggle>\n+Pendências técnicas\n+\n+- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n+- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n+- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n+</toggle>\n+</column>\n+<column ratio=\"50\">\n+## Old (original)\n+\n+### Locais e personalização\n+\n+| Face / local | Opções completas e especificações | Notas |\n+| --- | --- | --- |\n+| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n+</column>\n+</columns>\n+</toggle>\n </toggle>",
+  "excel": {
+    "area": "Brinde têxtil",
+    "article_types": [
+      "Avental"
+    ],
+    "blocked": [
+      "Distribuição das opções por local por confirmar"
+    ],
+    "code": "430",
+    "comments": [],
+    "description": "",
+    "families": [
+      "Aventais"
+    ],
+    "groups": [
+      {
+        "locals": [
+          "Peito"
+        ],
+        "options": [
+          {
+            "cell": "P42",
+            "name": "Estamparia — até A4 — 4 cores",
+            "original": "Estamparia - Até A4 - 4 Cores"
+          },
+          {
+            "cell": "P43",
+            "name": "DTF — até A5",
+            "original": "DTF - Até A5 (14,8x21,0 cm)"
+          },
+          {
+            "cell": "P44",
+            "name": "DTF — até A4",
+            "original": "DTF - Até A4 (21x29,7cm)"
+          },
+          {
+            "cell": "P45",
+            "name": "Bordado — até 120 cm²",
+            "original": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+          },
+          {
+            "cell": "P46",
+            "name": "Bordado — até 240 cm²",
+            "original": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+          },
+          {
+            "cell": "P47",
+            "name": "Bordado — até 360 cm²",
+            "original": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+          }
+        ],
+        "start_row": 42
+      },
+      {
+        "locals": [
+          "Bolso Esquerdo",
+          "Bolso Direito"
+        ],
+        "options": [
+          {
+            "cell": "P48",
+            "name": "Transfer — até 126 cm² — 2 cores",
+            "original": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+          },
+          {
+            "cell": "P49",
+            "name": "DTF — até A7",
+            "original": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+          }
+        ],
+        "start_row": 48
+      }
+    ],
+    "images": [
+      "xl/media/image802.png"
+    ],
+    "notes": [
+      "Ex: M6295",
+      "No caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+    ],
+    "raw": [
+      {
+        "cell": "M41",
+        "value": "430"
+      },
+      {
+        "cell": "N41",
+        "value": "AVENTAL grande vários bolsos - 3F"
+      },
+      {
+        "cell": "O42",
+        "value": "Peito"
+      },
+      {
+        "cell": "P42",
+        "value": "Estamparia - Até A4 - 4 Cores"
+      },
+      {
+        "cell": "N43",
+        "value": "Ex: M6295"
+      },
+      {
+        "cell": "P43",
+        "value": "DTF - Até A5 (14,8x21,0 cm)"
+      },
+      {
+        "cell": "P44",
+        "value": "DTF - Até A4 (21x29,7cm)"
+      },
+      {
+        "cell": "N45",
+        "value": "No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores"
+      },
+      {
+        "cell": "P45",
+        "value": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS"
+      },
+      {
+        "cell": "P46",
+        "value": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6"
+      },
+      {
+        "cell": "P47",
+        "value": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5"
+      },
+      {
+        "cell": "O48",
+        "value": "Bolso Esquerdo"
+      },
+      {
+        "cell": "P48",
+        "value": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+      },
+      {
+        "cell": "O49",
+        "value": "Bolso Direito"
+      },
+      {
+        "cell": "P49",
+        "value": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)"
+      }
+    ],
+    "review_flags": [
+      "Grupo com vários locais ou sem local: confirmar a distribuição das opções"
+    ],
+    "source": "PPs BRINDE TÊXTIL!M41:P51",
+    "title": "AVENTAL grande vários bolsos - 3F"
+  },
+  "failure_status_operation": {
+    "eligible": true,
+    "id": "430-full-error-status",
+    "kind": "error_status",
+    "payload": {
+      "command": "update_properties",
+      "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+      "properties": {
+        "Estado": "Erro"
+      }
+    }
+  },
+  "full_prepare_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+  "method_complete": false,
+  "new_groups": [
+    {
+      "locations": [
+        "Peito"
+      ],
+      "options": [
+        "Estamparia - Até A4 - 1 Cor",
+        "DTF - Até A4 (21x29,7cm)",
+        "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4"
+      ],
+      "shared_source_group": false
+    },
+    {
+      "locations": [
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "options": [
+        "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+        "DTF - Até A6 (10,5x14,8 cm)"
+      ],
+      "shared_source_group": true
+    }
+  ],
+  "operations": [],
+  "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+  "preservation": {
+    "blocked_region": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+    "idempotent": false,
+    "marker": "PP_FULL_CONVERSION_V1 9574935242a3f19bbe4929e37eaf0a621e5761770e92cbe2d8c1c18f6a7ad278",
+    "notes": [
+      {
+        "location": "Geral",
+        "side": "New",
+        "text": "<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>"
+      },
+      {
+        "location": "Peito",
+        "side": "New",
+        "text": "Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²"
+      },
+      {
+        "location": "Bolso Esquerdo",
+        "side": "New",
+        "text": "Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New"
+      },
+      {
+        "location": "Bolso Direito",
+        "side": "New",
+        "text": "DTF A7 da fonte original; confirmar dimensão útil"
+      },
+      {
+        "location": "Geral",
+        "side": "New",
+        "text": "<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>"
+      },
+      {
+        "location": "Peito<br />Bolso Esquerdo<br />Bolso Direito",
+        "side": "Old",
+        "text": "Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar."
+      }
+    ]
+  },
+  "property_operations": [],
+  "reasons": [],
+  "rule_changes": [
+    {
+      "after": "Estamparia - Até A4 - 1 Cor",
+      "before": "Estamparia - Até A4 - 4 Cores",
+      "locations": [
+        "Peito"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "DTF - Até A4 (21x29,7cm)",
+      "before": "DTF - Até A5 (14,8x21,0 cm)",
+      "locations": [
+        "Peito"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4",
+      "before": "Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS | MOCHILAS",
+      "locations": [
+        "Peito"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4",
+      "before": "Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6",
+      "locations": [
+        "Peito"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "Bordado - Até 600 cm2 - Até 24,5x24,5cm aprox. - A4",
+      "before": "Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5",
+      "locations": [
+        "Peito"
+      ],
+      "reference_size": "A4"
+    },
+    {
+      "after": "Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+      "before": "Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+      "locations": [
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "reference_size": "A6"
+    },
+    {
+      "after": "DTF - Até A6 (10,5x14,8 cm)",
+      "before": "DTF - Até A7 (7,4x10,5cm - BOLSO | MANGA | ESTOJOS)",
+      "locations": [
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "reference_size": "A6"
+    }
+  ],
+  "source_body": "## Imagens\n\n<image source=\"notion-file-block://f9fb6705-ae1f-831f-b299-01f72de726a7/186d412d-d83c-4b87-9a09-8d1b0c9cef56?space_id=4abb6705-ae1f-81fe-a321-0003f14fa31f&name=PP430_1.png\" />\n\n## Descrição e notas do perfil\n\nEx: M6295\n\nNo caso de Bordado, apenas considere \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores\n\n## Notas\n\n- Grupo com vários locais ou sem local: confirmar a distribuição das opções\n\n<callout icon=\"📝\">\n<b>Revisão do PP 430</b>\n\nCompara a configuração New com a Old e assinala apenas uma opção. O PP mantém-se <b>A rever</b> até à decisão.\n\n- [ ] Sim, aprovo a configuração New do PP 430.\n- [ ] Não, são necessárias correções.\n\n<b>Se não, porquê?</b> Regista o motivo e as alterações necessárias para manter o contexto da revisão.\n</callout>\n\n<columns>\n<column ratio=\"50\">\n## New (proposta)\n\n<callout icon=\"📝\">\n<b>A rever.</b> Distribuição por local corrigida de acordo com as células do Excel. A tabela antiga permanece integralmente visível abaixo; opções e materiais sujeitos a validação.\n</callout>\n\n| Face / local | Opções propostas | Nota |\n| --- | --- | --- |\n| Peito | Estamparia - Até A4 - 1 Cor<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 | Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm² |\n| Bolso Esquerdo | Por confirmar — sem opção aprovada em IMP → New | Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New |\n| Bolso Direito | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | DTF A7 da fonte original; confirmar dimensão útil |\n\n<toggle>\nPendências técnicas\n\n- Peito: Confirmar área de peito, Estamparia 1 Cor e Bordado 240 cm²\n- Bolso Esquerdo: Apenas Transfer 2 Cores no Excel; conversão para 1 Cor pendente em IMP → New\n- Bolso Direito: DTF A7 da fonte original; confirmar dimensão útil\n</toggle>\n</column>\n<column ratio=\"50\">\n## Old (original)\n\n### Locais e personalização\n\n| Face / local | Opções completas e especificações | Notas |\n| --- | --- | --- |\n| Peito<br />Bolso Esquerdo<br />Bolso Direito | Estamparia - Até A4 - 4 Cores<br />DTF - Até A5 (14,8x21,0 cm)<br />DTF - Até A4 (21x29,7cm)<br />Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS<br />Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6<br />Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |\n</column>\n</columns>\n\n<toggle>\nFonte e original do Excel\n\nAI\\_READ\\_Perfis de Personalização - Cópia.xlsx — PPs BRINDE TÊXTIL!M41:P51<br />Modificação interna: 2026-10-26T11:47:15Z; revisão 19.<br />SHA-256: 36262f1c3eb216dfeed34b374643d239faf15e0691935ccef5163ced46e28566\n\n| Célula | Texto original |\n| --- | --- |\n| M41 | 430 |\n| N41 | AVENTAL grande vários bolsos - 3F |\n| O42 | Peito |\n| P42 | Estamparia - Até A4 - 4 Cores |\n| N43 | Ex: M6295 |\n| P43 | DTF - Até A5 (14,8x21,0 cm) |\n| P44 | DTF - Até A4 (21x29,7cm) |\n| N45 | No caso de Bordado, apenas considere  \"Repetição\" se já fez este bordado connosco no mesmo tamanho e cores |\n| P45 | Bordado - Até 120 cm2 - Até 11x11cm aprox. - BOLSAS \\| MOCHILAS |\n| P46 | Bordado - Até 240 cm2 - Até 15,5x15,5cm aprox. - A6 |\n| P47 | Bordado - Até 360 cm2 - Até 19x19cm aprox. - A5 |\n| O48 | Bolso Esquerdo |\n| P48 | Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA) |\n| O49 | Bolso Direito |\n| P49 | DTF - Até A7 (7,4x10,5cm - BOLSO \\| MANGA \\| ESTOJOS) |\n</toggle>",
+  "source_metadata": {
+    "cover": {
+      "file": {
+        "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png"
+      },
+      "type": "file"
+    },
+    "icon": null,
+    "properties": {
+      "Código PP": "430",
+      "Estado": "A rever",
+      "Faces": [
+        "Peito",
+        "Bolso Esquerdo",
+        "Bolso Direito"
+      ],
+      "Família": [
+        "Aventais"
+      ],
+      "Imagem principal": [
+        "https://prod-files-secure.s3.us-west-2.amazonaws.com/4abb6705-ae1f-81fe-a321-0003f14fa31f/186d412d-d83c-4b87-9a09-8d1b0c9cef56/PP430_1.png"
+      ],
+      "Notas": "",
+      "Número de locais possíveis": 3,
+      "Opções de personalização": [
+        "Estamparia — até A4 — 4 cores",
+        "DTF — até A5",
+        "DTF — até A4",
+        "Bordado — até 120 cm²",
+        "Bordado — até 240 cm²",
+        "Bordado — até 360 cm²",
+        "Transfer — até 126 cm² — 2 cores",
+        "DTF — até A7"
+      ],
+      "PP": "430 — AVENTAL grande vários bolsos - 3F",
+      "SKU / referência do fornecedor": "Ex: M6295",
+      "Tipos de artigo compatíveis": [
+        "Avental"
+      ],
+      "Técnicas": [
+        "Estamparia",
+        "DTF",
+        "Bordado",
+        "Transfer"
+      ],
+      "url": "https://app.notion.com/p/3cab6705ae1f820dab27015d0d5e85ea",
+      "Área": "Brinde têxtil"
+    }
+  },
+  "source_state_sha256": "c80b2a42fad64f65ce481d14c950de1128a99dfc9786f3396dd3ab778af3a451",
+  "status": "READY_FOR_ERROR_REPORT",
+  "synthetic_capture": false,
+  "technical_unresolved": [],
+  "validation_policy": {
+    "body_notes_required": true,
+    "existing_containers": "PRESERVE_OR_EXACT_REVIEWED_UI_REGION",
+    "fresh_read_before_each_operation": true,
+    "global_export_claimed": false,
+    "leaf_contract": "MCP_MARKDOWN_INLINE_TABLE_CELLS_AND_LEAF_BLOCKS",
+    "name": "PP_FULL_CONVERSION",
+    "native_comments": "EXCLUDED_BY_EXPLICIT_HUMAN_POLICY",
+    "version": 1
+  },
+  "wanted_properties": {
+    "Faces": [
+      "Peito",
+      "Bolso Esquerdo",
+      "Bolso Direito"
+    ],
+    "Número de locais possíveis": 3,
+    "Opções de personalização": [
+      "Estamparia — até A4 — 1 cor",
+      "DTF — até A4",
+      "Bordado — até 600 cm²",
+      "Transfer — até 126 cm² — 1 cor",
+      "DTF — até A6"
+    ],
+    "Técnicas": [
+      "Estamparia",
+      "DTF",
+      "Bordado",
+      "Transfer"
+    ]
+  }
+}

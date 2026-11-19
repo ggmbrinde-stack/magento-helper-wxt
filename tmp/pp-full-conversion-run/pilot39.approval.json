@@ -1,0 +1,15 @@
+{
+  "approved_codes": [
+    "39"
+  ],
+  "approved_operation_ids": [
+    "39-full-body-1",
+    "39-full-body-2",
+    "39-full-review-status",
+    "39-full-error-status"
+  ],
+  "authorisation": "EXPLICIT_HUMAN_APPROVAL",
+  "implementation_sha256": "37a14565f13e4dfa5df6e8c3e4a2f7941b9ad4067c84a97726da38ff2d124cf3",
+  "plan_sha256": "28d0e799311c6f282d43a033c8e4314763b1740db1d8e9a38f064884c011d014",
+  "review_reference": ""
+}

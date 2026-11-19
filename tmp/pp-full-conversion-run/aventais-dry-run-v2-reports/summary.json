@@ -1,0 +1,184 @@
+{
+  "coverage": {
+    "duplicates": {
+      "184": [
+        "PPs BRINDES!C67:F72",
+        "PPs BRINDES!AH127:AK132"
+      ],
+      "266": [
+        "PPs BRINDES!C310:F318",
+        "PPs BRINDES!AH83:AK87"
+      ],
+      "285": [
+        "PPs BRINDES!AM36:AP46",
+        "PPs BRINDES!AM64:AP74"
+      ],
+      "394": [
+        "PPs BRINDES!C61:F66",
+        "PPs BRINDES!AH120:AK126"
+      ],
+      "435": [
+        "PPs BRINDES!C1154:F1157",
+        "PPs BRINDES!AC67:AF72"
+      ],
+      "700": [
+        "PPs BRINDES!C601:F608",
+        "PPs BRINDES!I2141:L2149"
+      ],
+      "737": [
+        "PPs BRINDES!C299:F303",
+        "PPs BRINDES!AH63:AK67"
+      ]
+    },
+    "excel_blocks": 823,
+    "excel_distinct_codes": 816,
+    "excel_missing_in_notion": [
+      "184",
+      "266",
+      "285",
+      "394",
+      "435",
+      "700",
+      "737"
+    ],
+    "notion_missing_in_excel": [
+      "492",
+      "964",
+      "965",
+      "966",
+      "967"
+    ],
+    "page_conversion_not_proved_by_inventory": true,
+    "protected_codes": [
+      "601"
+    ],
+    "working_copy_total": 814,
+    "worksheets": {
+      "PPs BRINDE TÊXTIL": 51,
+      "PPs BRINDES": 628,
+      "PPs TÊXTIL": 144
+    }
+  },
+  "implementation_sha256": "dafc80c641d650fb9311a66cd6c3298c229e2775f8bb8d2e43acc42b1178a676",
+  "pages": [
+    {
+      "body_operations": 0,
+      "code": "428",
+      "method_complete": false,
+      "pending": [],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "429",
+      "method_complete": false,
+      "pending": [],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "430",
+      "method_complete": false,
+      "pending": [],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "467",
+      "method_complete": false,
+      "pending": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)",
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 1 Cor (7,5x7,5cm - BOLSO | BONE)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      ],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "558",
+      "method_complete": false,
+      "pending": [],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "612",
+      "method_complete": false,
+      "pending": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      ],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "633",
+      "method_complete": false,
+      "pending": [
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 1 Cor (aprox. 11,2x11,2cm - MOCHILA)"
+      ],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "661",
+      "method_complete": false,
+      "pending": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 280 cm2 - 1 Cor (aprox. 16,6x16,6cm)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 560 cm2 - 1 Cor (aprox. 23,7x23,7cm)"
+      ],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "662",
+      "method_complete": false,
+      "pending": [
+        "Caixa: Sem correspondência única aprovada em IMP New: Serigrafia Até 120 cm2 (Aprox 11x11cm) - 2 Cores",
+        "Caixa: Caixa: confirmar material e processo/área próprios",
+        "Caixa: Sem correspondência única aprovada em IMP New: Serigrafia > 120 cm2 (A partrir de A6) - 2 Cores",
+        "Caixa: Sem correspondência única aprovada em IMP New: Laser CO2 (Madeira) - Até 120 cm2 (Aprox. 11x11cm)",
+        "Caixa: Sem correspondência única aprovada em IMP New: Laser CO2 (Madeira) - Até 250 cm2 (Aprox.16x16cm - BLOCOS A5, etc)",
+        "Caixa: Sem correspondência única aprovada em IMP New: Laser CO2 (Madeira) - Até 360 cm2 (Aprox 19x19cm)"
+      ],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "786",
+      "method_complete": false,
+      "pending": [
+        "Bolso Peito / Bolso Esquerdo / Bolso Direito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)"
+      ],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    },
+    {
+      "body_operations": 0,
+      "code": "840",
+      "method_complete": false,
+      "pending": [
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "Peito: Sem correspondência única aprovada em IMP New: Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)",
+        "Bolso: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 12 cm2 - 2 Cores (aprox. 3,4x3,4cm)",
+        "Chapéu: Sem correspondência única aprovada em IMP New: Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO | BONE)"
+      ],
+      "preparation_error": "Contentor existente exige prova limitada de preservação ou edição nativa suportada",
+      "property_operations": 0
+    }
+  ],
+  "plan_sha256": "f26a79e15ed775c393fb0ccdd93f18ad6841565550349ecaef8bc36002e6fedc"
+}

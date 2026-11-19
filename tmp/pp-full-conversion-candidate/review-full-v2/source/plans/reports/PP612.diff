@@ -1,0 +1,23 @@
+--- 612-before
++++ 612-after
+@@ -31,8 +31,8 @@
+ 
+ | Face / local | Opções propostas | Nota |
+ | --- | --- | --- |
+-| Peito | DTF - Até A5 (14,8x21,0 cm) | DTF A5: confirmar área de referência |
+-| Bolso | DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso |
++| Peito | DTF - Até A4 (21x29,7cm) | DTF A5: confirmar área de referência |
++| Bolso | DTF - Até A6 (10,5x14,8 cm) | DTF A7: confirmar área de referência; Transfer 2 Cores → 1 Cor: opção por validar, ausente de IMP → New; Confirmar área útil do bolso |
+ 
+ <toggle>
+ Pendências técnicas
+@@ -51,7 +51,8 @@
+ 
+ | Face / local | Opções completas e especificações | Notas |
+ | --- | --- | --- |
+-| Peito<br />Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm)<br />Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) | Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Peito | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />Transfer - Até 126 cm2 - 2 Cores (aprox. 11,2x11,2cm - MOCHILA)<br />DTF - Até A6 (10,5x14,8 cm)<br />DTF - Até A5 (14,8x21,0 cm) | Nota original conjunta (Peito<br />Bolso): Locais apresentados no mesmo grupo do Excel. Distribuição por local por confirmar. |
++| Bolso | Transfer - Até 57 cm2 - 2 Cores (7,5x7,5cm - BOLSO \| BONE)<br />DTF - Até A7 (7,4x10,5cm - BOLSO \| MANGA \| ESTOJOS) |  |
+ </column>
+ </columns>
+ 

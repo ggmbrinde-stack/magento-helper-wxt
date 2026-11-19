@@ -1,0 +1,74 @@
+{
+  "coverage": {
+    "duplicates": {
+      "184": [
+        "PPs BRINDES!C67:F72",
+        "PPs BRINDES!AH127:AK132"
+      ],
+      "266": [
+        "PPs BRINDES!C310:F318",
+        "PPs BRINDES!AH83:AK87"
+      ],
+      "285": [
+        "PPs BRINDES!AM36:AP46",
+        "PPs BRINDES!AM64:AP74"
+      ],
+      "394": [
+        "PPs BRINDES!C61:F66",
+        "PPs BRINDES!AH120:AK126"
+      ],
+      "435": [
+        "PPs BRINDES!C1154:F1157",
+        "PPs BRINDES!AC67:AF72"
+      ],
+      "700": [
+        "PPs BRINDES!C601:F608",
+        "PPs BRINDES!I2141:L2149"
+      ],
+      "737": [
+        "PPs BRINDES!C299:F303",
+        "PPs BRINDES!AH63:AK67"
+      ]
+    },
+    "excel_blocks": 823,
+    "excel_distinct_codes": 816,
+    "excel_missing_in_notion": [
+      "184",
+      "266",
+      "285",
+      "394",
+      "435",
+      "700",
+      "737"
+    ],
+    "notion_missing_in_excel": [
+      "492",
+      "964",
+      "965",
+      "966",
+      "967"
+    ],
+    "page_conversion_not_proved_by_inventory": true,
+    "protected_codes": [
+      "601"
+    ],
+    "working_copy_total": 814,
+    "worksheets": {
+      "PPs BRINDE TÊXTIL": 51,
+      "PPs BRINDES": 628,
+      "PPs TÊXTIL": 144
+    }
+  },
+  "implementation_sha256": "dafc80c641d650fb9311a66cd6c3298c229e2775f8bb8d2e43acc42b1178a676",
+  "pages": [
+    {
+      "body_operations": 2,
+      "code": "39",
+      "method_complete": true,
+      "pending": [],
+      "preparation_error": null,
+      "property_operations": 0
+    }
+  ],
+  "plan_sha256": "a203c32efa2d97c1f367fbd402c75888abc73d6bf5a77e71d7de9d2542d70887"
+}

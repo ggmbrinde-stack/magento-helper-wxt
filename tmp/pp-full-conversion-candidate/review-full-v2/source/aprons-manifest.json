@@ -1,0 +1,274 @@
+{
+  "group_id": "eleven-aprons-first-acceptance",
+  "review_scope": "Exact Working Copy eleven profiles, current sources and proposed rule corrections; not human apply approval",
+  "collection": "collection://431b6705-ae1f-83db-b71c-0739778f9e1a",
+  "targets": {
+    "428": {
+      "page_id": "074b6705ae1f8257a53701d87a64eb32",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "429": {
+      "page_id": "137b6705ae1f82048ef1810070095cf0",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "430": {
+      "page_id": "3cab6705ae1f820dab27015d0d5e85ea",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "467": {
+      "page_id": "f06b6705ae1f82ad871e01420cf67ecb",
+      "category": "APRON_SET",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "558": {
+      "page_id": "1dcb6705ae1f83c6bfb181c13c9a7d19",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "612": {
+      "page_id": "e48b6705ae1f83ddafb501a2ea781406",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "633": {
+      "page_id": "f7bb6705ae1f826b848d819549bc3c03",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "661": {
+      "page_id": "4e5b6705ae1f835ea3fc81290bfd0d16",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "662": {
+      "page_id": "ddbb6705ae1f820cb837013a1864964a",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "786": {
+      "page_id": "d00b6705ae1f835cb7440191c545e56b",
+      "category": "APRON",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    },
+    "840": {
+      "page_id": "bacb6705ae1f8296839b01585f6e5e8e",
+      "category": "APRON_SET",
+      "context": {
+        "source": "Current active PP identity and source-evidence category rules"
+      }
+    }
+  },
+  "excel_groups": {
+    "428": [
+      [
+        10,
+        15,
+        [
+          10
+        ]
+      ],
+      [
+        16,
+        17,
+        [
+          16
+        ]
+      ]
+    ],
+    "429": [
+      [
+        34,
+        39,
+        [
+          34
+        ]
+      ]
+    ],
+    "430": [
+      [
+        42,
+        47,
+        [
+          42
+        ]
+      ],
+      [
+        48,
+        49,
+        [
+          48,
+          49
+        ]
+      ]
+    ],
+    "467": [
+      [
+        96,
+        99,
+        [
+          96
+        ]
+      ],
+      [
+        100,
+        101,
+        [
+          100
+        ]
+      ],
+      [
+        102,
+        104,
+        [
+          102
+        ]
+      ]
+    ],
+    "558": [
+      [
+        106,
+        106,
+        [
+          106
+        ]
+      ],
+      [
+        107,
+        107,
+        [
+          107
+        ]
+      ]
+    ],
+    "612": [
+      [
+        118,
+        121,
+        [
+          118
+        ]
+      ],
+      [
+        122,
+        123,
+        [
+          122
+        ]
+      ]
+    ],
+    "633": [
+      [
+        22,
+        24,
+        [
+          22
+        ]
+      ],
+      [
+        25,
+        26,
+        [
+          25
+        ]
+      ]
+    ],
+    "661": [
+      [
+        64,
+        70,
+        [
+          64
+        ]
+      ],
+      [
+        71,
+        72,
+        [
+          71,
+          72
+        ]
+      ]
+    ],
+    "662": [
+      [
+        75,
+        80,
+        [
+          75
+        ]
+      ],
+      [
+        81,
+        82,
+        [
+          81,
+          82
+        ]
+      ],
+      [
+        83,
+        90,
+        [
+          83
+        ]
+      ]
+    ],
+    "786": [
+      [
+        53,
+        54,
+        [
+          53,
+          54,
+          55
+        ]
+      ]
+    ],
+    "840": [
+      [
+        127,
+        130,
+        [
+          127
+        ]
+      ],
+      [
+        131,
+        132,
+        [
+          131
+        ]
+      ],
+      [
+        133,
+        135,
+        [
+          133
+        ]
+      ]
+    ]
+  }
+}
