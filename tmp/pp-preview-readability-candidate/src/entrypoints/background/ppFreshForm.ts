@@ -1,6 +1,6 @@
 import type { PpFreshFormResponse, PpFreshFormState, PpFreshReadiness, PpReadinessCheckpoint, ScanPpDraftResponse, PpReferenceSource, PpGridCoverage, PpSourceSelection, PpConnectionResponse, PpConnectionTab, ApplyPpPlanResponse, PpApplyPlanRow, PpApplyPlanResult, SavePpFormResponse } from '../../core/messages';
 import { activatePpOptionsTab, scanCurrentPpDraft, ppRoutePathFromUrl, ppEntityIdFromUrl } from '../../page/features/pp-scan/page';
-import { applyPpPlanRows, placePpItemRows, type PpOrderDiagnostics, type PpPlacementReport } from '../../page/features/pp-scan/apply';
+import { applyPpPlanRows, placePpItemRows, ppSaveSortBlock, ppSaveVerification, type PpOrderDiagnostics, type PpPlacementReport } from '../../page/features/pp-scan/apply';
 import { removePpItemRows } from '../../page/features/pp-scan/remove';
 import { readPpReadiness } from '../../page/features/pp-scan/readiness';
 import { readLoadedPpGrid, type PpLoadedGridRead } from '../../page/features/pp-scan/grid';
@@ -455,6 +455,21 @@ export function ppApplyStatus(done: number, failed: number, skipped: number): 'a
   return skipped > 0 ? 'applied' : 'failed';
 }
 
+/** Credit an ordered row only when the same Sort account that Save requires is complete. */
+export function ppOrderApplyResults(plan: PpApplyPlanRow[], placement: Partial<PpPlacementReport> | null): PpApplyPlanResult[] {
+  const sortBlock = ppSaveSortBlock(placement, plan.length);
+  const moved = new Set(Array.isArray(placement?.orderedRows) ? placement.orderedRows : []);
+  const sorted = new Set(Array.isArray(placement?.sortRows) ? placement.sortRows : []);
+  const reason = sortBlock ?? (typeof placement?.reason === 'string' && placement.reason
+    ? placement.reason : 'The rows are at their face in the plan order.');
+  return plan.map((row, at) => ({
+    face: row.face, technique: row.technique, catalogueId: row.catalogueId,
+    outcome: !sortBlock && moved.has(at) && sorted.has(at) ? 'ordered' : 'failed',
+    reason: !sortBlock && moved.has(at) && sorted.has(at)
+      ? 'Moved to its plan position with Sort verified, unsaved.' : reason,
+  }));
+}
+
 function validApplyReport(value: unknown): value is { results: PpApplyPlanResult[]; reason: string } {
   if (!value || typeof value !== 'object') return false;
   const report = value as { results?: unknown; reason?: unknown };
@@ -487,6 +502,10 @@ async function runApply(job: ReadJob): Promise<ApplyPpPlanResponse> {
   const fail = (status: ApplyPpPlanResponse['status'], reason: string): ApplyPpPlanResponse => ({ ...base, status, reason });
   const keep = (response: ApplyPpPlanResponse): ApplyPpPlanResponse => ({ ...response, keptOpen: true, tabId: job.tabId });
   let readiness: PpFreshReadiness | undefined;
+  // The full-plan Sort account, kept apart from the per-row results so the summary can name it.
+  let sortPlacement: PpPlacementReport | null = null;
+  let sortNote = '';
+  let sortDiagnostics: PpOrderDiagnostics | undefined;
   const started = Date.now();
   try {
     const settings = await bounded(chrome.storage.local.get(['adminBaseUrl']), 5000, job);
@@ -672,18 +691,28 @@ async function runApply(job: ReadJob): Promise<ApplyPpPlanResponse> {
       const placement = (report && typeof report === 'object' ? report : null) as Partial<PpPlacementReport> | null;
       const why = typeof placement?.reason === 'string' && placement.reason
         ? placement.reason : 'The rows are at their face in the plan order.';
-      // The lane names the plan rows it placed, so each row is reported on its own index. A report
-      // without that list marks nothing placed, which is safer than crediting rows that did not move.
-      const movedRows = new Set(Array.isArray(placement?.orderedRows) ? placement.orderedRows : []);
       report = {
         reason: why,
         diagnostics: placement?.diagnostics,
-        results: (job.plan ?? []).map((row, at) => ({
-          face: row.face, technique: row.technique, catalogueId: row.catalogueId,
-          outcome: movedRows.has(at) ? 'ordered' : 'failed',
-          reason: movedRows.has(at) ? 'Moved to its plan position in the record list, unsaved.' : why,
-        })),
+        results: ppOrderApplyResults(job.plan ?? [], placement),
       };
+    }
+    // A fill numbers its batch, not the Notion list, so the whole plan is numbered once more here
+    // and read back. Save repeats the same check immediately before its press.
+    if (mode === 'add' || mode === 'rebuild') {
+      try {
+        const [injection] = await bounded(chrome.scripting.executeScript({
+          target: { tabId: job.tabId, frameIds: [0] }, world: 'MAIN', func: placePpItemRows,
+          args: [job.plan ?? [], true, null, 'append'],
+        }) as Promise<chrome.scripting.InjectionResult<unknown>[]>, 90_000, job);
+        const value: unknown = injection?.result;
+        sortPlacement = value && typeof value === 'object' ? value as PpPlacementReport : null;
+      } catch { sortPlacement = null; }
+      if (sortPlacement?.diagnostics) sortDiagnostics = sortPlacement.diagnostics;
+      const sortTotal = typeof sortPlacement?.sortTotal === 'number' ? sortPlacement.sortTotal : 0;
+      const sortSet = typeof sortPlacement?.sortSet === 'number' ? sortPlacement.sortSet : 0;
+      if (!sortPlacement) sortNote = ' The Sort values could not be read back, so Save stays blocked until the Sort column is checked.';
+      else if (sortTotal > 0 && sortSet < sortTotal) sortNote = ` Sort was not kept on ${sortTotal - sortSet} of ${sortTotal} planned row(s); Save stays blocked until the Sort column follows the plan.`;
     }
     if (!validApplyReport(report)) return { ...keep(fail('unavailable', 'The form returned an invalid apply report.')), readiness };
     const done = report.results.filter(result => result.outcome === success).length;
@@ -700,14 +729,14 @@ async function runApply(job: ReadJob): Promise<ApplyPpPlanResponse> {
     const snapshot = await readHelperForm(job);
     return { ...base, status, keptOpen: true, tabId: job.tabId, results: report.results,
       ...(snapshot ? { snapshot, readAt: Date.now() } : {}),
-      diagnostics: (report as { diagnostics?: unknown }).diagnostics, readiness,
+      diagnostics: sortDiagnostics ?? (report as { diagnostics?: unknown }).diagnostics, readiness,
       reason: mode === 'remove'
         ? `${done} removed, ${failed} failed, ${skipped} skipped. Nothing is saved yet: review the form, then save it from PP Preview or press Magento's own Save.`
         : mode === 'order'
           ? `${done} row(s) moved to the plan order in the record list, ${failed} failed, ${skipped} skipped. Nothing is saved yet: review the form, then save it from PP Preview or press Magento's own Save.`
           : mode === 'rebuild'
-            ? `${done} row(s) removed and re-added in Notion order, ${failed} failed, ${skipped} skipped. Nothing is saved yet: review the form, then save it from PP Preview or press Magento's own Save.`
-            : `${done} added, ${failed} failed, ${skipped} skipped. Nothing is saved yet: review the form, then save it from PP Preview or press Magento's own Save.` };
+            ? `${done} row(s) removed and re-added in Notion order, ${failed} failed, ${skipped} skipped. Nothing is saved yet: review the form, then save it from PP Preview or press Magento's own Save.${sortNote}`
+            : `${done} added, ${failed} failed, ${skipped} skipped. Nothing is saved yet: review the form, then save it from PP Preview or press Magento's own Save.${sortNote}` };
   } catch {
     return { ...fail(job.cancelled ? 'cancelled' : 'unavailable', job.cancelled ? 'Apply cancelled.' :
       'The form could not be filled safely. Nothing was saved.'), results: [], tabId: job.tabId !== undefined ? job.tabId : undefined,
@@ -947,6 +976,11 @@ export async function savePpForm(requestId: unknown, entityId: unknown, tabId: u
       return { ...refused('blocked', `The added rows are not at the end of their face in that helper form (${inPlace} of ${planned}). Nothing was pressed; move or delete those rows, then apply again.`),
         keptOpen: true, tabId: helper };
     }
+    // Sort is what the customer dropdown reads, so a value that did not survive the page's
+    // re-render is treated exactly like a row out of place: nothing is pressed. A report that
+    // never arrived, or that numbers no rows, is not evidence either.
+    const sortBlock = ppSaveSortBlock(placement, rows.length);
+    if (sortBlock) return { ...refused('blocked', sortBlock), keptOpen: true, tabId: helper };
     // Nothing was pressed yet, so a short retry is still a single press: the page may be binding.
     let pressed = await pressNativeSave(helper, before.url);
     for (let attempt = 1; !pressed.clicked && attempt <= 2; attempt += 1) {
@@ -978,17 +1012,31 @@ export async function savePpForm(requestId: unknown, entityId: unknown, tabId: u
     if (outcome.success.length || onGrid) {
       const stored = await readStoredPp(helper, before.url, entityId);
       await setApplyTab(undefined);
+      // Only a fresh read of the record can prove what was stored. A read-back that did not
+      // answer leaves the stored values unverified, so the outcome is unknown, never saved.
+      const readback = ppSaveVerification(stored, rows.map(row => ({
+        magentoFace: row.magentoFace, catalogueId: row.catalogueId,
+      })));
       if (stored.snapshot) {
         await chrome.tabs.remove(helper).catch(() => undefined);
         // The helper was in front for the press, so hand the dashboard back.
         if (typeof owner === 'number' && Number.isSafeInteger(owner) && owner >= 0 && owner !== helper) {
           try { await chrome.tabs.update(owner, { active: true }); } catch { /* the dashboard is still open */ }
         }
-        return { ...base, status: 'saved', reason: `Magento saved PP ${entityId}. The record was read again to check the rows.`,
+        // The stored Sort values are the evidence that the page posted the numbers read from the
+        // form, so a readback that restored a default is never reported as a plain success.
+        if (readback.status === 'unknown') {
+          return { ...base, status: 'unknown',
+            reason: `Magento saved PP ${entityId}, but the fresh read-back does not prove the Sort values follow the plan: ${readback.detail}. Check the record's order before relying on it.`,
+            magentoMessage, keptOpen: false, readAt: Date.now(), snapshot: stored.snapshot };
+        }
+        return { ...base, status: 'saved', reason: rows.length
+          ? `Magento saved PP ${entityId}. The record was read again: the rows and their Sort values follow the plan.`
+          : `Magento saved PP ${entityId}. The record was read again; this save carried no rows, so no Sort values were checked.`,
           magentoMessage, keptOpen: false, readAt: Date.now(), snapshot: stored.snapshot };
       }
-      return { ...base, status: 'saved',
-        reason: `Magento saved PP ${entityId}, but the read-back did not complete: ${stored.reason}.`,
+      return { ...base, status: 'unknown',
+        reason: `Magento confirmed the save of PP ${entityId}, but ${readback.detail}, so the stored Sort values are unverified. Open the record and check its order before saving again.`,
         magentoMessage, keptOpen: true, tabId: helper, readAt: Date.now() };
     }
     // A read in a new tab never touches the unsaved draft in the helper tab.

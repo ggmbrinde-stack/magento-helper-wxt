@@ -515,7 +515,115 @@ export interface PpPlacementReport {
   total: number; ordered: number; modelMoved?: boolean;
   /** Plan row indices that ended up in place, so a caller reports each row, not a count. */
   orderedRows?: number[];
+  /** Sort account, only when the caller asked for Sort values: planned rows, verified rows. */
+  sortTotal?: number;
+  sortSet?: number;
+  /** Plan row indices whose Sort was read back from the live input and its bound record. */
+  sortRows?: number[];
   diagnostics?: PpOrderDiagnostics; reason: string;
+}
+
+/**
+ * The Sort values a fresh readback of the saved record still keeps, or null when they follow the
+ * plan. This is the only evidence that the page posted the number read from the form instead of
+ * Magento's default.
+ */
+export function ppSavedSortMismatch(snapshot: {
+  items: { state: string; rows: Array<{ values: Record<string, unknown> }> };
+  locations: { state: string; rows: Array<{ values: Record<string, unknown> }> };
+}, plan: Array<{ magentoFace: string; catalogueId: string }>): string | null {
+  const plain = (value: unknown): string => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const key = (value: unknown): string => plain(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(' ').sort().join('');
+  const name = (value: unknown): string => {
+    if (typeof value === 'string') return value.trim();
+    if (value && typeof value === 'object') {
+      for (const entry of Object.values(value as Record<string, unknown>)) {
+        const found = typeof entry === 'string' ? entry.trim() : '';
+        if (found) return found;
+      }
+    }
+    return '';
+  };
+  const number = (value: string): string => /^\d+$/.test(value) ? String(Number(value)) : value;
+  const groups: Array<{ face: string; ids: string[] }> = [];
+  for (const row of plan) {
+    const face = key(row.magentoFace), id = plain(row.catalogueId);
+    if (!face || !/^[1-9]\d{0,15}$/.test(id)) continue;
+    const group = groups.find(entry => entry.face === face);
+    if (group) group.ids.push(id); else groups.push({ face, ids: [id] });
+  }
+  if (!groups.length) return null;
+  if (snapshot.items.state !== 'available' || snapshot.locations.state !== 'available') {
+    return 'the read-back did not include the item and face lists';
+  }
+  // Items name their face by the location key, so the saved label is resolved first.
+  const faceOf = new Map<string, string>();
+  for (const row of snapshot.locations.rows) {
+    const id = plain(row.values.key_id), label = name(row.values.name);
+    if (id && label) faceOf.set(id, key(label));
+  }
+  const items = snapshot.items.rows.map(row => ({
+    face: faceOf.get(plain(row.values.parent)) ?? '',
+    id: plain(row.values.name_option ?? row.values.name),
+    sort: number(plain(row.values.sort)),
+  }));
+  for (const group of groups) {
+    const onFace = items.filter(item => item.face === group.face);
+    // A face whose key could not be resolved falls back to the whole list, so the values are still
+    // checked instead of being reported as unreadable.
+    const pool = onFace.length ? onFace : items;
+    // A plan that names every row of its face must read back 1..n. A partial plan (the save lane
+    // receives only the rows it handled) is judged by order: distinct and increasing.
+    const exact = onFace.length > 0 && onFace.length === group.ids.length;
+    const used: number[] = [];
+    let previous = 0;
+    for (let at = 0; at < group.ids.length; at += 1) {
+      const index = pool.findIndex((item, position) => used.indexOf(position) === -1 && item.id === group.ids[at]);
+      if (index === -1) return `row ${at + 1} (${group.ids[at]}) was not in the read-back on its face`;
+      used.push(index);
+      const found = pool[index]!.sort;
+      if (exact && found !== String(at + 1)) {
+        return `${group.ids[at]} was stored with Sort ${found || '(blank)'} instead of ${at + 1}`;
+      }
+      if (!exact && (!/^\d+$/.test(found) || Number(found) <= previous)) {
+        return `${group.ids[at]} was stored with Sort ${found || '(blank)'}, which does not follow Sort ${previous}`;
+      }
+      previous = Number(found);
+    }
+  }
+  return null;
+}
+
+/**
+ * Why Save must not press, or null when the Sort column is verified for every row to save. A
+ * missing report, a read-back that numbers no rows and a report that numbers a different set are
+ * all treated as no evidence: the page posts these values, so none of them may pass as success.
+ * An empty save (a removal carries no rows) has no Sort plan and is not held back here.
+ */
+export function ppSaveSortBlock(placement: unknown, rowCount: number): string | null {
+  if (!Number.isSafeInteger(rowCount) || rowCount <= 0) return null;
+  const report = placement && typeof placement === 'object' ? placement as Partial<PpPlacementReport> : null;
+  if (!report) return 'The Sort values could not be read back from that helper form. Nothing was pressed; apply the plan again, then save.';
+  const total = report.sortTotal, set = report.sortSet;
+  const sortTotal = typeof total === 'number' && Number.isSafeInteger(total) ? total : 0;
+  const sortSet = typeof set === 'number' && Number.isSafeInteger(set) ? set : 0;
+  if (sortTotal <= 0) return `The form reported no Sort plan for the ${rowCount} row(s) to save. Nothing was pressed; apply the plan again, then save.`;
+  if (sortTotal !== rowCount) return `The form planned Sort for ${sortTotal} of the ${rowCount} row(s) to save, so the Sort column cannot be trusted. Nothing was pressed; apply the plan again, then save.`;
+  if (sortSet < sortTotal) return `The Sort values do not follow the plan on that helper form (${sortSet} of ${sortTotal} read back). Nothing was pressed; apply the plan again, then save.`;
+  return null;
+}
+
+/**
+ * The only two outcomes a save can report once Magento answered: verified against a fresh read of
+ * the record, or unknown. A read-back that did not answer is never called saved.
+ */
+export function ppSaveVerification(stored: { snapshot?: Parameters<typeof ppSavedSortMismatch>[0] | null; reason?: string },
+  plan: Array<{ magentoFace: string; catalogueId: string }>): { status: 'saved' | 'unknown'; detail: string } {
+  if (!stored.snapshot) {
+    return { status: 'unknown', detail: `the read-back did not complete (${stored.reason || 'no reason was reported'})` };
+  }
+  const mismatch = ppSavedSortMismatch(stored.snapshot, plan);
+  return mismatch ? { status: 'unknown', detail: mismatch } : { status: 'saved', detail: '' };
 }
 
 /**
@@ -801,33 +909,101 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
   };
   const placement = modelOrder();
   report.modelMoved = placement === 'moved' || placement === 'in-order';
-  // When requested, assign Sort values per face according to the plan order (1, 2, 3...)
-  // so the frontend customer dropdown renders in the correct order.
-  if (assignSort) {
-    for (const { face, ids } of groups) {
-      // One row per occurrence: a row leaves the pool once it has a Sort, so a technique listed
-      // twice on one face numbers its two rows instead of numbering the first row twice.
-      const pool = itemRows().filter(r => faceOf(r) === face);
-      const used = new Set<Element>();
-      ids.forEach((id, index) => {
-        const wantedSort = String(index + 1);
-        const match = pool.find(r => !used.has(r) && (idOf(r) === id
-          || (r.querySelector<HTMLInputElement>('input[name*="[name]"]')?.value.trim() ?? '') === id));
-        if (!match) return;
-        used.add(match);
-        const input = sortInput(match);
-        if (!input) return;
-        setInput(input, wantedSort);
-        try {
-          const ctx = ctxOf(input) ?? (ko ? ko.contextFor(input) : null);
-          if (ctx && ctx.$data) {
-            const d = ctx.$data as Record<string, unknown>;
-            if (typeof d.value === 'function') (d.value as (val: unknown) => void)(wantedSort);
-            if (typeof d.sort === 'function') (d.sort as (val: unknown) => void)(wantedSort);
-          }
-        } catch { /* events already dispatched */ }
-      });
+  // When requested, number each face's planned rows in plan order (1, 2, 3...) so the frontend
+  // dropdown follows Notion. Both the input and the record it is bound to are written: moving the
+  // rows re-renders them from that record, and an input-only write is what left two rows on
+  // Magento's default Sort 1. Every value is read back after the re-render before it is reported.
+  const sortRows: number[] = [];
+  const boundSortOf = (row: Element): string | null => {
+    // The bound record owns the posted value; a row without a readable record is judged by its input.
+    try {
+      const input = sortInput(row);
+      const ctx = input ? (ctxOf(input) ?? (ko ? ko.contextFor(input) : null)) : null;
+      const data = ctx?.$data as Record<string, unknown> | undefined;
+      if (!data) return null;
+      const candidate = data.sort;
+      const value = typeof candidate === 'function' ? (candidate as () => unknown)() : candidate;
+      return typeof value === 'string' || typeof value === 'number' ? String(value).trim() : null;
+    } catch { return null; }
+  };
+  const matchSortRow = (pool: HTMLTableRowElement[], used: Set<Element>, face: string, id: string):
+    HTMLTableRowElement | null => {
+    // The dropdown is the identity; the name input is only a fallback for a row this lane filled.
+    const match = pool.find(candidate => !used.has(candidate) && faceOf(candidate) === face &&
+      (idOf(candidate) === id ||
+        (candidate.querySelector<HTMLInputElement>('input[name*="[name]"]')?.value.trim() ?? '') === id));
+    if (match) used.add(match);
+    return match ?? null;
+  };
+  // One entry per occurrence: a technique listed twice on a face numbers both of its rows. A plan
+  // that names only part of a face starts after the highest number already on it, so the rows the
+  // plan does not name keep their order and no two rows share Sort 1; a plan that names every row
+  // of the face numbers it 1..n.
+  const sortGroups = assignSort ? groups.map(group => {
+    const pool = itemRows();
+    const used = new Set<Element>();
+    group.ids.forEach(id => { matchSortRow(pool, used, group.face, id); });
+    let base = 0;
+    for (const row of pool) {
+      if (used.has(row) || faceOf(row) !== group.face) continue;
+      const value = Number((sortInput(row)?.value ?? '').trim());
+      if (Number.isFinite(value) && value > base && value < 1e6) base = value;
     }
+    return {
+      face: group.face,
+      expected: group.ids.map((id, index) => ({
+        id, plan: group.rows[index]!, value: String(base + index + 1),
+      })),
+    };
+  }) : [];
+  const sortTotal = sortGroups.reduce((count, group) => count + group.expected.length, 0);
+  const verifySorts = (): { verified: number[]; wrong: string[] } => {
+    // Re-read the table: a write can make Knockout render the rows again, so the nodes matched
+    // before the write may no longer be the ones on screen.
+    const pool = itemRows();
+    const used = new Set<Element>();
+    const verified: number[] = [], wrong: string[] = [];
+    for (const group of sortGroups) for (const want of group.expected) {
+      const row = matchSortRow(pool, used, group.face, want.id);
+      if (!row) { wrong.push(`${want.id}: no row`); continue; }
+      const input = String(sortInput(row)?.value ?? '').trim();
+      const bound = boundSortOf(row);
+      if (input === want.value && (bound === null || bound === want.value)) verified.push(want.plan);
+      else wrong.push(`${want.id}: ${input || '(blank)'}${bound !== null && bound !== want.value
+        ? ' / record ' + (bound || '(blank)') : ''}`);
+    }
+    return { verified, wrong };
+  };
+  const writeSorts = (): void => {
+    const pool = itemRows();
+    const used = new Set<Element>();
+    for (const group of sortGroups) for (const want of group.expected) {
+      const row = matchSortRow(pool, used, group.face, want.id);
+      const input = row ? sortInput(row) : null;
+      if (!row || !input) continue;
+      // A value that already survived is left alone, so the pass does not cause itself to re-render.
+      if (input.value.trim() === want.value && boundSortOf(row) === want.value) continue;
+      setInput(input, want.value);
+      try {
+        const ctx = ctxOf(input) ?? (ko ? ko.contextFor(input) : null);
+        const data = ctx?.$data as Record<string, unknown> | undefined;
+        if (data) {
+          if (typeof data.sort === 'function') (data.sort as (value: unknown) => void)(want.value);
+          else if (typeof data.value === 'function') (data.value as (value: unknown) => void)(want.value);
+        }
+      } catch { /* the input events above still apply */ }
+    }
+  };
+  if (assignSort) {
+    let checked = verifySorts();
+    // Two more attempts cover a table that re-renders after the first write.
+    for (let attempt = 0; attempt < 2 && checked.wrong.length; attempt += 1) {
+      await sleep(120);
+      writeSorts();
+      await sleep(160);
+      checked = verifySorts();
+    }
+    sortRows.push(...checked.verified);
   }
   // The plan has to be the tail of its face, in plan order, in the record list that is posted.
   const orderedRows: number[] = [];
@@ -844,6 +1020,11 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
   }
   report.orderedRows = orderedRows;
   report.ordered = orderedRows.length;
+  if (assignSort) {
+    report.sortTotal = sortTotal;
+    report.sortSet = sortRows.length;
+    report.sortRows = sortRows;
+  }
   const all = itemRows();
   const list = all.length ? itemList(all[0]!, all.length) : null;
   const entries = list ? list.read() : [];
@@ -855,7 +1036,11 @@ export async function placePpItemRows(plan: PpApplyPlanRow[], assignSort = false
     modelOrder: model.map(entry => entry.id), modelMoved: report.modelMoved === true,
     ordered: report.ordered, total: report.total,
   };
-  if (report.ordered < report.total) {
+  if (sortTotal > 0 && sortRows.length < sortTotal) {
+    // The order cannot be trusted when the Sort column does not follow the plan: the page posts
+    // those values, so Save must not press until they agree.
+    report.reason = `Sort was not kept on ${sortTotal - sortRows.length} of ${sortTotal} planned row(s) after the page re-rendered, so the Sort column does not follow the plan. Nothing was saved; Save is blocked until the Sort values match.`;
+  } else if (report.ordered < report.total) {
     report.reason = placement === 'none'
       ? 'The record list that Save posts was not found, so the order was not set.'
       : placement === 'refused'

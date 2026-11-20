@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 // @ts-expect-error - jsdom ships no types and is only used by DOM tests.
 import { JSDOM } from 'jsdom';
-import { applyPpPlanRows, placePpItemRows } from '../src/page/features/pp-scan/apply';
+import { applyPpPlanRows, placePpItemRows, ppSaveSortBlock, ppSaveVerification, ppSavedSortMismatch } from '../src/page/features/pp-scan/apply';
+import { ppOrderApplyResults } from '../src/entrypoints/background/ppFreshForm';
 import { removePpItemRows } from '../src/page/features/pp-scan/remove';
 
 const row = (index: number, parent: string, option: string, name: string, sort = ''): string =>
@@ -806,4 +807,242 @@ test('the plan arrangement puts a technique Notion lists first at the top of its
     if (previousDocument) Object.defineProperty(globalThis, 'document', previousDocument);
     else Reflect.deleteProperty(globalThis, 'document');
   }
+});
+
+// Two techniques on one face as the live form showed them: ids 1 and 11, both on Magento's
+// default Sort 1. The lane has to number them in plan order and read the numbers back.
+async function withSortPage(run: (dom: any) => Promise<void>, options: {
+  sorts: string[];
+  bound?: 'accept' | 'reject';
+  rerender?: boolean;
+}): Promise<void> {
+  const ids = ['1', '11'];
+  const rows = options.sorts.map((sort, index) =>
+    `<tr><td><select name="options[sub_options_items][sub_options_items][${index}][parent]">` +
+    `<option value="k1" selected>Face 1</option></select>` +
+    `<select name="options[sub_options_items][sub_options_items][${index}][name_option]">` +
+    `<option value="${ids[index]}" selected>${ids[index]}</option></select>` +
+    `<input name="options[sub_options_items][sub_options_items][${index}][name]" value="${ids[index]}">` +
+    `<input name="options[sub_options_items][sub_options_items][${index}][sort]" value="${sort}">` +
+    `</td></tr>`).join('');
+  const dom = new JSDOM(`<!doctype html><table><tbody>${rows}</tbody></table>`);
+  const document = dom.window.document;
+  const records = options.sorts.map(sort => ({ sort }));
+  const inputs = Array.from(document.querySelectorAll('input[name*="[sort]"]')) as any[];
+  if (options.rerender) {
+    // Knockout renders the input from the record again shortly after it is typed into.
+    for (const input of inputs) input.addEventListener('change', () => {
+      const index = Array.from(document.querySelectorAll('tr')).indexOf(input.closest('tr'));
+      setTimeout(() => { input.value = records[index]!.sort; }, 20);
+    });
+  }
+  const ko = options.bound ? {
+    dataFor: () => null,
+    contextFor: (node: any) => {
+      const row = node && node.closest ? node.closest('tr') : null;
+      const index = row ? Array.from(document.querySelectorAll('tr')).indexOf(row) : -1;
+      const record = records[index];
+      if (!record) return null;
+      const sort = (value?: unknown) => {
+        if (value === undefined) return record.sort;
+        if (options.bound === 'accept') record.sort = String(value);
+        return record.sort;
+      };
+      return { $data: { sort }, $parent: null };
+    },
+  } : null;
+  const previousWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  const previousDocument = Object.getOwnPropertyDescriptor(globalThis, 'document');
+  const previousEvent = Object.getOwnPropertyDescriptor(globalThis, 'Event');
+  Object.defineProperty(globalThis, 'document', { value: document, configurable: true });
+  Object.defineProperty(globalThis, 'Event', { value: dom.window.Event, configurable: true });
+  if (ko) Object.defineProperty(globalThis, 'window', { value: { ko }, configurable: true });
+  try {
+    await run(dom);
+  } finally {
+    dom.window.close();
+    if (previousWindow) Object.defineProperty(globalThis, 'window', previousWindow);
+    else Reflect.deleteProperty(globalThis, 'window');
+    if (previousDocument) Object.defineProperty(globalThis, 'document', previousDocument);
+    else Reflect.deleteProperty(globalThis, 'document');
+    if (previousEvent) Object.defineProperty(globalThis, 'Event', previousEvent);
+    else Reflect.deleteProperty(globalThis, 'Event');
+  }
+}
+
+const facePlan = [
+  { face: '1 Face', magentoFace: 'Face 1', technique: 'Tampografia 1 Cor', catalogueId: '1' },
+  { face: '1 Face', magentoFace: 'Face 1', technique: 'Laser Metal', catalogueId: '11' },
+];
+
+const liveSorts = (dom: any): string[] => Array.from(dom.window.document.querySelectorAll('input[name*="[sort]"]'))
+  .map((input: any) => input.value);
+
+test('two options on one face get distinct Sort values in Notion order (PP 42)', async () => {
+  await withSortPage(async dom => {
+    const report = await placePpItemRows(facePlan, true, null, 'append');
+    assert.equal(report.sortTotal, 2);
+    assert.equal(report.sortSet, 2, report.reason);
+    assert.deepEqual(report.sortRows, [0, 1]);
+    assert.deepEqual(liveSorts(dom), ['1', '2'], 'the duplicate default Sort 1 is replaced');
+  }, { sorts: ['1', '1'] });
+});
+
+test('a partial plan continues after the Sort numbers already on its face', async () => {
+  // The save lane receives only the rows the apply handled, so an added row must not restart the
+  // face at Sort 1 and collide with the row that was already there.
+  const dom = new JSDOM('<!doctype html><table><tbody>' +
+    '<tr><td><select name="options[sub_options_items][sub_options_items][0][parent]">' +
+    '<option value="k1" selected>Face 1</option></select>' +
+    '<select name="options[sub_options_items][sub_options_items][0][name_option]">' +
+    '<option value="1" selected>Tampografia 1 Cor</option></select>' +
+    '<input name="options[sub_options_items][sub_options_items][0][sort]" value="1"></td></tr>' +
+    '<tr><td><select name="options[sub_options_items][sub_options_items][1][parent]">' +
+    '<option value="k1" selected>Face 1</option></select>' +
+    '<select name="options[sub_options_items][sub_options_items][1][name_option]">' +
+    '<option value="11" selected>Laser Metal</option></select>' +
+    '<input name="options[sub_options_items][sub_options_items][1][sort]" value="1"></td></tr>' +
+    '</tbody></table>');
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'document');
+  const previousEvent = Object.getOwnPropertyDescriptor(globalThis, 'Event');
+  Object.defineProperty(globalThis, 'document', { value: dom.window.document, configurable: true });
+  Object.defineProperty(globalThis, 'Event', { value: dom.window.Event, configurable: true });
+  try {
+    const report = await placePpItemRows([
+      { face: '1 Face', magentoFace: 'Face 1', technique: 'Laser Metal', catalogueId: '11' },
+    ], true, null, 'append');
+    assert.equal(report.sortTotal, 1);
+    assert.equal(report.sortSet, 1, report.reason);
+    assert.deepEqual(Array.from(dom.window.document.querySelectorAll('input[name*="[sort]"]'))
+      .map((input: any) => input.value), ['1', '2']);
+  } finally {
+    dom.window.close();
+    if (previous) Object.defineProperty(globalThis, 'document', previous);
+    else Reflect.deleteProperty(globalThis, 'document');
+    if (previousEvent) Object.defineProperty(globalThis, 'Event', previousEvent);
+    else Reflect.deleteProperty(globalThis, 'Event');
+  }
+});
+
+test('an input-only Sort write is not credited while the bound record still says 1', async () => {
+  await withSortPage(async dom => {
+    const report = await placePpItemRows(facePlan, true, null, 'append');
+    assert.equal(report.sortTotal, 2);
+    assert.equal(report.sortSet, 1, 'the row whose record never took 2 is not credited');
+    assert.deepEqual(report.sortRows, [0]);
+    assert.match(report.reason, /Sort was not kept on 1 of 2 planned row\(s\)/);
+  }, { sorts: ['1', '1'], bound: 'reject' });
+});
+
+test('a re-render that restores Magento\'s default Sort is corrected through the bound record', async () => {
+  await withSortPage(async dom => {
+    const report = await placePpItemRows(facePlan, true, null, 'append');
+    assert.equal(report.sortSet, 2, report.reason);
+    assert.deepEqual(liveSorts(dom), ['1', '2'], 'the value survives the re-render');
+  }, { sorts: ['1', '1'], bound: 'accept', rerender: true });
+});
+
+test('a re-render that keeps restoring duplicate Sort values is reported, not saved', async () => {
+  await withSortPage(async dom => {
+    const report = await placePpItemRows(facePlan, true, null, 'append');
+    assert.equal(report.sortSet, 1);
+    assert.match(report.reason, /Sort was not kept on 1 of 2 planned row\(s\)/);
+    assert.deepEqual(liveSorts(dom), ['1', '1']);
+  }, { sorts: ['1', '1'], bound: 'reject', rerender: true });
+});
+
+// The saved record is the only proof that the page posted these numbers; the fresh readback is
+// judged by face label and by occurrence, so a repeated technique numbers both of its rows.
+const storedSnapshot = (items: Array<{ parent: string; id: string; sort: string }>) => ({
+  locations: { state: 'available', rows: [{ values: { key_id: 'k1', name: 'Face 1' } }] },
+  items: { state: 'available', rows: items.map(entry => ({
+    values: { parent: entry.parent, name_option: entry.id, sort: entry.sort },
+  })) },
+});
+
+test('the saved readback keeps each planned Sort value', async () => {
+  assert.equal(ppSavedSortMismatch(storedSnapshot([
+    { parent: 'k1', id: '1', sort: '1' },
+    { parent: 'k1', id: '11', sort: '2' },
+  ]), facePlan), null);
+  assert.equal(ppSavedSortMismatch(storedSnapshot([
+    { parent: 'k1', id: '1', sort: '1' },
+    { parent: 'k1', id: '1', sort: '2' },
+    { parent: 'k1', id: '11', sort: '3' },
+  ]), [facePlan[0]!, plan('1')[0]!, facePlan[1]!]), null, 'a repeated technique numbers both copies');
+});
+
+test('Save is blocked when the Sort report is missing, unnumbered or short', () => {
+  // No report at all: the old lane read this as "0 of 0", which let Save press.
+  assert.match(ppSaveSortBlock(null, 2) ?? '', /Sort values could not be read back/);
+  assert.match(ppSaveSortBlock(undefined, 2) ?? '', /Sort values could not be read back/);
+  assert.match(ppSaveSortBlock('not-a-report', 2) ?? '', /Sort values could not be read back/);
+  // A report without a Sort account numbers no rows, so there is nothing to trust.
+  assert.match(ppSaveSortBlock({ total: 2, ordered: 2, reason: '' }, 2) ?? '', /reported no Sort plan for the 2 row/);
+  assert.match(ppSaveSortBlock({ total: 2, ordered: 2, sortTotal: 0, sortSet: 0, reason: '' }, 2) ?? '',
+    /reported no Sort plan/);
+  assert.match(ppSaveSortBlock({ total: 2, ordered: 2, sortTotal: '2', sortSet: 2, reason: '' }, 2) ?? '',
+    /reported no Sort plan/, 'a string count is not an answer');
+  // A report that numbers fewer rows than are being saved proves only part of the column.
+  assert.match(ppSaveSortBlock({ total: 3, ordered: 3, sortTotal: 2, sortSet: 2, reason: '' }, 3) ?? '',
+    /planned Sort for 2 of the 3 row/);
+  // The duplicate Sort 1 case: the rows are placed but the values did not survive.
+  assert.match(ppSaveSortBlock({ total: 2, ordered: 2, sortTotal: 2, sortSet: 1, reason: '' }, 2) ?? '',
+    /1 of 2 read back/);
+  // Verified rows pass, and an empty save (a removal carries no rows) has no Sort plan to hold.
+  assert.equal(ppSaveSortBlock({ total: 2, ordered: 2, sortTotal: 2, sortSet: 2, reason: '' }, 2), null);
+  assert.equal(ppSaveSortBlock(null, 0), null);
+});
+
+test('order apply never credits rows that the Sort Save gate would reject', () => {
+  const unnumbered = { total: 2, ordered: 2, orderedRows: [0, 1], reason: '' };
+  assert.match(ppSaveSortBlock(unnumbered, facePlan.length) ?? '', /no Sort plan/);
+  assert.deepEqual(ppOrderApplyResults(facePlan, unnumbered).map(row => row.outcome), ['failed', 'failed']);
+
+  const partial = { ...unnumbered, sortTotal: 2, sortSet: 1, sortRows: [0] };
+  assert.match(ppSaveSortBlock(partial, facePlan.length) ?? '', /1 of 2 read back/);
+  assert.deepEqual(ppOrderApplyResults(facePlan, partial).map(row => row.outcome), ['failed', 'failed']);
+
+  const verified = { ...partial, sortSet: 2, sortRows: [0, 1] };
+  assert.equal(ppSaveSortBlock(verified, facePlan.length), null);
+  assert.deepEqual(ppOrderApplyResults(facePlan, verified).map(row => row.outcome), ['ordered', 'ordered']);
+});
+
+test('a save is never reported saved without a fresh read-back', () => {
+  // The record could not be read again: the write happened, the stored values are unproven.
+  const unread = ppSaveVerification({ reason: 'the record was not ready to read within 30 seconds' }, facePlan);
+  assert.equal(unread.status, 'unknown');
+  assert.match(unread.detail, /read-back did not complete \(the record was not ready/);
+  assert.match(ppSaveVerification({}, facePlan).detail, /read-back did not complete \(no reason/);
+  // A read-back that answered with the planned Sort values is the only saved outcome.
+  const good = ppSaveVerification({ snapshot: storedSnapshot([
+    { parent: 'k1', id: '1', sort: '1' },
+    { parent: 'k1', id: '11', sort: '2' },
+  ]) }, facePlan);
+  assert.deepEqual(good, { status: 'saved', detail: '' });
+  // A read-back that answered with a restored default is unknown, not saved.
+  const restored = ppSaveVerification({ snapshot: storedSnapshot([
+    { parent: 'k1', id: '1', sort: '1' },
+    { parent: 'k1', id: '11', sort: '1' },
+  ]) }, facePlan);
+  assert.equal(restored.status, 'unknown');
+  assert.match(restored.detail, /11 was stored with Sort 1 instead of 2/);
+  // Lists that did not read are an unproven read-back too, never a pass.
+  const unreadable = ppSaveVerification({ snapshot: {
+    locations: { state: 'available', rows: [{ values: { key_id: 'k1', name: 'Face 1' } }] },
+    items: { state: 'unavailable', rows: [] },
+  } }, facePlan);
+  assert.equal(unreadable.status, 'unknown');
+  assert.match(unreadable.detail, /did not include the item and face lists/);
+});
+
+test('the saved readback names a restored duplicate Sort', async () => {
+  const mismatch = ppSavedSortMismatch(storedSnapshot([
+    { parent: 'k1', id: '1', sort: '1' },
+    { parent: 'k1', id: '11', sort: '1' },
+  ]), facePlan);
+  assert.match(mismatch ?? '', /11 was stored with Sort 1 instead of 2/);
+  assert.match(ppSavedSortMismatch(storedSnapshot([
+    { parent: 'k1', id: '1', sort: '1' },
+  ]), facePlan) ?? '', /11.*was not in the read-back/);
 });
