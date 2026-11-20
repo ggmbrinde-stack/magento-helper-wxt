@@ -317,4 +317,17 @@ export interface SavePpFormResponse {
   tabId?: number;
   readAt?: number;
   snapshot?: ScanPpDraftResponse;
+  sortDiagnostic?: {
+    entityId: string;
+    before: PpSortCapture;
+    after: PpSortCapture;
+    outcome: SavePpFormResponse['status'];
+  };
+}
+
+export interface PpSortCapture {
+  at: number;
+  available: boolean;
+  truncated: boolean;
+  rows: Array<{ face: string; name: string; catalogueId: string; sort: string }>;
 }

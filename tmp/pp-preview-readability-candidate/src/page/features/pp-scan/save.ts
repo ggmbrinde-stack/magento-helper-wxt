@@ -4,8 +4,42 @@
 // These functions are injected with `chrome.scripting.executeScript`, which serialises
 // the function alone: no imports, no module-level constants, no references outside the
 // body. A module constant here fails as an undefined name in the live page.
+import type { PpSortCapture, ScanPpDraftResponse } from '../../../core/messages';
+
 export interface PpSavePress { clicked: boolean; label: string; reason: string }
 export interface PpSaveOutcome { success: string[]; errors: string[] }
+
+/** Keep only the row fields needed to compare Sort before and after Save. */
+export function ppSortCapture(snapshot: ScanPpDraftResponse | null | undefined, at: number): PpSortCapture {
+  const available = !!snapshot && ['ok', 'partial'].includes(snapshot.status) &&
+    snapshot.locations.state === 'available' && snapshot.items.state === 'available';
+  const capture: PpSortCapture = { at, available, truncated: !!snapshot &&
+    (snapshot.locations.truncated || snapshot.items.truncated), rows: [] };
+  if (!available || !snapshot) return capture;
+  const text = (value: unknown): string => typeof value === 'string' ? value : typeof value === 'number' ? String(value) : '';
+  const name = (value: unknown): string => {
+    if (typeof value === 'string' && value.trim().startsWith('{')) {
+      try { value = JSON.parse(value); } catch { return ''; }
+    }
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const names = value as Record<string, unknown>;
+      return text(names['1']) || Object.values(names).map(text).find(Boolean) || '';
+    }
+    return text(value);
+  };
+  const faces = new Map(snapshot.locations.rows.map(row => [text(row.values.key_id),
+    name(row.translations?.name?.parsed ?? row.values.name)]));
+  const catalogue = new Map((snapshot.catalogue ?? []).map(row => [row.id, row.label]));
+  capture.rows = snapshot.items.rows.map(row => {
+    const catalogueId = text(row.values.name_option ?? row.values.name);
+    return {
+      face: faces.get(text(row.values.parent)) || '(unresolved face)',
+      name: text(snapshot.itemLabels?.[text(row.values.record_id) || String(row.position)]) || catalogue.get(catalogueId) || '',
+      catalogueId, sort: text(row.values.sort),
+    };
+  });
+  return capture;
+}
 
 export function pressPpSave(): PpSavePress {
   const selectors = [

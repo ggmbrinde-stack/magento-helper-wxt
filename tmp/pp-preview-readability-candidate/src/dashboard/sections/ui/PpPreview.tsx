@@ -39,6 +39,7 @@ export function PpPreview() {
   // its own record of what was applied.
   const [appliedRows, setAppliedRows] = useState<Array<{ face: string; magentoFace: string; technique: string; catalogueId: string }>>([]);
   const [saveState, setSaveState] = useState<{ phase: 'idle' | 'confirming' | 'saving' | 'done'; response?: SavePpFormResponse; error?: string }>({ phase: 'idle' });
+  const [sortCopy, setSortCopy] = useState('');
   const mounted = useRef(true), generation = useRef(0);
   const catalogueJob = useRef<{ stopped: boolean; timedOut: boolean; timer?: ReturnType<typeof setTimeout> } | null>(null);
   const previewJob = useRef<PreviewRequest | null>(null);
@@ -337,7 +338,7 @@ export function PpPreview() {
     // read-back, where they are already present, so it cannot supply them any more.
     const rows = appliedMode === 'remove' ? [] : appliedRows;
     if (!rows.length && !removed.length) return;
-    setSaveState({ phase: 'saving' });
+    setSortCopy(''); setSaveState({ phase: 'saving' });
     try {
       const response = await chrome.runtime.sendMessage({ type: 'SAVE_PP_FORM', requestId: crypto.randomUUID(),
         entityId, tabId: helperTab, rows, arrangement: appliedMode === 'order' ? 'plan' : 'append' }) as SavePpFormResponse;
@@ -679,6 +680,17 @@ export function PpPreview() {
           </div> : null}
       </div> : null}
       </div>
+    </section> : null}
+    {saveState.response?.sortDiagnostic ? <section class="db-card">
+      <h2>Save Sort diagnostic</h2>
+      <p class="db-note">Only face, option name, catalogue ID and Sort are included. A before read was attempted just before Save. An after read is shown only when a fresh record read succeeded; unavailable reads are marked.</p>
+      <textarea class="db-textarea" readOnly rows={10} aria-label="Copyable Save Sort diagnostic"
+        value={JSON.stringify(saveState.response.sortDiagnostic, null, 2)} />
+      <div class="db-actions"><button type="button" class="db-btn" onClick={() => {
+        if (!navigator.clipboard?.writeText) { setSortCopy('Clipboard unavailable. Select and copy the text above.'); return; }
+        void navigator.clipboard.writeText(JSON.stringify(saveState.response?.sortDiagnostic, null, 2))
+          .then(() => setSortCopy('Copied.'), () => setSortCopy('Clipboard unavailable. Select and copy the text above.'));
+      }}>Copy diagnostic</button><span role="status">{sortCopy}</span></div>
     </section> : null}
     {result ? <div class="db-grid">
       <section class="db-card">

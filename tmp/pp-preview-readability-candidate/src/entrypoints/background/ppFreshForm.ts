@@ -1,11 +1,11 @@
-import type { PpFreshFormResponse, PpFreshFormState, PpFreshReadiness, PpReadinessCheckpoint, ScanPpDraftResponse, PpReferenceSource, PpGridCoverage, PpSourceSelection, PpConnectionResponse, PpConnectionTab, ApplyPpPlanResponse, PpApplyPlanRow, PpApplyPlanResult, SavePpFormResponse } from '../../core/messages';
+import type { PpFreshFormResponse, PpFreshFormState, PpFreshReadiness, PpReadinessCheckpoint, ScanPpDraftResponse, PpReferenceSource, PpGridCoverage, PpSourceSelection, PpConnectionResponse, PpConnectionTab, ApplyPpPlanResponse, PpApplyPlanRow, PpApplyPlanResult, SavePpFormResponse, PpSortCapture } from '../../core/messages';
 import { activatePpOptionsTab, scanCurrentPpDraft, ppRoutePathFromUrl, ppEntityIdFromUrl } from '../../page/features/pp-scan/page';
 import { applyPpPlanRows, placePpItemRows, ppSaveSortBlock, ppSaveVerification, type PpOrderDiagnostics, type PpPlacementReport } from '../../page/features/pp-scan/apply';
 import { removePpItemRows } from '../../page/features/pp-scan/remove';
 import { readPpReadiness } from '../../page/features/pp-scan/readiness';
 import { readLoadedPpGrid, type PpLoadedGridRead } from '../../page/features/pp-scan/grid';
 import { isPpDraftScanResponse, ppTabSelectionToken } from './ppPreview';
-import { pressPpSave, readPpItemPairs, readPpSaveOutcome, ppItemPair, type PpSaveOutcome, type PpSavePress } from '../../page/features/pp-scan/save';
+import { pressPpSave, readPpItemPairs, readPpSaveOutcome, ppItemPair, ppSortCapture, type PpSaveOutcome, type PpSavePress } from '../../page/features/pp-scan/save';
 
 const HOSTS = new Set(['bestofgifts.pt', 'bestofgifts.eu', 'bestofgifts.es', 'bestofgifts.fr', 'bestofgifts-pt-qa.toogas.net']);
 const BASE_RULE = 'Use https on bestofgifts.pt, bestofgifts.eu, bestofgifts.es, bestofgifts.fr or bestofgifts-pt-qa.toogas.net, with one admin path segment such as /admin_xxx, and no port, query, key or extra path.';
@@ -887,6 +887,10 @@ export async function savePpForm(requestId: unknown, entityId: unknown, tabId: u
   const base: SavePpFormResponse = { source: 'pp-save', requestId: typeof requestId === 'string' ? requestId : '',
     entityId: typeof entityId === 'string' ? entityId : '', status: 'invalid', reason: '', keptOpen: false };
   const refused = (status: SavePpFormResponse['status'], reason: string): SavePpFormResponse => ({ ...base, status, reason });
+  let sortBefore: PpSortCapture | undefined;
+  const withSort = (response: SavePpFormResponse, snapshot?: ScanPpDraftResponse): SavePpFormResponse => sortBefore
+    ? { ...response, sortDiagnostic: { entityId: base.entityId, before: sortBefore,
+      after: ppSortCapture(snapshot, snapshot?.scannedAt ?? Date.now()), outcome: response.status } } : response;
   if (typeof requestId !== 'string' || !/^[a-z0-9-]{1,80}$/i.test(requestId) || typeof entityId !== 'string' ||
     !/^[1-9]\d{0,15}$/.test(entityId) || !Number.isSafeInteger(tabId) || (tabId as number) < 0 ||
     !Array.isArray(rows) || rows.length > 25 || (rows.length > 0 && !validPlanRows(rows))) {
@@ -981,13 +985,24 @@ export async function savePpForm(requestId: unknown, entityId: unknown, tabId: u
     // never arrived, or that numbers no rows, is not evidence either.
     const sortBlock = ppSaveSortBlock(placement, rows.length);
     if (sortBlock) return { ...refused('blocked', sortBlock), keptOpen: true, tabId: helper };
+    // Capture the loaded form immediately before the native press; a failed scan never changes Save.
+    let sortDraft: ScanPpDraftResponse | undefined;
+    try {
+      const [injection] = await chrome.scripting.executeScript({
+        target: { tabId: helper, frameIds: [0] }, world: 'MAIN', func: scanCurrentPpDraft,
+      });
+      const value: unknown = injection?.result;
+      if (injection?.frameId === 0 && isPpDraftScanResponse(value) && value.entityId === entityId &&
+        String(value.providerEntityId) === entityId) sortDraft = value;
+    } catch { /* the diagnostic is unavailable; the Save decision stays unchanged */ }
+    sortBefore = ppSortCapture(sortDraft, sortDraft?.scannedAt ?? Date.now());
     // Nothing was pressed yet, so a short retry is still a single press: the page may be binding.
     let pressed = await pressNativeSave(helper, before.url);
     for (let attempt = 1; !pressed.clicked && attempt <= 2; attempt += 1) {
       await waitMs(400);
       pressed = await pressNativeSave(helper, before.url);
     }
-    if (!pressed.clicked) return { ...refused('blocked', pressed.reason), keptOpen: true, tabId: helper };
+    if (!pressed.clicked) return withSort({ ...refused('blocked', pressed.reason), keptOpen: true, tabId: helper });
     const deadline = Date.now() + MAX_WAIT;
     let navigated = false, outcome: PpSaveOutcome = { success: [], errors: [] };
     while (Date.now() < deadline) {
@@ -1001,9 +1016,9 @@ export async function savePpForm(requestId: unknown, entityId: unknown, tabId: u
     }
     const magentoMessage = outcome.errors[0] ?? outcome.success[0];
     if (outcome.errors.length) {
-      return { ...base, status: 'rejected',
+      return withSort({ ...base, status: 'rejected',
         reason: 'Magento rejected the save. Fix what it reports in the helper tab, then press its Save yourself.',
-        magentoMessage, keptOpen: true, tabId: helper, readAt: Date.now() };
+        magentoMessage, keptOpen: true, tabId: helper, readAt: Date.now() });
     }
     let finalUrl = before.url;
     try { finalUrl = (await chrome.tabs.get(helper)).url ?? before.url; } catch { /* keep the known address */ }
@@ -1026,28 +1041,28 @@ export async function savePpForm(requestId: unknown, entityId: unknown, tabId: u
         // The stored Sort values are the evidence that the page posted the numbers read from the
         // form, so a readback that restored a default is never reported as a plain success.
         if (readback.status === 'unknown') {
-          return { ...base, status: 'unknown',
+          return withSort({ ...base, status: 'unknown',
             reason: `Magento saved PP ${entityId}, but the fresh read-back does not prove the Sort values follow the plan: ${readback.detail}. Check the record's order before relying on it.`,
-            magentoMessage, keptOpen: false, readAt: Date.now(), snapshot: stored.snapshot };
+            magentoMessage, keptOpen: false, readAt: Date.now(), snapshot: stored.snapshot }, stored.snapshot);
         }
-        return { ...base, status: 'saved', reason: rows.length
+        return withSort({ ...base, status: 'saved', reason: rows.length
           ? `Magento saved PP ${entityId}. The record was read again: the rows and their Sort values follow the plan.`
           : `Magento saved PP ${entityId}. The record was read again; this save carried no rows, so no Sort values were checked.`,
-          magentoMessage, keptOpen: false, readAt: Date.now(), snapshot: stored.snapshot };
+          magentoMessage, keptOpen: false, readAt: Date.now(), snapshot: stored.snapshot }, stored.snapshot);
       }
-      return { ...base, status: 'unknown',
+      return withSort({ ...base, status: 'unknown',
         reason: `Magento confirmed the save of PP ${entityId}, but ${readback.detail}, so the stored Sort values are unverified. Open the record and check its order before saving again.`,
-        magentoMessage, keptOpen: true, tabId: helper, readAt: Date.now() };
+        magentoMessage, keptOpen: true, tabId: helper, readAt: Date.now() });
     }
     // A read in a new tab never touches the unsaved draft in the helper tab.
     const stored = await readBackInNewTab(before.url, entityId);
-    return { ...base, status: 'unknown',
+    return withSort({ ...base, status: 'unknown',
       reason: stored.snapshot
         ? 'Magento gave no save confirmation. A fresh read of the record was taken; compare it with the rows before saving again.'
         : 'Magento gave no save confirmation and the record could not be read again. Check it before pressing Save again.',
-      keptOpen: true, tabId: helper, readAt: Date.now(), ...(stored.snapshot ? { snapshot: stored.snapshot } : {}) };
+      keptOpen: true, tabId: helper, readAt: Date.now(), ...(stored.snapshot ? { snapshot: stored.snapshot } : {}) }, stored.snapshot);
   } catch {
-    return { ...refused('unavailable', 'The save could not be run. Check the helper tab before trying again.'), keptOpen: true, tabId: helper };
+    return withSort({ ...refused('unavailable', 'The save could not be run. Check the helper tab before trying again.'), keptOpen: true, tabId: helper });
   }
 }
 function validSelection(value: unknown): value is PpSourceSelection {

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 // @ts-expect-error - jsdom ships no types and is only used by DOM tests.
 import { JSDOM } from 'jsdom';
-import { pressPpSave, readPpItemPairs, readPpSaveOutcome, ppItemPair } from '../src/page/features/pp-scan/save';
+import { pressPpSave, readPpItemPairs, readPpSaveOutcome, ppItemPair, ppSortCapture } from '../src/page/features/pp-scan/save';
 import { isPpHelperEditUrl } from '../src/entrypoints/background/ppFreshForm';
 import { ppSavedVerification } from '../src/dashboard/sections/ui/ppPreviewModel';
 import type { ScanPpDraftResponse } from '../src/core/messages';
@@ -24,6 +24,26 @@ function withPage(html: string, run: (document: any) => void): void {
 
 // chrome.scripting serialises the function alone, so any module-scope name is undefined.
 const detach = (fn: unknown): (() => any) => new Function(`return (${String(fn)})`)();
+
+test('Sort diagnostic keeps only row fields across pre-save and stored reads', () => {
+  const collection = (rows: ScanPpDraftResponse['items']['rows']): ScanPpDraftResponse['items'] =>
+    ({ state: 'available', rows, truncated: false, identifierGaps: 0, skippedPositions: [] });
+  const snapshot: ScanPpDraftResponse = {
+    version: 1, status: 'ok', entityId: '42', routePath: '/admin/key/secret',
+    general: { privateField: 'secret' }, warnings: [],
+    locations: collection([{ position: 0, values: { key_id: 'k1', name: '{"1":"Face 1"}' }, translations: {} }]),
+    items: collection([{ position: 0, values: { record_id: 'r1', parent: 'k1', name_option: '11', sort: '1', privateField: 'secret' }, translations: {} }]),
+    itemLabels: { r1: 'Laser Metal' },
+  };
+  const before = ppSortCapture(snapshot, 100);
+  const after = ppSortCapture({ ...snapshot, items: collection([{ ...snapshot.items.rows[0]!,
+    values: { ...snapshot.items.rows[0]!.values, sort: '2' } }]) }, 200);
+  assert.deepEqual(before, { at: 100, available: true, truncated: false,
+    rows: [{ face: 'Face 1', name: 'Laser Metal', catalogueId: '11', sort: '1' }] });
+  assert.equal(after.rows[0]!.sort, '2');
+  assert.deepEqual(ppSortCapture(undefined, 300), { at: 300, available: false, truncated: false, rows: [] });
+  assert.doesNotMatch(JSON.stringify({ before, after }), /secret|\/admin\/key/);
+});
 
 test('the injected Save helpers need no module scope', () => {
   withPage('<button id="save" type="button">Save</button><div class="message-success">Saved.</div>', (document: any) => {
