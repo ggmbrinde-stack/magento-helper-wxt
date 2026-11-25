@@ -1,19 +1,168 @@
 /**
  * Lane A router — page + panel surface.
  *
- * Owns: browser-tab capability our own controls ask for. The page-domain
- * messages (GET_CONFIG, GET_SKU, GET_FORM_STATE, APPLY_FIELD, SEARCH_MAGENTO)
- * are answered by the content script, not here.
+ * Owns: browser-tab capabilities our controls ask for. SCAN_PP_DRAFT is the
+ * exception that reads Magento's already-loaded main-world registry.
  *
  * The audit lane drives error markup and the resolver; this router must not
  * import audit internals.
  */
 
-import type { LaneRouter } from '../../../core/messages';
+import type { LaneRouter, ScanPpDraftResponse } from '../../../core/messages';
 
 import { selectAssociatedSkus } from '../../../page/features/assoc-bulk/page';
+import { isPpPreviewSender, isPpDraftScanResponse, ppPreviewTab, PP_PREVIEW_TAB_URLS } from '../ppPreview';
+import { readFreshForm, cancelFreshForm, freshFormState, checkPpConnection, applyPpPlan, savePpForm } from '../ppFreshForm';
+import {
+  activatePpOptionsTab,
+  ppEntityIdFromUrl,
+  ppRoutePathFromUrl,
+  scanCurrentPpDraft,
+} from '../../../page/features/pp-scan/page';
+
+const PP_ADMIN_HOSTS = new Set([
+  'bestofgifts-pt-qa.toogas.net',
+  'bestofgifts.pt',
+  'bestofgifts.eu',
+  'bestofgifts.es',
+  'bestofgifts.fr',
+]);
+
+function unavailablePpScan(entityId: string | null, routePath: string): ScanPpDraftResponse {
+  return {
+    version: 1,
+    status: 'unavailable',
+    entityId,
+    routePath: routePath.slice(0, 512),
+    general: {},
+    locations: { state: 'missing', rows: [], truncated: false, identifierGaps: 0, skippedPositions: [] },
+    items: { state: 'missing', rows: [], truncated: false, identifierGaps: 0, skippedPositions: [] },
+    warnings: ['The current Magento page could not be scanned safely.'],
+  };
+}
 
 export const handleUiMessage: LaneRouter = (message, ctx) => {
+  if (message?.type === 'CHECK_PP_CONNECTION') {
+    if (!isPpPreviewSender(ctx)) ctx.sendResponse({ status: 'unavailable', reason: 'Open PP Preview in the extension dashboard.', tabs: [] });
+    else void checkPpConnection(message.entityId, message.referenceSource, message.selection).then(ctx.sendResponse);
+    return true;
+  }
+
+  if (['READ_PP_FRESH_FORM', 'CANCEL_PP_FRESH_FORM', 'GET_PP_FRESH_FORM_STATE', 'APPLY_PP_PLAN', 'SAVE_PP_FORM'].includes(message?.type ?? '')) {
+    if (!isPpPreviewSender(ctx)) {
+      ctx.sendResponse({ source: 'fresh-magento-form-load', requestId: '', entityId: '', status: 'unavailable',
+        cleanup: 'not-created', reason: 'Open PP Preview in the extension dashboard.' });
+    } else if (message.type === 'GET_PP_FRESH_FORM_STATE') ctx.sendResponse(freshFormState(ctx.senderTabId));
+    else if (message.type === 'APPLY_PP_PLAN') void applyPpPlan(message.requestId, message.entityId, ctx.senderTabId,
+      message.referenceSource, message.selection, message.rows,
+      message.mode === 'remove' ? 'remove' : message.mode === 'order' ? 'order' : message.mode === 'rebuild' ? 'rebuild' : 'add').then(ctx.sendResponse);
+    else if (message.type === 'SAVE_PP_FORM') void savePpForm(message.requestId, message.entityId, message.tabId,
+      message.rows, ctx.senderTabId, message.arrangement).then(ctx.sendResponse);
+    else void (message.type === 'READ_PP_FRESH_FORM'
+      ? readFreshForm(message.requestId, message.entityId, ctx.senderTabId, message.referenceSource, message.selection)
+      : cancelFreshForm(message.requestId, ctx.senderTabId)).then(ctx.sendResponse);
+    return true;
+  }
+
+  if (message?.type === 'LIST_PP_PREVIEW_TABS' || message?.type === 'READ_PP_PREVIEW_DRAFT') {
+    void (async () => {
+      const unavailable = (): void => ctx.sendResponse({ ok: false,
+        reason: 'The selected PP tab is unavailable or changed. List tabs and select it again.' });
+      if (!isPpPreviewSender(ctx)) { unavailable(); return; }
+      try {
+        if (message.type === 'LIST_PP_PREVIEW_TABS') {
+          const tabs = await chrome.tabs.query({ url: PP_PREVIEW_TAB_URLS });
+          const matches = await Promise.all(tabs.map(ppPreviewTab));
+          ctx.sendResponse({ ok: true, tabs: matches.filter(tab => tab !== null) });
+          return;
+        }
+        if (!Number.isInteger(message.tabId) || message.tabId < 0 ||
+          typeof message.selectionToken !== 'string' || !/^[a-f0-9]{64}$/.test(message.selectionToken)) {
+          unavailable(); return;
+        }
+        const before = await chrome.tabs.get(message.tabId);
+        const selected = await ppPreviewTab(before);
+        if (!selected || selected.selectionToken !== message.selectionToken) { unavailable(); return; }
+        const [injection] = await chrome.scripting.executeScript({
+          target: { tabId: selected.tabId, frameIds: [0] }, world: 'MAIN', func: scanCurrentPpDraft,
+        });
+        const result: unknown = injection?.result;
+        const after = await chrome.tabs.get(selected.tabId);
+        if (injection?.frameId !== 0 || after.pendingUrl || after.url !== before.url ||
+          !isPpDraftScanResponse(result) || result.entityId !== selected.entityId ||
+          result.routePath !== ppRoutePathFromUrl(before.url!)) { unavailable(); return; }
+        // Report the canonical route, never the private admin/session path.
+        ctx.sendResponse({ ok: true, tab: selected, snapshot: { ...result, routePath: selected.routePath } });
+      } catch { unavailable(); }
+    })();
+    return true;
+  }
+
+  if (message?.type === 'SCAN_PP_DRAFT') {
+    const senderEntity = ctx.senderUrl ? ppEntityIdFromUrl(ctx.senderUrl) : null;
+    const senderPath = (() => {
+      try { return new URL(ctx.senderUrl ?? '').pathname; } catch { return ''; }
+    })();
+    const safeRoutePath = ctx.senderUrl ? ppRoutePathFromUrl(ctx.senderUrl) ?? '' : '';
+    void (async () => {
+      if (
+        typeof ctx.senderTabId !== 'number' ||
+        ctx.senderFrameId !== 0 ||
+        !senderEntity ||
+        !ctx.senderUrl
+      ) {
+        ctx.sendResponse(unavailablePpScan(senderEntity, safeRoutePath));
+        return;
+      }
+      try {
+        const sender = new URL(ctx.senderUrl);
+        if (sender.protocol !== 'https:' || !PP_ADMIN_HOSTS.has(sender.hostname)) {
+          ctx.sendResponse(unavailablePpScan(senderEntity, safeRoutePath));
+          return;
+        }
+        const tab = await chrome.tabs.get(ctx.senderTabId);
+        const current = new URL(tab.url ?? '');
+        if (
+          current.protocol !== 'https:' ||
+          current.hostname !== sender.hostname ||
+          current.pathname !== sender.pathname ||
+          ppEntityIdFromUrl(tab.url ?? '') !== senderEntity
+        ) {
+          ctx.sendResponse(unavailablePpScan(senderEntity, safeRoutePath));
+          return;
+        }
+        // Magento renders the custom-option Items only once its Options tab opens, so the
+        // scan opens it first instead of leaving that click to the operator. View only:
+        // no field is edited, saved or submitted.
+        try {
+          await chrome.scripting.executeScript({
+            target: { tabId: ctx.senderTabId, frameIds: [0] },
+            world: 'MAIN',
+            func: activatePpOptionsTab,
+          });
+        } catch { /* the provider is readable either way */ }
+        await new Promise(resolve => setTimeout(resolve, 400));
+        const [injection] = await chrome.scripting.executeScript({
+          target: { tabId: ctx.senderTabId },
+          world: 'MAIN',
+          func: scanCurrentPpDraft,
+        });
+        const result: unknown = injection?.result;
+        if (
+          !isPpDraftScanResponse(result) || result.entityId !== senderEntity ||
+          result.routePath !== safeRoutePath
+        ) {
+          ctx.sendResponse(unavailablePpScan(senderEntity, safeRoutePath));
+          return;
+        }
+        ctx.sendResponse(result);
+      } catch {
+        ctx.sendResponse(unavailablePpScan(senderEntity, safeRoutePath));
+      }
+    })();
+    return true;
+  }
+
   if (message?.type === 'OPEN_TAB_GROUP') {
     const urls = (message.urls ?? []) as string[];
     const groupName = String(message.groupName ?? 'Magento');

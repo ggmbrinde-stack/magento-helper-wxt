@@ -51,7 +51,12 @@ export default defineBackground(() => {
   resumeBatchOnWake();
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    const ctx = { senderTabId: sender.tab?.id, sendResponse };
+    const ctx = {
+      senderTabId: sender.tab?.id,
+      senderUrl: sender.url,
+      senderFrameId: sender.frameId,
+      sendResponse,
+    };
     for (const route of ROUTERS) {
       if (route(message, ctx)) return true;
     }

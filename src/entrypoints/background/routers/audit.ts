@@ -1,3 +1,6 @@
+import { ppCatalogEntity } from '../../../shared/ppCatalog';
+import { loadPpCatalog, loadPpCatalogIndexPage } from '../../../audit';
+import { isPpPreviewSender } from '../ppPreview';
 /**
  * Lane B router — audit.
  *
@@ -85,6 +88,40 @@ async function findAdminTabId(): Promise<number | undefined> {
 
 export const handleAuditMessage: LaneRouter = (message, ctx) => {
   const { sendResponse } = ctx;
+
+  if (message?.type === 'FETCH_PP_CATALOG_INDEX_PAGE') {
+    if (!isPpPreviewSender(ctx)) sendResponse({ status: 'unavailable', rows: [], hasMore: false,
+      nextCursor: null, checkedAt: new Date().toISOString(), reason: 'Open PP Preview in the extension dashboard.' });
+    else void loadPpCatalogIndexPage(message.cursor).then(sendResponse);
+    return true;
+  }
+
+  if (message?.type === 'FETCH_PP_PREVIEW_CATALOG') {
+    if (!isPpPreviewSender(ctx)) {
+      sendResponse({ status: 'unavailable', code: typeof message.code === 'string' ? message.code : '',
+        checkedAt: new Date().toISOString(), reason: 'Open PP Preview in the extension dashboard.' });
+    } else {
+      void loadPpCatalog(message.code).then(sendResponse).catch(() => sendResponse({
+        status: 'unavailable', code: typeof message.code === 'string' ? message.code : '',
+        checkedAt: new Date().toISOString(), reason: 'The PP reference could not be read. Retry explicitly.',
+      }));
+    }
+    return true;
+  }
+
+  if (message?.type === 'FETCH_PP_CATALOG') {
+    void (async () => {
+      try {
+        const tab = typeof ctx.senderTabId === 'number' ? await chrome.tabs.get(ctx.senderTabId) : null;
+        if (!tab?.url || !ppCatalogEntity(tab.url)) throw new Error('Unsupported page');
+        sendResponse(await loadPpCatalog(message.code));
+      } catch {
+        sendResponse({ status: 'unavailable', code: typeof message.code === 'string' ? message.code : '',
+          checkedAt: new Date().toISOString(), reason: 'Open a supported Magento custom-option edit page to read a PP reference.' });
+      }
+    })();
+    return true;
+  }
 
   if (message?.type === 'FETCH_SKU_DATA') {
     const sku = String(message.sku ?? '');

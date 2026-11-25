@@ -197,7 +197,7 @@ button {
   color: var(--mhx-ink);
 }
 
-.mhx-saved {
+.mhx-sidepanel-saved {
   color: var(--success);
   font-size: 12px;
 }

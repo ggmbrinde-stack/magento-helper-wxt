@@ -1,3 +1,4 @@
+import { ppCatalogEntity } from './ppCatalog';
 // The one list of page features.
 //
 // Before this file there were four parallel lists that had to agree by hand:
@@ -13,6 +14,7 @@ import {
   ENHANCE_ACTIVE_FILTERS,
   ENHANCE_CATEGORY_TREE,
   ENHANCE_MASSACTIONS,
+  ENHANCE_OPTIONS_ITEMS_UI,
   ENHANCE_NAV_TOGGLE,
   ENHANCE_PAGING_SIZES,
   ENHANCE_ROW_ACTIONS,
@@ -39,7 +41,9 @@ export type FeatureKey =
   | 'configButtons'
   | 'errorMarkup'
   | 'optionsCompanion'
-  | 'optionsItems';
+  | 'optionsItems'
+  | 'ppCatalog'
+  | 'ppScan';
 
 /** Panel heading a feature is listed under. */
 export type FeatureGroup =
@@ -84,6 +88,10 @@ const has = (doc: Document, selector: string): boolean =>
 const GRID = '.data-grid';
 const PRODUCT_FORM = '#product_form, .product-edit, [data-ui-id="product-form"]';
 const CUSTOM_OPTIONS = '.custom-options, .options';
+const PP_OPTIONS_ROUTE =
+  /\/toogas_attributesetcustomoptions\/attributesetcustomoptions\/edit\/attributesetcustomoptions_id\/\d+(?:\/|$)/i;
+const PP_OPTIONS_ANCHOR =
+  '[data-bind*="toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas"]';
 
 export const FEATURE_CATALOG: readonly FeatureMeta[] = [
   {
@@ -271,11 +279,32 @@ export const FEATURE_CATALOG: readonly FeatureMeta[] = [
     id: 'optionsItems',
     label: 'Options Items panel',
     description:
-      'A grouped, parallel view of the Options Items table. Writes go through the page\'s own inputs.',
+      'A grouped, parallel view of the Options Items table. Switched off in this build.',
+    group: 'Product form',
+    defaultOn: false,
+    available: ENHANCE_OPTIONS_ITEMS_UI,
+    detect: (doc) => has(doc, CUSTOM_OPTIONS),
+  },
+  {
+    id: 'ppCatalog',
+    label: 'Notion PP reference',
+    description: 'Load an exact business PP definition from Notion without changing the Magento page.',
     group: 'Product form',
     defaultOn: true,
     available: true,
-    detect: (doc) => has(doc, CUSTOM_OPTIONS),
+    detect: (doc) => ppCatalogEntity(doc.URL) !== null,
+  },
+  {
+    id: 'ppScan',
+    label: 'Scan current PP draft',
+    description:
+      'Read a bounded snapshot of the current unsaved custom-option draft. The scan never saves or changes Magento data.',
+    group: 'Product form',
+    defaultOn: true,
+    available: true,
+    detect: (doc) =>
+      PP_OPTIONS_ROUTE.test(doc.defaultView?.location.pathname ?? '') &&
+      has(doc, PP_OPTIONS_ANCHOR),
   },
 ];
 

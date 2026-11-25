@@ -441,3 +441,20 @@ export interface ErrorMarkupMessage {
   type: 'ERROR_MARKUP';
   errors: ListingError[];
 }
+
+/** Exact business-code reference only; no Magento mutation or association. */
+export interface FetchPpCatalogRequest {
+  type: 'FETCH_PP_CATALOG';
+  code: string;
+}
+export type { PpCatalogResponse } from '../../shared/ppCatalog';
+export interface FetchPpPreviewCatalogRequest {
+  type: 'FETCH_PP_PREVIEW_CATALOG';
+  code: string;
+}
+
+export interface FetchPpCatalogIndexPageRequest {
+  type: 'FETCH_PP_CATALOG_INDEX_PAGE';
+  cursor?: string;
+}
+export type { PpCatalogIndexPage } from '../../shared/ppCatalog';

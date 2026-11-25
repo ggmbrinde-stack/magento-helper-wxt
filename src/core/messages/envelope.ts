@@ -31,6 +31,9 @@ export type MessageResponder = (response: unknown) => void;
 export interface RouterContext {
   /** Tab that sent the message, when the sender was a content script. */
   senderTabId?: number;
+  /** Originating document metadata for messages that act on the sender tab. */
+  senderUrl?: string;
+  senderFrameId?: number;
   sendResponse: MessageResponder;
 }
 

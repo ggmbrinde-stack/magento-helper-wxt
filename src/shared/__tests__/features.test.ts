@@ -54,7 +54,9 @@ test('the catalog still declares every storage key with its default', () => {
     configButtons: true,
     errorMarkup: true,
     optionsCompanion: true,
-    optionsItems: true,
+    optionsItems: false,
+    ppCatalog: true,
+    ppScan: true,
   };
   assert.deepEqual(FEATURE_DEFAULTS, expected);
 });
@@ -88,6 +90,12 @@ test('a build-disabled feature is reported as unavailable, not silently toggleab
   assert.ok(pageActions);
   assert.equal(pageActions.available, false);
   assert.equal(pageActions.defaultOn, false);
+
+  // The Options Items panel is off on request; the toggle must say so as well.
+  const optionsItems = FEATURE_CATALOG.find((f) => f.id === 'optionsItems');
+  assert.ok(optionsItems);
+  assert.equal(optionsItems.available, false);
+  assert.equal(optionsItems.defaultOn, false);
 });
 
 // ---- page detection ------------------------------------------------------
@@ -116,6 +124,18 @@ test('a product edit page detects the product-form features', () => {
   for (const id of ['skuCopy', 'productTypeBadge', 'tierPrices', 'selects']) {
     assert.ok(detected.includes(id), `${id} not detected on a product edit page`);
   }
+});
+
+test('the PP scan is detected only on the native custom-option edit route', () => {
+  const dom = new JSDOM(
+    '<div data-bind="scope: \'toogas_attributesetcustomoptions_attributesetcustomoptions_form.areas\'"></div>',
+    { url: 'https://bestofgifts.pt/toogas_attributesetcustomoptions/attributesetcustomoptions/edit/attributesetcustomoptions_id/966/key/secret' },
+  );
+  assert.ok(detectFeatureIds(dom.window.document).includes('ppScan'));
+  const other = new JSDOM('<div class="custom-options"></div>', {
+    url: 'https://bestofgifts.pt/catalog/product/edit/id/1',
+  });
+  assert.ok(!detectFeatureIds(other.window.document).includes('ppScan'));
 });
 
 test('detection ids are unique and follow catalog order', () => {

@@ -1,3 +1,5 @@
+import { mountPpCatalog } from './pp-catalog';
+import { mountPpScan, unmountPpScan } from './pp-scan';
 // Mounts for the feature catalog.
 //
 // `src/shared/featureCatalog.ts` says what each feature is (key, label, page
@@ -9,7 +11,7 @@
 // Order in the catalog is mount order. Every mount is idempotent; `content.ts`
 // isolates each one so a throw cannot skip the rest.
 import type { FeatureKey } from '../../shared/featureCatalog';
-import { ENHANCE_NAV_TOGGLE, MOVE_PAGE_ACTIONS } from '../../shared/flags';
+import { ENHANCE_NAV_TOGGLE, ENHANCE_OPTIONS_ITEMS_UI, MOVE_PAGE_ACTIONS } from '../../shared/flags';
 
 import { enhanceAdminSelects } from './dropdowns/scan';
 import { enhanceAdminNavToggle } from './nav-toggle';
@@ -62,6 +64,12 @@ export const FEATURE_MOUNTS: Record<MountableFeatureKey, () => void> = {
   configButtons: renderConfigButtons,
   errorMarkup: maybeRequestErrorMarkup,
   optionsCompanion: addOptionsCompanion,
-  optionsItems: enhanceOptionsItems,
+  optionsItems: () => {
+    if (ENHANCE_OPTIONS_ITEMS_UI) enhanceOptionsItems();
+  },
   assocBulk: enhanceAssocBulk,
+  ppCatalog: mountPpCatalog,
+  ppScan: mountPpScan,
 };
+
+export { unmountPpScan };

@@ -102,3 +102,9 @@ export const ENHANCE_CATEGORY_TREE = true;
 // goes back to the stock strip under the title. The capability is kept intact,
 // so switching it back on re-enables the header placement.
 export const MOVE_PAGE_ACTIONS = false;
+
+// Options Items panel (2026-11-17): the "Grouped UI" panel that replaces the native
+// Options Items table on the custom-option edit page is switched off on request. The
+// native table, its handlers and Save stay exactly as Magento renders them; the panel
+// code is kept intact, so setting this back to true restores both view buttons.
+export const ENHANCE_OPTIONS_ITEMS_UI = false;

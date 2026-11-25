@@ -36,3 +36,5 @@ export * from './textAudit';
 export * from './textFetch';
 export * from './variantLabels';
 export * from './variants';
+
+export * from './ppCatalog';

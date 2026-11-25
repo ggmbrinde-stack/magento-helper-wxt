@@ -285,7 +285,7 @@ export function SettingsForm(props: Props) {
         >
           {state === 'saving' ? 'Saving…' : 'Save'}
         </button>
-        {state === 'saved' ? <span class="mhx-saved">Saved</span> : null}
+        {state === 'saved' ? <span class="mhx-sidepanel-saved">Saved</span> : null}
       </div>
       {state === 'error' ? <div class="mhx-error">{error}</div> : null}
       <p class="mhx-note">

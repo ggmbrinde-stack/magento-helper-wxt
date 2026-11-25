@@ -355,8 +355,11 @@ export async function queryDatabasePage(
       has_more?: boolean;
       next_cursor?: string | null;
     };
+    if (!Array.isArray(json.results) || typeof json.has_more !== 'boolean') {
+      throw new NotionApiError(502, 'invalid_response', 'Incomplete Notion query response', 0, false);
+    }
     return {
-      results: json.results ?? [],
+      results: json.results,
       hasMore: json.has_more === true,
       nextCursor: typeof json.next_cursor === 'string' ? json.next_cursor : null,
     };
@@ -401,6 +404,29 @@ export async function queryAllDatabase(
     cursor = batch.nextCursor;
   }
   return { results, truncated: true };
+}
+
+/** One body page with explicit pagination, for bounded catalogue reads. */
+export async function listBlockChildrenPage(
+  token: string,
+  blockId: string,
+  startCursor?: string,
+): Promise<DatabaseQueryPage> {
+  return queued(async () => {
+    const url = new URL(`https://api.notion.com/v1/blocks/${blockId}/children`);
+    url.searchParams.set('page_size', '100');
+    if (startCursor) url.searchParams.set('start_cursor', startCursor);
+    const response = await readOnlyNotionFetch(url.toString(), {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}`, 'Notion-Version': NOTION_VERSION },
+    });
+    if (!response.ok) throw await notionApiError(response, 'listBlocks');
+    const json = await response.json() as { results?: unknown[]; has_more?: boolean; next_cursor?: string | null };
+    if (!Array.isArray(json.results) || typeof json.has_more !== 'boolean') {
+      throw new NotionApiError(502, 'invalid_response', 'Incomplete Notion block response', 0, false);
+    }
+    return { results: json.results, hasMore: json.has_more, nextCursor: typeof json.next_cursor === 'string' ? json.next_cursor : null };
+  });
 }
 
 /** Read every top-level child block of a page (read-only, paginated). */

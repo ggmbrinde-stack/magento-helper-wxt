@@ -15,6 +15,7 @@ import { ModelBridge } from '../sections/automation/ModelBridge';
 import { EnableFlow } from '../sections/ui/EnableFlow';
 import { Overview } from '../sections/ui/Overview';
 import { Settings } from '../sections/ui/Settings';
+import { PpPreview } from '../sections/ui/PpPreview';
 
 export type SectionId =
   | 'overview'
@@ -24,6 +25,7 @@ export type SectionId =
   | 'batch'
   | 'resolver'
   | 'enable'
+  | 'ppPreview'
   | 'images'
   | 'text'
   | 'push'
@@ -49,6 +51,7 @@ const NAV: { group: string; items: SectionDef[] }[] = [
       { id: 'batch', label: 'Run audit', hint: 'Run the full pipeline as steps' },
       { id: 'resolver', label: 'Resolve SKU', hint: 'Product data, variants & Magento links' },
       { id: 'enable', label: 'Enable flow', hint: 'Disabled SKU → sale ready' },
+      { id: 'ppPreview', label: 'PP Preview', hint: 'Read-only Notion and Magento draft reference' },
     ],
   },
   {
@@ -156,6 +159,7 @@ export function Dashboard() {
           {section === 'batch' ? <Batch /> : null}
           {section === 'resolver' ? <Resolver onOpen={(id) => setSection(id as SectionId)} /> : null}
           {section === 'enable' ? <EnableFlow onOpen={(id) => setSection(id as SectionId)} /> : null}
+          {section === 'ppPreview' ? <PpPreview /> : null}
           {section === 'images' ? <ImageAudit /> : null}
           {section === 'text' ? <TextAudit /> : null}
           {section === 'push' ? <Push /> : null}

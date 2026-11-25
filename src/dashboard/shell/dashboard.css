@@ -196,6 +196,11 @@ body {
   gap: 16px;
 }
 
+.db-stack {
+  display: grid;
+  gap: 16px;
+}
+
 .db-card {
   background: var(--mhx-surface);
   border: 1px solid var(--db-border);
@@ -426,6 +431,27 @@ body {
   font-size: 13px;
 }
 
+/*
+ * A narrow card squeezes every column to min-content, which turns a long reason
+ * cell into a 600px-tall ribbon. Keep a readable width and let the existing
+ * `.db-table-wrap` scroll instead.
+ */
+.db-table--reconcile {
+  min-width: 720px;
+}
+
+.db-table-wrap {
+  overflow-x: auto;
+}
+
+.db-pp-data {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 360px;
+  overflow-y: auto;
+  min-width: 160px;
+}
+
 .db-table th,
 .db-table td {
   text-align: left;
@@ -519,6 +545,31 @@ body {
 
 .db-warn {
   color: var(--mhx-bad);
+}
+
+/*
+ * A card is a grid item inside `.db-stack`, where the default `min-width: auto`
+ * lets a wide table push the whole page sideways instead of scrolling inside
+ * `.db-table-wrap`. Let the card shrink.
+ */
+.db-stack > .db-card {
+  min-width: 0;
+}
+
+/*
+ * A scope warning that sits beside a destructive action gets a block of its
+ * own, so it does not read as one more red sentence and does not rely on
+ * colour alone.
+ */
+.db-guard {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--mhx-bad-border);
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--mhx-bad-bg);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .db-bad {
@@ -904,4 +955,163 @@ body {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* --- PP preview flow ---------------------------------------------------- */
+
+.db-step {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 9px;
+  border-radius: 999px;
+  background: var(--db-tint);
+  color: var(--db-accent-dark);
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
+.db-disclosure {
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+
+.db-disclosure summary {
+  cursor: pointer;
+  color: var(--db-accent-dark);
+}
+
+.db-disclosure p {
+  margin: 8px 0 0;
+}
+
+.db-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.db-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border: 1px solid var(--db-border);
+  border-radius: 999px;
+  background: var(--db-bg);
+  color: var(--db-ink);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.db-pill--ok {
+  border-color: var(--mhx-ok-border);
+  background: var(--mhx-ok-bg);
+  color: var(--mhx-ok);
+}
+
+.db-pill--warn {
+  border-color: var(--mhx-warn-border, var(--db-border));
+  background: var(--mhx-warn-bg, var(--db-bg));
+}
+
+.db-pill--bad {
+  border-color: var(--mhx-bad-border);
+  background: var(--mhx-bad-bg);
+  color: var(--mhx-bad);
+}
+
+.db-meta {
+  margin: 6px 0 12px;
+  color: var(--db-muted);
+  font-size: 12px;
+}
+
+.db-actions .db-meta {
+  margin: 0;
+}
+
+.db-hint {
+  margin: 8px 0 0;
+  color: var(--db-accent-dark);
+  font-size: 12px;
+}
+
+.db-pair {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 4px 0 14px;
+  font-size: 13px;
+}
+
+.db-pair input {
+  margin-top: 2px;
+}
+
+.db-summary .db-card-head {
+  margin-bottom: 10px;
+}
+
+.db-table--select tbody tr {
+  cursor: pointer;
+}
+
+.db-table--select tbody tr:hover td {
+  background: var(--db-bg);
+}
+
+.db-table--select tbody tr.db-row--selected td {
+  background: var(--db-tint);
+}
+
+.db-save {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--db-border);
+}
+
+.db-save h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+/* PP Preview sub tabs: one code at a time versus batch work. */
+.db-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--db-border);
+  border-radius: 10px;
+  background: var(--db-tint);
+}
+
+.db-tab {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--db-muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.db-tab:hover {
+  color: var(--db-ink);
+}
+
+.db-tab:focus-visible {
+  outline: 2px solid var(--db-accent);
+  outline-offset: 1px;
+}
+
+.db-tab[aria-selected="true"] {
+  background: var(--db-bg);
+  color: var(--db-ink);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }

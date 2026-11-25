@@ -1,3 +1,4 @@
+import { unmountPpCatalog } from '../page/features/pp-catalog';
 import { defineContentScript } from 'wxt/sandbox';
 import type { ListingError } from '../shared/schemas';
 import { getFeatureSettings, loadFeatureSettings, onFeatureSettingsChange } from '../shared/featureSettings';
@@ -18,7 +19,7 @@ import type {
 // label, page detection, default) and the mounts in
 // `src/page/features/registry.ts`. This file only runs the chain.
 import { FEATURE_CATALOG, detectFeatureIds } from '../shared/featureCatalog';
-import { FEATURE_MOUNTS } from '../page/features/registry';
+import { FEATURE_MOUNTS, unmountPpScan } from '../page/features/registry';
 import { extractColorGroups } from '../page/features/config-groups';
 import { applyErrorMarkup } from '../page/features/error-markup';
 import { handleApplyField } from '../page/features/form-fill';
@@ -41,7 +42,11 @@ let lastDetectedFeatures: string[] | undefined;
  */
 function scan(options: { categoryTreeChanged?: boolean } = {}): void {
   const f = getFeatureSettings();
-  if (!f.extensionEnabled) return;
+  if (!f.extensionEnabled || !f.ppCatalog) unmountPpCatalog();
+  if (!f.extensionEnabled) {
+    unmountPpScan();
+    return;
+  }
   const detectedFeatures = detectFeatureIds(document);
   if (
     !lastDetectedFeatures ||
@@ -62,7 +67,10 @@ function scan(options: { categoryTreeChanged?: boolean } = {}): void {
   for (const feature of FEATURE_CATALOG) {
     const key = feature.id;
     if (key === 'extensionEnabled') continue;
-    if (!f[key]) continue;
+    if (!f[key]) {
+      if (key === 'ppScan') unmountPpScan();
+      continue;
+    }
     if (key === 'categoryTree' && options.categoryTreeChanged === false) continue;
     safe(key, FEATURE_MOUNTS[key]);
   }
